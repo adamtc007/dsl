@@ -1,0 +1,6 @@
+[workspace]
+members = ["crates/dsl_types", "crates/dsl-core"]
+resolver = "2"
+
+[workspace.lints.rust]
+unreachable_pub = "deny"

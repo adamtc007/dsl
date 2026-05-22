@@ -1,0 +1,11 @@
+# Local-dev override — copy to .cargo/config.toml (git-ignored) when editing
+# dsl alongside ob-poc or sem-os. Remove once all repos use pinned git tags.
+#
+# Once github.com/adamtc007/dsl is live, replace path deps in individual
+# crate Cargo.toml files with:
+#   dsl_types = { git = "https://github.com/adamtc007/dsl", tag = "v0.1.0" }
+#   dsl-core  = { git = "https://github.com/adamtc007/dsl", tag = "v0.1.0" }
+# Then this file becomes:
+#   [patch."https://github.com/adamtc007/dsl"]
+#   dsl_types = { path = "../dsl/crates/dsl_types" }
+#   dsl-core  = { path = "../dsl/crates/dsl-core"  }
