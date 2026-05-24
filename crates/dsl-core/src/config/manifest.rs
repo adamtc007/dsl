@@ -270,61 +270,10 @@ pub fn build_manifest_with_validation(
 mod tests {
     use crate::config::loader::ConfigLoader;
 
-    #[test]
-    fn load_verb_manifest_loads_ob_poc_packs() {
-        let loader = ConfigLoader::from_env();
-        let manifest = loader.load_verb_manifest();
-
-        // ob-poc has 1,200+ verbs; any reasonable subset confirms load worked
-        assert!(
-            manifest.len() > 100,
-            "manifest should have >100 verbs, got {}",
-            manifest.len()
-        );
-
-        // Known verbs that must exist
-        assert!(
-            manifest.get("cbu.ensure").is_some(),
-            "cbu.ensure must be declared"
-        );
-        assert!(
-            manifest.get("kyc-case.update-status").is_some(),
-            "kyc-case.update-status must be declared"
-        );
-
-        // The three pre-existing structural errors (bpmn-controller, loader verbs)
-        // are documented as pre-existing; don't assert is_clean() here.
-        // Assert no LOAD errors (yaml parse failures) — only validation warnings ok.
-        let load_errors: Vec<_> = manifest
-            .errors
-            .iter()
-            .filter(|e| e.message.contains("Failed to load"))
-            .collect();
-        assert!(
-            load_errors.is_empty(),
-            "No YAML load errors expected: {:?}",
-            load_errors
-        );
-    }
-
-    #[test]
-    fn verb_declaration_has_expected_fields() {
-        let loader = ConfigLoader::from_env();
-        let manifest = loader.load_verb_manifest();
-
-        let cbu_ensure = manifest.get("cbu.ensure").expect("cbu.ensure must exist");
-        assert_eq!(cbu_ensure.domain, "cbu");
-        assert_eq!(cbu_ensure.action, "ensure");
-        // cbu.ensure is a crud verb (upsert by natural key)
-        assert!(
-            matches!(
-                cbu_ensure.behavior,
-                crate::config::types::VerbBehavior::Crud
-            ),
-            "cbu.ensure should be crud behavior, got {:?}",
-            cbu_ensure.behavior
-        );
-    }
+    // Tests that asserted on specific ob-poc verbs (cbu.ensure, kyc-case.*)
+    // and on a >100-verb manifest size moved to ob-poc as integration tests
+    // against this crate. They needed ob-poc's verb YAML corpus, which the
+    // extracted dsl-core can't reach.
 
     #[test]
     fn fqns_iterator_covers_all_declarations() {

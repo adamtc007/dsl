@@ -7,6 +7,10 @@ use std::{
     path::PathBuf,
 };
 
+// These tests resolve the `struct.lux.ucits.sicav` template which lives in
+// ob-poc's sem_os_seeds. Each test is `#[ignore]`'d here so the dsl repo
+// has a clean baseline; ob-poc runs them as integration tests against the
+// published dsl-core (the data is local there).
 fn inputs() -> ResolverInputs {
     ResolverInputs::from_workspace_config_dir(
         PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../config"),
@@ -25,6 +29,7 @@ fn validation_context() -> DagValidationContext {
 }
 
 #[test]
+#[ignore = "requires ob-poc config dir; integration test (runs in ob-poc CI)"]
 fn closure_lint_rejects_universal_quantifier_over_closed_unbounded_slot() {
     let inputs = inputs();
     let mut template = resolve_template("struct.lux.ucits.sicav", "cbu", &inputs)
@@ -49,6 +54,7 @@ fn closure_lint_rejects_universal_quantifier_over_closed_unbounded_slot() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config dir; integration test (runs in ob-poc CI)"]
 fn closure_lint_allows_aggregate_count_over_closed_unbounded_slot() {
     let inputs = inputs();
     let mut template = resolve_template("struct.lux.ucits.sicav", "cbu", &inputs)
@@ -70,6 +76,7 @@ fn closure_lint_allows_aggregate_count_over_closed_unbounded_slot() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config dir; integration test (runs in ob-poc CI)"]
 fn closure_lint_uses_predicate_binding_entity_aliases() {
     let inputs = inputs();
     let mut template = resolve_template("struct.lux.ucits.sicav", "cbu", &inputs)

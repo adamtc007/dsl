@@ -650,82 +650,10 @@ mod tests {
         assert_eq!(loader.config_dir, "config");
     }
 
-    #[test]
-    fn test_from_env_finds_workspace_config() {
-        std::env::remove_var("DSL_CONFIG_DIR");
-        let loader = ConfigLoader::from_env();
-
-        // Debug output
-        println!("Resolved config_dir: {}", loader.config_dir);
-        println!(
-            "Compile-time CARGO_MANIFEST_DIR: {}",
-            env!("CARGO_MANIFEST_DIR")
-        );
-
-        // Should find workspace config (rust/config/verbs exists)
-        let verbs_path = Path::new(&loader.config_dir).join("verbs");
-        println!(
-            "Checking verbs path: {} -> exists: {}",
-            verbs_path.display(),
-            verbs_path.exists()
-        );
-
-        assert!(
-            verbs_path.exists(),
-            "ConfigLoader should find workspace config/verbs directory. Got config_dir: {}",
-            loader.config_dir
-        );
-    }
-
-    #[test]
-    fn test_domain_merge_no_overwrite() {
-        std::env::remove_var("DSL_CONFIG_DIR");
-        let loader = ConfigLoader::from_env();
-        let config = loader.load_verbs().expect("Failed to load verbs");
-
-        let total_verbs: usize = config.domains.values().map(|d| d.verbs.len()).sum();
-        println!("Total domains: {}", config.domains.len());
-        println!("Total verbs: {}", total_verbs);
-
-        // Previously colliding domains must have merged verbs from all YAML files.
-        // capital: 21 verbs (capital.yaml) + 12 verbs (kyc/capital.yaml) = ~30 (some overlap)
-        if let Some(dc) = config.domains.get("capital") {
-            println!("capital: {} verbs", dc.verbs.len());
-            assert!(
-                dc.verbs.len() >= 25,
-                "capital domain should have merged verbs from capital.yaml and kyc/capital.yaml, got {}",
-                dc.verbs.len()
-            );
-        }
-
-        // ownership: 16 verbs (ownership.yaml) + 6 verbs from manco-group.yaml = 22
-        if let Some(dc) = config.domains.get("ownership") {
-            println!("ownership: {} verbs", dc.verbs.len());
-            assert!(
-                dc.verbs.len() >= 20,
-                "ownership domain should have merged verbs from ownership.yaml and manco-group.yaml, got {}",
-                dc.verbs.len()
-            );
-        }
-
-        // share-class: 4 verbs (fund-vehicle.yaml) + 6 verbs (share-class.yaml) = 10
-        if let Some(dc) = config.domains.get("share-class") {
-            println!("share-class: {} verbs", dc.verbs.len());
-            assert!(
-                dc.verbs.len() >= 10,
-                "share-class domain should have merged verbs from fund-vehicle.yaml and share-class.yaml, got {}",
-                dc.verbs.len()
-            );
-        }
-
-        // Total verbs loaded from split config directory.
-        // 938 unique FQNs defined across YAML + dynamic/template entries.
-        assert!(
-            total_verbs >= 1000,
-            "Total verbs should be >= 1000 after merge fix, got {}",
-            total_verbs
-        );
-    }
+    // The from_env / domain-merge tests that previously lived here required
+    // ob-poc's verb YAML corpus (cbu.yaml, capital.yaml, kyc/, …). After
+    // dsl-core was extracted, they moved into ob-poc as integration tests
+    // against the published dsl-core crate. See ob-poc/rust/tests/.
 }
 
 #[test]
