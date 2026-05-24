@@ -87,11 +87,9 @@ fn effect_class_coverage_statistics() {
     }
 
     let total = with_effect_class.len() + without_effect_class.len();
-    let coverage_pct = if total > 0 {
-        (with_effect_class.len() * 100) / total
-    } else {
-        0
-    };
+    let coverage_pct = (with_effect_class.len() * 100)
+        .checked_div(total)
+        .unwrap_or(0);
 
     println!(
         "Effect class coverage: {}/{} verbs ({coverage_pct}%)",

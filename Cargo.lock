@@ -245,7 +245,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "chrono",
- "dsl_types 0.1.0",
+ "dsl_types",
  "hex",
  "insta",
  "nom",
@@ -265,40 +265,8 @@ dependencies = [
 ]
 
 [[package]]
-name = "dsl-core"
-version = "0.1.0"
-source = "git+https://github.com/adamtc007/dsl?tag=v0.1.0#f9e1f22c3eb24b9d696f8e6af05fe97614fbca49"
-dependencies = [
- "anyhow",
- "chrono",
- "dsl_types 0.1.0 (git+https://github.com/adamtc007/dsl?tag=v0.1.0)",
- "hex",
- "nom",
- "nom_locate",
- "once_cell",
- "rust_decimal",
- "serde",
- "serde_json",
- "serde_yaml",
- "sha2",
- "thiserror",
- "tracing",
- "uuid",
-]
-
-[[package]]
 name = "dsl_types"
 version = "0.1.0"
-dependencies = [
- "serde",
- "serde_json",
- "serde_yaml",
-]
-
-[[package]]
-name = "dsl_types"
-version = "0.1.0"
-source = "git+https://github.com/adamtc007/dsl?tag=v0.1.0#f9e1f22c3eb24b9d696f8e6af05fe97614fbca49"
 dependencies = [
  "serde",
  "serde_json",
@@ -925,8 +893,8 @@ dependencies = [
  "anyhow",
  "async-trait",
  "chrono",
- "dsl-core 0.1.0 (git+https://github.com/adamtc007/dsl?tag=v0.1.0)",
- "dsl_types 0.1.0 (git+https://github.com/adamtc007/dsl?tag=v0.1.0)",
+ "dsl-core",
+ "dsl_types",
  "hex",
  "prost",
  "prost-build",

@@ -376,7 +376,7 @@ impl ExecutablePlan {
                         value: serde_json::Value::String(name.clone()),
                     })
                     .collect(),
-                output_binding: s.bind_as.as_ref().map(|n| BindingSlotId::new(n)),
+                output_binding: s.bind_as.as_ref().map(BindingSlotId::new),
                 effect_class: s.effect_class,
                 resource_dependencies: s.resource_dependencies.clone(),
                 source_stmt: s.step_index,

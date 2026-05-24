@@ -49,7 +49,7 @@ pub fn derive_effect_class_from_three_axis(verb: &VerbConfig) -> Option<EffectCl
         let has_conflict_keys = crud
             .conflict_keys
             .as_ref()
-            .map_or(false, |keys| !keys.is_empty());
+            .is_some_and(|keys| !keys.is_empty());
         if crud.operation == CrudOperation::Upsert && has_conflict_keys {
             return Some(EffectClass::IdempotentEnsure);
         }
@@ -154,23 +154,26 @@ mod tests {
         externals: Vec<ExternalEffect>,
         baseline: ConsequenceTier,
     ) -> VerbConfig {
-        let mut v = VerbConfig::default();
-        v.three_axis = Some(ThreeAxisDeclaration {
-            state_effect: state,
-            external_effects: externals,
-            consequence: ConsequenceDeclaration {
-                baseline,
-                escalation: vec![],
-            },
-            transitions: None,
-        });
-        v
+        VerbConfig {
+            three_axis: Some(ThreeAxisDeclaration {
+                state_effect: state,
+                external_effects: externals,
+                consequence: ConsequenceDeclaration {
+                    baseline,
+                    escalation: vec![],
+                },
+                transitions: None,
+            }),
+            ..VerbConfig::default()
+        }
     }
 
     #[test]
     fn crud_select_is_read_snapshot() {
-        let mut v = VerbConfig::default();
-        v.crud = Some(crud_config(CrudOperation::Select, None));
+        let v = VerbConfig {
+            crud: Some(crud_config(CrudOperation::Select, None)),
+            ..VerbConfig::default()
+        };
         assert_eq!(
             derive_effect_class_from_three_axis(&v),
             Some(EffectClass::ReadSnapshot)
@@ -179,11 +182,13 @@ mod tests {
 
     #[test]
     fn crud_upsert_with_conflict_keys_is_idempotent_ensure() {
-        let mut v = VerbConfig::default();
-        v.crud = Some(crud_config(
-            CrudOperation::Upsert,
-            Some(vec!["entity_id".to_string(), "regulator_code".to_string()]),
-        ));
+        let v = VerbConfig {
+            crud: Some(crud_config(
+                CrudOperation::Upsert,
+                Some(vec!["entity_id".to_string(), "regulator_code".to_string()]),
+            )),
+            ..VerbConfig::default()
+        };
         assert_eq!(
             derive_effect_class_from_three_axis(&v),
             Some(EffectClass::IdempotentEnsure)

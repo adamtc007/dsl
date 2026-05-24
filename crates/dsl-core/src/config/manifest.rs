@@ -243,6 +243,29 @@ pub fn wiring_check(manifest: &VerbManifest, registered_fqns: &[impl AsRef<str>]
     }
 }
 
+/// Build a `VerbManifest` from a loaded `VerbsConfig`, forwarding
+/// structural validation errors from `validate_verbs_config`.
+///
+/// Each `StructuralError` message already embeds the verb FQN and field
+/// path via its `Display` impl, so they map cleanly to `ManifestError`.
+pub fn build_manifest_with_validation(
+    config: &VerbsConfig,
+    report: &super::validator::ValidationReport,
+) -> VerbManifest {
+    let mut manifest = build_manifest(config);
+
+    for err in &report.structural {
+        manifest.errors.push(ManifestError {
+            fqn: None, // embedded in message via StructuralError::Display
+            file: None,
+            field: None,
+            message: err.to_string(),
+        });
+    }
+
+    manifest
+}
+
 #[cfg(test)]
 mod tests {
     use crate::config::loader::ConfigLoader;
@@ -311,27 +334,4 @@ mod tests {
         let fqn_count = manifest.fqns().count();
         assert_eq!(fqn_count, manifest.len(), "fqns() count must match len()");
     }
-}
-
-/// Build a `VerbManifest` from a loaded `VerbsConfig`, forwarding
-/// structural validation errors from `validate_verbs_config`.
-///
-/// Each `StructuralError` message already embeds the verb FQN and field
-/// path via its `Display` impl, so they map cleanly to `ManifestError`.
-pub fn build_manifest_with_validation(
-    config: &VerbsConfig,
-    report: &super::validator::ValidationReport,
-) -> VerbManifest {
-    let mut manifest = build_manifest(config);
-
-    for err in &report.structural {
-        manifest.errors.push(ManifestError {
-            fqn: None, // embedded in message via StructuralError::Display
-            file: None,
-            field: None,
-            message: err.to_string(),
-        });
-    }
-
-    manifest
 }
