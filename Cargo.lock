@@ -245,7 +245,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "chrono",
- "dsl_types",
+ "dsl_types 0.1.0",
  "hex",
  "insta",
  "nom",
@@ -265,8 +265,40 @@ dependencies = [
 ]
 
 [[package]]
+name = "dsl-core"
+version = "0.1.0"
+source = "git+https://github.com/adamtc007/dsl?tag=v0.1.0#f9e1f22c3eb24b9d696f8e6af05fe97614fbca49"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "dsl_types 0.1.0 (git+https://github.com/adamtc007/dsl?tag=v0.1.0)",
+ "hex",
+ "nom",
+ "nom_locate",
+ "once_cell",
+ "rust_decimal",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "sha2",
+ "thiserror",
+ "tracing",
+ "uuid",
+]
+
+[[package]]
 name = "dsl_types"
 version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "serde_yaml",
+]
+
+[[package]]
+name = "dsl_types"
+version = "0.1.0"
+source = "git+https://github.com/adamtc007/dsl?tag=v0.1.0#f9e1f22c3eb24b9d696f8e6af05fe97614fbca49"
 dependencies = [
  "serde",
  "serde_json",
@@ -893,8 +925,8 @@ dependencies = [
  "anyhow",
  "async-trait",
  "chrono",
- "dsl-core",
- "dsl_types",
+ "dsl-core 0.1.0 (git+https://github.com/adamtc007/dsl?tag=v0.1.0)",
+ "dsl_types 0.1.0 (git+https://github.com/adamtc007/dsl?tag=v0.1.0)",
  "hex",
  "prost",
  "prost-build",
@@ -1560,3 +1592,11 @@ name = "zmij"
 version = "1.0.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b8848ee67ecc8aedbaf3e4122217aff892639231befc6a1b58d29fff4c2cabaa"
+
+[[patch.unused]]
+name = "sem_os_ontology"
+version = "0.1.0"
+
+[[patch.unused]]
+name = "sem_os_policy"
+version = "0.1.0"

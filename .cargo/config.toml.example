@@ -1,11 +1,13 @@
-# Local-dev override — copy to .cargo/config.toml (git-ignored) when editing
-# dsl alongside ob-poc or sem-os. Remove once all repos use pinned git tags.
+[net]
+git-fetch-with-cli = true
+
+# Local-dev patch: redirect the sem-os git dep to the sibling repo on disk
+# so you can edit sem-os source and have dsl pick it up without a tag bump.
 #
-# Once github.com/adamtc007/dsl is live, replace path deps in individual
-# crate Cargo.toml files with:
-#   dsl_types = { git = "https://github.com/adamtc007/dsl", tag = "v0.1.0" }
-#   dsl-core  = { git = "https://github.com/adamtc007/dsl", tag = "v0.1.0" }
-# Then this file becomes:
-#   [patch."https://github.com/adamtc007/dsl"]
-#   dsl_types = { path = "../dsl/crates/dsl_types" }
-#   dsl-core  = { path = "../dsl/crates/dsl-core"  }
+# Usage: cp .cargo/config.toml.example .cargo/config.toml  (gitignore keeps it local)
+# Revert: delete .cargo/config.toml to test against real GitHub tags.
+[patch."https://github.com/adamtc007/sem-os"]
+sem_os_types    = { path = "../sem-os/crates/sem_os_types"    }
+sem_os_core     = { path = "../sem-os/crates/sem_os_core"     }
+sem_os_ontology = { path = "../sem-os/crates/sem_os_ontology" }
+sem_os_policy   = { path = "../sem-os/crates/sem_os_policy"   }
