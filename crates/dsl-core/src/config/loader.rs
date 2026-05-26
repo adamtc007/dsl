@@ -8,9 +8,8 @@ use tracing::info;
 
 use super::phrase_gen::generate_phrases;
 use super::types::{ArgType, CsgRulesConfig, VerbBehavior, VerbsConfig};
-use super::{
-    dag_validator::entity_kinds_from_taxonomy_yaml, validate_dags_with_context,
-    DagValidationContext,
+use super::dag_validator::{
+    entity_kinds_from_taxonomy_yaml, validate_dags_with_context, DagValidationContext,
 };
 
 pub struct ConfigLoader {

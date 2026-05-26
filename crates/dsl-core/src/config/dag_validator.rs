@@ -629,7 +629,7 @@ pub fn validate_resolved_template_gate_metadata(
 }
 
 /// Parse `config/ontology/entity_taxonomy.yaml`-style YAML into known entity kinds.
-pub fn entity_kinds_from_taxonomy_yaml(yaml: &str) -> Result<HashSet<String>, serde_yaml::Error> {
+pub(crate) fn entity_kinds_from_taxonomy_yaml(yaml: &str) -> Result<HashSet<String>, serde_yaml::Error> {
     #[derive(serde::Deserialize)]
     struct EntityTaxonomy {
         #[serde(default)]
@@ -669,7 +669,8 @@ pub fn validate_constellation_map_schema_coordination(
 }
 
 /// Validate a directory of constellation map YAML files against loaded DAGs.
-pub fn validate_constellation_map_dir_schema_coordination(
+#[allow(dead_code)]
+pub(crate) fn validate_constellation_map_dir_schema_coordination(
     loaded: &BTreeMap<String, LoadedDag>,
     dir: &Path,
 ) -> std::io::Result<DagValidationReport> {
@@ -696,7 +697,8 @@ pub fn validate_constellation_map_dir_schema_coordination(
     Ok(report)
 }
 
-pub fn validate_constellation_map_dir_schema_coordination_strict(
+#[allow(dead_code)]
+pub(crate) fn validate_constellation_map_dir_schema_coordination_strict(
     loaded: &BTreeMap<String, LoadedDag>,
     dir: &Path,
     known_deferred: &[SchemaCoordinationKnownDeferred],

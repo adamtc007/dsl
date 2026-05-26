@@ -8,7 +8,7 @@ use dsl_core::{
         VersionHash,
     },
 };
-use sem_os_core::frontier::hydrate_frontier;
+use sem_os_core::hydrate_frontier;
 
 const CBU_VALIDATED_GREEN_WHEN: &str = r#"
 every entity_proper_person.state = VERIFIED
