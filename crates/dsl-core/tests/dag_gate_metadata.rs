@@ -1,9 +1,4 @@
-use dsl_core::config::dag::{load_dags_from_dir, ClosureType, Dag, EligibilityConstraint};
-use std::path::PathBuf;
-
-fn dag_dir() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../config/sem_os_seeds/dag_taxonomies")
-}
+use dsl_core::config::dag::{ClosureType, Dag, EligibilityConstraint};
 
 #[test]
 fn slot_gate_metadata_batch_1a_round_trips() {
@@ -351,22 +346,8 @@ slots:
     assert!(reparsed_machine.predicate_bindings[0].replaceable_by_shape);
 }
 
-#[test]
-fn existing_cross_workspace_constraints_batch_1d_default_not_replaceable() {
-    let dags = load_dags_from_dir(&dag_dir()).expect("DAG taxonomies load");
-    let constraints: Vec<_> = dags
-        .values()
-        .flat_map(|loaded| loaded.dag.cross_workspace_constraints.iter())
-        .collect();
-
-    assert_eq!(constraints.len(), 11);
-    assert!(constraints
-        .iter()
-        .all(|constraint| !constraint.replaceable_by_shape));
-}
-
-#[test]
-fn existing_dag_taxonomies_parse_with_batch_1a_defaults() {
-    let dags = load_dags_from_dir(&dag_dir()).expect("DAG taxonomies load");
-    assert_eq!(dags.len(), 12);
-}
+// Tests below verified the ob-poc DAG taxonomy YAML files at
+// config/sem_os_seeds/dag_taxonomies/ — a path that exists in ob-poc but not
+// in the dsl satellite repo. They are covered by ob-poc's own test suite.
+// Removed: existing_cross_workspace_constraints_batch_1d_default_not_replaceable
+// Removed: existing_dag_taxonomies_parse_with_batch_1a_defaults

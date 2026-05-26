@@ -10,6 +10,7 @@ fn inputs() -> ResolverInputs {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn manifest_reports_zero_missing_for_lux_sicav_pilot_inventory() {
     let inputs = inputs();
     let template = resolve_template("struct.lux.ucits.sicav", "cbu", &inputs)
@@ -46,6 +47,7 @@ fn manifest_reports_zero_missing_for_lux_sicav_pilot_inventory() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn version_hash_is_stable_for_identical_inputs() {
     let inputs = inputs();
     let first =
@@ -57,6 +59,7 @@ fn version_hash_is_stable_for_identical_inputs() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn version_hash_includes_state_machine_seed_inputs() {
     let inputs = inputs();
     let baseline = resolve_template("struct.lux.ucits.sicav", "cbu", &inputs)

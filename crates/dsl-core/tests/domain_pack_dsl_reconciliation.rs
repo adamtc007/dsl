@@ -394,6 +394,7 @@ fn domain_pack_transition_verbs(path: &Path) -> BTreeSet<String> {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/sem_os_seeds/ not present in dsl satellite"]
 fn domain_pack_taxonomy_reload_from_yaml_is_idempotent() {
     let paths = domain_pack_paths();
     assert!(!paths.is_empty(), "expected domain pack manifests");
@@ -412,6 +413,7 @@ fn domain_pack_taxonomy_reload_from_yaml_is_idempotent() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/sem_os_seeds/ not present in dsl satellite"]
 fn domain_pack_owned_dsl_verbs_are_represented_in_owned_dags() {
     let registry_verbs = registry_verbs();
     let macro_expansions = macro_expansions();
@@ -487,6 +489,7 @@ fn domain_pack_owned_dsl_verbs_are_represented_in_owned_dags() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/sem_os_seeds/ not present in dsl satellite"]
 fn domain_pack_macros_do_not_hide_owned_primitives_from_pack_allowlists() {
     let macro_expansions = macro_expansions();
     let mut failures = Vec::new();
@@ -536,6 +539,7 @@ fn domain_pack_macros_do_not_hide_owned_primitives_from_pack_allowlists() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/sem_os_seeds/ not present in dsl satellite"]
 fn domain_pack_owned_macros_are_reload_surfaces() {
     let macro_definitions = macro_definitions();
     let mut failures = Vec::new();

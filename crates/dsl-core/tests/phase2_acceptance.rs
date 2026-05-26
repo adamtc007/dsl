@@ -10,6 +10,7 @@ fn inputs() -> ResolverInputs {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn authored_shape_rules_pass_resolved_template_gate_metadata_lints() {
     let inputs = inputs();
     let context = DagValidationContext {

@@ -65,6 +65,7 @@ fn slot_without_gate_metadata(yaml: &str, slot_id: &str) -> serde_yaml::Value {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn cbu_dag_pilot_slots_have_gate_metadata() {
     let dag = cbu_dag();
     let slots = dag
@@ -125,6 +126,7 @@ fn cbu_dag_pilot_slots_have_gate_metadata() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn lux_sicav_constellation_pilot_slots_have_gate_metadata() {
     let yaml = lux_sicav_yaml();
     let map: RawConstellationMap = serde_yaml::from_str(&yaml).expect("Lux SICAV parses");
@@ -180,6 +182,7 @@ fn lux_sicav_constellation_pilot_slots_have_gate_metadata() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn lux_sicav_administrator_and_auditor_match_aif_raif_structural_blocks() {
     let sicav = lux_sicav_yaml();
     let aif_raif = lux_aif_raif_yaml();
@@ -194,6 +197,7 @@ fn lux_sicav_administrator_and_auditor_match_aif_raif_structural_blocks() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn pilot_pair_has_no_schema_coordination_errors() {
     let dag = cbu_dag();
     let loaded = BTreeMap::from([(

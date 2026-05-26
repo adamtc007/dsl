@@ -44,6 +44,7 @@ fn load_all_verbs() -> dsl_core::VerbsConfig {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/verbs/ not present in dsl satellite"]
 fn all_verb_yaml_files_parse_without_type_c_errors() {
     // This test exercises the full YAML load pipeline.
     // If any `effect_class:` value is not a valid EffectClass variant,
@@ -63,6 +64,7 @@ fn all_verb_yaml_files_parse_without_type_c_errors() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/verbs/ not present in dsl satellite"]
 fn effect_class_coverage_statistics() {
     let verbs_config = load_all_verbs();
 
@@ -117,6 +119,7 @@ fn effect_class_coverage_statistics() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/verbs/ not present in dsl satellite"]
 fn known_effect_class_values_are_valid_variants() {
     use dsl_core::EffectClass;
 

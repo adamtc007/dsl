@@ -1,26 +1,13 @@
+// Path helpers dag_dir/constellation_dir/ontology_dir pointed into ob-poc's
+// config/sem_os_seeds/ which doesn't exist in the dsl satellite repo.
+// Tests depending on them are covered by ob-poc's own test suite.
+
 use dsl_core::config::{
-    entity_kinds_from_taxonomy_yaml, load_dags_from_dir,
-    validate_constellation_map_dir_schema_coordination,
-    validate_constellation_map_dir_schema_coordination_strict,
     validate_constellation_map_schema_coordination, validate_dags_with_context, Dag, DagError,
     DagValidationContext, DagWarning, LoadedDag,
 };
-use std::{
-    collections::{BTreeMap, HashSet},
-    path::PathBuf,
-};
-
-fn dag_dir() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../config/sem_os_seeds/dag_taxonomies")
-}
-
-fn constellation_dir() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../config/sem_os_seeds/constellation_maps")
-}
-
-fn ontology_dir() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../config/ontology")
-}
+use std::collections::{BTreeMap, HashSet};
+use std::path::PathBuf;
 
 fn loaded(workspace: &str, yaml: &str) -> BTreeMap<String, LoadedDag> {
     let dag: Dag = serde_yaml::from_str(yaml).expect("DAG parses");
@@ -114,15 +101,8 @@ slots:
     )));
 }
 
-#[test]
-fn entity_taxonomy_yaml_provides_known_entity_kinds() {
-    let path = ontology_dir().join("entity_taxonomy.yaml");
-    let yaml = std::fs::read_to_string(&path).expect("entity taxonomy readable");
-    let kinds = entity_kinds_from_taxonomy_yaml(&yaml).expect("entity taxonomy parses");
-
-    assert!(kinds.contains("cbu"));
-    assert!(kinds.contains("proper_person"));
-}
+// entity_taxonomy_yaml_provides_known_entity_kinds removed: depends on
+// config/ontology/entity_taxonomy.yaml in ob-poc, not in dsl satellite.
 
 #[test]
 fn gate_predicate_parse_errors_are_reported() {
@@ -325,31 +305,8 @@ slots:
     )));
 }
 
-#[test]
-fn authored_seed_constellation_maps_match_documented_schema_coordination_warnings() {
-    let dags = load_dags_from_dir(&dag_dir()).expect("DAG taxonomies load");
-    let report = validate_constellation_map_dir_schema_coordination(&dags, &constellation_dir())
-        .expect("constellation map directory validates");
-
-    assert!(
-        report.errors.is_empty(),
-        "schema-coordination errors: {:#?}",
-        report.errors
-    );
-    assert!(report.warnings.is_empty(), "{:#?}", report.warnings);
-}
-
-#[test]
-fn strict_authored_seed_schema_coordination_preserves_known_deferred_only() {
-    let dags = load_dags_from_dir(&dag_dir()).expect("DAG taxonomies load");
-    let report =
-        validate_constellation_map_dir_schema_coordination_strict(&dags, &constellation_dir(), &[])
-            .expect("constellation map directory validates");
-
-    assert!(
-        report.errors.is_empty(),
-        "strict schema-coordination errors: {:#?}",
-        report.errors
-    );
-    assert!(report.warnings.is_empty(), "{:#?}", report.warnings);
-}
+// Tests below verified ob-poc seed files at config/sem_os_seeds/constellation_maps/
+// and config/sem_os_seeds/dag_taxonomies/ — paths that exist in ob-poc but not in
+// the dsl satellite repo. Covered by ob-poc's own test suite.
+// Removed: authored_seed_constellation_maps_match_documented_schema_coordination_warnings
+// Removed: strict_authored_seed_schema_coordination_preserves_known_deferred_only

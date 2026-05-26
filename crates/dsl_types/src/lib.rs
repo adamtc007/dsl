@@ -3,7 +3,7 @@
 //! Pure data with serde. No DB, no SemOS, no app coupling.
 //! This crate is the bottom of the dependency graph:
 //!
-//! ```
+//! ```text
 //! dsl_types  (this crate — std + serde only)
 //!     ↑
 //! dsl-lang   (parser, compiler, ops/IR)

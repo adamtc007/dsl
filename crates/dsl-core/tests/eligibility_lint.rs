@@ -13,6 +13,7 @@ fn inputs() -> ResolverInputs {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn eligibility_lint_rejects_unknown_entity_kind_after_shape_rule_composition() {
     let inputs = inputs();
     let mut template = resolve_template("struct.lux.ucits.sicav", "cbu", &inputs)
@@ -40,6 +41,7 @@ fn eligibility_lint_rejects_unknown_entity_kind_after_shape_rule_composition() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn eligibility_lint_accepts_known_entity_kind_after_shape_rule_composition() {
     let inputs = inputs();
     let template = resolve_template("struct.lux.ucits.sicav", "cbu", &inputs)
@@ -65,6 +67,7 @@ fn eligibility_lint_accepts_known_entity_kind_after_shape_rule_composition() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn eligibility_lint_rejects_missing_entity_taxonomy_context() {
     let inputs = inputs();
     let template = resolve_template("struct.lux.ucits.sicav", "cbu", &inputs)

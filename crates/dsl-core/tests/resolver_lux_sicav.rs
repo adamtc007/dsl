@@ -14,6 +14,7 @@ fn inputs() -> ResolverInputs {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn resolver_lux_sicav_composes_pilot_template() {
     let inputs = inputs();
     let template = resolve_template("struct.lux.ucits.sicav", "cbu", &inputs)
@@ -61,6 +62,7 @@ fn resolver_lux_sicav_composes_pilot_template() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn resolver_constellation_gate_metadata_beats_dag_taxonomy() {
     let mut inputs = inputs();
     inputs
@@ -85,6 +87,7 @@ fn resolver_constellation_gate_metadata_beats_dag_taxonomy() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn resolver_lux_sicav_provenance_preserves_legacy_constellation_stack() {
     let inputs = inputs();
     let template = resolve_template("struct.lux.ucits.sicav", "cbu", &inputs)

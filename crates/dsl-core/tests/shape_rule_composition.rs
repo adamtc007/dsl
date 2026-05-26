@@ -36,6 +36,7 @@ fn predicate_binding(
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn shape_rule_composition_applies_leaf_gate_metadata() {
     let inputs = inputs();
     let template = resolve_template("struct.lux.ucits.sicav", "cbu", &inputs)
@@ -96,6 +97,7 @@ fn shape_rule_composition_applies_leaf_gate_metadata() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn shape_rule_composition_rejects_mixed_vector_replacement_and_additive() {
     let mut inputs = inputs();
     let rule = inputs
@@ -125,6 +127,7 @@ fn shape_rule_composition_rejects_mixed_vector_replacement_and_additive() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn shape_rule_composition_rejects_unsupported_state_machine_directives() {
     let mut inputs = inputs();
     inputs
@@ -153,6 +156,7 @@ fn shape_rule_composition_rejects_unsupported_state_machine_directives() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn shape_rule_composition_rejects_same_level_shape_conflicts() {
     let mut inputs = inputs();
     inputs
@@ -201,6 +205,7 @@ fn shape_rule_composition_rejects_same_level_shape_conflicts() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn shape_rule_composition_applies_replaceable_predicate_binding_refinement() {
     let mut inputs = inputs();
     let cbu = inputs
@@ -254,6 +259,7 @@ fn shape_rule_composition_applies_replaceable_predicate_binding_refinement() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn shape_rule_composition_rejects_shape_rule_cycles() {
     let mut inputs = inputs();
     inputs
@@ -279,6 +285,7 @@ fn shape_rule_composition_rejects_shape_rule_cycles() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn shape_rule_composition_extracts_lux_aif_raif_macro_facts() {
     let inputs = inputs();
     let template = resolve_template("struct.lux.aif.raif", "cbu", &inputs)
@@ -320,6 +327,7 @@ fn shape_rule_composition_extracts_lux_aif_raif_macro_facts() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn shape_rule_composition_extracts_lux_pe_scsp_macro_facts() {
     let inputs = inputs();
     let template = resolve_template("struct.lux.pe.scsp", "cbu", &inputs)
@@ -362,6 +370,7 @@ fn shape_rule_composition_extracts_lux_pe_scsp_macro_facts() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn shape_rule_composition_extracts_ie_ucits_icav_macro_facts() {
     let inputs = inputs();
     let template = resolve_template("struct.ie.ucits.icav", "cbu", &inputs)
@@ -404,6 +413,7 @@ fn shape_rule_composition_extracts_ie_ucits_icav_macro_facts() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn shape_rule_composition_extracts_ie_aif_icav_macro_facts() {
     let inputs = inputs();
     let template = resolve_template("struct.ie.aif.icav", "cbu", &inputs)
@@ -446,6 +456,7 @@ fn shape_rule_composition_extracts_ie_aif_icav_macro_facts() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn shape_rule_composition_extracts_ie_hedge_icav_macro_facts() {
     let inputs = inputs();
     let template = resolve_template("struct.ie.hedge.icav", "cbu", &inputs)
@@ -488,6 +499,7 @@ fn shape_rule_composition_extracts_ie_hedge_icav_macro_facts() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn shape_rule_composition_extracts_uk_macro_facts() {
     struct Expected<'a> {
         shape: &'a str,
@@ -621,6 +633,7 @@ fn shape_rule_composition_extracts_uk_macro_facts() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn shape_rule_composition_extracts_us_macro_facts() {
     struct Expected<'a> {
         shape: &'a str,
@@ -744,6 +757,7 @@ fn shape_rule_composition_extracts_us_macro_facts() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn shape_rule_composition_extracts_cross_border_macro_facts() {
     struct Expected<'a> {
         shape: &'a str,

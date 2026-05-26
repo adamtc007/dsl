@@ -82,6 +82,7 @@ slots:
 }
 
 #[test]
+#[ignore = "requires ob-poc config/sem_os_seeds/ not present in dsl satellite"]
 fn real_dag_green_when_coverage_baseline_is_explicit() {
     let (dags, discretionary) = real_dags_and_discretionary_verbs();
     let rows = green_when_coverage_for_dags(&dags, &discretionary);
@@ -106,6 +107,7 @@ fn real_dag_green_when_coverage_baseline_is_explicit() {
 }
 
 #[test]
+#[ignore = "requires ob-poc config/sem_os_seeds/ not present in dsl satellite"]
 fn real_dag_green_when_coverage_is_tracked_per_workspace() {
     let (dags, discretionary) = real_dags_and_discretionary_verbs();
     let expected = BTreeMap::from([
