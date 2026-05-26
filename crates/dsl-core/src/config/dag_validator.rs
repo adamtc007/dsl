@@ -629,7 +629,7 @@ pub fn validate_resolved_template_gate_metadata(
 }
 
 /// Parse `config/ontology/entity_taxonomy.yaml`-style YAML into known entity kinds.
-pub(crate) fn entity_kinds_from_taxonomy_yaml(yaml: &str) -> Result<HashSet<String>, serde_yaml::Error> {
+pub fn entity_kinds_from_taxonomy_yaml(yaml: &str) -> Result<HashSet<String>, serde_yaml::Error> {
     #[derive(serde::Deserialize)]
     struct EntityTaxonomy {
         #[serde(default)]

@@ -43,9 +43,9 @@ pub use dag_registry::{DagRegistry, SlotKey, TransitionKey};
 // entity_kinds_from_taxonomy_yaml) are pub(crate) in dag_validator — not
 // re-exported here because they assume ob-poc's config directory layout.
 pub use dag_validator::{
-    validate_constellation_map_schema_coordination, validate_dags, validate_dags_with_context,
-    validate_resolved_template_gate_metadata, DagError, DagValidationContext, DagValidationReport,
-    DagWarning, SchemaCoordinationKnownDeferred,
+    entity_kinds_from_taxonomy_yaml, validate_constellation_map_schema_coordination, validate_dags,
+    validate_dags_with_context, validate_resolved_template_gate_metadata, DagError,
+    DagValidationContext, DagValidationReport, DagWarning, SchemaCoordinationKnownDeferred,
 };
 pub use green_when_coverage::{
     green_when_coverage_for_dag, green_when_coverage_for_dags, green_when_coverage_summary,
