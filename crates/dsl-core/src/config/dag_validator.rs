@@ -514,9 +514,13 @@ pub enum SchemaCoordinationKnownDeferred {
 /// Validate all loaded DAGs. Takes the full map so cross-DAG references
 /// (cross_workspace_constraints, derived_cross_workspace_state, parent_slot
 /// into other workspaces) can be resolved.
+// Allowed because it is the primary entry point for validation of all loaded DAGs
+// and is referenced or prepared for future external/internal integration hooks.
+#[allow(dead_code)]
 pub(crate) fn validate_dags(loaded: &BTreeMap<String, LoadedDag>) -> DagValidationReport {
     validate_dags_with_context(loaded, &DagValidationContext::default())
 }
+
 
 /// Validate all loaded DAGs using optional external context.
 pub fn validate_dags_with_context(
@@ -629,6 +633,8 @@ pub fn validate_resolved_template_gate_metadata(
 }
 
 /// Parse `config/ontology/entity_taxonomy.yaml`-style YAML into known entity kinds.
+// Allowed because it parses taxonomy YAML for testing/validation contexts.
+#[allow(dead_code)]
 pub(crate) fn entity_kinds_from_taxonomy_yaml(yaml: &str) -> Result<HashSet<String>, serde_yaml::Error> {
     #[derive(serde::Deserialize)]
     struct EntityTaxonomy {
