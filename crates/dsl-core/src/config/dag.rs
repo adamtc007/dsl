@@ -79,7 +79,7 @@ pub struct Dag {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
-pub struct OverallLifecycle {
+pub(crate) struct OverallLifecycle {
     pub id: String,
     #[serde(default)]
     pub scope: Option<String>,
@@ -422,7 +422,7 @@ pub enum PredicateBindingSourceKind {
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
-pub enum ExpectedLifetime {
+pub(crate) enum ExpectedLifetime {
     ShortLived,
     LongLived,
     Ephemeral,
@@ -621,7 +621,7 @@ pub struct CascadeRule {
 // =============================================================================
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct DualLifecycle {
+pub(crate) struct DualLifecycle {
     pub id: String,
     #[serde(default)]
     pub description: Option<String>,
@@ -694,7 +694,7 @@ pub struct CategoryGated {
 // =============================================================================
 
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
-pub struct ProductModuleGates {
+pub(crate) struct ProductModuleGates {
     #[serde(default)]
     pub always_on: Vec<String>,
     #[serde(default)]
@@ -702,7 +702,7 @@ pub struct ProductModuleGates {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct ConditionalGate {
+pub(crate) struct ConditionalGate {
     pub slot: String,
     #[serde(default)]
     pub activated_by: Vec<String>,
@@ -715,7 +715,7 @@ pub struct ConditionalGate {
 // =============================================================================
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct PruneCascadeRule {
+pub(crate) struct PruneCascadeRule {
     pub id: String,
     #[serde(default)]
     pub when: Option<String>,
@@ -724,14 +724,14 @@ pub struct PruneCascadeRule {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct PruneCascadeTarget {
+pub(crate) struct PruneCascadeTarget {
     pub target: String,
     #[serde(default)]
     pub rule: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct PrunePreValidation {
+pub(crate) struct PrunePreValidation {
     #[serde(default)]
     pub required_verbs: Vec<String>,
     #[serde(default)]
