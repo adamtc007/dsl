@@ -95,7 +95,7 @@ impl ConfigLoader {
     }
 
     /// Get the config directory path as string slice
-    pub fn config_dir_str(&self) -> &str {
+    pub(crate) fn config_dir_str(&self) -> &str {
         &self.config_dir
     }
 
@@ -271,7 +271,7 @@ impl ConfigLoader {
     ///
     /// This is the entry point for the wiring check (CR L2): compare the
     /// manifest's declared FQNs against the registered `SemOsVerbOp` FQNs.
-    pub fn load_verb_manifest(&self) -> super::manifest::VerbManifest {
+    pub(crate) fn load_verb_manifest(&self) -> super::manifest::VerbManifest {
         use super::manifest::{build_manifest_with_validation, ManifestError, VerbManifest};
         use super::validator::{validate_verbs_config, ValidationContext};
 
@@ -299,7 +299,7 @@ impl ConfigLoader {
     /// Returns an empty registry (logged warning) if the domain-pack manifest
     /// directory is missing — keeps startup tolerant for environments where
     /// DAGs aren't yet authored.
-    pub fn load_dag_registry(&self) -> Result<super::dag_registry::DagRegistry> {
+    pub(crate) fn load_dag_registry(&self) -> Result<super::dag_registry::DagRegistry> {
         let config_root = std::path::Path::new(&self.config_dir);
         let path = config_root.join("sem_os_seeds").join("domain_packs");
         if !path.exists() {
@@ -342,7 +342,7 @@ impl ConfigLoader {
         Ok(DagValidationContext { known_entity_kinds })
     }
 
-    pub fn load_csg_rules(&self) -> Result<CsgRulesConfig> {
+    pub(crate) fn load_csg_rules(&self) -> Result<CsgRulesConfig> {
         let path = Path::new(&self.config_dir).join("csg_rules.yaml");
         info!("Loading CSG rules from {}", path.display());
 
@@ -456,7 +456,7 @@ impl ConfigLoader {
     /// Returns `(hints_map, domains_map)` ready to construct a
     /// `dsl_analysis::entity_kind::SubjectKindRegistry`. Returns empty maps
     /// with a warning if the file is absent.
-    pub fn load_subject_kind_registry(
+    pub(crate) fn load_subject_kind_registry(
         &self,
     ) -> Result<(
         std::collections::HashMap<String, String>,
@@ -500,7 +500,7 @@ impl ConfigLoader {
     /// Returns a `HashMap<domain, Vec<noun_synonyms>>` ready to pass to
     /// `dsl_core::config::set_phrase_gen_nouns()`. Must be called **before**
     /// `load_verbs()` so phrase enrichment uses the registered vocabulary.
-    pub fn load_phrase_gen_nouns(&self) -> Result<super::phrase_gen::PhraseGenNouns> {
+    pub(crate) fn load_phrase_gen_nouns(&self) -> Result<super::phrase_gen::PhraseGenNouns> {
         let path = Path::new(&self.config_dir).join("phrase_gen_nouns.yaml");
         if !path.exists() {
             tracing::warn!(
@@ -522,7 +522,7 @@ impl ConfigLoader {
     /// Returns a `HashMap<"workspace.slot", (table, status_col, pk)>` ready to pass to
     /// `dsl_runtime::cross_workspace::set_slot_state_table()`.
     /// Returns an empty map (with a warning) if the file is absent.
-    pub fn load_slot_state_table(
+    pub(crate) fn load_slot_state_table(
         &self,
     ) -> Result<std::collections::HashMap<String, (String, String, String)>> {
         let path = Path::new(&self.config_dir).join("slot_state_table.yaml");
@@ -563,7 +563,7 @@ impl ConfigLoader {
     /// `dsl_runtime::cross_workspace::set_atom_path_table_map()`. Returns an
     /// empty map (with a warning) if the file is absent — `build_atom_table_map`
     /// will then fall back to using each prefix verbatim as the table name.
-    pub fn load_atom_path_table_map(&self) -> Result<std::collections::HashMap<String, String>> {
+    pub(crate) fn load_atom_path_table_map(&self) -> Result<std::collections::HashMap<String, String>> {
         let path = Path::new(&self.config_dir).join("atom_path_table_map.yaml");
         if !path.exists() {
             tracing::warn!(
@@ -589,7 +589,7 @@ impl ConfigLoader {
     /// Returns a flat `HashMap<table_name, pk_column>` ready to pass to
     /// `dsl_runtime::cross_workspace::set_table_pk_overrides()`. Returns an
     /// empty map (with a warning) if the file is absent.
-    pub fn load_table_pk_overrides(&self) -> Result<std::collections::HashMap<String, String>> {
+    pub(crate) fn load_table_pk_overrides(&self) -> Result<std::collections::HashMap<String, String>> {
         let path = Path::new(&self.config_dir).join("table_pk_overrides.yaml");
         if !path.exists() {
             tracing::warn!(
@@ -616,7 +616,7 @@ impl ConfigLoader {
     ///
     /// Returns an empty map (with a warning) if the file does not exist —
     /// allows running without aliases (identity canonicalization).
-    pub fn load_entity_kind_aliases(&self) -> Result<std::collections::HashMap<String, String>> {
+    pub(crate) fn load_entity_kind_aliases(&self) -> Result<std::collections::HashMap<String, String>> {
         let path = Path::new(&self.config_dir).join("entity_kind_aliases.yaml");
         if !path.exists() {
             tracing::warn!(
