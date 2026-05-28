@@ -18,7 +18,7 @@ use super::types::{ReturnTypeConfig, VerbBehavior, VerbsConfig};
 
 /// A single declared verb extracted from YAML pack files.
 #[derive(Debug, Clone)]
-pub struct VerbDeclaration {
+pub(crate) struct VerbDeclaration {
     /// Fully-qualified name: `domain.action` (e.g. `"cbu.create"`)
     pub fqn: String,
     /// Domain component (e.g. `"cbu"`)
@@ -39,7 +39,7 @@ pub struct VerbDeclaration {
 
 /// A structured load error produced while building the manifest.
 #[derive(Debug, Clone)]
-pub struct ManifestError {
+pub(crate) struct ManifestError {
     /// Verb FQN affected, if identifiable
     pub fqn: Option<String>,
     /// Source file, if identifiable
@@ -68,7 +68,7 @@ impl std::fmt::Display for ManifestError {
 /// - LSP diagnostics: validate verb existence without hitting runtime_registry
 /// - `rehydrate()` operation: build a fresh manifest and diff against prior state
 #[derive(Debug, Default)]
-pub struct VerbManifest {
+pub(crate) struct VerbManifest {
     /// Successfully parsed verb declarations, indexed by FQN.
     pub declarations: HashMap<String, VerbDeclaration>,
     /// Errors encountered while building the manifest.
@@ -78,27 +78,27 @@ pub struct VerbManifest {
 
 impl VerbManifest {
     /// True when no errors occurred during manifest construction.
-    pub fn is_clean(&self) -> bool {
+    pub(crate) fn is_clean(&self) -> bool {
         self.errors.is_empty()
     }
 
     /// All declared FQNs (regardless of errors on other verbs).
-    pub fn fqns(&self) -> impl Iterator<Item = &str> {
+    pub(crate) fn fqns(&self) -> impl Iterator<Item = &str> {
         self.declarations.keys().map(String::as_str)
     }
 
     /// Look up a declaration by FQN.
-    pub fn get(&self, fqn: &str) -> Option<&VerbDeclaration> {
+    pub(crate) fn get(&self, fqn: &str) -> Option<&VerbDeclaration> {
         self.declarations.get(fqn)
     }
 
     /// Total number of successfully declared verbs.
-    pub fn len(&self) -> usize {
+    pub(crate) fn len(&self) -> usize {
         self.declarations.len()
     }
 
     /// True when no verbs were declared.
-    pub fn is_empty(&self) -> bool {
+    pub(crate) fn is_empty(&self) -> bool {
         self.declarations.is_empty()
     }
 }
@@ -108,7 +108,7 @@ impl VerbManifest {
 /// Iterates all domains and verbs in the config, producing one
 /// `VerbDeclaration` per verb. Structural validation errors from
 /// `validate_verbs_config` are forwarded as `ManifestError`s.
-pub fn build_manifest(config: &VerbsConfig) -> VerbManifest {
+pub(crate) fn build_manifest(config: &VerbsConfig) -> VerbManifest {
     let mut manifest = VerbManifest::default();
 
     for (domain_name, domain_config) in &config.domains {
@@ -159,7 +159,7 @@ pub fn build_manifest(config: &VerbsConfig) -> VerbManifest {
 /// verb in YAML has a registered `SemOsVerbOp`, and every registered op has a
 /// corresponding YAML declaration (of any behavior).
 #[derive(Debug, Default)]
-pub struct WiringReport {
+pub(crate) struct WiringReport {
     /// `behavior: plugin` verbs declared in YAML with no registered implementation.
     /// These verbs would produce "unknown verb" errors at execution time.
     pub unimplemented_declarations: Vec<String>,
@@ -170,12 +170,12 @@ pub struct WiringReport {
 
 impl WiringReport {
     /// True when there are no mismatches in either direction.
-    pub fn is_clean(&self) -> bool {
+    pub(crate) fn is_clean(&self) -> bool {
         self.unimplemented_declarations.is_empty() && self.orphan_implementations.is_empty()
     }
 
     /// Human-readable summary for startup logs or error messages.
-    pub fn summary(&self) -> String {
+    pub(crate) fn summary(&self) -> String {
         if self.is_clean() {
             return "wiring check: clean".to_string();
         }
@@ -212,7 +212,7 @@ impl WiringReport {
 ///
 /// CRUD verbs are excluded from the unimplemented check because they are
 /// dispatched automatically by `GenericCrudExecutor` without a Rust impl.
-pub fn wiring_check(manifest: &VerbManifest, registered_fqns: &[impl AsRef<str>]) -> WiringReport {
+pub(crate) fn wiring_check(manifest: &VerbManifest, registered_fqns: &[impl AsRef<str>]) -> WiringReport {
     use std::collections::HashSet;
 
     let registered: HashSet<&str> = registered_fqns.iter().map(|s| s.as_ref()).collect();
@@ -248,7 +248,7 @@ pub fn wiring_check(manifest: &VerbManifest, registered_fqns: &[impl AsRef<str>]
 ///
 /// Each `StructuralError` message already embeds the verb FQN and field
 /// path via its `Display` impl, so they map cleanly to `ManifestError`.
-pub fn build_manifest_with_validation(
+pub(crate) fn build_manifest_with_validation(
     config: &VerbsConfig,
     report: &super::validator::ValidationReport,
 ) -> VerbManifest {
