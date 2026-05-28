@@ -26,7 +26,6 @@ pub mod effect_class;
 pub mod escalation;
 pub mod green_when_coverage;
 pub mod loader;
-pub mod manifest;
 pub mod pack_loader;
 pub mod phrase_gen;
 pub mod predicate;                  // used by sem_os_core::frontier::hydrator
