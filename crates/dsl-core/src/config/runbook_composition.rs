@@ -224,7 +224,7 @@ pub fn compute_runbook_tier(
 /// the names of the rules that fired. Drives the UX transparency required
 /// by v1.1 Open Question 15.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct RunbookTierTrace {
+pub(crate) struct RunbookTierTrace {
     pub effective: ConsequenceTier,
     pub component_a: ConsequenceTier,
     pub component_b: ConsequenceTier,
@@ -235,7 +235,7 @@ pub struct RunbookTierTrace {
     pub cross_scope_fired: Vec<String>,
 }
 
-pub fn compute_runbook_tier_with_trace(
+pub(crate) fn compute_runbook_tier_with_trace(
     steps: &[RunbookStep],
     aggregation: &[AggregationRule],
     cross_scope: &[CrossScopeRule],
@@ -618,5 +618,31 @@ mod tests {
         let t2 = compute_runbook_tier(&adhoc_assembled, &rules, &[]);
         assert_eq!(t1, t2);
         assert_eq!(t1, ConsequenceTier::RequiresConfirmation);
+    }
+
+    #[test]
+    fn composed_tier_fully_traced() {
+        let steps = vec![
+            mk_step("escalated-cbu", ConsequenceTier::RequiresConfirmation, StateEffect::Preserving, "w1"),
+            mk_step("delete-cbu", ConsequenceTier::Reviewable, StateEffect::Preserving, "w1"),
+            mk_step("read-cbu", ConsequenceTier::Benign, StateEffect::Preserving, "w2"),
+        ];
+        let agg = vec![AggregationRule::BulkCardinality {
+            name: "bulk_runbook".into(),
+            threshold: 3,
+            tier: ConsequenceTier::Reviewable,
+        }];
+        let xs = vec![CrossScopeRule::MultiWorkspace {
+            name: "cross_ws".into(),
+            min_workspaces: 2,
+            tier: ConsequenceTier::Reviewable,
+        }];
+        let trace = compute_runbook_tier_with_trace(&steps, &agg, &xs);
+        assert_eq!(trace.component_a, ConsequenceTier::RequiresConfirmation);
+        assert_eq!(trace.component_b, ConsequenceTier::Reviewable);
+        assert_eq!(trace.aggregation_fired, vec!["bulk_runbook"]);
+        assert_eq!(trace.component_c, ConsequenceTier::Reviewable);
+        assert_eq!(trace.cross_scope_fired, vec!["cross_ws"]);
+        assert_eq!(trace.effective, ConsequenceTier::RequiresConfirmation);
     }
 }

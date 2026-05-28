@@ -14,7 +14,7 @@
 //!    (P12 invariant).
 
 use dsl_core::config::{
-    compute_effective_tier, compute_runbook_tier, compute_runbook_tier_with_trace,
+    compute_effective_tier, compute_runbook_tier,
     validate_verbs_config, AggregationRule, ConsequenceTier, CrossScopeRule, EvaluationContext,
     ExternalEffect, RunbookStep, StateEffect, ValidationContext, VerbsConfig,
 };
@@ -321,40 +321,4 @@ fn bulk_emission_runbook_escalates_via_component_b() {
         ConsequenceTier::RequiresConfirmation,
         "4 emitting steps above threshold=3 should escalate"
     );
-}
-
-#[test]
-fn composed_tier_fully_traced() {
-    let cfg = load_fixture();
-    let ctx = EvaluationContext::new().with_arg("count", json!(500));
-    let steps = vec![
-        // 1. reviewable
-        step_for(&cfg, "notify-operator", "w1", None, &ctx),
-        // 2. bulk-send escalated to requires_confirmation (count=500 > 100)
-        step_for(&cfg, "bulk-send-notifications", "w1", None, &ctx),
-        // 3. benign
-        step_for(&cfg, "read-cbu", "w2", None, &ctx),
-    ];
-    let agg = vec![AggregationRule::BulkCardinality {
-        name: "bulk_runbook".into(),
-        threshold: 3,
-        tier: ConsequenceTier::Reviewable,
-    }];
-    let xs = vec![CrossScopeRule::MultiWorkspace {
-        name: "cross_ws".into(),
-        min_workspaces: 2,
-        tier: ConsequenceTier::Reviewable,
-    }];
-    let trace = compute_runbook_tier_with_trace(&steps, &agg, &xs);
-    // Component A: max(reviewable, requires_confirmation, benign)
-    //            = requires_confirmation
-    assert_eq!(trace.component_a, ConsequenceTier::RequiresConfirmation);
-    // Component B: bulk_runbook fires (>= 3 steps) → Reviewable
-    assert_eq!(trace.component_b, ConsequenceTier::Reviewable);
-    assert_eq!(trace.aggregation_fired, vec!["bulk_runbook"]);
-    // Component C: cross_ws fires (w1 + w2) → Reviewable
-    assert_eq!(trace.component_c, ConsequenceTier::Reviewable);
-    assert_eq!(trace.cross_scope_fired, vec!["cross_ws"]);
-    // Effective: max(A, B, C) = requires_confirmation
-    assert_eq!(trace.effective, ConsequenceTier::RequiresConfirmation);
 }
