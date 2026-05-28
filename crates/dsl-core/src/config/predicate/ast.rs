@@ -119,16 +119,16 @@ pub enum Validity {
 }
 
 /// Allowed state names.
-pub type StateSet = Vec<State>;
+pub(crate) type StateSet = Vec<State>;
 
 /// DAG/entity/slot kind name as authored in YAML.
-pub type EntityKind = String;
+pub(crate) type EntityKind = String;
 
 /// State name as authored in YAML.
 pub type State = String;
 
 /// Attribute name as authored in YAML.
-pub type AttrName = String;
+pub(crate) type AttrName = String;
 
 /// Comparison operator for attributes and counts.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -148,7 +148,7 @@ pub enum CmpOp {
 }
 
 /// Count comparison operator.
-pub type CountOp = CmpOp;
+pub(crate) type CountOp = CmpOp;
 
 /// Right-hand side of an attribute comparison.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
