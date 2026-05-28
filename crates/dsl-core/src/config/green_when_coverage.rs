@@ -36,7 +36,7 @@ pub struct GreenWhenCoverageSummary {
 }
 
 impl GreenWhenCoverageSummary {
-    pub fn coverage_percent(&self) -> f64 {
+    pub(crate) fn coverage_percent(&self) -> f64 {
         if self.candidate_states == 0 {
             100.0
         } else {
