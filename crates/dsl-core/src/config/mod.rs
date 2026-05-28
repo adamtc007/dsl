@@ -21,7 +21,6 @@
 //! ```
 
 pub mod dag;
-pub mod dag_registry;
 pub mod dag_validator;
 pub mod effect_class;
 pub mod escalation;

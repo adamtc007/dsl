@@ -258,11 +258,6 @@ impl ConfigLoader {
     }
 
     /// Load CSG rules configuration
-    /// Load the DAG taxonomy registry through Sem OS Domain Pack manifests.
-    ///
-    /// Returns a `DagRegistry` with all DAGs pre-indexed for V1.3
-    /// runtime lookups (cross_workspace_constraints,
-    /// derived_cross_workspace_state, parent_slot). Intended to be
     /// Load the verb manifest — a flat FQN-keyed registry of all declared verbs.
     ///
     /// Builds on `load_verbs()` + `validate_verbs_config()`. Structural errors
@@ -294,42 +289,6 @@ impl ConfigLoader {
         build_manifest_with_validation(&config, &report)
     }
 
-    /// called once at runtime startup and shared via `Arc`.
-    ///
-    /// Returns an empty registry (logged warning) if the domain-pack manifest
-    /// directory is missing — keeps startup tolerant for environments where
-    /// DAGs aren't yet authored.
-    pub(crate) fn load_dag_registry(&self) -> Result<super::dag_registry::DagRegistry> {
-        let config_root = std::path::Path::new(&self.config_dir);
-        let path = config_root.join("sem_os_seeds").join("domain_packs");
-        if !path.exists() {
-            tracing::warn!(
-                "Domain-pack manifest directory not found at {:?} — \
-                 runtime cross-workspace lookups will return empty",
-                path
-            );
-            return Ok(super::dag_registry::DagRegistry::default());
-        }
-        let loaded = super::dag::load_domain_pack_owned_dags(config_root)
-            .with_context(|| format!("loading domain-pack-owned DAG taxonomies from {path:?}"))?;
-        let context = self.load_dag_validation_context()?;
-        let report = validate_dags_with_context(&loaded, &context);
-        if !report.errors.is_empty() {
-            anyhow::bail!(
-                "DAG taxonomy validation failed during runtime registry load: {:#?}",
-                report.errors
-            );
-        }
-        for warning in &report.warnings {
-            tracing::warn!("DAG taxonomy validation warning: {warning}");
-        }
-        let registry = super::dag_registry::DagRegistry::from_loaded(loaded);
-        tracing::info!(
-            "Loaded {} DAG taxonomies into runtime registry",
-            registry.len()
-        );
-        Ok(registry)
-    }
 
     fn load_dag_validation_context(&self) -> Result<DagValidationContext> {
         let taxonomy_path = std::path::Path::new(&self.config_dir)
