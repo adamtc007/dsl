@@ -24,13 +24,6 @@ pub(crate) type PhraseGenNouns = HashMap<String, Vec<String>>;
 
 static PHRASE_GEN_NOUNS: OnceLock<PhraseGenNouns> = OnceLock::new();
 
-/// Register the consumer's domain noun vocabulary.
-///
-/// Must be called before `load_verbs()` so phrase enrichment uses the right
-/// vocabulary. Subsequent calls are silently ignored (OnceLock semantics).
-pub(crate) fn set_phrase_gen_nouns(nouns: PhraseGenNouns) {
-    let _ = PHRASE_GEN_NOUNS.set(nouns);
-}
 
 /// Verb action synonyms for phrase generation.
 ///
@@ -171,7 +164,7 @@ mod tests {
 
     fn setup_test_nouns() {
         // OnceLock: only the first call actually registers; subsequent calls are no-ops.
-        set_phrase_gen_nouns(
+        let _ = PHRASE_GEN_NOUNS.set(
             [
                 ("cbu", vec!["cbu", "client business unit", "trading unit"]),
                 ("entity", vec!["entity", "company", "person"]),
