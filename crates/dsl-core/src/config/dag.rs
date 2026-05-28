@@ -35,7 +35,7 @@ pub struct Dag {
     pub dag_id: String,
 
     #[serde(default)]
-    pub overall_lifecycle: Option<OverallLifecycle>,
+    pub(crate) overall_lifecycle: Option<OverallLifecycle>,
 
     #[serde(default)]
     pub slots: Vec<Slot>,
@@ -61,16 +61,16 @@ pub struct Dag {
 
     // --- existing sections ---
     #[serde(default)]
-    pub product_module_gates: Option<ProductModuleGates>,
+    pub(crate) product_module_gates: Option<ProductModuleGates>,
 
     #[serde(default)]
     pub out_of_scope: Vec<String>,
 
     #[serde(default)]
-    pub prune_cascade_rules: Vec<PruneCascadeRule>,
+    pub(crate) prune_cascade_rules: Vec<PruneCascadeRule>,
 
     #[serde(default)]
-    pub prune_pre_validation: Option<PrunePreValidation>,
+    pub(crate) prune_pre_validation: Option<PrunePreValidation>,
 }
 
 // =============================================================================
@@ -79,7 +79,7 @@ pub struct Dag {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
-pub struct OverallLifecycle {
+pub(crate) struct OverallLifecycle {
     pub id: String,
     #[serde(default)]
     pub scope: Option<String>,
@@ -159,50 +159,9 @@ pub enum StateSelector {
     Set(Vec<String>),
 }
 
-/// Closure semantics for a composite slot.
-#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum ClosureType {
-    Open,
-    ClosedBounded,
-    ClosedUnbounded,
-}
-
-/// Candidate eligibility constraint for attaching or populating a slot.
-#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
-#[serde(untagged)]
-pub enum EligibilityConstraint {
-    /// v1: constrain by authored entity kinds.
-    EntityKinds { entity_kinds: Vec<String> },
-    /// v2: constrain by typed shape taxonomy position.
-    ShapeTaxonomyPosition { shape_taxonomy_position: String },
-}
-
-/// Role guard metadata for discretionary gate enforcement.
-#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
-pub struct RoleGuard {
-    #[serde(default)]
-    pub any_of: Vec<String>,
-
-    #[serde(default)]
-    pub all_of: Vec<String>,
-}
-
-/// Audit classification for discretionary gate outcomes.
-pub type AuditClass = String;
-
-/// Completeness assertion metadata for open slots.
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct CompletenessAssertionConfig {
-    #[serde(default)]
-    pub predicate: Option<String>,
-
-    #[serde(default)]
-    pub description: Option<String>,
-
-    #[serde(flatten)]
-    pub extra: BTreeMap<String, YamlValue>,
-}
+pub use dsl_types::constellation_map_def::{
+    AuditClass, ClosureType, CompletenessAssertionConfig, EligibilityConstraint, RoleGuard,
+};
 
 // =============================================================================
 // SLOTS
@@ -289,7 +248,7 @@ pub struct Slot {
     pub state_dependency: Option<StateDependency>,
 
     #[serde(default)]
-    pub dual_lifecycle: Vec<DualLifecycle>,
+    pub(crate) dual_lifecycle: Vec<DualLifecycle>,
 
     #[serde(default)]
     pub periodic_review_cadence: Option<PeriodicReviewCadence>,
@@ -348,7 +307,7 @@ pub struct StateMachine {
 
     // v1.3 additions
     #[serde(default)]
-    pub expected_lifetime: Option<ExpectedLifetime>,
+    pub(crate) expected_lifetime: Option<ExpectedLifetime>,
 
     /// Ownership label for the lifecycle — governance/KYC artefact per
     /// OQ-3 resolution (2026-04-24). Runtime does NOT enforce.
@@ -463,7 +422,7 @@ pub enum PredicateBindingSourceKind {
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
-pub enum ExpectedLifetime {
+pub(crate) enum ExpectedLifetime {
     ShortLived,
     LongLived,
     Ephemeral,
@@ -662,7 +621,7 @@ pub struct CascadeRule {
 // =============================================================================
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct DualLifecycle {
+pub(crate) struct DualLifecycle {
     pub id: String,
     #[serde(default)]
     pub description: Option<String>,
@@ -735,7 +694,7 @@ pub struct CategoryGated {
 // =============================================================================
 
 #[derive(Debug, Clone, Deserialize, Serialize, Default)]
-pub struct ProductModuleGates {
+pub(crate) struct ProductModuleGates {
     #[serde(default)]
     pub always_on: Vec<String>,
     #[serde(default)]
@@ -743,7 +702,7 @@ pub struct ProductModuleGates {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct ConditionalGate {
+pub(crate) struct ConditionalGate {
     pub slot: String,
     #[serde(default)]
     pub activated_by: Vec<String>,
@@ -756,7 +715,7 @@ pub struct ConditionalGate {
 // =============================================================================
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct PruneCascadeRule {
+pub(crate) struct PruneCascadeRule {
     pub id: String,
     #[serde(default)]
     pub when: Option<String>,
@@ -765,14 +724,14 @@ pub struct PruneCascadeRule {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct PruneCascadeTarget {
+pub(crate) struct PruneCascadeTarget {
     pub target: String,
     #[serde(default)]
     pub rule: Option<String>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct PrunePreValidation {
+pub(crate) struct PrunePreValidation {
     #[serde(default)]
     pub required_verbs: Vec<String>,
     #[serde(default)]

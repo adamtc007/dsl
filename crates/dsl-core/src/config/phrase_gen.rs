@@ -20,23 +20,16 @@ use std::collections::HashMap;
 use std::sync::OnceLock;
 
 /// Consumer-registered domain noun vocabulary for phrase generation.
-pub type PhraseGenNouns = HashMap<String, Vec<String>>;
+pub(crate) type PhraseGenNouns = HashMap<String, Vec<String>>;
 
 static PHRASE_GEN_NOUNS: OnceLock<PhraseGenNouns> = OnceLock::new();
 
-/// Register the consumer's domain noun vocabulary.
-///
-/// Must be called before `load_verbs()` so phrase enrichment uses the right
-/// vocabulary. Subsequent calls are silently ignored (OnceLock semantics).
-pub fn set_phrase_gen_nouns(nouns: PhraseGenNouns) {
-    let _ = PHRASE_GEN_NOUNS.set(nouns);
-}
 
 /// Verb action synonyms for phrase generation.
 ///
 /// Maps common verb actions (create, list, get, etc.) to natural language
 /// alternatives that users might type.
-pub fn verb_synonyms() -> HashMap<&'static str, Vec<&'static str>> {
+pub(crate) fn verb_synonyms() -> HashMap<&'static str, Vec<&'static str>> {
     let mut synonyms = HashMap::new();
 
     // CRUD operations
@@ -119,13 +112,13 @@ pub fn verb_synonyms() -> HashMap<&'static str, Vec<&'static str>> {
 ///
 /// # Example
 ///
-/// ```
+/// ```ignore
 /// use dsl_core::config::phrase_gen::generate_phrases;
 ///
 /// let phrases = generate_phrases("deal", "create", &[]);
 /// // Returns: ["create deal", "add deal", "new deal record", "make client deal", ...]
 /// ```
-pub fn generate_phrases(domain: &str, action: &str, existing: &[String]) -> Vec<String> {
+pub(crate) fn generate_phrases(domain: &str, action: &str, existing: &[String]) -> Vec<String> {
     let mut phrases: Vec<String> = existing.to_vec();
 
     let synonyms = verb_synonyms();
@@ -171,7 +164,7 @@ mod tests {
 
     fn setup_test_nouns() {
         // OnceLock: only the first call actually registers; subsequent calls are no-ops.
-        set_phrase_gen_nouns(
+        let _ = PHRASE_GEN_NOUNS.set(
             [
                 ("cbu", vec!["cbu", "client business unit", "trading unit"]),
                 ("entity", vec!["entity", "company", "person"]),

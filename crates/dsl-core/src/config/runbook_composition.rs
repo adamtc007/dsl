@@ -220,57 +220,6 @@ pub fn compute_runbook_tier(
     a.max(b).max(c)
 }
 
-/// Like `compute_runbook_tier` but also returns each component's tier and
-/// the names of the rules that fired. Drives the UX transparency required
-/// by v1.1 Open Question 15.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct RunbookTierTrace {
-    pub effective: ConsequenceTier,
-    pub component_a: ConsequenceTier,
-    pub component_b: ConsequenceTier,
-    pub component_c: ConsequenceTier,
-    /// Names of aggregation rules that fired, in declaration order.
-    pub aggregation_fired: Vec<String>,
-    /// Names of cross-scope rules that fired, in declaration order.
-    pub cross_scope_fired: Vec<String>,
-}
-
-pub fn compute_runbook_tier_with_trace(
-    steps: &[RunbookStep],
-    aggregation: &[AggregationRule],
-    cross_scope: &[CrossScopeRule],
-) -> RunbookTierTrace {
-    let a = component_a(steps);
-    let aggregation_fired: Vec<_> = aggregation
-        .iter()
-        .filter(|r| r.matches(steps))
-        .map(|r| r.name().to_string())
-        .collect();
-    let b = aggregation
-        .iter()
-        .filter(|r| r.matches(steps))
-        .map(|r| r.tier())
-        .fold(ConsequenceTier::Benign, ConsequenceTier::max);
-    let cross_scope_fired: Vec<_> = cross_scope
-        .iter()
-        .filter(|r| r.matches(steps))
-        .map(|r| r.name().to_string())
-        .collect();
-    let c = cross_scope
-        .iter()
-        .filter(|r| r.matches(steps))
-        .map(|r| r.tier())
-        .fold(ConsequenceTier::Benign, ConsequenceTier::max);
-
-    RunbookTierTrace {
-        effective: a.max(b).max(c),
-        component_a: a,
-        component_b: b,
-        component_c: c,
-        aggregation_fired,
-        cross_scope_fired,
-    }
-}
 
 // ---------------------------------------------------------------------------
 // Component implementations (exposed for targeted unit tests)
@@ -557,35 +506,6 @@ mod tests {
         );
     }
 
-    #[test]
-    fn trace_records_component_tiers_and_fired_rules() {
-        let steps = vec![
-            mk_step(
-                "s1",
-                ConsequenceTier::Reviewable,
-                StateEffect::Transition,
-                "w1",
-            ),
-            mk_step("s2", ConsequenceTier::Benign, StateEffect::Transition, "w2"),
-        ];
-        let agg = vec![AggregationRule::TransitionCount {
-            name: "many_t".into(),
-            threshold: 2,
-            tier: ConsequenceTier::RequiresConfirmation,
-        }];
-        let xs = vec![CrossScopeRule::MultiWorkspace {
-            name: "cross".into(),
-            min_workspaces: 2,
-            tier: ConsequenceTier::Reviewable,
-        }];
-        let trace = compute_runbook_tier_with_trace(&steps, &agg, &xs);
-        assert_eq!(trace.component_a, ConsequenceTier::Reviewable);
-        assert_eq!(trace.component_b, ConsequenceTier::RequiresConfirmation);
-        assert_eq!(trace.component_c, ConsequenceTier::Reviewable);
-        assert_eq!(trace.effective, ConsequenceTier::RequiresConfirmation);
-        assert_eq!(trace.aggregation_fired, vec!["many_t"]);
-        assert_eq!(trace.cross_scope_fired, vec!["cross"]);
-    }
 
     #[test]
     fn macro_and_adhoc_runbooks_use_same_composition() {
@@ -619,4 +539,5 @@ mod tests {
         assert_eq!(t1, t2);
         assert_eq!(t1, ConsequenceTier::RequiresConfirmation);
     }
+
 }

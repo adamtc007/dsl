@@ -511,12 +511,8 @@ pub enum SchemaCoordinationKnownDeferred {
 // Validator entry point
 // ---------------------------------------------------------------------------
 
-/// Validate all loaded DAGs. Takes the full map so cross-DAG references
-/// (cross_workspace_constraints, derived_cross_workspace_state, parent_slot
-/// into other workspaces) can be resolved.
-pub fn validate_dags(loaded: &BTreeMap<String, LoadedDag>) -> DagValidationReport {
-    validate_dags_with_context(loaded, &DagValidationContext::default())
-}
+
+
 
 /// Validate all loaded DAGs using optional external context.
 pub fn validate_dags_with_context(
@@ -628,17 +624,7 @@ pub fn validate_resolved_template_gate_metadata(
     report
 }
 
-/// Parse `config/ontology/entity_taxonomy.yaml`-style YAML into known entity kinds.
-pub fn entity_kinds_from_taxonomy_yaml(yaml: &str) -> Result<HashSet<String>, serde_yaml::Error> {
-    #[derive(serde::Deserialize)]
-    struct EntityTaxonomy {
-        #[serde(default)]
-        entities: BTreeMap<String, serde_yaml::Value>,
-    }
 
-    let parsed: EntityTaxonomy = serde_yaml::from_str(yaml)?;
-    Ok(parsed.entities.into_keys().collect())
-}
 
 /// Validate one constellation map's schema coordination against loaded DAGs.
 ///
@@ -2068,7 +2054,7 @@ slots:
         let mut map = BTreeMap::new();
         map.insert("deal".to_string(), deal);
         map.insert("kyc".to_string(), kyc);
-        let report = validate_dags(&map);
+        let report = validate_dags_with_context(&map, &DagValidationContext::default());
         assert!(report
             .errors
             .iter()
@@ -2099,7 +2085,7 @@ slots:
         );
         let mut map = BTreeMap::new();
         map.insert("deal".to_string(), deal);
-        let report = validate_dags(&map);
+        let report = validate_dags_with_context(&map, &DagValidationContext::default());
         assert!(report
             .errors
             .iter()
@@ -2126,7 +2112,7 @@ slots:
         );
         let mut map = BTreeMap::new();
         map.insert("cbu".to_string(), cbu);
-        let report = validate_dags(&map);
+        let report = validate_dags_with_context(&map, &DagValidationContext::default());
         assert!(report
             .errors
             .iter()
@@ -2150,7 +2136,7 @@ slots:
         );
         let mut map = BTreeMap::new();
         map.insert("demo".to_string(), dag);
-        let report = validate_dags(&map);
+        let report = validate_dags_with_context(&map, &DagValidationContext::default());
         assert!(report
             .warnings
             .iter()
@@ -2175,7 +2161,7 @@ slots:
         );
         let mut map = BTreeMap::new();
         map.insert("demo".to_string(), dag);
-        let report = validate_dags(&map);
+        let report = validate_dags_with_context(&map, &DagValidationContext::default());
         assert!(report.warnings.is_empty());
     }
 
@@ -2199,7 +2185,7 @@ slots:
         );
         let mut map = BTreeMap::new();
         map.insert("demo".to_string(), dag);
-        let report = validate_dags(&map);
+        let report = validate_dags_with_context(&map, &DagValidationContext::default());
         assert!(report
             .errors
             .iter()
@@ -2224,7 +2210,7 @@ slots:
         );
         let mut map = BTreeMap::new();
         map.insert("demo".to_string(), dag);
-        let report = validate_dags(&map);
+        let report = validate_dags_with_context(&map, &DagValidationContext::default());
         assert!(report
             .errors
             .iter()
@@ -2251,7 +2237,7 @@ slots:
         );
         let mut map = BTreeMap::new();
         map.insert("demo".to_string(), dag);
-        let report = validate_dags(&map);
+        let report = validate_dags_with_context(&map, &DagValidationContext::default());
         assert!(report
             .errors
             .iter()
@@ -2278,7 +2264,7 @@ slots:
         );
         let mut map = BTreeMap::new();
         map.insert("demo".to_string(), dag);
-        let report = validate_dags(&map);
+        let report = validate_dags_with_context(&map, &DagValidationContext::default());
         assert!(report
             .errors
             .iter()
@@ -2310,7 +2296,7 @@ slots:
         );
         let mut map = BTreeMap::new();
         map.insert("demo".to_string(), dag);
-        let report = validate_dags(&map);
+        let report = validate_dags_with_context(&map, &DagValidationContext::default());
         assert!(
             report.errors.is_empty(),
             "expected no validation errors, got {:#?}",
@@ -2364,7 +2350,7 @@ derived_cross_workspace_state:
         let mut map = BTreeMap::new();
         map.insert("a".to_string(), a);
         map.insert("b".to_string(), b);
-        let report = validate_dags(&map);
+        let report = validate_dags_with_context(&map, &DagValidationContext::default());
         assert!(
             report
                 .errors
@@ -2431,7 +2417,7 @@ derived_cross_workspace_state:
         map.insert("kyc".to_string(), kyc);
         map.insert("deal".to_string(), deal);
         map.insert("cbu".to_string(), cbu);
-        let report = validate_dags(&map);
+        let report = validate_dags_with_context(&map, &DagValidationContext::default());
         assert!(
             report.is_clean(),
             "expected clean, got: {:#?}",

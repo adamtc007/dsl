@@ -29,7 +29,7 @@ fn workspace_config_dir() -> PathBuf {
 
 /// Load all verb configs from the workspace config directory.
 /// Panics (Type C error) if any YAML file fails to parse.
-fn load_all_verbs() -> dsl_core::VerbsConfig {
+fn load_all_verbs() -> dsl_core::config::VerbsConfig {
     let config_dir = workspace_config_dir();
     assert!(
         config_dir.exists(),

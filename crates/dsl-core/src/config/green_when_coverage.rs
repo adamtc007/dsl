@@ -35,15 +35,6 @@ pub struct GreenWhenCoverageSummary {
     pub missing_candidate_states: usize,
 }
 
-impl GreenWhenCoverageSummary {
-    pub fn coverage_percent(&self) -> f64 {
-        if self.candidate_states == 0 {
-            100.0
-        } else {
-            (self.covered_candidate_states as f64 / self.candidate_states as f64) * 100.0
-        }
-    }
-}
 
 pub fn green_when_coverage_for_dags(
     dags: &BTreeMap<String, Dag>,

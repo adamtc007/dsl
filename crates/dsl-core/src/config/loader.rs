@@ -7,10 +7,7 @@ use std::path::Path;
 use tracing::info;
 
 use super::phrase_gen::generate_phrases;
-use super::types::{ArgType, CsgRulesConfig, VerbBehavior, VerbsConfig};
-use super::dag_validator::{
-    entity_kinds_from_taxonomy_yaml, validate_dags_with_context, DagValidationContext,
-};
+use super::types::{ArgType, VerbBehavior, VerbsConfig};
 
 pub struct ConfigLoader {
     config_dir: String,
@@ -94,10 +91,7 @@ impl ConfigLoader {
         None
     }
 
-    /// Get the config directory path as string slice
-    pub fn config_dir_str(&self) -> &str {
-        &self.config_dir
-    }
+
 
     /// Get the config directory as PathBuf
     pub fn config_dir(&self) -> std::path::PathBuf {
@@ -164,7 +158,7 @@ impl ConfigLoader {
         };
 
         // Recursively find all .yaml files
-        let yaml_files = self.find_yaml_files(verbs_dir)?;
+        let yaml_files = find_yaml_files(verbs_dir)?;
 
         for path in yaml_files {
             // Skip _meta.yaml (contains version info, not domains)
@@ -230,139 +224,9 @@ impl ConfigLoader {
         Ok(merged_config)
     }
 
-    /// Recursively find all .yaml files in a directory
-    fn find_yaml_files(&self, dir: &Path) -> Result<Vec<std::path::PathBuf>> {
-        #![allow(clippy::only_used_in_recursion)]
-        let mut files = Vec::new();
 
-        for entry in std::fs::read_dir(dir)
-            .with_context(|| format!("Failed to read directory {}", dir.display()))?
-        {
-            let entry = entry?;
-            let path = entry.path();
 
-            if path.is_dir() {
-                files.extend(self.find_yaml_files(&path)?);
-            } else if path
-                .extension()
-                .map(|e| e == "yaml" || e == "yml")
-                .unwrap_or(false)
-            {
-                files.push(path);
-            }
-        }
 
-        // Sort for deterministic loading order
-        files.sort();
-        Ok(files)
-    }
-
-    /// Load CSG rules configuration
-    /// Load the DAG taxonomy registry through Sem OS Domain Pack manifests.
-    ///
-    /// Returns a `DagRegistry` with all DAGs pre-indexed for V1.3
-    /// runtime lookups (cross_workspace_constraints,
-    /// derived_cross_workspace_state, parent_slot). Intended to be
-    /// Load the verb manifest — a flat FQN-keyed registry of all declared verbs.
-    ///
-    /// Builds on `load_verbs()` + `validate_verbs_config()`. Structural errors
-    /// from validation are forwarded as `ManifestError`s so the caller can
-    /// decide whether to fail-fast or tolerate partial manifests.
-    ///
-    /// This is the entry point for the wiring check (CR L2): compare the
-    /// manifest's declared FQNs against the registered `SemOsVerbOp` FQNs.
-    pub fn load_verb_manifest(&self) -> super::manifest::VerbManifest {
-        use super::manifest::{build_manifest_with_validation, ManifestError, VerbManifest};
-        use super::validator::{validate_verbs_config, ValidationContext};
-
-        let config = match self.load_verbs() {
-            Ok(c) => c,
-            Err(e) => {
-                let mut manifest = VerbManifest::default();
-                manifest.errors.push(ManifestError {
-                    fqn: None,
-                    file: None,
-                    field: None,
-                    message: format!("Failed to load verb YAML: {:#}", e),
-                });
-                return manifest;
-            }
-        };
-
-        let ctx = ValidationContext::default();
-        let report = validate_verbs_config(&config, &ctx);
-        build_manifest_with_validation(&config, &report)
-    }
-
-    /// called once at runtime startup and shared via `Arc`.
-    ///
-    /// Returns an empty registry (logged warning) if the domain-pack manifest
-    /// directory is missing — keeps startup tolerant for environments where
-    /// DAGs aren't yet authored.
-    pub fn load_dag_registry(&self) -> Result<super::dag_registry::DagRegistry> {
-        let config_root = std::path::Path::new(&self.config_dir);
-        let path = config_root.join("sem_os_seeds").join("domain_packs");
-        if !path.exists() {
-            tracing::warn!(
-                "Domain-pack manifest directory not found at {:?} — \
-                 runtime cross-workspace lookups will return empty",
-                path
-            );
-            return Ok(super::dag_registry::DagRegistry::default());
-        }
-        let loaded = super::dag::load_domain_pack_owned_dags(config_root)
-            .with_context(|| format!("loading domain-pack-owned DAG taxonomies from {path:?}"))?;
-        let context = self.load_dag_validation_context()?;
-        let report = validate_dags_with_context(&loaded, &context);
-        if !report.errors.is_empty() {
-            anyhow::bail!(
-                "DAG taxonomy validation failed during runtime registry load: {:#?}",
-                report.errors
-            );
-        }
-        for warning in &report.warnings {
-            tracing::warn!("DAG taxonomy validation warning: {warning}");
-        }
-        let registry = super::dag_registry::DagRegistry::from_loaded(loaded);
-        tracing::info!(
-            "Loaded {} DAG taxonomies into runtime registry",
-            registry.len()
-        );
-        Ok(registry)
-    }
-
-    fn load_dag_validation_context(&self) -> Result<DagValidationContext> {
-        let taxonomy_path = std::path::Path::new(&self.config_dir)
-            .join("ontology")
-            .join("entity_taxonomy.yaml");
-        let taxonomy = std::fs::read_to_string(&taxonomy_path)
-            .with_context(|| format!("reading entity taxonomy from {taxonomy_path:?}"))?;
-        let known_entity_kinds = entity_kinds_from_taxonomy_yaml(&taxonomy)
-            .with_context(|| format!("parsing entity taxonomy from {taxonomy_path:?}"))?;
-        Ok(DagValidationContext { known_entity_kinds })
-    }
-
-    pub fn load_csg_rules(&self) -> Result<CsgRulesConfig> {
-        let path = Path::new(&self.config_dir).join("csg_rules.yaml");
-        info!("Loading CSG rules from {}", path.display());
-
-        let content = std::fs::read_to_string(&path)
-            .with_context(|| format!("Failed to read {}", path.display()))?;
-
-        let config: CsgRulesConfig = serde_yaml::from_str(&content)
-            .with_context(|| format!("Failed to parse {}", path.display()))?;
-
-        self.validate_csg_rules(&config)?;
-
-        info!(
-            "Loaded {} constraints, {} warnings, {} jurisdiction rules",
-            config.constraints.len(),
-            config.warnings.len(),
-            config.jurisdiction_rules.len()
-        );
-
-        Ok(config)
-    }
 
     fn validate_verbs(&self, config: &VerbsConfig) -> Result<()> {
         for (domain, domain_config) in &config.domains {
@@ -423,220 +287,44 @@ impl ConfigLoader {
         }
     }
 
-    fn validate_csg_rules(&self, config: &CsgRulesConfig) -> Result<()> {
-        let mut ids = std::collections::HashSet::new();
 
-        // Check for duplicate rule IDs
-        for rule in &config.constraints {
-            if !ids.insert(&rule.id) {
-                return Err(anyhow!("Duplicate rule ID: {}", rule.id));
-            }
-        }
-        for rule in &config.warnings {
-            if !ids.insert(&rule.id) {
-                return Err(anyhow!("Duplicate rule ID: {}", rule.id));
-            }
-        }
-        for rule in &config.jurisdiction_rules {
-            if !ids.insert(&rule.id) {
-                return Err(anyhow!("Duplicate rule ID: {}", rule.id));
-            }
-        }
-        for rule in &config.composite_rules {
-            if !ids.insert(&rule.id) {
-                return Err(anyhow!("Duplicate rule ID: {}", rule.id));
-            }
-        }
 
-        Ok(())
+
+
+
+
+
+
+
+
+
+
+}
+
+/// Recursively find all .yaml files in a directory
+fn find_yaml_files(dir: &Path) -> Result<Vec<std::path::PathBuf>> {
+    let mut files = Vec::new();
+
+    for entry in std::fs::read_dir(dir)
+        .with_context(|| format!("Failed to read directory {}", dir.display()))?
+    {
+        let entry = entry?;
+        let path = entry.path();
+
+        if path.is_dir() {
+            files.extend(find_yaml_files(&path)?);
+        } else if path
+            .extension()
+            .map(|e| e == "yaml" || e == "yml")
+            .unwrap_or(false)
+        {
+            files.push(path);
+        }
     }
 
-    /// Load subject kind registry from `config/subject_kind_registry.yaml`.
-    ///
-    /// Returns `(hints_map, domains_map)` ready to construct a
-    /// `dsl_analysis::entity_kind::SubjectKindRegistry`. Returns empty maps
-    /// with a warning if the file is absent.
-    pub fn load_subject_kind_registry(
-        &self,
-    ) -> Result<(
-        std::collections::HashMap<String, String>,
-        std::collections::HashMap<String, String>,
-    )> {
-        let path = Path::new(&self.config_dir).join("subject_kind_registry.yaml");
-        if !path.exists() {
-            tracing::warn!(
-                "subject_kind_registry.yaml not found at {:?} — \
-                 subject kind inference will return None for all hints",
-                path
-            );
-            return Ok((
-                std::collections::HashMap::new(),
-                std::collections::HashMap::new(),
-            ));
-        }
-        let content =
-            std::fs::read_to_string(&path).with_context(|| format!("reading {path:?}"))?;
-
-        #[derive(serde::Deserialize)]
-        struct Registry {
-            hints: std::collections::HashMap<String, String>,
-            domains: std::collections::HashMap<String, String>,
-        }
-
-        let raw: Registry =
-            serde_yaml::from_str(&content).with_context(|| format!("parsing {path:?}"))?;
-
-        let normalize = |m: std::collections::HashMap<String, String>| {
-            m.into_iter()
-                .map(|(k, v)| (k.trim().to_ascii_lowercase(), v.trim().to_ascii_lowercase()))
-                .collect()
-        };
-
-        Ok((normalize(raw.hints), normalize(raw.domains)))
-    }
-
-    /// Load phrase generation noun vocabulary from `config/phrase_gen_nouns.yaml`.
-    ///
-    /// Returns a `HashMap<domain, Vec<noun_synonyms>>` ready to pass to
-    /// `dsl_core::config::set_phrase_gen_nouns()`. Must be called **before**
-    /// `load_verbs()` so phrase enrichment uses the registered vocabulary.
-    pub fn load_phrase_gen_nouns(&self) -> Result<super::phrase_gen::PhraseGenNouns> {
-        let path = Path::new(&self.config_dir).join("phrase_gen_nouns.yaml");
-        if !path.exists() {
-            tracing::warn!(
-                "phrase_gen_nouns.yaml not found at {:?} — \
-                 verb phrases will not expand domain noun synonyms",
-                path
-            );
-            return Ok(std::collections::HashMap::new());
-        }
-        let content =
-            std::fs::read_to_string(&path).with_context(|| format!("reading {path:?}"))?;
-        let raw: std::collections::HashMap<String, Vec<String>> =
-            serde_yaml::from_str(&content).with_context(|| format!("parsing {path:?}"))?;
-        Ok(raw)
-    }
-
-    /// Load slot state table from `config/slot_state_table.yaml`.
-    ///
-    /// Returns a `HashMap<"workspace.slot", (table, status_col, pk)>` ready to pass to
-    /// `dsl_runtime::cross_workspace::set_slot_state_table()`.
-    /// Returns an empty map (with a warning) if the file is absent.
-    pub fn load_slot_state_table(
-        &self,
-    ) -> Result<std::collections::HashMap<String, (String, String, String)>> {
-        let path = Path::new(&self.config_dir).join("slot_state_table.yaml");
-        if !path.exists() {
-            tracing::warn!(
-                "slot_state_table.yaml not found at {:?} — \
-                 PostgresSlotStateProvider will fail all slot lookups",
-                path
-            );
-            return Ok(std::collections::HashMap::new());
-        }
-        let content =
-            std::fs::read_to_string(&path).with_context(|| format!("reading {path:?}"))?;
-
-        #[derive(serde::Deserialize)]
-        #[serde(transparent)]
-        struct RawTable(std::collections::HashMap<String, Vec<String>>);
-
-        let raw: RawTable =
-            serde_yaml::from_str(&content).with_context(|| format!("parsing {path:?}"))?;
-
-        let mut out = std::collections::HashMap::new();
-        for (key, parts) in raw.0 {
-            if parts.len() != 3 {
-                anyhow::bail!(
-                    "{path:?}: entry {key:?} must have exactly 3 elements [table, status_col, pk], got {}",
-                    parts.len()
-                );
-            }
-            out.insert(key, (parts[0].clone(), parts[1].clone(), parts[2].clone()));
-        }
-        Ok(out)
-    }
-
-    /// Load atom-path → table-name map from `config/atom_path_table_map.yaml`.
-    ///
-    /// Returns a flat `HashMap<atom_path_prefix, table_name>` ready to pass to
-    /// `dsl_runtime::cross_workspace::set_atom_path_table_map()`. Returns an
-    /// empty map (with a warning) if the file is absent — `build_atom_table_map`
-    /// will then fall back to using each prefix verbatim as the table name.
-    pub fn load_atom_path_table_map(&self) -> Result<std::collections::HashMap<String, String>> {
-        let path = Path::new(&self.config_dir).join("atom_path_table_map.yaml");
-        if !path.exists() {
-            tracing::warn!(
-                "atom_path_table_map.yaml not found at {:?} — \
-                 platform DAG derivation will use each atom-path prefix \
-                 verbatim as its backing-table name",
-                path
-            );
-            return Ok(std::collections::HashMap::new());
-        }
-        let content =
-            std::fs::read_to_string(&path).with_context(|| format!("reading {path:?}"))?;
-        let raw: std::collections::HashMap<String, String> =
-            serde_yaml::from_str(&content).with_context(|| format!("parsing {path:?}"))?;
-        Ok(raw
-            .into_iter()
-            .map(|(k, v)| (k.trim().to_string(), v.trim().to_string()))
-            .collect())
-    }
-
-    /// Load table PK overrides from `config/table_pk_overrides.yaml`.
-    ///
-    /// Returns a flat `HashMap<table_name, pk_column>` ready to pass to
-    /// `dsl_runtime::cross_workspace::set_table_pk_overrides()`. Returns an
-    /// empty map (with a warning) if the file is absent.
-    pub fn load_table_pk_overrides(&self) -> Result<std::collections::HashMap<String, String>> {
-        let path = Path::new(&self.config_dir).join("table_pk_overrides.yaml");
-        if !path.exists() {
-            tracing::warn!(
-                "table_pk_overrides.yaml not found at {:?} — \
-                 SqlPredicateResolver will use generic PK heuristic only",
-                path
-            );
-            return Ok(std::collections::HashMap::new());
-        }
-        let content =
-            std::fs::read_to_string(&path).with_context(|| format!("reading {path:?}"))?;
-        let raw: std::collections::HashMap<String, String> =
-            serde_yaml::from_str(&content).with_context(|| format!("parsing {path:?}"))?;
-        Ok(raw
-            .into_iter()
-            .map(|(k, v)| (k.trim().to_string(), v.trim().to_string()))
-            .collect())
-    }
-
-    /// Load entity kind aliases from `config/entity_kind_aliases.yaml`.
-    ///
-    /// Returns a flat `HashMap<alias, canonical>` ready to pass to
-    /// `dsl_analysis::entity_kind::set_entity_kind_aliases()`.
-    ///
-    /// Returns an empty map (with a warning) if the file does not exist —
-    /// allows running without aliases (identity canonicalization).
-    pub fn load_entity_kind_aliases(&self) -> Result<std::collections::HashMap<String, String>> {
-        let path = Path::new(&self.config_dir).join("entity_kind_aliases.yaml");
-        if !path.exists() {
-            tracing::warn!(
-                "entity_kind_aliases.yaml not found at {:?} — \
-                 entity kind canonicalization will be identity",
-                path
-            );
-            return Ok(std::collections::HashMap::new());
-        }
-        let content =
-            std::fs::read_to_string(&path).with_context(|| format!("reading {path:?}"))?;
-        let raw: std::collections::HashMap<String, String> =
-            serde_yaml::from_str(&content).with_context(|| format!("parsing {path:?}"))?;
-        // Normalize keys and values to lowercase for consistent lookup.
-        let aliases = raw
-            .into_iter()
-            .map(|(k, v)| (k.trim().to_ascii_lowercase(), v.trim().to_ascii_lowercase()))
-            .collect();
-        Ok(aliases)
-    }
+    // Sort for deterministic loading order
+    files.sort();
+    Ok(files)
 }
 
 #[cfg(test)]
@@ -710,29 +398,4 @@ fn test_load_verbs_yaml() {
     }
 }
 
-#[test]
-#[ignore = "requires config files - run from workspace root"]
-fn test_load_csg_rules_yaml() {
-    // This test loads the actual csg_rules.yaml file
-    let loader = ConfigLoader::new("config");
-    let result = loader.load_csg_rules();
 
-    match result {
-        Ok(config) => {
-            assert_eq!(config.version, "1.0");
-            assert!(!config.constraints.is_empty(), "Should have constraints");
-            assert!(!config.warnings.is_empty(), "Should have warnings");
-
-            println!("Loaded {} constraints", config.constraints.len());
-            println!("Loaded {} warnings", config.warnings.len());
-            println!(
-                "Loaded {} jurisdiction rules",
-                config.jurisdiction_rules.len()
-            );
-            println!("Loaded {} composite rules", config.composite_rules.len());
-        }
-        Err(e) => {
-            panic!("Failed to load csg_rules.yaml: {}", e);
-        }
-    }
-}

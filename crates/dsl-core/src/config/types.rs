@@ -1442,7 +1442,7 @@ impl SearchKeyConfig {
         }
     }
 
-    /// Get resolution tiers (defaults to [Fuzzy] for simple keys)
+    /// Get resolution tiers (defaults to [ResolutionTier::Fuzzy] for simple keys)
     pub fn resolution_tiers(&self) -> Vec<ResolutionTier> {
         match self {
             SearchKeyConfig::Simple(_) => vec![ResolutionTier::Fuzzy],

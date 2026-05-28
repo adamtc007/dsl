@@ -37,11 +37,7 @@ pub use config::loader::ConfigLoader;
 pub use config::resource_dependency::{
     ResolutionMode, ResolvedResourceDependency, ResourceDependency,
 };
-pub use config::types::{
-    ArgConfig, ArgType, CrudConfig, CrudOperation, DomainConfig, LookupConfig, ReturnTypeConfig,
-    ReturnsConfig, SearchKeyConfig, VerbBehavior, VerbConfig, VerbConsumes, VerbLifecycle,
-    VerbMetadata, VerbOutputConfig, VerbProduces, VerbsConfig,
-};
+
 pub use diagnostics::{Diagnostic, DiagnosticCode, Severity, SourceSpan};
 pub use executable_plan::{
     AuthorityContext, BindingFrameSchema, BindingSlot, EffectClass, ExecutablePlan,

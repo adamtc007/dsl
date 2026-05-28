@@ -15,7 +15,7 @@ impl ManifestOptions {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct SlotManifestRow {
+pub(crate) struct SlotManifestRow {
     pub slot_id: String,
     pub required: bool,
     pub has_all_required_gate_metadata: bool,
@@ -31,7 +31,7 @@ pub struct ResolverManifest {
     pub slots_resolved: usize,
     pub slots_with_all_required_gate_metadata: usize,
     pub slots_with_missing_gate_metadata: usize,
-    pub rows: Vec<SlotManifestRow>,
+    pub(crate) rows: Vec<SlotManifestRow>,
 }
 
 impl ResolverManifest {

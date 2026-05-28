@@ -7,7 +7,6 @@
 //!
 //! ```text
 //! config/verbs.yaml → ConfigLoader → VerbsConfig → RuntimeVerbRegistry
-//! config/csg_rules.yaml → ConfigLoader → CsgRulesConfig → CSG Linter
 //! ```
 //!
 //! # Usage
@@ -17,33 +16,27 @@
 //!
 //! let loader = ConfigLoader::from_env();
 //! let verbs = loader.load_verbs()?;
-//! let csg_rules = loader.load_csg_rules()?;
 //! ```
 
 pub mod dag;
-pub mod dag_registry;
 pub mod dag_validator;
 pub mod effect_class;
 pub mod escalation;
 pub mod green_when_coverage;
 pub mod loader;
-pub mod manifest;
-pub mod pack_loader;
 pub mod phrase_gen;
 pub mod predicate;                  // used by sem_os_core::frontier::hydrator
 pub mod resource_dependency;
 pub mod runbook_composition;
-pub mod tier_gate;
 pub mod types;
 pub mod validator;
 
 pub use dag::{load_dags_from_dir, load_domain_pack_owned_dags, Dag, LoadedDag};
-pub use dag_registry::{DagRegistry, SlotKey, TransitionKey};
-// ob-poc-specific filesystem walkers (validate_constellation_map_dir_*,
-// entity_kinds_from_taxonomy_yaml) are pub(crate) in dag_validator — not
+// ob-poc-specific filesystem walkers (validate_constellation_map_dir_*)
+// are pub(crate) in dag_validator — not
 // re-exported here because they assume ob-poc's config directory layout.
 pub use dag_validator::{
-    entity_kinds_from_taxonomy_yaml, validate_constellation_map_schema_coordination, validate_dags,
+    validate_constellation_map_schema_coordination,
     validate_dags_with_context, validate_resolved_template_gate_metadata, DagError,
     DagValidationContext, DagValidationReport, DagWarning, SchemaCoordinationKnownDeferred,
 };
@@ -51,28 +44,21 @@ pub use green_when_coverage::{
     green_when_coverage_for_dag, green_when_coverage_for_dags, green_when_coverage_summary,
     GreenWhenCoverageRow, GreenWhenCoverageSummary, GreenWhenExclusionReason,
 };
-pub use pack_loader::{flatten_pack_entries, load_packs_from_dir, LoadedPack};
 
-pub use effect_class::derive_effect_class_from_three_axis;
 pub use escalation::{
     compute_effective_tier, compute_effective_tier_with_trace, evaluate_predicate,
     EvaluationContext,
 };
 pub use loader::ConfigLoader;
-pub use manifest::{
-    build_manifest, build_manifest_with_validation, wiring_check, ManifestError, VerbDeclaration,
-    VerbManifest, WiringReport,
-};
-pub use phrase_gen::{generate_phrases, set_phrase_gen_nouns, PhraseGenNouns};
+
 pub use runbook_composition::{
-    component_a, component_b, component_c, compute_runbook_tier, compute_runbook_tier_with_trace,
-    AggregationRule, CrossScopeRule, RunbookStep, RunbookTierTrace,
+    component_a, component_b, component_c, compute_runbook_tier,
+    AggregationRule, CrossScopeRule, RunbookStep,
 };
-pub use tier_gate::{TierGateAction, TierGateDecision};
 pub use types::{
     ActionClass, AppliesTo, ArgConfig, ArgType, ArgValidation, ConfirmPolicyConfig,
     ConsequenceDeclaration, ConsequenceTier, ConstraintRule, CrudConfig, CrudOperation,
-    CsgRulesConfig, DomainConfig, DurableConfig, DurableRuntime, EscalationPredicate,
+    DomainConfig, DurableConfig, DurableRuntime, EscalationPredicate,
     EscalationRule, ExternalEffect, FuzzyCheckConfig, GraphQueryConfig, GraphQueryOperation,
     HarmClass, JurisdictionCondition, JurisdictionRule, LookupConfig, ResolutionMode,
     ReturnTypeConfig, ReturnsConfig, RuleCondition, RuleRequirement, RuleSeverity, SearchKeyConfig,
@@ -82,6 +68,6 @@ pub use types::{
     VerbTransitions, VerbsConfig, WarningRule,
 };
 pub use validator::{
-    collect_declared_fqns, validate_pack_fqns, validate_verb, validate_verbs_config, Location,
-    PolicyWarning, StructuralError, ValidationContext, ValidationReport, WellFormednessError,
+    validate_verbs_config, Location, PolicyWarning, StructuralError, ValidationContext,
+    ValidationReport, WellFormednessError,
 };
