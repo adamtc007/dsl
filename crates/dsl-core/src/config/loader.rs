@@ -158,7 +158,7 @@ impl ConfigLoader {
         };
 
         // Recursively find all .yaml files
-        let yaml_files = self.find_yaml_files(verbs_dir)?;
+        let yaml_files = find_yaml_files(verbs_dir)?;
 
         for path in yaml_files {
             // Skip _meta.yaml (contains version info, not domains)
@@ -224,32 +224,7 @@ impl ConfigLoader {
         Ok(merged_config)
     }
 
-    /// Recursively find all .yaml files in a directory
-    fn find_yaml_files(&self, dir: &Path) -> Result<Vec<std::path::PathBuf>> {
-        #![allow(clippy::only_used_in_recursion)]
-        let mut files = Vec::new();
 
-        for entry in std::fs::read_dir(dir)
-            .with_context(|| format!("Failed to read directory {}", dir.display()))?
-        {
-            let entry = entry?;
-            let path = entry.path();
-
-            if path.is_dir() {
-                files.extend(self.find_yaml_files(&path)?);
-            } else if path
-                .extension()
-                .map(|e| e == "yaml" || e == "yml")
-                .unwrap_or(false)
-            {
-                files.push(path);
-            }
-        }
-
-        // Sort for deterministic loading order
-        files.sort();
-        Ok(files)
-    }
 
 
 
@@ -324,6 +299,32 @@ impl ConfigLoader {
 
 
 
+}
+
+/// Recursively find all .yaml files in a directory
+fn find_yaml_files(dir: &Path) -> Result<Vec<std::path::PathBuf>> {
+    let mut files = Vec::new();
+
+    for entry in std::fs::read_dir(dir)
+        .with_context(|| format!("Failed to read directory {}", dir.display()))?
+    {
+        let entry = entry?;
+        let path = entry.path();
+
+        if path.is_dir() {
+            files.extend(find_yaml_files(&path)?);
+        } else if path
+            .extension()
+            .map(|e| e == "yaml" || e == "yml")
+            .unwrap_or(false)
+        {
+            files.push(path);
+        }
+    }
+
+    // Sort for deterministic loading order
+    files.sort();
+    Ok(files)
 }
 
 #[cfg(test)]

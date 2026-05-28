@@ -32,8 +32,8 @@ pub mod types;
 pub mod validator;
 
 pub use dag::{load_dags_from_dir, load_domain_pack_owned_dags, Dag, LoadedDag};
-// ob-poc-specific filesystem walkers (validate_constellation_map_dir_*,
-// entity_kinds_from_taxonomy_yaml) are pub(crate) in dag_validator — not
+// ob-poc-specific filesystem walkers (validate_constellation_map_dir_*)
+// are pub(crate) in dag_validator — not
 // re-exported here because they assume ob-poc's config directory layout.
 pub use dag_validator::{
     validate_constellation_map_schema_coordination,
