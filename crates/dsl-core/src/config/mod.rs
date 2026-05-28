@@ -51,7 +51,7 @@ pub use green_when_coverage::{
     GreenWhenCoverageRow, GreenWhenCoverageSummary, GreenWhenExclusionReason,
 };
 
-pub use effect_class::derive_effect_class_from_three_axis;
+pub(crate) use effect_class::derive_effect_class_from_three_axis;
 pub use escalation::{
     compute_effective_tier, compute_effective_tier_with_trace, evaluate_predicate,
     EvaluationContext,

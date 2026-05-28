@@ -39,7 +39,7 @@ use crate::executable_plan::EffectClass;
 /// | `state_effect: transition` + `requires_explicit_authorisation` | `AdminOverride` | high |
 /// | `state_effect: transition` + benign + no externals | `AppendTransitionSnapshot` | medium |
 /// | (all other transition patterns) | None — ambiguous | low |
-pub fn derive_effect_class_from_three_axis(verb: &VerbConfig) -> Option<EffectClass> {
+pub(crate) fn derive_effect_class_from_three_axis(verb: &VerbConfig) -> Option<EffectClass> {
     // Fast path: explicit CRUD select is unambiguously ReadSnapshot.
     if let Some(ref crud) = verb.crud {
         if crud.operation == CrudOperation::Select {
