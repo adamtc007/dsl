@@ -14,13 +14,13 @@ pub enum Predicate {
     /// A referenced entity's state is inside the allowed state set.
     StateIn {
         entity: EntityRef,
-        state_set: StateSet,
+        state_set: Vec<State>,
     },
 
     /// An attribute comparison on a referenced entity.
     AttrCmp {
         entity: EntityRef,
-        attr: AttrName,
+        attr: String,
         op: CmpOp,
         value: AttrValue,
     },
@@ -47,7 +47,7 @@ pub enum Predicate {
     Count {
         set: EntitySetRef,
         condition: Option<Box<Predicate>>,
-        op: CountOp,
+        op: CmpOp,
         threshold: u64,
     },
 
@@ -65,14 +65,14 @@ pub enum EntityRef {
     This,
 
     /// A named child/entity in the current instance scope.
-    Named(EntityKind),
+    Named(String),
 
     /// A named parent entity, e.g. `parent kyc_case`.
-    Parent(EntityKind),
+    Parent(String),
 
     /// A named entity with an explicit textual scope from the source predicate.
     Scoped {
-        kind: EntityKind,
+        kind: String,
         scope: RelationScope,
     },
 }
@@ -81,7 +81,7 @@ pub enum EntityRef {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct EntitySetRef {
     /// Entity kind named in the predicate.
-    pub kind: EntityKind,
+    pub kind: String,
     /// Optional qualifier such as `required`.
     pub qualifier: Option<EntityQualifier>,
     /// Optional relation scope such as `for this UBO`.
@@ -99,36 +99,27 @@ pub enum EntityQualifier {
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum RelationScope {
     /// Scoped to the current instance of the named kind.
-    This(EntityKind),
+    This(String),
 
     /// Scoped to a parent instance of the named kind.
-    Parent(EntityKind),
+    Parent(String),
 
     /// Scoped to rows attached to the current instance of the named kind.
-    AttachedTo(EntityKind),
+    AttachedTo(String),
 }
 
 /// Validity rule for `obtained`.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum Validity {
     /// Valid when the entity's state is one of the listed states.
-    StateIn(StateSet),
+    StateIn(Vec<State>),
 
     /// Validity is delegated to the referenced entity's own DAG.
     DelegatedToEntityDag,
 }
 
-/// Allowed state names.
-pub(crate) type StateSet = Vec<State>;
-
-/// DAG/entity/slot kind name as authored in YAML.
-pub(crate) type EntityKind = String;
-
 /// State name as authored in YAML.
 pub type State = String;
-
-/// Attribute name as authored in YAML.
-pub(crate) type AttrName = String;
 
 /// Comparison operator for attributes and counts.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -146,9 +137,6 @@ pub enum CmpOp {
     /// Greater-than or equal.
     Ge,
 }
-
-/// Count comparison operator.
-pub(crate) type CountOp = CmpOp;
 
 /// Right-hand side of an attribute comparison.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]

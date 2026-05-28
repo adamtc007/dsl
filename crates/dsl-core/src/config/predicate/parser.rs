@@ -3,7 +3,7 @@
 use thiserror::Error;
 
 use super::ast::{
-    AttrValue, CmpOp, EntityQualifier, EntityRef, EntitySetRef, Predicate, RelationScope, StateSet,
+    AttrValue, CmpOp, EntityQualifier, EntityRef, EntitySetRef, Predicate, RelationScope, State,
 };
 
 /// Error returned when a `green_when` predicate cannot be parsed.
@@ -338,7 +338,7 @@ fn parse_comparison(clause: &str) -> Result<Predicate, String> {
     })
 }
 
-fn parse_state_condition(clause: &str) -> Result<(&str, StateSet), String> {
+fn parse_state_condition(clause: &str) -> Result<(&str, Vec<State>), String> {
     if let Some((subject, rhs)) = clause.split_once(".state in ") {
         return Ok((subject.trim(), parse_state_set(rhs)?));
     }
@@ -359,14 +359,14 @@ fn parse_quantified_attr_condition(
     Ok((subject, attr.to_string(), op, parse_attr_value(right)))
 }
 
-fn parse_state_rhs(clause: &str) -> Result<StateSet, String> {
+fn parse_state_rhs(clause: &str) -> Result<Vec<State>, String> {
     let Some(rhs) = clause.strip_prefix("state = ") else {
         return Err("expected `state =` condition".to_string());
     };
     parse_state_set(rhs)
 }
 
-fn parse_state_set(rhs: &str) -> Result<StateSet, String> {
+fn parse_state_set(rhs: &str) -> Result<Vec<State>, String> {
     let rhs = rhs.trim();
     if rhs.is_empty() {
         return Err("state set is empty".to_string());
