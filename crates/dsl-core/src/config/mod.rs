@@ -77,6 +77,6 @@ pub use types::{
     VerbTransitions, VerbsConfig, WarningRule,
 };
 pub use validator::{
-    collect_declared_fqns, validate_pack_fqns, validate_verb, validate_verbs_config, Location,
-    PolicyWarning, StructuralError, ValidationContext, ValidationReport, WellFormednessError,
+    validate_verbs_config, Location, PolicyWarning, StructuralError, ValidationContext,
+    ValidationReport, WellFormednessError,
 };

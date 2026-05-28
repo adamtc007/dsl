@@ -343,7 +343,7 @@ pub struct ValidationContext {
 
 /// Validate a single verb. Returns a report — callers aggregate across the
 /// catalogue.
-pub fn validate_verb(fqn: &str, verb: &VerbConfig, ctx: &ValidationContext) -> ValidationReport {
+pub(crate) fn validate_verb(fqn: &str, verb: &VerbConfig, ctx: &ValidationContext) -> ValidationReport {
     let mut report = ValidationReport::default();
 
     match &verb.three_axis {
@@ -698,7 +698,7 @@ pub fn validate_verbs_config(config: &VerbsConfig, ctx: &ValidationContext) -> V
 ///
 /// Each entry is `domain_name.verb_name` — matches the format used in
 /// pack `allowed_verbs:` lists.
-pub fn collect_declared_fqns(config: &VerbsConfig) -> HashSet<String> {
+pub(crate) fn collect_declared_fqns(config: &VerbsConfig) -> HashSet<String> {
     let mut out = HashSet::new();
     for (domain_name, domain) in &config.domains {
         for verb_name in domain.verbs.keys() {
@@ -728,7 +728,7 @@ pub fn collect_declared_fqns(config: &VerbsConfig) -> HashSet<String> {
 /// `delivery.create`, etc. were listed in the Instrument Matrix pack
 /// but never YAML-implemented. Running this check as part of
 /// catalogue-load would catch this drift at author time.
-pub fn validate_pack_fqns(
+pub(crate) fn validate_pack_fqns(
     declared_verbs: &HashSet<String>,
     macro_fqns: &HashSet<String>,
     pack_entries: impl IntoIterator<Item = (String, String)>,
