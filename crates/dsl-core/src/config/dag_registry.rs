@@ -33,13 +33,13 @@ use std::path::Path;
 
 /// (workspace, slot) — addresses a single slot within a single workspace.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct SlotKey {
-    pub workspace: String,
-    pub slot: String,
+pub(crate) struct SlotKey {
+    pub(crate) workspace: String,
+    pub(crate) slot: String,
 }
 
 impl SlotKey {
-    pub fn new(workspace: impl Into<String>, slot: impl Into<String>) -> Self {
+    pub(crate) fn new(workspace: impl Into<String>, slot: impl Into<String>) -> Self {
         Self {
             workspace: workspace.into(),
             slot: slot.into(),
@@ -51,11 +51,11 @@ impl SlotKey {
 /// target_slot, and the (from, to) pair. `from` is `None` when the
 /// constraint matches `* -> to` (any source state).
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct TransitionKey {
-    pub workspace: String,
-    pub slot: String,
-    pub from_state: Option<String>,
-    pub to_state: String,
+pub(crate) struct TransitionKey {
+    pub(crate) workspace: String,
+    pub(crate) slot: String,
+    pub(crate) from_state: Option<String>,
+    pub(crate) to_state: String,
 }
 
 // ---------------------------------------------------------------------------
@@ -68,7 +68,7 @@ pub struct TransitionKey {
 /// `derived_cross_workspace_state` / per-slot `parent_slot` into hashmaps
 /// keyed for the runtime's hot lookup paths.
 #[derive(Debug, Clone, Default)]
-pub struct DagRegistry {
+pub(crate) struct DagRegistry {
     /// All DAGs by workspace name. Ownership lives here.
     dags: BTreeMap<String, Dag>,
 
@@ -104,14 +104,14 @@ pub struct DagRegistry {
 /// in the source YAML (e.g. `(PROSPECT, QUALIFYING) -> CANCELLED`);
 /// the parser flattens this into one TransitionRef per source state.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct TransitionRef {
-    pub workspace: String,
-    pub slot: String,
-    pub from_state: String,
-    pub to_state: String,
+pub(crate) struct TransitionRef {
+    pub(crate) workspace: String,
+    pub(crate) slot: String,
+    pub(crate) from_state: String,
+    pub(crate) to_state: String,
     /// Whether this transition lives in a `dual_lifecycle:` chain
     /// (rather than the slot's primary `state_machine`).
-    pub from_dual_lifecycle: bool,
+    pub(crate) from_dual_lifecycle: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -136,7 +136,7 @@ struct ParentSlotLocator {
 impl DagRegistry {
     /// Build a registry from an already-loaded map (e.g. from
     /// [`load_dags_from_dir`]).
-    pub fn from_loaded(loaded: BTreeMap<String, LoadedDag>) -> Self {
+    pub(crate) fn from_loaded(loaded: BTreeMap<String, LoadedDag>) -> Self {
         let mut registry = DagRegistry::default();
         for (ws, ld) in loaded {
             registry.dags.insert(ws, ld.dag);
@@ -146,28 +146,28 @@ impl DagRegistry {
     }
 
     /// Convenience: load + index from disk in one call.
-    pub fn from_dir(dir: &Path) -> anyhow::Result<Self> {
+    pub(crate) fn from_dir(dir: &Path) -> anyhow::Result<Self> {
         let loaded = load_dags_from_dir(dir)?;
         Ok(DagRegistry::from_loaded(loaded))
     }
 
     /// Number of workspaces / DAGs in the registry.
-    pub fn len(&self) -> usize {
+    pub(crate) fn len(&self) -> usize {
         self.dags.len()
     }
 
     /// Whether the registry is empty.
-    pub fn is_empty(&self) -> bool {
+    pub(crate) fn is_empty(&self) -> bool {
         self.dags.is_empty()
     }
 
     /// Borrow the DAG for a given workspace, if loaded.
-    pub fn dag(&self, workspace: &str) -> Option<&Dag> {
+    pub(crate) fn dag(&self, workspace: &str) -> Option<&Dag> {
         self.dags.get(workspace)
     }
 
     /// Iterate over all loaded DAGs.
-    pub fn iter(&self) -> impl Iterator<Item = (&String, &Dag)> {
+    pub(crate) fn iter(&self) -> impl Iterator<Item = (&String, &Dag)> {
         self.dags.iter()
     }
 
@@ -183,7 +183,7 @@ impl DagRegistry {
     /// Result is borrow-anchored on the registry; callers can pull the
     /// constraint's source_workspace / source_slot / source_state /
     /// source_predicate / severity to drive enforcement.
-    pub fn constraints_for_transition(
+    pub(crate) fn constraints_for_transition(
         &self,
         workspace: &str,
         slot: &str,
@@ -234,7 +234,7 @@ impl DagRegistry {
 
     /// Find all derived_cross_workspace_state entries hosted on (workspace,
     /// slot). Used at hydration / aggregate-evaluation time.
-    pub fn derived_states_for_slot(
+    pub(crate) fn derived_states_for_slot(
         &self,
         workspace: &str,
         slot: &str,
@@ -266,7 +266,7 @@ impl DagRegistry {
 
     /// Find the parent slot reference for a given (workspace, slot), if
     /// declared. Returns `(parent_workspace, parent_slot)`.
-    pub fn parent_slot_for(&self, workspace: &str, slot: &str) -> Option<&ParentSlot> {
+    pub(crate) fn parent_slot_for(&self, workspace: &str, slot: &str) -> Option<&ParentSlot> {
         let key = SlotKey::new(workspace, slot);
         let loc = self.parent_slot_by_child.get(&key)?;
         let dag = self.dags.get(&loc.declaring_workspace)?;
@@ -278,7 +278,7 @@ impl DagRegistry {
     /// Get the resolved parent SlotKey for a child slot, with the
     /// child's declaring workspace as the default if `parent_slot.workspace`
     /// is unset.
-    pub fn parent_slot_key(&self, workspace: &str, slot: &str) -> Option<SlotKey> {
+    pub(crate) fn parent_slot_key(&self, workspace: &str, slot: &str) -> Option<SlotKey> {
         self.parent_slot_by_child
             .get(&SlotKey::new(workspace, slot))
             .map(|loc| loc.parent.clone())
@@ -296,7 +296,7 @@ impl DagRegistry {
     ///
     /// Used by the runtime to answer "what transitions could this verb
     /// cause?" — the input to deciding which gate checks apply.
-    pub fn transitions_for_verb(&self, verb_fqn: &str) -> &[TransitionRef] {
+    pub(crate) fn transitions_for_verb(&self, verb_fqn: &str) -> &[TransitionRef] {
         self.transitions_by_verb_fqn
             .get(verb_fqn)
             .map(|v| v.as_slice())
@@ -306,7 +306,7 @@ impl DagRegistry {
     /// Find all child slots whose parent_slot points to (workspace,
     /// slot). Used by V1.3-3 cascade planning to answer "given a
     /// parent transitioned to state X, which children need to react?"
-    pub fn children_of(&self, parent_workspace: &str, parent_slot: &str) -> &[SlotKey] {
+    pub(crate) fn children_of(&self, parent_workspace: &str, parent_slot: &str) -> &[SlotKey] {
         self.children_by_parent
             .get(&SlotKey::new(parent_workspace, parent_slot))
             .map(|v| v.as_slice())
@@ -316,7 +316,7 @@ impl DagRegistry {
     /// Look up a child slot's `state_dependency` block, if declared.
     /// Returns the cascade rules that govern how the child reacts to
     /// parent state changes.
-    pub fn state_dependency_for(&self, workspace: &str, slot: &str) -> Option<&StateDependency> {
+    pub(crate) fn state_dependency_for(&self, workspace: &str, slot: &str) -> Option<&StateDependency> {
         let dag = self.dags.get(workspace)?;
         dag.slots
             .iter()
