@@ -35,7 +35,7 @@ pub struct Dag {
     pub dag_id: String,
 
     #[serde(default)]
-    pub overall_lifecycle: Option<OverallLifecycle>,
+    pub(crate) overall_lifecycle: Option<OverallLifecycle>,
 
     #[serde(default)]
     pub slots: Vec<Slot>,
@@ -61,16 +61,16 @@ pub struct Dag {
 
     // --- existing sections ---
     #[serde(default)]
-    pub product_module_gates: Option<ProductModuleGates>,
+    pub(crate) product_module_gates: Option<ProductModuleGates>,
 
     #[serde(default)]
     pub out_of_scope: Vec<String>,
 
     #[serde(default)]
-    pub prune_cascade_rules: Vec<PruneCascadeRule>,
+    pub(crate) prune_cascade_rules: Vec<PruneCascadeRule>,
 
     #[serde(default)]
-    pub prune_pre_validation: Option<PrunePreValidation>,
+    pub(crate) prune_pre_validation: Option<PrunePreValidation>,
 }
 
 // =============================================================================
@@ -248,7 +248,7 @@ pub struct Slot {
     pub state_dependency: Option<StateDependency>,
 
     #[serde(default)]
-    pub dual_lifecycle: Vec<DualLifecycle>,
+    pub(crate) dual_lifecycle: Vec<DualLifecycle>,
 
     #[serde(default)]
     pub periodic_review_cadence: Option<PeriodicReviewCadence>,
@@ -307,7 +307,7 @@ pub struct StateMachine {
 
     // v1.3 additions
     #[serde(default)]
-    pub expected_lifetime: Option<ExpectedLifetime>,
+    pub(crate) expected_lifetime: Option<ExpectedLifetime>,
 
     /// Ownership label for the lifecycle — governance/KYC artefact per
     /// OQ-3 resolution (2026-04-24). Runtime does NOT enforce.

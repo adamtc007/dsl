@@ -692,11 +692,6 @@ pub fn validate_verbs_config(config: &VerbsConfig, ctx: &ValidationContext) -> V
     report
 }
 
-/// Build the set of declared FQN strings from a `VerbsConfig`. Used by
-/// pack-hygiene validation (see [`validate_pack_fqns`]) to distinguish
-/// declared verbs from pack references.
-///
-/// Each entry is `domain_name.verb_name` — matches the format used in
 
 // Silence `unused` warnings for fields / variants reserved for P.1.d.
 #[allow(dead_code)]
