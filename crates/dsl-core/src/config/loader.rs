@@ -7,7 +7,7 @@ use std::path::Path;
 use tracing::info;
 
 use super::phrase_gen::generate_phrases;
-use super::types::{ArgType, CsgRulesConfig, VerbBehavior, VerbsConfig};
+use super::types::{ArgType, VerbBehavior, VerbsConfig};
 
 pub struct ConfigLoader {
     config_dir: String,
@@ -251,32 +251,7 @@ impl ConfigLoader {
         Ok(files)
     }
 
-    /// Load CSG rules configuration
 
-
-
-
-    pub(crate) fn load_csg_rules(&self) -> Result<CsgRulesConfig> {
-        let path = Path::new(&self.config_dir).join("csg_rules.yaml");
-        info!("Loading CSG rules from {}", path.display());
-
-        let content = std::fs::read_to_string(&path)
-            .with_context(|| format!("Failed to read {}", path.display()))?;
-
-        let config: CsgRulesConfig = serde_yaml::from_str(&content)
-            .with_context(|| format!("Failed to parse {}", path.display()))?;
-
-        self.validate_csg_rules(&config)?;
-
-        info!(
-            "Loaded {} constraints, {} warnings, {} jurisdiction rules",
-            config.constraints.len(),
-            config.warnings.len(),
-            config.jurisdiction_rules.len()
-        );
-
-        Ok(config)
-    }
 
     fn validate_verbs(&self, config: &VerbsConfig) -> Result<()> {
         for (domain, domain_config) in &config.domains {
@@ -337,33 +312,7 @@ impl ConfigLoader {
         }
     }
 
-    fn validate_csg_rules(&self, config: &CsgRulesConfig) -> Result<()> {
-        let mut ids = std::collections::HashSet::new();
 
-        // Check for duplicate rule IDs
-        for rule in &config.constraints {
-            if !ids.insert(&rule.id) {
-                return Err(anyhow!("Duplicate rule ID: {}", rule.id));
-            }
-        }
-        for rule in &config.warnings {
-            if !ids.insert(&rule.id) {
-                return Err(anyhow!("Duplicate rule ID: {}", rule.id));
-            }
-        }
-        for rule in &config.jurisdiction_rules {
-            if !ids.insert(&rule.id) {
-                return Err(anyhow!("Duplicate rule ID: {}", rule.id));
-            }
-        }
-        for rule in &config.composite_rules {
-            if !ids.insert(&rule.id) {
-                return Err(anyhow!("Duplicate rule ID: {}", rule.id));
-            }
-        }
-
-        Ok(())
-    }
 
 
 
@@ -448,29 +397,4 @@ fn test_load_verbs_yaml() {
     }
 }
 
-#[test]
-#[ignore = "requires config files - run from workspace root"]
-fn test_load_csg_rules_yaml() {
-    // This test loads the actual csg_rules.yaml file
-    let loader = ConfigLoader::new("config");
-    let result = loader.load_csg_rules();
 
-    match result {
-        Ok(config) => {
-            assert_eq!(config.version, "1.0");
-            assert!(!config.constraints.is_empty(), "Should have constraints");
-            assert!(!config.warnings.is_empty(), "Should have warnings");
-
-            println!("Loaded {} constraints", config.constraints.len());
-            println!("Loaded {} warnings", config.warnings.len());
-            println!(
-                "Loaded {} jurisdiction rules",
-                config.jurisdiction_rules.len()
-            );
-            println!("Loaded {} composite rules", config.composite_rules.len());
-        }
-        Err(e) => {
-            panic!("Failed to load csg_rules.yaml: {}", e);
-        }
-    }
-}

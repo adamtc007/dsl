@@ -7,7 +7,6 @@
 //!
 //! ```text
 //! config/verbs.yaml → ConfigLoader → VerbsConfig → RuntimeVerbRegistry
-//! config/csg_rules.yaml → ConfigLoader → CsgRulesConfig → CSG Linter
 //! ```
 //!
 //! # Usage
@@ -17,7 +16,6 @@
 //!
 //! let loader = ConfigLoader::from_env();
 //! let verbs = loader.load_verbs()?;
-//! let csg_rules = loader.load_csg_rules()?;
 //! ```
 
 pub mod dag;
@@ -61,7 +59,7 @@ pub use runbook_composition::{
 pub use types::{
     ActionClass, AppliesTo, ArgConfig, ArgType, ArgValidation, ConfirmPolicyConfig,
     ConsequenceDeclaration, ConsequenceTier, ConstraintRule, CrudConfig, CrudOperation,
-    CsgRulesConfig, DomainConfig, DurableConfig, DurableRuntime, EscalationPredicate,
+    DomainConfig, DurableConfig, DurableRuntime, EscalationPredicate,
     EscalationRule, ExternalEffect, FuzzyCheckConfig, GraphQueryConfig, GraphQueryOperation,
     HarmClass, JurisdictionCondition, JurisdictionRule, LookupConfig, ResolutionMode,
     ReturnTypeConfig, ReturnsConfig, RuleCondition, RuleRequirement, RuleSeverity, SearchKeyConfig,
