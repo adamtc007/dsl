@@ -6,9 +6,9 @@ mod version;
 pub use manifest::{ManifestOptions, ResolverManifest, SlotManifestRow};
 pub use version::{compute_version_hash, VersionHash};
 
-use crate::config::dag::{ClosureType, EligibilityConstraint, RoleGuard};
 use dsl_types::constellation_map_def::{
-    AuditClass, Cardinality, CompletenessAssertionConfig, JoinDef, SlotDef,
+    AuditClass, Cardinality, ClosureType, CompletenessAssertionConfig, EligibilityConstraint,
+    JoinDef, RoleGuard, SlotDef,
 };
 use std::collections::BTreeMap;
 
