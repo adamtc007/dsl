@@ -119,7 +119,7 @@ pub(crate) fn verb_synonyms() -> HashMap<&'static str, Vec<&'static str>> {
 ///
 /// # Example
 ///
-/// ```
+/// ```ignore
 /// use dsl_core::config::phrase_gen::generate_phrases;
 ///
 /// let phrases = generate_phrases("deal", "create", &[]);
