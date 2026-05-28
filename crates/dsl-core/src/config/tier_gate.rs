@@ -39,7 +39,7 @@ use crate::config::types::{ConsequenceTier, VerbConfig};
 /// at the computed effective tier. Maps directly to the policy documents
 /// (`docs/policies/sage_autonomy.md`, `docs/policies/repl_confirmation.md`).
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum TierGateAction {
+pub(crate) enum TierGateAction {
     /// `benign` — execute without prompt.
     Execute,
     /// `reviewable` — execute with a brief announcement / preview line.
@@ -61,7 +61,7 @@ pub enum TierGateAction {
 /// recommended action, and a human-readable explanation of *why* the
 /// tier was assigned (escalation rules + composition reasons).
 #[derive(Debug, Clone)]
-pub struct TierGateDecision {
+pub(crate) struct TierGateDecision {
     /// Computed effective tier (post-escalation, post-composition).
     pub effective_tier: ConsequenceTier,
     /// Baseline tier from the verb declaration (or max-step-tier for runbook).
@@ -79,7 +79,7 @@ pub struct TierGateDecision {
 
 impl TierGateDecision {
     /// Compute the decision for a single-verb invocation.
-    pub fn for_verb(verb: &VerbConfig, ctx: &EvaluationContext) -> Self {
+    pub(crate) fn for_verb(verb: &VerbConfig, ctx: &EvaluationContext) -> Self {
         let Some(decl) = verb.three_axis.as_ref() else {
             // No three-axis → benign by default. Conservative; the
             // validator should already have caught undeclared verbs.
@@ -132,7 +132,7 @@ impl TierGateDecision {
     /// Per v1.2 P12, the composition is the max of: max-step-tier,
     /// aggregation rule tier (if any matches), cross-scope rule tier
     /// (if any matches).
-    pub fn for_runbook(
+    pub(crate) fn for_runbook(
         steps: &[RunbookStep],
         aggregation_rules: &[AggregationRule],
         cross_scope_rules: &[CrossScopeRule],
