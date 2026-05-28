@@ -35,7 +35,7 @@ struct PackYaml {
 
 /// A loaded pack — `name` + its `allowed_verbs` FQN list.
 #[derive(Debug, Clone, Default)]
-pub struct LoadedPack {
+pub(crate) struct LoadedPack {
     pub name: String,
     pub source_path: PathBuf,
     pub workspaces: Vec<String>,
@@ -46,7 +46,7 @@ pub struct LoadedPack {
 /// by pack name. Malformed packs are skipped with a tracing warning
 /// rather than failing the whole load — matches the rollout-tolerant
 /// philosophy of the catalogue-load gate.
-pub fn load_packs_from_dir(packs_dir: &Path) -> Result<BTreeMap<String, LoadedPack>> {
+pub(crate) fn load_packs_from_dir(packs_dir: &Path) -> Result<BTreeMap<String, LoadedPack>> {
     let mut out = BTreeMap::new();
     let entries =
         fs::read_dir(packs_dir).with_context(|| format!("cannot read packs dir {packs_dir:?}"))?;
@@ -92,7 +92,7 @@ pub fn load_packs_from_dir(packs_dir: &Path) -> Result<BTreeMap<String, LoadedPa
 
 /// Flatten a packs map into the iterator form validate_pack_fqns expects:
 /// a sequence of `(pack_name, fqn)` tuples.
-pub fn flatten_pack_entries(
+pub(crate) fn flatten_pack_entries(
     packs: &BTreeMap<String, LoadedPack>,
 ) -> impl Iterator<Item = (String, String)> + '_ {
     packs.values().flat_map(|p| {

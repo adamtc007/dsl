@@ -50,7 +50,6 @@ pub use green_when_coverage::{
     green_when_coverage_for_dag, green_when_coverage_for_dags, green_when_coverage_summary,
     GreenWhenCoverageRow, GreenWhenCoverageSummary, GreenWhenExclusionReason,
 };
-pub use pack_loader::{flatten_pack_entries, load_packs_from_dir, LoadedPack};
 
 pub use effect_class::derive_effect_class_from_three_axis;
 pub use escalation::{
