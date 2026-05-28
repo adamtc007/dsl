@@ -30,7 +30,6 @@ pub mod phrase_gen;
 pub mod predicate;                  // used by sem_os_core::frontier::hydrator
 pub mod resource_dependency;
 pub mod runbook_composition;
-pub mod tier_gate;
 pub mod types;
 pub mod validator;
 
@@ -59,7 +58,6 @@ pub use runbook_composition::{
     component_a, component_b, component_c, compute_runbook_tier,
     AggregationRule, CrossScopeRule, RunbookStep,
 };
-pub(crate) use tier_gate::{TierGateAction, TierGateDecision};
 pub use types::{
     ActionClass, AppliesTo, ArgConfig, ArgType, ArgValidation, ConfirmPolicyConfig,
     ConsequenceDeclaration, ConsequenceTier, ConstraintRule, CrudConfig, CrudOperation,
