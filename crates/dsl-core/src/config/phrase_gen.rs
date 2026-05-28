@@ -20,7 +20,7 @@ use std::collections::HashMap;
 use std::sync::OnceLock;
 
 /// Consumer-registered domain noun vocabulary for phrase generation.
-pub type PhraseGenNouns = HashMap<String, Vec<String>>;
+pub(crate) type PhraseGenNouns = HashMap<String, Vec<String>>;
 
 static PHRASE_GEN_NOUNS: OnceLock<PhraseGenNouns> = OnceLock::new();
 
@@ -28,7 +28,7 @@ static PHRASE_GEN_NOUNS: OnceLock<PhraseGenNouns> = OnceLock::new();
 ///
 /// Must be called before `load_verbs()` so phrase enrichment uses the right
 /// vocabulary. Subsequent calls are silently ignored (OnceLock semantics).
-pub fn set_phrase_gen_nouns(nouns: PhraseGenNouns) {
+pub(crate) fn set_phrase_gen_nouns(nouns: PhraseGenNouns) {
     let _ = PHRASE_GEN_NOUNS.set(nouns);
 }
 
@@ -36,7 +36,7 @@ pub fn set_phrase_gen_nouns(nouns: PhraseGenNouns) {
 ///
 /// Maps common verb actions (create, list, get, etc.) to natural language
 /// alternatives that users might type.
-pub fn verb_synonyms() -> HashMap<&'static str, Vec<&'static str>> {
+pub(crate) fn verb_synonyms() -> HashMap<&'static str, Vec<&'static str>> {
     let mut synonyms = HashMap::new();
 
     // CRUD operations
@@ -125,7 +125,7 @@ pub fn verb_synonyms() -> HashMap<&'static str, Vec<&'static str>> {
 /// let phrases = generate_phrases("deal", "create", &[]);
 /// // Returns: ["create deal", "add deal", "new deal record", "make client deal", ...]
 /// ```
-pub fn generate_phrases(domain: &str, action: &str, existing: &[String]) -> Vec<String> {
+pub(crate) fn generate_phrases(domain: &str, action: &str, existing: &[String]) -> Vec<String> {
     let mut phrases: Vec<String> = existing.to_vec();
 
     let synonyms = verb_synonyms();
