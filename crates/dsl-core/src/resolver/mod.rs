@@ -3,7 +3,8 @@
 pub mod manifest;
 mod version;
 
-pub use manifest::{ManifestOptions, ResolverManifest, SlotManifestRow};
+pub use manifest::{ManifestOptions, ResolverManifest};
+pub(crate) use manifest::SlotManifestRow;
 pub use version::{compute_version_hash, VersionHash};
 
 use dsl_types::constellation_map_def::{
