@@ -27,9 +27,8 @@ pub(crate) mod viewport_parser;
 
 // Re-export from ast
 pub use ast::{
-    count_entity_refs, Argument, AstNode, ConfidenceZone, EnhanceArg, EntityRefStats, ExportFormat,
-    FocusTarget, Literal, NavDirection, NavTarget, Program, Span, Statement, VerbCall, ViewType,
-    ViewportVerb,
+    count_entity_refs, Argument, AstNode, ConfidenceZone, EnhanceArg, EntityRefStats,
+    FocusTarget, Literal, Program, Span, Statement, VerbCall,
 };
 
 // Re-export from binding_context
@@ -40,24 +39,20 @@ pub use compiler::{CompileError, CompileStep, CompiledSteps, compile_to_steps};
 
 // Re-export from config
 pub use config::{
-    ActionClass, AppliesTo, ArgConfig, ArgType, ArgValidation, ConfirmPolicyConfig,
-    ConsequenceDeclaration, ConsequenceTier, ConstraintRule, CrudConfig, CrudOperation,
+    ActionClass, ArgConfig, ArgType, ArgValidation, ConfirmPolicyConfig,
+    ConsequenceDeclaration, ConsequenceTier, CrudConfig, CrudOperation,
     Dag, DagError, DagValidationContext, DagValidationReport, DomainConfig, DurableConfig,
-    DurableRuntime, EscalationPredicate, EscalationRule, evaluate_predicate, ExternalEffect,
-    FuzzyCheckConfig, GraphQueryConfig, GraphQueryOperation, HarmClass, JurisdictionCondition,
-    JurisdictionRule, LoadedDag, Location, LookupConfig, PolicyWarning, ResolutionMode,
-    ReturnTypeConfig, ReturnsConfig, RuleCondition, RuleRequirement, RuleSeverity, SearchKeyConfig,
+    DurableRuntime, EscalationPredicate, EscalationRule, ExternalEffect,
+    FuzzyCheckConfig, GraphQueryConfig, GraphQueryOperation, HarmClass,
+    LoadedDag, Location, LookupConfig, PolicyWarning, ResolutionMode,
+    ReturnTypeConfig, ReturnsConfig, SearchKeyConfig,
     SlotType, SourceOfTruth, StateEffect, ThreeAxisDeclaration, TransitionArgs, TransitionEdge,
     validate_verbs_config, ValidationContext, ValidationReport, VerbBehavior, VerbConfig,
     VerbConsumes, VerbFlavour, VerbLifecycle, VerbMetadata, VerbOutputConfig, VerbProduces,
     VerbRoleGuard, VerbScope, VerbSentences, VerbStatus, VerbTier, VerbTransitions, VerbsConfig,
-    WarningRule, WellFormednessError,
+    WellFormednessError,
     load_dags_from_dir, load_domain_pack_owned_dags,
     validate_dags_with_context, validate_resolved_template_gate_metadata,
-    SchemaCoordinationKnownDeferred,
-    GreenWhenCoverageRow, GreenWhenCoverageSummary,
-    compute_effective_tier_with_trace,
-    component_a, component_b, component_c,
     ConfigLoader, PolicyConfig, VerbWriteConfig,
     BatchPolicyConfig, DynamicVerbConfig, LockAccessConfig, LockModeConfig,
     ResolvedResourceDependency, ResourceDependency, PhraseGenNouns, generate_phrases,
@@ -88,8 +83,7 @@ pub(crate) use executable_plan::TransactionPolicy;
 
 // Re-export from executable_plan
 pub use executable_plan::{
-    AuthorityContext, BindingFrameSchema, BindingSlot, EffectClass, ExecutablePlan,
-    ExecutionStepSummary, InstructionInput, PlanId, RuntimeInstruction, SemOsSnapshotId,
+    BindingFrameSchema, BindingSlot, EffectClass,
 };
 
 // Re-export from execution_dag

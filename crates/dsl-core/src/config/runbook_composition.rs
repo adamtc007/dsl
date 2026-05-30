@@ -225,14 +225,14 @@ pub(crate) fn compute_runbook_tier(
 // Component implementations (exposed for targeted unit tests)
 // ---------------------------------------------------------------------------
 
-pub fn component_a(steps: &[RunbookStep]) -> ConsequenceTier {
+pub(crate) fn component_a(steps: &[RunbookStep]) -> ConsequenceTier {
     steps
         .iter()
         .map(|s| s.effective_tier)
         .fold(ConsequenceTier::Benign, ConsequenceTier::max)
 }
 
-pub fn component_b(steps: &[RunbookStep], rules: &[AggregationRule]) -> ConsequenceTier {
+pub(crate) fn component_b(steps: &[RunbookStep], rules: &[AggregationRule]) -> ConsequenceTier {
     rules
         .iter()
         .filter(|r| r.matches(steps))
@@ -240,7 +240,7 @@ pub fn component_b(steps: &[RunbookStep], rules: &[AggregationRule]) -> Conseque
         .fold(ConsequenceTier::Benign, ConsequenceTier::max)
 }
 
-pub fn component_c(steps: &[RunbookStep], rules: &[CrossScopeRule]) -> ConsequenceTier {
+pub(crate) fn component_c(steps: &[RunbookStep], rules: &[CrossScopeRule]) -> ConsequenceTier {
     rules
         .iter()
         .filter(|r| r.matches(steps))

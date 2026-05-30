@@ -69,7 +69,7 @@ impl EvaluationContext {
 /// arg / attr / flag) evaluate to **false** — the conservative direction,
 /// consistent with P11's "rules can only raise tier": a missing reference
 /// cannot cause a spurious escalation.
-pub fn evaluate_predicate(pred: &EscalationPredicate, ctx: &EvaluationContext) -> bool {
+pub(crate) fn evaluate_predicate(pred: &EscalationPredicate, ctx: &EvaluationContext) -> bool {
     match pred {
         EscalationPredicate::ArgEq { arg, value } => ctx.args.get(arg).is_some_and(|v| v == value),
         EscalationPredicate::ArgIn { arg, values } => ctx
@@ -139,7 +139,7 @@ pub(crate) fn compute_effective_tier(
 /// Like [`compute_effective_tier`] but also returns the names of the rules
 /// that fired, for UX transparency (v1.1 Open Question 15 — "effective-tier
 /// UX transparency: honest UX shows the escalation chain").
-pub fn compute_effective_tier_with_trace<'a>(
+pub(crate) fn compute_effective_tier_with_trace<'a>(
     decl: &'a ConsequenceDeclaration,
     ctx: &EvaluationContext,
 ) -> (ConsequenceTier, Vec<&'a EscalationRule>) {

@@ -845,7 +845,7 @@ pub fn count_entity_refs(program: &Program) -> EntityRefStats {
 /// - NAVIGATE - Spatial movement without changing focus
 /// - ASCEND/DESCEND - Hierarchical focus stack navigation
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub enum ViewportVerb {
+pub(crate) enum ViewportVerb {
     /// Acquire focus on target: VIEWPORT.focus(target)
     Focus { target: FocusTarget, span: Span },
 
@@ -1032,7 +1032,7 @@ impl EnhanceArg {
 
 /// Navigation target for moving without changing focus
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub enum NavTarget {
+pub(crate) enum NavTarget {
     /// Navigate to a specific entity
     Entity { entity_ref: String, span: Span },
 
@@ -1065,7 +1065,7 @@ impl NavTarget {
 
 /// Navigation directions for spatial movement
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub enum NavDirection {
+pub(crate) enum NavDirection {
     Left,
     Right,
     Up,
@@ -1088,7 +1088,7 @@ impl NavDirection {
     }
 
     /// Parse a direction from string
-    pub fn parse(s: &str) -> Option<Self> {
+    pub(crate) fn parse(s: &str) -> Option<Self> {
         match s.to_lowercase().as_str() {
             "left" => Some(NavDirection::Left),
             "right" => Some(NavDirection::Right),
@@ -1106,7 +1106,7 @@ impl NavDirection {
 /// Each view type shows the same data through a different lens,
 /// emphasizing different relationships and attributes.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub enum ViewType {
+pub(crate) enum ViewType {
     /// Entity structure and relationships
     Structure,
 
@@ -1144,7 +1144,7 @@ impl ViewType {
     }
 
     /// Parse a view type from string
-    pub fn parse(s: &str) -> Option<Self> {
+    pub(crate) fn parse(s: &str) -> Option<Self> {
         match s.to_lowercase().as_str() {
             "structure" => Some(ViewType::Structure),
             "ownership" => Some(ViewType::Ownership),
@@ -1158,7 +1158,7 @@ impl ViewType {
     }
 
     /// Get all view types
-    pub fn all() -> &'static [ViewType] {
+    pub(crate) fn all() -> &'static [ViewType] {
         &[
             ViewType::Structure,
             ViewType::Ownership,
@@ -1241,7 +1241,7 @@ impl ConfidenceZone {
 
 /// Export format for viewport content
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-pub enum ExportFormat {
+pub(crate) enum ExportFormat {
     /// PNG image export
     Png,
 
@@ -1267,7 +1267,7 @@ impl ExportFormat {
     }
 
     /// Parse an export format from string
-    pub fn parse(s: &str) -> Option<Self> {
+    pub(crate) fn parse(s: &str) -> Option<Self> {
         match s.to_lowercase().as_str() {
             "png" => Some(ExportFormat::Png),
             "svg" => Some(ExportFormat::Svg),
@@ -1278,7 +1278,7 @@ impl ExportFormat {
     }
 
     /// Get the file extension for this format
-    pub fn extension(&self) -> &'static str {
+    pub(crate) fn extension(&self) -> &'static str {
         match self {
             ExportFormat::Png => "png",
             ExportFormat::Svg => "svg",

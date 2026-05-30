@@ -40,41 +40,32 @@ pub(crate) use dag_validator::{
 };
 pub use dag_validator::{
     validate_dags_with_context, validate_resolved_template_gate_metadata, DagError,
-    DagValidationContext, DagValidationReport, SchemaCoordinationKnownDeferred,
+    DagValidationContext, DagValidationReport,
 };
 pub(crate) use green_when_coverage::{
     green_when_coverage_for_dag, green_when_coverage_for_dags, green_when_coverage_summary,
     GreenWhenExclusionReason,
 };
-pub use green_when_coverage::{
-    GreenWhenCoverageRow, GreenWhenCoverageSummary,
-};
 
 pub(crate) use escalation::{
     compute_effective_tier, EvaluationContext,
-};
-pub use escalation::{
-    compute_effective_tier_with_trace, evaluate_predicate,
 };
 pub use loader::ConfigLoader;
 
 pub(crate) use runbook_composition::{
     compute_runbook_tier, AggregationRule, CrossScopeRule, RunbookStep,
 };
-pub use runbook_composition::{
-    component_a, component_b, component_c,
-};
 pub use types::{
-    ActionClass, AppliesTo, ArgConfig, ArgType, ArgValidation, ConfirmPolicyConfig,
-    ConsequenceDeclaration, ConsequenceTier, ConstraintRule, CrudConfig, CrudOperation,
+    ActionClass, ArgConfig, ArgType, ArgValidation, ConfirmPolicyConfig,
+    ConsequenceDeclaration, ConsequenceTier, CrudConfig, CrudOperation,
     DomainConfig, DurableConfig, DurableRuntime, EscalationPredicate,
     EscalationRule, ExternalEffect, FuzzyCheckConfig, GraphQueryConfig, GraphQueryOperation,
-    HarmClass, JurisdictionCondition, JurisdictionRule, LookupConfig, ResolutionMode,
-    ReturnTypeConfig, ReturnsConfig, RuleCondition, RuleRequirement, RuleSeverity, SearchKeyConfig,
+    HarmClass, LookupConfig, ResolutionMode,
+    ReturnTypeConfig, ReturnsConfig, SearchKeyConfig,
     SlotType, SourceOfTruth, StateEffect, ThreeAxisDeclaration, TransitionArgs, TransitionEdge,
     VerbBehavior, VerbConfig, VerbConsumes, VerbFlavour, VerbLifecycle, VerbMetadata,
     VerbOutputConfig, VerbProduces, VerbRoleGuard, VerbScope, VerbSentences, VerbStatus, VerbTier,
-    VerbTransitions, VerbsConfig, WarningRule, PolicyConfig, VerbWriteConfig,
+    VerbTransitions, VerbsConfig, PolicyConfig, VerbWriteConfig,
     BatchPolicyConfig, DynamicVerbConfig, LockAccessConfig, LockModeConfig,
 };
 pub(crate) use validator::StructuralError;

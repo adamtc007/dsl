@@ -491,7 +491,7 @@ pub struct DagValidationContext {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub enum SchemaCoordinationKnownDeferred {
+pub(crate) enum SchemaCoordinationKnownDeferred {
     SlotFieldDrift {
         source_name: String,
         slot_id: String,

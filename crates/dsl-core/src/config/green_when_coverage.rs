@@ -9,7 +9,7 @@ use serde_yaml::Value as YamlValue;
 use std::collections::{BTreeMap, BTreeSet, HashSet};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct GreenWhenCoverageRow {
+pub(crate) struct GreenWhenCoverageRow {
     pub workspace: String,
     pub dag_id: String,
     pub slot_id: String,
@@ -28,7 +28,7 @@ pub(crate) enum GreenWhenExclusionReason {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct GreenWhenCoverageSummary {
+pub(crate) struct GreenWhenCoverageSummary {
     pub total_states: usize,
     pub candidate_states: usize,
     pub covered_candidate_states: usize,

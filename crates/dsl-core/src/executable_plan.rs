@@ -40,10 +40,10 @@ use crate::execution_dag::{BindingSlotId, NodeId, PopulatedExecutionDag};
 /// the plan. Two compilations of identical DSL source against identical
 /// snapshots produce different `PlanId`s — the ID is not content-addressed.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
-pub struct PlanId(pub Uuid);
+pub(crate) struct PlanId(pub(crate) Uuid);
 
 impl PlanId {
-    pub fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Self(Uuid::new_v4())
     }
 }
@@ -67,7 +67,7 @@ impl Default for PlanId {
 /// Structurally identical to `ob-poc-types::CatalogueSnapshotId(u64)`.
 /// Converted at the ob-poc boundary via `Into`/`From`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
-pub struct SemOsSnapshotId(pub u64);
+pub(crate) struct SemOsSnapshotId(pub(crate) u64);
 
 
 
@@ -200,7 +200,7 @@ impl TransactionPolicy {
 /// Phase 6 will expand this to include the allowed-verb fingerprint and
 /// authority recheck contract.
 #[derive(Debug, Clone, Default, serde::Serialize, serde::Deserialize)]
-pub struct AuthorityContext {
+pub(crate) struct AuthorityContext {
     /// The authenticated actor executing this plan (e.g., user UUID or system token).
     pub actor_id: Option<String>,
     /// Client group scope, if applicable.
@@ -237,7 +237,7 @@ pub struct BindingSlot {
 /// A typed input to a `RuntimeInstruction`.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case", tag = "kind")]
-pub enum InstructionInput {
+pub(crate) enum InstructionInput {
     /// A literal value known at compile time.
     Literal { value: serde_json::Value },
     /// A binding reference — the concrete value is resolved from
@@ -256,7 +256,7 @@ pub enum InstructionInput {
 ///
 /// v0.5 §3.2 `RuntimeInstruction` shape.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct RuntimeInstruction {
+pub(crate) struct RuntimeInstruction {
     /// Node identity — index into `ExecutablePlan::dag` for edge lookup.
     pub node_id: NodeId,
     /// Fully-qualified verb name (e.g., "cbu.assign-role").
@@ -308,7 +308,7 @@ pub struct RuntimeInstruction {
 /// snapshot-id thread-through is wired into the ob-poc catalogue loader.
 /// Once wired it is always `Some`.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
-pub struct ExecutablePlan {
+pub(crate) struct ExecutablePlan {
     /// Identity of this compiled plan (v0.5 §10.1). Assigned at compilation.
     pub plan_id: PlanId,
 
@@ -344,7 +344,7 @@ pub struct ExecutablePlan {
 
 impl ExecutablePlan {
     /// Current plan format version.
-    pub const FORMAT_VERSION: u32 = 1;
+    pub(crate) const FORMAT_VERSION: u32 = 1;
 
 
 }
@@ -355,7 +355,7 @@ impl ExecutablePlan {
 /// (which lives in the ob-poc binary, not in dsl-core). Callers in ob-poc
 /// build this from their `ExecutionStep` values.
 #[derive(Debug, Clone)]
-pub struct ExecutionStepSummary {
+pub(crate) struct ExecutionStepSummary {
     pub step_index: usize,
     pub verb_fqn: String,
     pub input_names: Vec<String>,

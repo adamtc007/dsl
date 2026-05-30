@@ -1907,7 +1907,7 @@ pub struct DynamicSourceConfig {
 // CSG RULE CONFIGS
 // =============================================================================
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct ConstraintRule {
+pub(crate) struct ConstraintRule {
     pub id: String,
     pub name: String,
     pub description: String,
@@ -1917,7 +1917,7 @@ pub struct ConstraintRule {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct WarningRule {
+pub(crate) struct WarningRule {
     pub id: String,
     pub name: String,
     pub description: String,
@@ -1929,7 +1929,7 @@ pub struct WarningRule {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct JurisdictionRule {
+pub(crate) struct JurisdictionRule {
     pub id: String,
     pub name: String,
     pub description: String,
@@ -1952,7 +1952,7 @@ pub(crate) struct CompositeRule {
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
-pub struct RuleCondition {
+pub(crate) struct RuleCondition {
     #[serde(default)]
     pub verb: Option<String>,
     #[serde(default)]
@@ -1970,7 +1970,7 @@ pub struct RuleCondition {
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
-pub struct RuleRequirement {
+pub(crate) struct RuleRequirement {
     #[serde(default)]
     pub entity_type: Option<String>,
     #[serde(default)]
@@ -1980,7 +1980,7 @@ pub struct RuleRequirement {
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
-pub struct JurisdictionCondition {
+pub(crate) struct JurisdictionCondition {
     #[serde(default)]
     pub entity_type: Option<String>,
     #[serde(default)]
@@ -1992,14 +1992,14 @@ pub struct JurisdictionCondition {
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
-pub struct AppliesTo {
+pub(crate) struct AppliesTo {
     #[serde(default)]
     pub client_type: Option<String>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
-pub enum RuleSeverity {
+pub(crate) enum RuleSeverity {
     Error,
     Warning,
     Info,
