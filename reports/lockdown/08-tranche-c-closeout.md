@@ -1,7 +1,7 @@
 # Lockdown Closeout & Final Acceptance Report
 - **UTC**:       2026-05-30T13:30:00Z
 - **Status**:    GREEN / FINAL ACCEPTANCE READY
-- **Latest Commit**: `PENDING` (to be updated on commit)
+- **Latest Commit**: `9a85990`
 
 ---
 
