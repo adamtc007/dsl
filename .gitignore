@@ -1,2 +1,8 @@
 /target
 .cargo/config.toml
+
+# Test scratch and consolidation reports
+config
+crates/dsl-core/config
+reports/consolidation/
+
