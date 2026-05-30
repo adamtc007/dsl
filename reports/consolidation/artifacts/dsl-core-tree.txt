@@ -1,0 +1,117 @@
+warning: patch `bpmn-lite-engine v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-engine)` was not used in the crate graph
+warning: patch `bpmn-lite-ffi-grpc v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-ffi-grpc)` was not used in the crate graph
+warning: patch `bpmn-lite-ffi-http v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-ffi-http)` was not used in the crate graph
+warning: patch `bpmn-lite-server v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-server)` was not used in the crate graph
+warning: patch `bpmn-lite-store v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-store)` was not used in the crate graph
+warning: patch `dmn-lite-bridge v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dmn-lite-bridge)` was not used in the crate graph
+warning: patch `dsl-bus-client v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-client)` was not used in the crate graph
+warning: patch `dsl-bus-protocol v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-protocol)` was not used in the crate graph
+warning: patch `dsl-bus-server v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-server)` was not used in the crate graph
+warning: patch `dsl-bus-storage v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-storage)` was not used in the crate graph
+warning: patch `dsl-manifest v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-manifest)` was not used in the crate graph
+warning: patch `ffi-catalogue v0.1.0 (/Users/adamtc007/dev/bpmn-lite/ffi-catalogue)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+dsl-core v0.1.0 (/Users/adamtc007/dev/dsl/crates/dsl-core)
+├── anyhow v1.0.102
+├── chrono v0.4.44
+│   ├── iana-time-zone v0.1.65
+│   │   └── core-foundation-sys v0.8.7
+│   ├── num-traits v0.2.19
+│   │   [build-dependencies]
+│   │   └── autocfg v1.5.1
+│   └── serde v1.0.228
+│       ├── serde_core v1.0.228
+│       └── serde_derive v1.0.228 (proc-macro)
+│           ├── proc-macro2 v1.0.106
+│           │   └── unicode-ident v1.0.24
+│           ├── quote v1.0.45
+│           │   └── proc-macro2 v1.0.106 (*)
+│           └── syn v2.0.117
+│               ├── proc-macro2 v1.0.106 (*)
+│               ├── quote v1.0.45 (*)
+│               └── unicode-ident v1.0.24
+├── dsl_types v0.1.0 (/Users/adamtc007/dev/dsl/crates/dsl_types)
+│   ├── serde v1.0.228 (*)
+│   ├── serde_json v1.0.150
+│   │   ├── itoa v1.0.18
+│   │   ├── memchr v2.8.0
+│   │   ├── serde_core v1.0.228
+│   │   └── zmij v1.0.21
+│   └── serde_yaml v0.9.34+deprecated
+│       ├── indexmap v2.14.0
+│       │   ├── equivalent v1.0.2
+│       │   └── hashbrown v0.17.1
+│       ├── itoa v1.0.18
+│       ├── ryu v1.0.23
+│       ├── serde v1.0.228 (*)
+│       └── unsafe-libyaml v0.2.11
+├── hex v0.4.3
+├── nom v7.1.3
+│   ├── memchr v2.8.0
+│   └── minimal-lexical v0.2.1
+├── nom_locate v4.2.0
+│   ├── bytecount v0.6.9
+│   ├── memchr v2.8.0
+│   └── nom v7.1.3 (*)
+├── once_cell v1.21.4
+├── rust_decimal v1.42.0
+│   ├── arrayvec v0.7.6
+│   ├── num-traits v0.2.19 (*)
+│   └── serde v1.0.228 (*)
+├── serde v1.0.228 (*)
+├── serde_json v1.0.150 (*)
+├── serde_yaml v0.9.34+deprecated (*)
+├── sha2 v0.10.9
+│   ├── cfg-if v1.0.4
+│   ├── cpufeatures v0.2.17
+│   │   └── libc v0.2.186
+│   └── digest v0.10.7
+│       ├── block-buffer v0.10.4
+│       │   └── generic-array v0.14.7
+│       │       └── typenum v1.20.0
+│       │       [build-dependencies]
+│       │       └── version_check v0.9.5
+│       └── crypto-common v0.1.7
+│           ├── generic-array v0.14.7 (*)
+│           └── typenum v1.20.0
+├── thiserror v1.0.69
+│   └── thiserror-impl v1.0.69 (proc-macro)
+│       ├── proc-macro2 v1.0.106 (*)
+│       ├── quote v1.0.45 (*)
+│       └── syn v2.0.117 (*)
+├── tracing v0.1.44
+│   ├── pin-project-lite v0.2.17
+│   ├── tracing-attributes v0.1.31 (proc-macro)
+│   │   ├── proc-macro2 v1.0.106 (*)
+│   │   ├── quote v1.0.45 (*)
+│   │   └── syn v2.0.117 (*)
+│   └── tracing-core v0.1.36
+│       └── once_cell v1.21.4
+└── uuid v1.23.1
+    ├── getrandom v0.4.2
+    │   ├── cfg-if v1.0.4
+    │   └── libc v0.2.186
+    └── serde_core v1.0.228
+[dev-dependencies]
+├── insta v1.47.2
+│   ├── console v0.16.3
+│   │   └── libc v0.2.186
+│   ├── once_cell v1.21.4
+│   ├── serde v1.0.228 (*)
+│   ├── similar v2.7.0
+│   └── tempfile v3.27.0
+│       ├── fastrand v2.4.1
+│       ├── getrandom v0.4.2 (*)
+│       ├── once_cell v1.21.4
+│       └── rustix v1.1.4
+│           ├── bitflags v2.11.1
+│           ├── errno v0.3.14
+│           │   └── libc v0.2.186
+│           └── libc v0.2.186
+├── pretty_assertions v1.4.1
+│   ├── diff v0.1.13
+│   └── yansi v1.0.1
+└── tempfile v3.27.0 (*)

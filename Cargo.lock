@@ -253,7 +253,6 @@ dependencies = [
  "once_cell",
  "pretty_assertions",
  "rust_decimal",
- "sem_os_core",
  "serde",
  "serde_json",
  "serde_yaml",
@@ -261,6 +260,24 @@ dependencies = [
  "tempfile",
  "thiserror",
  "tracing",
+ "uuid",
+]
+
+[[package]]
+name = "dsl-integration-tests"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "chrono",
+ "dsl-core",
+ "dsl_types",
+ "pretty_assertions",
+ "sem_os_core",
+ "sem_os_types",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "tempfile",
  "uuid",
 ]
 
