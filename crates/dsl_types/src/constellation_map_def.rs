@@ -231,3 +231,23 @@ impl VerbAvailability {
         }
     }
 }
+
+#[derive(Debug, Default, Deserialize, Clone)]
+pub struct SeedLegacyStack {
+    #[serde(default)]
+    pub before: Vec<String>,
+    #[serde(default)]
+    pub after: Vec<String>,
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct SeedConstellationMap {
+    pub constellation: String,
+    #[serde(default)]
+    pub description: Option<String>,
+    pub jurisdiction: String,
+    #[serde(default)]
+    pub legacy_stack: SeedLegacyStack,
+    #[serde(default)]
+    pub slots: BTreeMap<String, SlotDef>,
+}

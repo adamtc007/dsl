@@ -27,7 +27,7 @@ pub(crate) mod dag;
 pub use constellation_map_def::{
     AuditClass, Cardinality, ClosureType, CompletenessAssertionConfig, ConstellationMapDefBody,
     DependencyEntry, EligibilityConstraint, JoinDef, RoleGuard, SlotDef, SlotType,
-    VerbPaletteEntry,
+    VerbPaletteEntry, SeedConstellationMap,
 };
 pub use resolver_facts::StructuralFacts;
 

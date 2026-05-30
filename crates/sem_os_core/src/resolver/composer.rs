@@ -10,7 +10,8 @@ use anyhow::{Context, Result};
 mod core_map {
     pub(crate) use dsl_types::{ConstellationMapDefBody, SlotDef};
 }
-use serde::{Deserialize, Serialize};
+use dsl_types::SeedConstellationMap;
+use serde::Serialize;
 use serde_yaml::Value as YamlValue;
 use std::{
     collections::{BTreeMap, BTreeSet},
@@ -129,25 +130,7 @@ fn load_yaml_paths_from_dir(dir: &Path) -> Result<Vec<PathBuf>> {
     Ok(out)
 }
 
-#[derive(Debug, Default, Deserialize)]
-struct SeedLegacyStack {
-    #[serde(default)]
-    before: Vec<String>,
-    #[serde(default)]
-    after: Vec<String>,
-}
 
-#[derive(Debug, Deserialize)]
-struct SeedConstellationMap {
-    constellation: String,
-    #[serde(default)]
-    description: Option<String>,
-    jurisdiction: String,
-    #[serde(default)]
-    legacy_stack: SeedLegacyStack,
-    #[serde(default)]
-    slots: BTreeMap<String, core_map::SlotDef>,
-}
 
 pub fn load_constellation_maps_from_dir(
     dir: &Path,
