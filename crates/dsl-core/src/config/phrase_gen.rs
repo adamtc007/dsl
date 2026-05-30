@@ -20,7 +20,7 @@ use std::collections::HashMap;
 use std::sync::OnceLock;
 
 /// Consumer-registered domain noun vocabulary for phrase generation.
-pub(crate) type PhraseGenNouns = HashMap<String, Vec<String>>;
+pub type PhraseGenNouns = HashMap<String, Vec<String>>;
 
 static PHRASE_GEN_NOUNS: OnceLock<PhraseGenNouns> = OnceLock::new();
 
@@ -118,7 +118,7 @@ pub(crate) fn verb_synonyms() -> HashMap<&'static str, Vec<&'static str>> {
 /// let phrases = generate_phrases("deal", "create", &[]);
 /// // Returns: ["create deal", "add deal", "new deal record", "make client deal", ...]
 /// ```
-pub(crate) fn generate_phrases(domain: &str, action: &str, existing: &[String]) -> Vec<String> {
+pub fn generate_phrases(domain: &str, action: &str, existing: &[String]) -> Vec<String> {
     let mut phrases: Vec<String> = existing.to_vec();
 
     let synonyms = verb_synonyms();

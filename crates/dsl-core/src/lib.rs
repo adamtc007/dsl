@@ -60,12 +60,14 @@ pub use config::{
     component_a, component_b, component_c,
     ConfigLoader, PolicyConfig, VerbWriteConfig,
     BatchPolicyConfig, DynamicVerbConfig, LockAccessConfig, LockModeConfig,
+    ResolvedResourceDependency, ResourceDependency, PhraseGenNouns, generate_phrases,
 };
 
 // Re-export from config::dag
 pub use config::dag::{
     CascadeRule, CrossWorkspaceConstraint, DerivationCondition, DerivedCrossWorkspaceState, EntryVia,
     Phase, StateSelector, SlotStateMachine, PredicateBinding, Slot as DagSlot,
+    Severity as DagSeverity,
 };
 
 // Re-export from config::predicate

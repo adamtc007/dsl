@@ -82,3 +82,7 @@ pub use validator::{
     validate_verbs_config, Location, PolicyWarning, ValidationContext,
     ValidationReport, WellFormednessError,
 };
+
+pub use resource_dependency::{ResolvedResourceDependency, ResourceDependency};
+pub use phrase_gen::{generate_phrases, PhraseGenNouns};
+
