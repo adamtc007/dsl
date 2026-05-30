@@ -177,21 +177,7 @@ pub enum DependencyEntry {
     Explicit { slot: String, min_state: String },
 }
 
-impl DependencyEntry {
-    pub fn slot_name(&self) -> &str {
-        match self {
-            Self::Simple(slot) => slot,
-            Self::Explicit { slot, .. } => slot,
-        }
-    }
 
-    pub fn min_state(&self) -> &str {
-        match self {
-            Self::Simple(_) => "filled",
-            Self::Explicit { min_state, .. } => min_state,
-        }
-    }
-}
 
 /// Verb palette entry in simple or gated form.
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
@@ -204,14 +190,7 @@ pub enum VerbPaletteEntry {
     },
 }
 
-impl VerbPaletteEntry {
-    pub fn verb_fqn(&self) -> &str {
-        match self {
-            Self::Simple(verb) => verb,
-            Self::Gated { verb, .. } => verb,
-        }
-    }
-}
+
 
 /// Availability expression for a gated verb.
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]

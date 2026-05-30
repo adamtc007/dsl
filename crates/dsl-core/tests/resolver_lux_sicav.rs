@@ -3,7 +3,9 @@ use dsl_core::{
     resolver::ResolvedSource,
 };
 use sem_os_core::resolver::{resolve_template, ResolverInputs};
-use dsl_types::constellation_map_def as core_map;
+mod core_map {
+    pub(crate) use dsl_types::ClosureType;
+}
 use std::path::PathBuf;
 
 fn inputs() -> ResolverInputs {

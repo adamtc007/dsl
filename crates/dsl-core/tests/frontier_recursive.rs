@@ -9,7 +9,7 @@ use dsl_core::{
     },
 };
 use sem_os_core::hydrate_frontier;
-use dsl_types::constellation_map_def::Cardinality;
+use dsl_types::Cardinality;
 
 fn template() -> ResolvedTemplate {
     ResolvedTemplate {

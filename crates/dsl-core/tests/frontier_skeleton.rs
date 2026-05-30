@@ -9,7 +9,7 @@ use dsl_core::{
     },
 };
 use sem_os_core::hydrate_frontier;
-use dsl_types::constellation_map_def::CompletenessAssertionConfig;
+use dsl_types::CompletenessAssertionConfig;
 
 fn template() -> ResolvedTemplate {
     ResolvedTemplate {

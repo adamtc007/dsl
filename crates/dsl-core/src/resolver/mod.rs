@@ -6,13 +6,13 @@ mod version;
 pub use manifest::{ManifestOptions, ResolverManifest};
 pub use version::{compute_version_hash, VersionHash};
 
-use dsl_types::constellation_map_def::{
+use dsl_types::{
     AuditClass, Cardinality, ClosureType, CompletenessAssertionConfig, EligibilityConstraint,
     JoinDef, RoleGuard, SlotDef,
 };
 use std::collections::BTreeMap;
 
-pub use dsl_types::resolver_facts::StructuralFacts;
+pub use dsl_types::StructuralFacts;
 
 pub type WorkspaceId = String;
 pub type ShapeRef = String;
@@ -37,7 +37,7 @@ pub struct ResolverProvenance {
     pub constellation_paths: Vec<String>,
     pub shape_rule_paths: Vec<String>,
     pub legacy_constellation_stack:
-        Vec<dsl_types::constellation_map_def::ConstellationMapDefBody>,
+        Vec<dsl_types::ConstellationMapDefBody>,
 }
 
 #[derive(Debug, Clone)]
@@ -72,11 +72,11 @@ pub struct ResolvedSlot {
     pub join: Option<JoinDef>,
     pub entity_kinds: Vec<String>,
     pub cardinality: Option<Cardinality>,
-    pub depends_on: Vec<dsl_types::constellation_map_def::DependencyEntry>,
+    pub depends_on: Vec<dsl_types::DependencyEntry>,
     pub placeholder: Option<String>,
     pub overlays: Vec<String>,
     pub edge_overlays: Vec<String>,
-    pub verbs: BTreeMap<String, dsl_types::constellation_map_def::VerbPaletteEntry>,
+    pub verbs: BTreeMap<String, dsl_types::VerbPaletteEntry>,
     pub children: BTreeMap<String, SlotDef>,
     pub max_depth: Option<usize>,
     pub closure: Option<ClosureType>,

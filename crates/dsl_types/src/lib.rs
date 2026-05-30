@@ -20,5 +20,12 @@
 //!   Moved here from `sem_os_ontology` so `dsl-lang` can reference these
 //!   types without depending on the SemOS layer.
 
-pub mod constellation_map_def;
-pub mod resolver_facts;
+pub(crate) mod constellation_map_def;
+pub(crate) mod resolver_facts;
+
+pub use constellation_map_def::{
+    AuditClass, Cardinality, ClosureType, CompletenessAssertionConfig, ConstellationMapDefBody,
+    DependencyEntry, EligibilityConstraint, JoinDef, RoleGuard, SlotDef, SlotType,
+    VerbPaletteEntry,
+};
+pub use resolver_facts::StructuralFacts;
