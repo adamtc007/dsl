@@ -1,0 +1,1495 @@
+warning: patch `bpmn-lite-engine v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-engine)` was not used in the crate graph
+warning: patch `bpmn-lite-ffi-grpc v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-ffi-grpc)` was not used in the crate graph
+warning: patch `bpmn-lite-ffi-http v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-ffi-http)` was not used in the crate graph
+warning: patch `bpmn-lite-server v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-server)` was not used in the crate graph
+warning: patch `bpmn-lite-store v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-store)` was not used in the crate graph
+warning: patch `dmn-lite-bridge v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dmn-lite-bridge)` was not used in the crate graph
+warning: patch `dsl-bus-client v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-client)` was not used in the crate graph
+warning: patch `dsl-bus-protocol v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-protocol)` was not used in the crate graph
+warning: patch `dsl-bus-server v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-server)` was not used in the crate graph
+warning: patch `dsl-bus-storage v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-storage)` was not used in the crate graph
+warning: patch `dsl-manifest v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-manifest)` was not used in the crate graph
+warning: patch `ffi-catalogue v0.1.0 (/Users/adamtc007/dev/bpmn-lite/ffi-catalogue)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+warning: unused imports: `EntityQualifier` and `RelationScope`
+ --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/predicate/mod.rs:6:22
+  |
+6 | pub(crate) use ast::{EntityQualifier, RelationScope};
+  |                      ^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `ast::State`
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/predicate/mod.rs:11:16
+   |
+11 | pub(crate) use ast::State;
+   |                ^^^^^^^^^^
+
+warning: unused import: `parser::ParseError`
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/predicate/mod.rs:13:16
+   |
+13 | pub(crate) use parser::ParseError;
+   |                ^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `DagWarning` and `validate_constellation_map_schema_coordination`
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/mod.rs:39:5
+   |
+39 |     validate_constellation_map_schema_coordination, DagWarning,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^
+
+warning: unused imports: `GreenWhenExclusionReason`, `green_when_coverage_for_dag`, `green_when_coverage_for_dags`, and `green_when_coverage_summary`
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/mod.rs:46:5
+   |
+46 |     green_when_coverage_for_dag, green_when_coverage_for_dags, green_when_coverage_summary,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+47 |     GreenWhenExclusionReason,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `EvaluationContext` and `compute_effective_tier`
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/mod.rs:51:5
+   |
+51 |     compute_effective_tier, EvaluationContext,
+   |     ^^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^^^
+
+warning: unused imports: `AggregationRule`, `CrossScopeRule`, `RunbookStep`, and `compute_runbook_tier`
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/mod.rs:56:5
+   |
+56 |     compute_runbook_tier, AggregationRule, CrossScopeRule, RunbookStep,
+   |     ^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^  ^^^^^^^^^^^
+
+warning: unused import: `validator::StructuralError`
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/mod.rs:71:16
+   |
+71 | pub(crate) use validator::StructuralError;
+   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: unused import: `executable_plan::TransactionPolicy`
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/lib.rs:82:16
+   |
+82 | pub(crate) use executable_plan::TransactionPolicy;
+   |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: type `DagWarning` is more private than the item `DagValidationReport::warnings`
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/dag_validator.rs:475:5
+    |
+475 |     pub warnings: Vec<DagWarning>,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ field `DagValidationReport::warnings` is reachable at visibility `pub`
+    |
+note: but type `DagWarning` is only usable at visibility `pub(crate)`
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/dag_validator.rs:385:1
+    |
+385 | pub(crate) enum DagWarning {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    = note: `#[warn(private_interfaces)]` on by default
+
+warning: type `RelationScope` is more private than the item `predicate::ast::EntityRef::Scoped::scope`
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/predicate/ast.rs:76:9
+    |
+ 76 |         scope: RelationScope,
+    |         ^^^^^^^^^^^^^^^^^^^^ field `predicate::ast::EntityRef::Scoped::scope` is reachable at visibility `pub`
+    |
+note: but type `RelationScope` is only usable at visibility `pub(crate)`
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/predicate/ast.rs:100:1
+    |
+100 | pub(crate) enum RelationScope {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: type `EntityQualifier` is more private than the item `EntitySetRef::qualifier`
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/predicate/ast.rs:86:5
+   |
+86 |     pub qualifier: Option<EntityQualifier>,
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ field `EntitySetRef::qualifier` is reachable at visibility `pub`
+   |
+note: but type `EntityQualifier` is only usable at visibility `pub(crate)`
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/predicate/ast.rs:93:1
+   |
+93 | pub(crate) enum EntityQualifier {
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: type `RelationScope` is more private than the item `EntitySetRef::scope`
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/predicate/ast.rs:88:5
+    |
+ 88 |     pub scope: Option<RelationScope>,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ field `EntitySetRef::scope` is reachable at visibility `pub`
+    |
+note: but type `RelationScope` is only usable at visibility `pub(crate)`
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/predicate/ast.rs:100:1
+    |
+100 | pub(crate) enum RelationScope {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: type `StructuralError` is more private than the item `ValidationReport::structural`
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/validator.rs:295:5
+    |
+295 |     pub structural: Vec<StructuralError>,
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ field `ValidationReport::structural` is reachable at visibility `pub`
+    |
+note: but type `StructuralError` is only usable at visibility `pub(crate)`
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/validator.rs:72:1
+    |
+ 72 | pub(crate) enum StructuralError {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: methods `to_dsl_string` and `to_user_dsl_string` are never used
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:53:19
+   |
+51 | impl Program {
+   | ------------ methods in this implementation
+52 |     /// Render the program back to DSL source (for execution - shows UUIDs when resolved)
+53 |     pub(crate) fn to_dsl_string(&self) -> String {
+   |                   ^^^^^^^^^^^^^
+...
+63 |     pub(crate) fn to_user_dsl_string(&self) -> String {
+   |                   ^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: methods `to_dsl_string` and `to_user_dsl_string` are never used
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:81:19
+   |
+79 | impl Statement {
+   | -------------- methods in this implementation
+80 |     /// Render the statement back to DSL source (for execution)
+81 |     pub(crate) fn to_dsl_string(&self) -> String {
+   |                   ^^^^^^^^^^^^^
+...
+89 |     pub(crate) fn to_user_dsl_string(&self) -> String {
+   |                   ^^^^^^^^^^^^^^^^^^
+
+warning: methods `to_dsl_string` and `to_user_dsl_string` are never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:110:19
+    |
+108 | impl VerbCall {
+    | ------------- methods in this implementation
+109 |     /// Render the verb call back to DSL source (for execution - shows UUIDs)
+110 |     pub(crate) fn to_dsl_string(&self) -> String {
+    |                   ^^^^^^^^^^^^^
+...
+126 |     pub(crate) fn to_user_dsl_string(&self) -> String {
+    |                   ^^^^^^^^^^^^^^^^^^
+
+warning: methods `get_arg` and `get_value` are never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:149:19
+    |
+142 | impl VerbCall {
+    | ------------- methods in this implementation
+...
+149 |     pub(crate) fn get_arg(&self, key: &str) -> Option<&Argument> {
+    |                   ^^^^^^^
+...
+154 |     pub(crate) fn get_value(&self, key: &str) -> Option<&AstNode> {
+    |                   ^^^^^^^^^
+
+warning: multiple associated items are never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:293:19
+    |
+287 | impl AstNode {
+    | ------------ associated items in this implementation
+...
+293 |     pub(crate) fn to_dsl_string(&self) -> String {
+    |                   ^^^^^^^^^^^^^
+...
+329 |     pub(crate) fn to_user_dsl_string(&self) -> String {
+    |                   ^^^^^^^^^^^^^^^^^^
+...
+362 |     pub(crate) fn integer(i: i64) -> Self {
+    |                   ^^^^^^^
+...
+385 |     pub(crate) fn resolved_entity_ref(
+    |                   ^^^^^^^^^^^^^^^^^^^
+...
+404 |     pub(crate) fn symbol_ref(name: impl Into<String>, span: Span) -> Self {
+    |                   ^^^^^^^^^^
+...
+427 |     pub(crate) fn is_resolved_entity_ref(&self) -> bool {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^
+...
+439 |     pub(crate) fn is_symbol_ref(&self) -> bool {
+    |                   ^^^^^^^^^^^^^
+...
+444 |     pub(crate) fn is_literal(&self) -> bool {
+    |                   ^^^^^^^^^^
+...
+453 |     pub(crate) fn as_string(&self) -> Option<&str> {
+    |                   ^^^^^^^^^
+...
+462 |     pub(crate) fn as_uuid(&self) -> Option<Uuid> {
+    |                   ^^^^^^^
+...
+475 |     pub(crate) fn resolved_key(&self) -> Option<&str> {
+    |                   ^^^^^^^^^^^^
+...
+491 |     pub(crate) fn as_integer(&self) -> Option<i64> {
+    |                   ^^^^^^^^^^
+...
+499 |     pub(crate) fn as_decimal(&self) -> Option<Decimal> {
+    |                   ^^^^^^^^^^
+...
+508 |     pub(crate) fn as_boolean(&self) -> Option<bool> {
+    |                   ^^^^^^^^^^
+...
+516 |     pub(crate) fn as_list(&self) -> Option<&[AstNode]> {
+    |                   ^^^^^^^
+...
+524 |     pub(crate) fn as_map(&self) -> Option<&[(String, AstNode)]> {
+    |                   ^^^^^^
+...
+532 |     pub(crate) fn span(&self) -> Span {
+    |                   ^^^^
+...
+554 |     pub(crate) fn with_resolved_key(&self, key: String) -> Self {
+    |                   ^^^^^^^^^^^^^^^^^
+...
+564 |     pub(crate) fn try_with_resolved_key(&self, key: String) -> Result<Self, String> {
+    |                   ^^^^^^^^^^^^^^^^^^^^^
+
+warning: method `to_dsl_string` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:626:19
+    |
+624 | impl Literal {
+    | ------------ method in this implementation
+625 |     /// Render the literal back to DSL source
+626 |     pub(crate) fn to_dsl_string(&self) -> String {
+    |                   ^^^^^^^^^^^^^
+
+warning: associated function `merge` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:657:19
+    |
+651 | impl Span {
+    | --------- associated function in this implementation
+...
+657 |     pub(crate) fn merge(a: Span, b: Span) -> Span {
+    |                   ^^^^^
+
+warning: function `find_unresolved_refs` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:741:15
+    |
+741 | pub(crate) fn find_unresolved_refs(program: &Program) -> Vec<&AstNode> {
+    |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: methods `is_fully_resolved`, `resolved_count`, and `resolution_percentage` are never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:775:19
+    |
+773 | impl EntityRefStats {
+    | ------------------- methods in this implementation
+774 |     /// Returns true if all EntityRefs are resolved
+775 |     pub(crate) fn is_fully_resolved(&self) -> bool {
+    |                   ^^^^^^^^^^^^^^^^^
+...
+780 |     pub(crate) fn resolved_count(&self) -> i32 {
+    |                   ^^^^^^^^^^^^^^
+...
+785 |     pub(crate) fn resolution_percentage(&self) -> u8 {
+    |                   ^^^^^^^^^^^^^^^^^^^^^
+
+warning: methods `span`, `verb_name`, and `to_dsl_string` are never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:879:19
+    |
+877 | impl ViewportVerb {
+    | ----------------- methods in this implementation
+878 |     /// Get the span of this verb
+879 |     pub(crate) fn span(&self) -> Span {
+    |                   ^^^^
+...
+893 |     pub(crate) fn verb_name(&self) -> &'static str {
+    |                   ^^^^^^^^^
+...
+907 |     pub(crate) fn to_dsl_string(&self) -> String {
+    |                   ^^^^^^^^^^^^^
+
+warning: methods `span` and `to_dsl_string` are never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:968:19
+    |
+966 | impl FocusTarget {
+    | ---------------- methods in this implementation
+967 |     /// Get the span of this target
+968 |     pub(crate) fn span(&self) -> Span {
+    |                   ^^^^
+...
+982 |     pub(crate) fn to_dsl_string(&self) -> String {
+    |                   ^^^^^^^^^^^^^
+
+warning: method `to_dsl_string` is never used
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:1022:19
+     |
+1020 | impl EnhanceArg {
+     | --------------- method in this implementation
+1021 |     /// Render the argument to DSL string
+1022 |     pub(crate) fn to_dsl_string(&self) -> String {
+     |                   ^^^^^^^^^^^^^
+
+warning: methods `span` and `to_dsl_string` are never used
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:1048:19
+     |
+1046 | impl NavTarget {
+     | -------------- methods in this implementation
+1047 |     /// Get the span of this target
+1048 |     pub(crate) fn span(&self) -> Span {
+     |                   ^^^^
+...
+1057 |     pub(crate) fn to_dsl_string(&self) -> String {
+     |                   ^^^^^^^^^^^^^
+
+warning: method `to_dsl_string` is never used
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:1079:19
+     |
+1077 | impl NavDirection {
+     | ----------------- method in this implementation
+1078 |     /// Render the direction to DSL string
+1079 |     pub(crate) fn to_dsl_string(&self) -> String {
+     |                   ^^^^^^^^^^^^^
+
+warning: associated items `to_dsl_string` and `all` are never used
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:1134:19
+     |
+1132 | impl ViewType {
+     | ------------- associated items in this implementation
+1133 |     /// Render the view type to DSL string
+1134 |     pub(crate) fn to_dsl_string(&self) -> String {
+     |                   ^^^^^^^^^^^^^
+...
+1161 |     pub(crate) fn all() -> &'static [ViewType] {
+     |                   ^^^
+
+warning: associated items `to_dsl_string`, `min_confidence`, and `from_score` are never used
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:1198:19
+     |
+1196 | impl ConfidenceZone {
+     | ------------------- associated items in this implementation
+1197 |     /// Render the zone to DSL string
+1198 |     pub(crate) fn to_dsl_string(&self) -> String {
+     |                   ^^^^^^^^^^^^^
+...
+1219 |     pub(crate) fn min_confidence(&self) -> f32 {
+     |                   ^^^^^^^^^^^^^^
+...
+1229 |     pub(crate) fn from_score(score: f32) -> Self {
+     |                   ^^^^^^^^^^
+
+warning: methods `to_dsl_string`, `extension`, and `mime_type` are never used
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/ast.rs:1260:19
+     |
+1258 | impl ExportFormat {
+     | ----------------- methods in this implementation
+1259 |     /// Render the format to DSL string
+1260 |     pub(crate) fn to_dsl_string(&self) -> String {
+     |                   ^^^^^^^^^^^^^
+...
+1281 |     pub(crate) fn extension(&self) -> &'static str {
+     |                   ^^^^^^^^^
+...
+1291 |     pub(crate) fn mime_type(&self) -> &'static str {
+     |                   ^^^^^^^^^
+
+warning: methods `merge`, `names`, and `available_types` are never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/binding_context.rs:94:19
+    |
+ 88 | impl BindingContext {
+    | ------------------- methods in this implementation
+...
+ 94 |     pub(crate) fn merge(&mut self, other: &BindingContext) {
+    |                   ^^^^^
+...
+111 |     pub(crate) fn names(&self) -> impl Iterator<Item = &str> {
+    |                   ^^^^^
+...
+126 |     pub(crate) fn available_types(&self) -> std::collections::HashSet<String> {
+    |                   ^^^^^^^^^^^^^^^
+
+warning: method `is_clean` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/dag_validator.rs:479:19
+    |
+478 | impl DagValidationReport {
+    | ------------------------ method in this implementation
+479 |     pub(crate) fn is_clean(&self) -> bool {
+    |                   ^^^^^^^^
+
+warning: enum `SchemaCoordinationKnownDeferred` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/dag_validator.rs:494:17
+    |
+494 | pub(crate) enum SchemaCoordinationKnownDeferred {
+    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `harden_schema_coordination_warnings` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/dag_validator.rs:687:15
+    |
+687 | pub(crate) fn harden_schema_coordination_warnings(
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `schema_coordination_known_deferred_key` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/dag_validator.rs:705:4
+    |
+705 | fn schema_coordination_known_deferred_key(
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `schema_coordination_warning_to_error` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/dag_validator.rs:739:4
+    |
+739 | fn schema_coordination_warning_to_error(warning: DagWarning) -> DagError {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `schema_coordination_source_name` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/dag_validator.rs:773:4
+    |
+773 | fn schema_coordination_source_name(location: &DagLocation) -> String {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `EvaluationContext` is never constructed
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/escalation.rs:29:19
+   |
+29 | pub(crate) struct EvaluationContext {
+   |                   ^^^^^^^^^^^^^^^^^
+
+warning: associated items `new`, `with_arg`, `with_entity_attr`, and `with_flag` are never used
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/escalation.rs:40:19
+   |
+39 | impl EvaluationContext {
+   | ---------------------- associated items in this implementation
+40 |     pub(crate) fn new() -> Self {
+   |                   ^^^
+...
+44 |     pub(crate) fn with_arg(mut self, name: impl Into<String>, value: serde_json::Value) -> Self {
+   |                   ^^^^^^^^
+...
+49 |     pub(crate) fn with_entity_attr(
+   |                   ^^^^^^^^^^^^^^^^
+...
+62 |     pub(crate) fn with_flag(mut self, flag: impl Into<String>, value: bool) -> Self {
+   |                   ^^^^^^^^^
+
+warning: function `evaluate_predicate` is never used
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/escalation.rs:72:15
+   |
+72 | pub(crate) fn evaluate_predicate(pred: &EscalationPredicate, ctx: &EvaluationContext) -> bool {
+   |               ^^^^^^^^^^^^^^^^^^
+
+warning: function `compute_effective_tier` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/escalation.rs:128:15
+    |
+128 | pub(crate) fn compute_effective_tier(
+    |               ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `compute_effective_tier_with_trace` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/escalation.rs:142:15
+    |
+142 | pub(crate) fn compute_effective_tier_with_trace<'a>(
+    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `as_f64` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/escalation.rs:160:4
+    |
+160 | fn as_f64(v: &serde_json::Value) -> Option<f64> {
+    |    ^^^^^^
+
+warning: struct `GreenWhenCoverageRow` is never constructed
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/green_when_coverage.rs:12:19
+   |
+12 | pub(crate) struct GreenWhenCoverageRow {
+   |                   ^^^^^^^^^^^^^^^^^^^^
+
+warning: enum `GreenWhenExclusionReason` is never used
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/green_when_coverage.rs:24:17
+   |
+24 | pub(crate) enum GreenWhenExclusionReason {
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `GreenWhenCoverageSummary` is never constructed
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/green_when_coverage.rs:31:19
+   |
+31 | pub(crate) struct GreenWhenCoverageSummary {
+   |                   ^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `green_when_coverage_for_dags` is never used
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/green_when_coverage.rs:39:15
+   |
+39 | pub(crate) fn green_when_coverage_for_dags(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `green_when_coverage_for_dag` is never used
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/green_when_coverage.rs:54:15
+   |
+54 | pub(crate) fn green_when_coverage_for_dag(
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `green_when_coverage_summary` is never used
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/green_when_coverage.rs:82:15
+   |
+82 | pub(crate) fn green_when_coverage_summary(rows: &[GreenWhenCoverageRow]) -> GreenWhenCoverageSummary {
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `row_for_state` is never used
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/green_when_coverage.rs:97:4
+   |
+97 | fn row_for_state(
+   |    ^^^^^^^^^^^^^
+
+warning: function `inbound_verbs_by_destination` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/green_when_coverage.rs:135:4
+    |
+135 | fn inbound_verbs_by_destination(transitions: &[TransitionDef]) -> BTreeMap<String, Vec<String>> {
+    |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `verbs_from_transition` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/green_when_coverage.rs:150:4
+    |
+150 | fn verbs_from_transition(transition: &TransitionDef) -> Vec<String> {
+    |    ^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `states_from_yaml_value` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/green_when_coverage.rs:158:4
+    |
+158 | fn states_from_yaml_value(value: &YamlValue) -> Vec<String> {
+    |    ^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `split_tupleish` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/green_when_coverage.rs:169:4
+    |
+169 | fn split_tupleish(value: &str) -> Vec<String> {
+    |    ^^^^^^^^^^^^^^
+
+warning: associated functions `entity_uuid`, `entity_uuid_binding`, and `natural_key` are never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/resource_dependency.rs:96:19
+    |
+ 94 | impl ResourceDependency {
+    | ----------------------- associated functions in this implementation
+ 95 |     /// Construct an `EntityUuid` dependency with a known UUID.
+ 96 |     pub(crate) fn entity_uuid(entity_type: impl Into<String>, uuid: uuid::Uuid) -> Self {
+    |                   ^^^^^^^^^^^
+...
+105 |     pub(crate) fn entity_uuid_binding(entity_type: impl Into<String>) -> Self {
+    |                   ^^^^^^^^^^^^^^^^^^^
+...
+113 |     pub(crate) fn natural_key(entity_type: impl Into<String>) -> Self {
+    |                   ^^^^^^^^^^^
+
+warning: associated functions `compile_resolved_entity`, `binding_resolved_entity`, and `runtime_create_natural_key` are never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/resource_dependency.rs:169:19
+    |
+167 | impl ResolvedResourceDependency {
+    | ------------------------------- associated functions in this implementation
+168 |     /// An entity UUID that was resolved at compile time.
+169 |     pub(crate) fn compile_resolved_entity(entity_type: impl Into<String>, uuid: uuid::Uuid) -> Self {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^
+...
+178 |     pub(crate) fn binding_resolved_entity(entity_type: impl Into<String>, slot: BindingSlotId) -> Self {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^
+...
+187 |     pub(crate) fn runtime_create_natural_key(entity_type: impl Into<String>) -> Self {
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `RunbookStep` is never constructed
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/runbook_composition.rs:39:19
+   |
+39 | pub(crate) struct RunbookStep {
+   |                   ^^^^^^^^^^^
+
+warning: enum `AggregationRule` is never used
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/runbook_composition.rs:67:17
+   |
+67 | pub(crate) enum AggregationRule {
+   |                 ^^^^^^^^^^^^^^^
+
+warning: methods `name`, `tier`, and `matches` are never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/runbook_composition.rs:93:19
+    |
+ 92 | impl AggregationRule {
+    | -------------------- methods in this implementation
+ 93 |     pub(crate) fn name(&self) -> &str {
+    |                   ^^^^
+...
+101 |     pub(crate) fn tier(&self) -> ConsequenceTier {
+    |                   ^^^^
+...
+109 |     pub(crate) fn matches(&self, steps: &[RunbookStep]) -> bool {
+    |                   ^^^^^^^
+
+warning: enum `CrossScopeRule` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/runbook_composition.rs:139:17
+    |
+139 | pub(crate) enum CrossScopeRule {
+    |                 ^^^^^^^^^^^^^^
+
+warning: methods `name`, `tier`, and `matches` are never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/runbook_composition.rs:161:19
+    |
+160 | impl CrossScopeRule {
+    | ------------------- methods in this implementation
+161 |     pub(crate) fn name(&self) -> &str {
+    |                   ^^^^
+...
+169 |     pub(crate) fn tier(&self) -> ConsequenceTier {
+    |                   ^^^^
+...
+177 |     pub(crate) fn matches(&self, steps: &[RunbookStep]) -> bool {
+    |                   ^^^^^^^
+
+warning: function `compute_runbook_tier` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/runbook_composition.rs:212:15
+    |
+212 | pub(crate) fn compute_runbook_tier(
+    |               ^^^^^^^^^^^^^^^^^^^^
+
+warning: function `component_a` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/runbook_composition.rs:228:15
+    |
+228 | pub(crate) fn component_a(steps: &[RunbookStep]) -> ConsequenceTier {
+    |               ^^^^^^^^^^^
+
+warning: function `component_b` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/runbook_composition.rs:235:15
+    |
+235 | pub(crate) fn component_b(steps: &[RunbookStep], rules: &[AggregationRule]) -> ConsequenceTier {
+    |               ^^^^^^^^^^^
+
+warning: function `component_c` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/runbook_composition.rs:243:15
+    |
+243 | pub(crate) fn component_c(steps: &[RunbookStep], rules: &[CrossScopeRule]) -> ConsequenceTier {
+    |               ^^^^^^^^^^^
+
+warning: struct `CsgRulesConfig` is never constructed
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/types.rs:26:19
+   |
+26 | pub(crate) struct CsgRulesConfig {
+   |                   ^^^^^^^^^^^^^^
+
+warning: methods `is_simple`, `discriminators`, and `min_confidence` are never used
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/types.rs:1398:19
+     |
+1376 | impl SearchKeyConfig {
+     | -------------------- methods in this implementation
+...
+1398 |     pub(crate) fn is_simple(&self) -> bool {
+     |                   ^^^^^^^^^
+...
+1417 |     pub(crate) fn discriminators(&self) -> &[SearchDiscriminator] {
+     |                   ^^^^^^^^^^^^^^
+...
+1426 |     pub(crate) fn min_confidence(&self) -> f32 {
+     |                   ^^^^^^^^^^^^^^
+
+warning: method `arg_name` is never used
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/types.rs:1791:19
+     |
+1789 | impl SearchDiscriminator {
+     | ------------------------ method in this implementation
+1790 |     /// Get the argument name (uses field name if from_arg not specified)
+1791 |     pub(crate) fn arg_name(&self) -> &str {
+     |                   ^^^^^^^^
+
+warning: struct `ConstraintRule` is never constructed
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/types.rs:1910:19
+     |
+1910 | pub(crate) struct ConstraintRule {
+     |                   ^^^^^^^^^^^^^^
+
+warning: struct `WarningRule` is never constructed
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/types.rs:1920:19
+     |
+1920 | pub(crate) struct WarningRule {
+     |                   ^^^^^^^^^^^
+
+warning: struct `JurisdictionRule` is never constructed
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/types.rs:1932:19
+     |
+1932 | pub(crate) struct JurisdictionRule {
+     |                   ^^^^^^^^^^^^^^^^
+
+warning: struct `CompositeRule` is never constructed
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/types.rs:1944:19
+     |
+1944 | pub(crate) struct CompositeRule {
+     |                   ^^^^^^^^^^^^^
+
+warning: struct `RuleCondition` is never constructed
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/types.rs:1955:19
+     |
+1955 | pub(crate) struct RuleCondition {
+     |                   ^^^^^^^^^^^^^
+
+warning: struct `RuleRequirement` is never constructed
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/types.rs:1973:19
+     |
+1973 | pub(crate) struct RuleRequirement {
+     |                   ^^^^^^^^^^^^^^^
+
+warning: struct `JurisdictionCondition` is never constructed
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/types.rs:1983:19
+     |
+1983 | pub(crate) struct JurisdictionCondition {
+     |                   ^^^^^^^^^^^^^^^^^^^^^
+
+warning: struct `AppliesTo` is never constructed
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/types.rs:1995:19
+     |
+1995 | pub(crate) struct AppliesTo {
+     |                   ^^^^^^^^^
+
+warning: enum `RuleSeverity` is never used
+    --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/types.rs:2002:17
+     |
+2002 | pub(crate) enum RuleSeverity {
+     |                 ^^^^^^^^^^^^
+
+warning: variant `TransitionWithoutEdges` is never constructed
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/validator.rs:75:5
+   |
+72 | pub(crate) enum StructuralError {
+   |                 --------------- variant in this enum
+...
+75 |     TransitionWithoutEdges(Location),
+   |     ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `StructuralError` has derived impls for the traits `Clone` and `Debug`, but these are intentionally ignored during dead code analysis
+
+warning: method `is_clean` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/validator.rs:301:19
+    |
+300 | impl ValidationReport {
+    | --------------------- method in this implementation
+301 |     pub(crate) fn is_clean(&self) -> bool {
+    |                   ^^^^^^^^
+
+warning: associated function `warning` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/diagnostics.rs:150:19
+    |
+136 | impl Diagnostic {
+    | --------------- associated function in this implementation
+...
+150 |     pub(crate) fn warning(code: DiagnosticCode, message: impl Into<String>) -> Self {
+    |                   ^^^^^^^
+
+warning: struct `PlanId` is never constructed
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/executable_plan.rs:43:19
+   |
+43 | pub(crate) struct PlanId(pub(crate) Uuid);
+   |                   ^^^^^^
+
+warning: associated function `new` is never used
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/executable_plan.rs:46:19
+   |
+45 | impl PlanId {
+   | ----------- associated function in this implementation
+46 |     pub(crate) fn new() -> Self {
+   |                   ^^^
+
+warning: struct `SemOsSnapshotId` is never constructed
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/executable_plan.rs:70:19
+   |
+70 | pub(crate) struct SemOsSnapshotId(pub(crate) u64);
+   |                   ^^^^^^^^^^^^^^^
+
+warning: enum `TransactionPolicy` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/executable_plan.rs:141:17
+    |
+141 | pub(crate) enum TransactionPolicy {
+    |                 ^^^^^^^^^^^^^^^^^
+
+warning: associated function `from_effect_classes` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/executable_plan.rs:162:19
+    |
+156 | impl TransactionPolicy {
+    | ---------------------- associated function in this implementation
+...
+162 |     pub(crate) fn from_effect_classes(classes: impl IntoIterator<Item = EffectClass>) -> Self {
+    |                   ^^^^^^^^^^^^^^^^^^^
+
+warning: struct `AuthorityContext` is never constructed
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/executable_plan.rs:203:19
+    |
+203 | pub(crate) struct AuthorityContext {
+    |                   ^^^^^^^^^^^^^^^^
+
+warning: enum `InstructionInput` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/executable_plan.rs:240:17
+    |
+240 | pub(crate) enum InstructionInput {
+    |                 ^^^^^^^^^^^^^^^^
+
+warning: struct `RuntimeInstruction` is never constructed
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/executable_plan.rs:259:19
+    |
+259 | pub(crate) struct RuntimeInstruction {
+    |                   ^^^^^^^^^^^^^^^^^^
+
+warning: struct `ExecutablePlan` is never constructed
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/executable_plan.rs:311:19
+    |
+311 | pub(crate) struct ExecutablePlan {
+    |                   ^^^^^^^^^^^^^^
+
+warning: associated constant `FORMAT_VERSION` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/executable_plan.rs:347:22
+    |
+345 | impl ExecutablePlan {
+    | ------------------- associated constant in this implementation
+346 |     /// Current plan format version.
+347 |     pub(crate) const FORMAT_VERSION: u32 = 1;
+    |                      ^^^^^^^^^^^^^^
+
+warning: struct `ExecutionStepSummary` is never constructed
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/executable_plan.rs:358:19
+    |
+358 | pub(crate) struct ExecutionStepSummary {
+    |                   ^^^^^^^^^^^^^^^^^^^^
+
+warning: methods `imposes_order` and `ordering_pair` are never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/execution_dag.rs:158:19
+    |
+153 | impl DagEdge {
+    | ------------ methods in this implementation
+...
+158 |     pub(crate) fn imposes_order(&self) -> bool {
+    |                   ^^^^^^^^^^^^^
+...
+168 |     pub(crate) fn ordering_pair(&self) -> Option<(NodeId, NodeId)> {
+    |                   ^^^^^^^^^^^^^
+
+warning: method `ordering_pairs` is never used
+   --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/execution_dag.rs:208:19
+    |
+193 | impl PopulatedExecutionDag {
+    | -------------------------- method in this implementation
+...
+208 |     pub(crate) fn ordering_pairs(&self) -> Vec<(usize, usize)> {
+    |                   ^^^^^^^^^^^^^^
+
+warning: `dsl-core` (lib) generated 94 warnings (run `cargo fix --lib -p dsl-core` to apply 9 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.05s
+     Running unittests src/lib.rs (target/debug/deps/sem_os_core-214e21b61cba80b0)
+
+running 52 tests
+test error::tests::display_conflict ... ok
+test error::tests::display_invalid_input ... ok
+test error::tests::display_gate_failed_count ... ok
+test error::tests::display_internal ... ok
+test error::tests::display_unauthorized ... ok
+test error::tests::gate_violation_display_warning ... ok
+test error::tests::display_not_found ... ok
+test error::tests::gate_violation_display_error ... ok
+test error::tests::display_migration_pending ... ok
+test error::tests::http_status_conflict ... ok
+test error::tests::http_status_gate_failed ... ok
+test error::tests::http_status_internal ... ok
+test error::tests::http_status_invalid_input ... ok
+test error::tests::http_status_migration_pending ... ok
+test error::tests::http_status_not_found ... ok
+test error::tests::http_status_unauthorized ... ok
+test ids::tests::test_definition_hash_different_content ... ok
+test ids::tests::test_definition_hash_key_order_independent ... ok
+test ids::tests::test_deterministic_same_input ... ok
+test ids::tests::test_definition_hash_stable ... ok
+test ids::tests::test_different_fqn_different_id ... ok
+test ids::tests::test_different_object_type_different_id ... ok
+test principal::tests::agent_mode_defaults_to_governed ... ok
+test principal::tests::agent_mode_governed_from_claim ... ok
+test principal::tests::agent_mode_research_from_claim ... ok
+test principal::tests::from_jwt_claims_defaults ... ok
+test principal::tests::from_jwt_claims_happy_path ... ok
+test principal::tests::from_jwt_claims_missing_sub ... ok
+test principal::tests::has_role_present_and_absent ... ok
+test principal::tests::in_process_constructs_correctly ... ok
+test principal::tests::is_admin_false_when_absent ... ok
+test principal::tests::is_admin_true_when_present ... ok
+test principal::tests::require_admin_err_when_not_admin ... ok
+test principal::tests::require_admin_ok_when_admin ... ok
+test proto::tests::test_bootstrap_response_includes_snapshot_set ... ok
+test proto::tests::test_bootstrap_response_skip_none_snapshot_set ... ok
+test proto::tests::test_diff_entry_optional_fields ... ok
+test proto::tests::test_list_changesets_query_defaults ... ok
+test proto::tests::test_gate_preview_response_serde ... ok
+test proto::tests::test_manifest_entry_serde ... ok
+test proto::tests::test_tool_call_request_serde ... ok
+test proto::tests::test_tool_call_response_serde_failure ... ok
+test proto::tests::test_tool_call_response_serde_success ... ok
+test proto::tests::test_tool_spec_serde ... ok
+test seeds::tests::compute_hash_has_v1_prefix ... ok
+test seeds::tests::compute_hash_changes_with_content ... ok
+test seeds::tests::individual_seed_types_serde_round_trip ... ok
+test seeds::tests::compute_hash_determinism ... ok
+test seeds::tests::compute_hash_order_independence ... ok
+test seeds::tests::seed_bundle_serde_round_trip ... ok
+test resolver::shape_rule::tests::rejects_structural_fact_placeholders ... ok
+test resolver::shape_rule::tests::rejects_required_optional_role_overlap ... ok
+
+test result: ok. 52 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/constellation_gate_metadata.rs (target/debug/deps/constellation_gate_metadata-f9308a8018cc29c2)
+
+running 7 tests
+test slot_def_discretionary_metadata_batch_1c_defaults_absent_fields ... ok
+test slot_def_gate_metadata_batch_1a_defaults_absent_fields ... ok
+test slot_def_additive_predicate_vectors_batch_1b_parse_for_validation ... ok
+test slot_def_predicate_vectors_batch_1b_defaults_absent_fields ... ok
+test slot_def_predicate_vectors_batch_1b_round_trips ... ok
+test slot_def_discretionary_metadata_batch_1c_round_trips ... ok
+test slot_def_gate_metadata_batch_1a_round_trips ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/discovery_pipeline.rs (target/debug/deps/discovery_pipeline-059c34cec3449a0c)
+
+running 1 test
+test discover_dsl_prefers_assign_and_synthesizes_entity_create_prereq ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/sem_os_ontology-c76b088fb947b59a)
+
+running 25 tests
+test attribute_def::tests::attribute_data_type_pg_value_round_trip ... ok
+test document_type_def::tests::defaults_empty_lists ... ok
+test evidence::tests::defaults_all_required_and_mandatory ... ok
+test evidence_strategy_def::tests::test_evidence_strategy_defaults ... ok
+test document_type_def::tests::serde_round_trip ... ok
+test evidence_strategy_def::tests::test_evidence_strategy_def_serde ... ok
+test evidence::tests::serde_round_trip ... ok
+test membership::tests::membership_kind_snake_case ... ok
+test derivation_spec::tests::serde_round_trip ... ok
+test membership::tests::default_operator_eq ... ok
+test macro_def::tests::serde_round_trip ... ok
+test attribute_def::tests::serde_round_trip ... ok
+test entity_type_def::tests::serde_round_trip ... ok
+test membership::tests::serde_round_trip ... ok
+test observation_def::tests::default_none_transform ... ok
+test observation_def::tests::serde_round_trip ... ok
+test proof_obligation_def::tests::test_proof_obligation_def_serde ... ok
+test proof_obligation_def::tests::test_proof_obligation_defaults ... ok
+test policy_rule::tests::serde_round_trip ... ok
+test relationship_type_def::tests::serde_round_trip ... ok
+test requirement_profile_def::tests::test_requirement_profile_def_serde ... ok
+test requirement_profile_def::tests::test_requirement_profile_defaults ... ok
+test service_resource_def::tests::service_resource_def_body_round_trips ... ok
+test taxonomy_def::tests::serde_round_trip ... ok
+test verb_contract::tests::serde_round_trip ... ok
+
+test result: ok. 25 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/sem_os_policy-991e30187738c3c6)
+
+running 354 tests
+test abac::tests::prohibited_grade_no_escalation ... ok
+test abac::tests::none_grade_no_escalation ... ok
+test abac::tests::allowed_with_constraints_permits_steward_analytics ... ok
+test abac::tests::allowed_with_constraints_blocks_analytics_for_analyst ... ok
+test abac::tests::regulatory_evidence_permits_steward_admin ... ok
+test abac::tests::regulatory_evidence_blocks_admin_for_analyst ... ok
+test abac::tests::test_confidential_allowed_with_clearance ... ok
+test abac::tests::test_access_decision_is_allowed ... ok
+test abac::tests::test_confidential_denied_without_clearance ... ok
+test abac::tests::test_insufficient_clearance ... ok
+test abac::tests::test_jurisdiction_denied ... ok
+test abac::tests::test_pii_masked_for_analytics ... ok
+test abac::tests::test_public_access_allowed ... ok
+test abac::tests::test_purpose_limitation_denied ... ok
+test affinity::builder::tests::test_build_empty_snapshots ... ok
+test acp_projection::tests::projection_hash_is_stable_for_same_payload ... ok
+test affinity::builder::tests::test_invalid_definition_skipped ... ok
+test affinity::builder::tests::test_pass1_crud_mapping ... ok
+test affinity::builder::tests::test_pass1_verb_produces ... ok
+test affinity::builder::tests::test_pass1_reads_from_writes_to ... ok
+test affinity::builder::tests::test_bidirectional_index ... ok
+test affinity::builder::tests::test_pass1_arg_lookup ... ok
+test affinity::builder::tests::test_pass2_entity_table_bimap ... ok
+test affinity::builder::tests::test_pass3_attribute_source_sink ... ok
+test affinity::builder::tests::test_pass4_derivation_lineage ... ok
+test affinity::builder::tests::test_pass5_relationship ... ok
+test affinity::discovery::tests::generate_disambiguation_for_required_args_and_subject ... ok
+test affinity::builder::tests::test_multi_pass_integration ... ok
+test affinity::query::tests::test_adjacent_verbs_nonexistent ... ok
+test affinity::discovery::tests::match_intent_ranks_expected_verb ... ok
+test affinity::query::tests::test_adjacent_verbs_shared_table ... ok
+test affinity::query::tests::test_data_footprint_depth_2 ... ok
+test affinity::query::tests::test_data_footprint_depth_1 ... ok
+test affinity::query::tests::test_data_for_nonexistent_verb ... ok
+test affinity::query::tests::test_data_for_verb ... ok
+test affinity::query::tests::test_orphan_verbs_empty_graph ... ok
+test affinity::query::tests::test_orphan_tables ... ok
+test affinity::query::tests::test_read_before_write_attributes ... ok
+test affinity::query::tests::test_verbs_for_attribute_both_directions ... ok
+test affinity::query::tests::test_verbs_for_entity_type_via_table ... ok
+test affinity::query::tests::test_verbs_for_nonexistent_table ... ok
+test affinity::query::tests::test_verbs_for_table_finds_crud ... ok
+test affinity::query::tests::test_verbs_for_table_finds_lookup ... ok
+test affinity::query::tests::test_write_only_attributes ... ok
+test affinity::types::tests::affinity_edge_serde_round_trip ... ok
+test affinity::types::tests::affinity_graph_empty ... ok
+test affinity::types::tests::affinity_kind_serde_round_trip ... ok
+test affinity::types::tests::affinity_provenance_serde_round_trip ... ok
+test affinity::types::tests::column_ref_hash_eq ... ok
+test affinity::types::tests::data_footprint_default ... ok
+test affinity::types::tests::data_ref_hash_eq ... ok
+test affinity::types::tests::data_ref_index_key ... ok
+test affinity::types::tests::data_ref_serde_round_trip ... ok
+test affinity::types::tests::derivation_edge_serde_round_trip ... ok
+test affinity::types::tests::entity_relationship_serde_round_trip ... ok
+test affinity::types::tests::table_ref_hash_eq ... ok
+test affinity::types::tests::verb_affinity_serde_round_trip ... ok
+test authoring::bundle::tests::test_build_bundle_unknown_type ... ok
+test authoring::bundle::tests::test_build_bundle_hash_mismatch ... ok
+test authoring::bundle::tests::test_build_bundle_missing_content ... ok
+test authoring::bundle::tests::test_parse_manifest_invalid_yaml ... ok
+test authoring::canonical_hash::tests::test_artifact_hash_deterministic ... ok
+test authoring::canonical_hash::tests::test_artifact_hash_different_content ... ok
+test authoring::bundle::tests::test_build_bundle_from_map ... ok
+test authoring::bundle::tests::test_bundle_ordinals_default_to_position ... ok
+test authoring::bundle::tests::test_parse_manifest ... ok
+test authoring::canonical_hash::tests::test_normalize_line_endings ... ok
+test authoring::canonical_hash::tests::test_content_hash_sorted_by_type_ordinal_path ... ok
+test authoring::canonical_hash::tests::test_normalize_trailing_whitespace ... ok
+test authoring::canonical_hash::tests::test_try_canonicalize_invalid_json ... ok
+test authoring::bundle::tests::test_bundle_contents_artifacts_have_content_hash ... ok
+test authoring::canonical_hash::tests::test_try_canonicalize_json ... ok
+test authoring::cleanup::tests::test_cleanup_policy_defaults ... ok
+test authoring::canonical_hash::tests::test_try_canonicalize_yaml ... ok
+test authoring::cleanup::tests::test_cleanup_report_serde ... ok
+test authoring::diff::tests::test_diff_added ... ok
+test authoring::diff::tests::test_attribute_type_change_is_breaking ... ok
+test authoring::diff::tests::test_diff_breaking_ddl ... ok
+test authoring::diff::tests::test_diff_identical ... ok
+test authoring::diff::tests::test_diff_modified_non_breaking ... ok
+test authoring::diff::tests::test_diff_removed ... ok
+test authoring::diff::tests::test_summarize_changeset ... ok
+test authoring::errors::tests::test_error_code_format ... ok
+test authoring::governance_verbs::tests::test_cs_to_manifest_round_trip ... ok
+test authoring::metrics::tests::test_emit_propose_does_not_panic ... ok
+test authoring::metrics::tests::test_emit_status_transition_does_not_panic ... ok
+test authoring::metrics::tests::test_emit_validate_does_not_panic ... ok
+test authoring::ports::tests::test_scratch_run_result_default ... ok
+test authoring::types::tests::test_artifact_type_round_trip ... ok
+test authoring::types::tests::test_audit_result_serde ... ok
+test authoring::types::tests::test_change_set_status_round_trip ... ok
+test authoring::types::tests::test_terminal_statuses ... ok
+test authoring::types::tests::test_validation_report_empty_ok ... ok
+test authoring::validate_stage1::tests::test_attribute_missing_data_type ... ok
+test authoring::validate_stage1::tests::test_duplicate_dependency ... ok
+test authoring::validate_stage1::tests::test_empty_changeset_passes ... ok
+test authoring::validate_stage1::tests::test_drop_table_warning ... ok
+test authoring::validate_stage1::tests::test_invalid_json_syntax ... ok
+test authoring::validate_stage1::tests::test_missing_artifact ... ok
+test authoring::validate_stage1::tests::test_concurrently_warning ... ok
+test authoring::validate_stage1::tests::test_hash_mismatch ... ok
+test authoring::validate_stage1::tests::test_invalid_sql_syntax ... ok
+test authoring::validate_stage2::tests::test_concurrently_case_insensitive ... ok
+test authoring::validate_stage1::tests::test_invalid_yaml_syntax ... ok
+test authoring::validate_stage2::tests::test_concurrently_detection ... ok
+test authoring::validate_stage1::tests::test_valid_sql_artifact ... ok
+test context_policy::tests::external_llm_is_refused_when_prompt_limit_is_too_high ... ok
+test authoring::validate_stage1::tests::test_verb_contract_incomplete ... ok
+test context_policy::tests::prompt_context_hash_is_deterministic_after_sorting ... ok
+test context_resolution::tests::test_build_subject_memberships_filters_conditionals ... ok
+test context_policy::tests::prompt_context_redacts_by_classification_and_required_terms ... ok
+test context_resolution::tests::test_composite_access_deny_on_policy_block ... ok
+test context_resolution::tests::test_confidence_computation ... ok
+test context_resolution::tests::test_confidence_low_when_no_views ... ok
+test context_resolution::tests::test_disambiguation_generated_for_close_views ... ok
+test authoring::validate_stage1::tests::test_valid_full_bundle ... ok
+test context_resolution::tests::test_evaluate_condition_always_false ... ok
+test context_resolution::tests::test_evaluate_condition_always_true ... ok
+test context_resolution::tests::test_evaluate_condition_attribute_equals_excluded ... ok
+test context_resolution::tests::test_evaluate_condition_unknown_kind_excluded ... ok
+test context_resolution::tests::test_evaluate_conditional_memberships_empty_conditions_pass ... ok
+test context_resolution::tests::test_evaluate_conditional_memberships_mixed_rules ... ok
+test context_resolution::tests::test_evaluate_conditional_memberships_with_attribute_condition_excluded ... ok
+test context_resolution::tests::test_evidence_mode_default ... ok
+test context_resolution::tests::test_governance_signal_kinds ... ok
+test context_resolution::tests::test_graceful_degradation_no_memberships ... ok
+test context_resolution::tests::test_subject_memberships_excluded_filtered ... ok
+test context_resolution::tests::test_subject_memberships_overlap_count ... ok
+test context_resolution::tests::test_request_serde ... ok
+test context_resolution::tests::test_subject_ref_id ... ok
+test context_resolution::tests::test_subject_ref_serde ... ok
+test context_resolution::tests::test_subject_relationships_domains ... ok
+test context_resolution::tests::test_subject_relationships_edge_classes ... ok
+test context_resolution::tests::test_subject_relationships_empty ... ok
+test context_resolution::tests::test_tier_allowed_exploratory ... ok
+test context_resolution::tests::test_tier_allowed_normal_governed_always_allowed ... ok
+test context_resolution::tests::test_tier_allowed_normal_operational_filtered_by_view ... ok
+test context_resolution::tests::test_tier_allowed_strict ... ok
+test context_resolution::tests::test_view_overlap_domain_match ... ok
+test context_resolution::tests::test_view_overlap_exact_entity_type_match ... ok
+test context_resolution::tests::test_view_overlap_with_taxonomy_memberships ... ok
+test derivation::tests::function_not_found ... ok
+test derivation::tests::null_required_input_error_semantics ... ok
+test derivation::tests::register_and_evaluate ... ok
+test diagram::enrichment::tests::enrichment_attribute_fqn_populated ... ok
+test diagram::enrichment::tests::enrichment_empty_input ... ok
+test diagram::enrichment::tests::enrichment_deterministic_sort ... ok
+test diagram::enrichment::tests::enrichment_entity_relationships ... ok
+test diagram::enrichment::tests::enrichment_fk_relationships ... ok
+test diagram::enrichment::tests::enrichment_max_tables ... ok
+test diagram::enrichment::tests::enrichment_pk_fk_flags ... ok
+test diagram::enrichment::tests::enrichment_registered_entity ... ok
+test diagram::enrichment::tests::enrichment_schema_filter ... ok
+test diagram::enrichment::tests::enrichment_unregistered_table ... ok
+test diagram::enrichment::tests::enrichment_verb_surface_populated ... ok
+test diagram::enrichment::tests::governance_level_classification ... ok
+test diagram::mermaid::tests::deterministic_output ... ok
+test diagram::mermaid::tests::domain_map_basic ... ok
+test diagram::mermaid::tests::empty_model ... ok
+test diagram::mermaid::tests::erd_basic ... ok
+test diagram::mermaid::tests::erd_relationships ... ok
+test diagram::mermaid::tests::erd_with_governance ... ok
+test diagram::mermaid::tests::erd_with_verbs ... ok
+test diagram::mermaid::tests::extract_domain_works ... ok
+test diagram::mermaid::tests::sanitize_names ... ok
+test diagram::mermaid::tests::table_name_from_key_works ... ok
+test diagram::mermaid::tests::verb_flow_basic ... ok
+test diagram::model::tests::diagram_entity_sort_key ... ok
+test diagram::model::tests::diagram_model_empty ... ok
+test diagram::model::tests::governance_level_serde_round_trip ... ok
+test diagram::model::tests::relationship_kind_serde_round_trip ... ok
+test diagram::model::tests::render_options_default ... ok
+test diagram::model::tests::diagram_model_serde_round_trip ... ok
+test diagram::model::tests::table_input_serde_round_trip ... ok
+test domain_pack::tests::discovery_probe_authorization_allows_declared_safe_probe ... ok
+test domain_pack::tests::discovery_probe_authorization_refuses_unknown_probe ... ok
+test domain_pack::tests::duplicate_owned_values_are_rejected ... ok
+test domain_pack::tests::duplicate_projection_kinds_are_rejected ... ok
+test domain_pack::tests::duplicate_transition_refs_are_rejected ... ok
+test domain_pack::tests::mutation_requires_hitl_and_dry_run ... ok
+test domain_pack::tests::probes_must_be_safe_and_modeled ... ok
+test domain_pack::tests::valid_manifest_passes ... ok
+test enforce::tests::test_allow_internal_for_internal_clearance ... ok
+test enforce::tests::test_allow_restricted_for_restricted_clearance ... ok
+test enforce::tests::test_enforce_read_label_allow_public ... ok
+test enforce::tests::test_enforce_read_label_deny_unparseable ... ok
+test enforce::tests::test_deny_restricted_for_internal_clearance ... ok
+test enforce::tests::test_redacted_stub_contains_fqn ... ok
+test enforce::tests::test_filter_by_abac_splits_correctly ... ok
+test gates::governance::tests::test_continuation_breaking_no_rationale_fails ... ok
+test enforce::tests::test_unparseable_label_denied ... ok
+test gates::governance::tests::test_continuation_non_breaking_passes ... ok
+test gates::governance::tests::test_continuation_breaking_with_rationale_passes ... ok
+test gates::governance::tests::test_continuation_breaking_empty_rationale_fails ... ok
+test gates::governance::tests::test_evidence_allowed_governed_with_both ... ok
+test gates::governance::tests::test_evidence_allowed_operational_skips ... ok
+test gates::governance::tests::test_evidence_allowed_governed_missing_both ... ok
+test gates::governance::tests::test_evidence_prohibited_always_passes ... ok
+test gates::governance::tests::test_macro_expansion_known_targets_passes ... ok
+test gates::governance::tests::test_macro_expansion_no_expands_to_passes ... ok
+test gates::governance::tests::test_macro_expansion_non_template_skips ... ok
+test gates::governance::tests::test_regulatory_linkage_governed_empty_refs_fails ... ok
+test gates::governance::tests::test_macro_expansion_unknown_target_warns ... ok
+test gates::governance::tests::test_regulatory_linkage_no_regulatory_fields_passes ... ok
+test gates::governance::tests::test_regulatory_linkage_governed_with_refs_passes ... ok
+test gates::governance::tests::test_regulatory_linkage_operational_skips ... ok
+test gates::governance::tests::test_review_cycle_governed_expired_fails ... ok
+test gates::governance::tests::test_review_cycle_governed_future_passes ... ok
+test gates::governance::tests::test_review_cycle_governed_no_deadline_warns ... ok
+test gates::governance::tests::test_review_cycle_operational_skips ... ok
+test gates::governance::tests::test_stewardship_governed_empty_fails ... ok
+test gates::governance::tests::test_stewardship_governed_system_fails ... ok
+test gates::governance::tests::test_stewardship_governed_with_steward_passes ... ok
+test gates::governance::tests::test_stewardship_operational_skips ... ok
+test gates::governance::tests::test_taxonomy_governed_no_membership_error ... ok
+test gates::governance::tests::test_taxonomy_operational_no_membership_warning ... ok
+test gates::governance::tests::test_taxonomy_with_membership_passes ... ok
+test gates::governance::tests::test_version_consistency_equal_fails ... ok
+test gates::governance::tests::test_version_consistency_less_fails ... ok
+test gates::governance::tests::test_version_consistency_no_predecessor_passes ... ok
+test gates::governance::tests::test_version_consistency_strictly_greater_passes ... ok
+test gates::technical::tests::test_dependency_correctness_no_specs_passes ... ok
+test gates::technical::tests::test_dependency_correctness_catches_cycle ... ok
+test gates::technical::tests::test_non_orphan_passes ... ok
+test gates::technical::tests::test_orphan_governed_is_error ... ok
+test gates::technical::tests::test_orphan_operational_is_warning ... ok
+test gates::technical::tests::test_security_label_presence_invalid ... ok
+test gates::technical::tests::test_security_label_presence_valid ... ok
+test gates::technical::tests::test_snapshot_integrity_id_mismatch ... ok
+test gates::technical::tests::test_snapshot_integrity_no_predecessor_passes ... ok
+test gates::technical::tests::test_snapshot_integrity_type_mismatch ... ok
+test gates::technical::tests::test_snapshot_integrity_valid_successor ... ok
+test gates::technical::tests::test_snapshot_integrity_version_monotonicity ... ok
+test gates::technical::tests::test_type_correctness_known_consumed_passes ... ok
+test gates::technical::tests::test_type_correctness_known_produces_passes ... ok
+test gates::technical::tests::test_type_correctness_no_consumes_passes ... ok
+test gates::technical::tests::test_type_correctness_unknown_consumed_warns ... ok
+test gates::technical::tests::test_type_correctness_unknown_lookup_entity_type_warns ... ok
+test gates::technical::tests::test_type_correctness_unknown_produces_warns ... ok
+test gates::technical::tests::test_verb_surface_disclosure_declared_sink_passes ... ok
+test gates::technical::tests::test_verb_surface_disclosure_no_sinks_passes ... ok
+test gates::technical::tests::test_verb_surface_disclosure_undeclared_sink_is_error ... ok
+test gates::technical::tests::test_verb_surface_disclosure_undeclared_source_warns ... ok
+test gates::tests::test_derivation_evidence_grade_governed_allowed_passes ... ok
+test gates::tests::test_derivation_cycle_detected ... ok
+test gates::tests::test_derivation_evidence_grade_operational_allowed_fails ... ok
+test gates::tests::test_derivation_evidence_grade_operational_prohibited_passes ... ok
+test domain_pack::tests::ob_poc_cbu_seed_pack_parses_and_validates ... ok
+test gates::tests::test_derivation_no_cycle ... ok
+test gates::tests::test_derivation_type_compat_all_known ... ok
+test gates::tests::test_derivation_type_compat_unknown_input ... ok
+test gates::tests::test_derivation_type_compat_unknown_output ... ok
+test gates::tests::test_empty_failures_report ... ok
+test gates::tests::test_evaluate_all_gates_pass ... ok
+test gates::tests::test_evaluate_all_publish_gates_blocks_on_extended_error ... ok
+test gates::tests::test_evaluate_all_publish_gates_blocks_on_simple_failure ... ok
+test gates::tests::test_evaluate_all_publish_gates_report_only_does_not_block ... ok
+test gates::tests::test_evaluate_extended_gates_breaking_no_rationale ... ok
+test gates::tests::test_evaluate_extended_gates_governed_missing_steward ... ok
+test gates::tests::test_evaluate_gates_multiple_failures ... ok
+test gates::tests::test_evaluate_extended_gates_operational_minimal ... ok
+test gates::tests::test_evidence_proof_rule_operational_convenience_passes ... ok
+test gates::tests::test_evidence_proof_rule_governed_proof_passes ... ok
+test gates::tests::test_evidence_proof_rule_operational_proof_fails ... ok
+test domain_pack::tests::ob_poc_kyc_seed_pack_parses_and_validates ... ok
+test gates::tests::test_failure_report_format ... ok
+test gates::tests::test_gate_failure_builder ... ok
+test gates::tests::test_gate_mode_enforce_blocks_on_errors ... ok
+test gates::tests::test_gate_mode_report_only_does_not_block ... ok
+test gates::tests::test_gate_warnings_do_not_block ... ok
+test gates::tests::test_governed_approval_present_passes ... ok
+test gates::tests::test_governed_approval_required ... ok
+test gates::tests::test_operational_no_approval_needed ... ok
+test gates::tests::test_proof_rule_governed_proof_passes ... ok
+test gates::tests::test_proof_rule_operational_convenience_passes ... ok
+test gates::tests::test_proof_rule_operational_decision_support_passes ... ok
+test gates::tests::test_proof_rule_operational_proof_fails ... ok
+test gates::tests::test_security_label_no_pii_public_passes ... ok
+test gates::tests::test_security_label_pii_confidential_passes ... ok
+test gates::tests::test_security_label_pii_requires_confidential ... ok
+test gates::tests::test_unified_result_warning_count ... ok
+test gates::tests::test_version_monotonicity_fail ... ok
+test gates::tests::test_version_monotonicity_no_predecessor ... ok
+test gates::tests::test_version_monotonicity_pass ... ok
+test observatory::orientation::tests::test_entry_reason_serde ... ok
+test observatory::orientation::tests::test_view_level_hierarchy ... ok
+test observatory::orientation::tests::test_overlay_state_serde ... ok
+test observatory::projection::tests::test_compute_delta_level_change ... ok
+test grounding::tests::computes_valid_action_for_slot_with_satisfied_dependencies ... ok
+test observatory::projection::tests::test_project_orientation_default ... ok
+test observatory::orientation::tests::test_orientation_contract_serde ... ok
+test observatory::projection::tests::test_compute_delta_no_change ... ok
+test security::tests::test_classification_takes_highest ... ok
+test observatory::projection::tests::test_compute_delta_mode_change ... ok
+test security::tests::test_compatibility_classification_downgrade_detected ... ok
+test grounding::tests::blocks_action_when_dependency_is_missing ... ok
+test security::tests::test_compatibility_missing_handling_control_detected ... ok
+test security::tests::test_compatibility_no_warnings_when_matching ... ok
+test security::tests::test_compatibility_purpose_mismatch_detected ... ok
+test security::tests::test_default_label ... ok
+test security::tests::test_empty_inputs_returns_default ... ok
+test security::tests::test_handling_controls_union ... ok
+test security::tests::test_jurisdictions_union_deduplicated ... ok
+test security::tests::test_override_classification_without_approval_rejected ... ok
+test security::tests::test_override_empty_rationale_rejected ... ok
+test security::tests::test_override_pii_with_approval_succeeds ... ok
+test security::tests::test_override_pii_without_approval_rejected ... ok
+test security::tests::test_pii_false_if_none ... ok
+test security::tests::test_pii_true_if_any_input ... ok
+test security::tests::test_purpose_limitation_empty_means_no_restriction ... ok
+test security::tests::test_purpose_limitation_intersection ... ok
+test security::tests::test_single_input_passthrough ... ok
+test security::tests::test_template_sanctions_restricted ... ok
+test security::tests::test_template_standard_pii_eu ... ok
+test security::tests::test_template_unknown_returns_none ... ok
+test service::tests::seed_bootstrap_plan_rejects_type_conflict ... ok
+test service::tests::test_parse_uuid_invalid ... ok
+test service::tests::test_parse_uuid_valid ... ok
+test service::tests::seed_bootstrap_plan_skips_identical_payload ... ok
+test service::tests::seed_bootstrap_plan_versions_changed_payload ... ok
+test service::tests::discovery_surface_ranks_matching_domain_and_family ... ok
+test state_simulation::tests::refuses_dry_run_disabled_transition ... ok
+test service::tests::grounded_traversal_edges_include_parent_and_dependency_edges ... ok
+test service::tests::discovery_surface_prefers_domain_candidate_family_ids ... ok
+test state_simulation::tests::refuses_illegal_current_state ... ok
+test state_simulation::tests::refuses_unknown_transition ... ok
+test state_simulation::tests::simulates_kyc_update_status_without_mutation ... ok
+test stewardship::tests::admin_may_add_modify_remove ... ok
+test stewardship::tests::empty_entries_always_ok ... ok
+test stewardship::tests::error_message_includes_actor_and_fqn ... ok
+test state_simulation::tests::simulation_is_deterministic ... ok
+test stewardship::tests::no_roles_may_not_do_anything ... ok
+test stewardship::tests::one_role_sufficient_even_with_others ... ok
+test stewardship::tests::steward_may_add_and_modify ... ok
+test stewardship::tests::steward_may_not_remove ... ok
+test stewardship::tests::viewer_may_not_do_anything ... ok
+test stewardship::types::tests::test_basis_kind_roundtrip ... ok
+test stewardship::types::tests::test_binding_kind_roundtrip ... ok
+test stewardship::types::tests::test_changeset_action_roundtrip ... ok
+test stewardship::types::tests::test_changeset_status_roundtrip ... ok
+test stewardship::types::tests::test_conflict_strategy_roundtrip ... ok
+test stewardship::types::tests::test_guardrail_severity_block ... ok
+test stewardship::types::tests::test_overlay_mode_active_only ... ok
+test stewardship::types::tests::test_overlay_mode_serde ... ok
+test stewardship::types::tests::test_semantic_version_display ... ok
+test stewardship::types::tests::test_stewardship_event_type_db_string ... ok
+test stewardship::types::tests::test_template_status_roundtrip ... ok
+test stewardship::types::tests::test_viewport_status_serde ... ok
+test stewardship::types::tests::test_workbench_payload_serde ... ok
+test domain_pack::tests::reload_index_requires_publish_without_prior_index ... ok
+test domain_pack::tests::reload_index_skips_when_source_fingerprints_match ... ok
+test domain_pack::tests::all_domain_packs_reload_idempotently_and_cover_dsl_surfaces ... FAILED
+test domain_pack::tests::cbu_taxonomy_reload_from_yaml_is_idempotent ... ok
+test domain_pack::tests::reload_index_updates_only_when_fingerprint_changed_but_hash_matches ... ok
+
+failures:
+
+---- domain_pack::tests::all_domain_packs_reload_idempotently_and_cover_dsl_surfaces stdout ----
+
+thread 'domain_pack::tests::all_domain_packs_reload_idempotently_and_cover_dsl_surfaces' (495338) panicked at crates/sem_os_policy/src/domain_pack.rs:1660:14:
+all domain packs reload: domain pack ob-poc.instrument-matrix failed validation: [DomainPackDiagnostic { code: "domain_pack.mutation_requires_hitl", message: "instrument-matrix.attach enables mutation without HITL" }, DomainPackDiagnostic { code: "domain_pack.mutation_not_allowed_for_tier", message: "instrument-matrix.attach enables mutation but pack tier is DryRunOnly" }]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    domain_pack::tests::all_domain_packs_reload_idempotently_and_cover_dsl_surfaces
+
+test result: FAILED. 353 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.60s
+
+error: test failed, to rerun pass `-p sem_os_policy --lib`
+     Running unittests src/lib.rs (target/debug/deps/sem_os_taxonomy-351c773e606f81d4)
+
+running 9 tests
+test builder::tests::unknown_taxonomy_returns_none ... ok
+test builder::tests::builds_tree_for_known_taxonomy ... ok
+test builder::tests::synthetic_root_used_when_no_declared_root ... ok
+test builder::tests::children_sorted_by_sort_order ... ok
+test builder::tests::root_node_has_two_children ... ok
+test builder::tests::build_all_returns_one_tree ... ok
+test builder::tests::member_attached_to_correct_node ... ok
+test builder::tests::json_emit_is_valid ... ok
+test builder::tests::yaml_emit_round_trips ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/debug/deps/sem_os_types-821e8bf915e2c724)
+
+running 20 tests
+test agent_mode::tests::test_default_is_governed ... ok
+test agent_mode::tests::test_domain_gating_governance_governed_only ... ok
+test agent_mode::tests::test_display ... ok
+test agent_mode::tests::test_domain_gating_changeset_research_only ... ok
+test agent_mode::tests::test_domain_gating_both_modes_allowed ... ok
+test agent_mode::tests::test_governed_blocks_authoring ... ok
+test agent_mode::tests::test_domain_gating_maintenance_governed_only ... ok
+test agent_mode::tests::test_introspect_subcommands ... ok
+test agent_mode::tests::test_parse ... ok
+test agent_mode::tests::test_research_allows_authoring ... ok
+test agent_mode::tests::test_verb_gating_governed ... ok
+test agent_mode::tests::test_verb_gating_research ... ok
+test tests::test_fqn_display ... ok
+test tests::test_object_type_display ... ok
+test tests::test_proof_rule_check ... ok
+test agent_mode::tests::test_serde_roundtrip ... ok
+test tests::test_snapshot_meta_new_at_tier ... ok
+test tests::test_security_label_serde ... ok
+test tests::test_snapshot_meta_new_operational ... ok
+test tests::test_snapshot_row_parse_definition ... ok
+
+test result: ok. 20 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests sem_os_core
+
+running 3 tests
+test crates/sem_os_core/src/frontier/hydrator.rs - frontier::hydrator::hydrate_frontier (line 17) ... FAILED
+test crates/sem_os_core/src/ids.rs - ids::object_id_for (line 28) ... ok
+test crates/sem_os_core/src/seeds.rs - seeds::SeedBundle::compute_hash (line 56) ... ok
+
+failures:
+
+---- crates/sem_os_core/src/frontier/hydrator.rs - frontier::hydrator::hydrate_frontier (line 17) stdout ----
+error[E0425]: cannot find value `entity_ref` in this scope
+  --> crates/sem_os_core/src/frontier/hydrator.rs:22:33
+   |
+22 | let frontier = hydrate_frontier(entity_ref, &resolved_template)?;
+   |                                 ^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find value `resolved_template` in this scope
+  --> crates/sem_os_core/src/frontier/hydrator.rs:22:46
+   |
+22 | let frontier = hydrate_frontier(entity_ref, &resolved_template)?;
+   |                                              ^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0603]: module `frontier` is private
+  --> crates/sem_os_core/src/frontier/hydrator.rs:19:15
+   |
+19 | use dsl_core::frontier::EntityRef;
+   |               ^^^^^^^^ private module
+   |
+note: the module `frontier` is defined here
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/lib.rs:23:1
+   |
+23 | pub(crate) mod frontier;
+   | ^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0603]: module `frontier` is private
+  --> crates/sem_os_core/src/frontier/hydrator.rs:20:18
+   |
+20 | use sem_os_core::frontier::hydrate_frontier;
+   |                  ^^^^^^^^ private module
+   |
+note: the module `frontier` is defined here
+  --> crates/sem_os_core/src/lib.rs:19:1
+   |
+19 | pub(crate) mod frontier;  // implementation module — hydrate_frontier re-exported at crate root below
+   | ^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0603]: module `frontier` is private
+  --> crates/sem_os_core/src/frontier/hydrator.rs:24:20
+   |
+24 | Ok::<(), dsl_core::frontier::HydrateFrontierError>(())
+   |                    ^^^^^^^^  -------------------- enum `HydrateFrontierError` is not publicly re-exported
+   |                    |
+   |                    private module
+   |
+note: the module `frontier` is defined here
+  --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/lib.rs:23:1
+   |
+23 | pub(crate) mod frontier;
+   | ^^^^^^^^^^^^^^^^^^^^^^^
+
+error: aborting due to 5 previous errors
+
+Some errors have detailed explanations: E0425, E0603.
+For more information about an error, try `rustc --explain E0425`.
+Couldn't compile the test.
+
+failures:
+    crates/sem_os_core/src/frontier/hydrator.rs - frontier::hydrator::hydrate_frontier (line 17)
+
+test result: FAILED. 2 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.25s
+
+error: doctest failed, to rerun pass `-p sem_os_core --doc`
+   Doc-tests sem_os_ontology
+
+running 2 tests
+test crates/sem_os_ontology/src/attribute_def.rs - attribute_def::AttributeDataType::to_pg_check_value (line 91) ... ok
+test crates/sem_os_ontology/src/attribute_def.rs - attribute_def::AttributeDataType::from_pg_check_value (line 123) ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+   Doc-tests sem_os_policy
+
+running 9 tests
+test crates/sem_os_policy/src/affinity/discovery.rs - affinity::discovery::generate_disambiguation (line 335) ... ok
+test crates/sem_os_policy/src/abac.rs - abac::evaluate_abac_with_evidence_grade (line 152) ... ok
+test crates/sem_os_policy/src/enforce.rs - enforce::enforce_attribute_read (line 57) ... ok
+test crates/sem_os_policy/src/affinity/discovery.rs - affinity::discovery::match_intent (line 112) ... ok
+test crates/sem_os_policy/src/affinity/discovery.rs - affinity::discovery::discover_dsl (line 56) ... ok
+test crates/sem_os_policy/src/affinity/discovery.rs - affinity::discovery::discovery_edges (line 496) ... ok
+test crates/sem_os_policy/src/affinity/discovery.rs - affinity::discovery::synthesize_chain (line 203) ... ok
+test crates/sem_os_policy/src/grounding.rs - grounding::ConstellationModel::from_parts (line 51) ... ok
+test crates/sem_os_policy/src/grounding.rs - grounding::compute_slot_action_surface (line 91) ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.46s
+
+   Doc-tests sem_os_taxonomy
+
+running 1 test
+test crates/sem_os_taxonomy/src/lib.rs - (line 9) ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+   Doc-tests sem_os_types
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+error: 2 targets failed:
+    `-p sem_os_policy --lib`
+    `-p sem_os_core --doc`
