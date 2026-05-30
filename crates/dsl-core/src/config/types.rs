@@ -23,7 +23,7 @@ fn default_version() -> String {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct CsgRulesConfig {
+pub(crate) struct CsgRulesConfig {
     pub version: String,
     #[serde(default)]
     pub constraints: Vec<ConstraintRule>,
@@ -1941,7 +1941,7 @@ pub struct JurisdictionRule {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct CompositeRule {
+pub(crate) struct CompositeRule {
     pub id: String,
     pub name: String,
     pub description: String,

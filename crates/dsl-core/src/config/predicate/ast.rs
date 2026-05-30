@@ -119,7 +119,7 @@ pub enum Validity {
 }
 
 /// State name as authored in YAML.
-pub type State = String;
+pub(crate) type State = String;
 
 /// Comparison operator for attributes and counts.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]

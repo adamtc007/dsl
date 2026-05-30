@@ -1,4 +1,4 @@
-use dsl_core::config::dag::{ClosureType, Dag, EligibilityConstraint};
+use dsl_core::{ClosureType, Dag, EligibilityConstraint, SlotStateMachine};
 
 #[test]
 fn slot_gate_metadata_batch_1a_round_trips() {
@@ -295,7 +295,7 @@ slots:
 "#;
 
     let dag: Dag = serde_yaml::from_str(yaml).expect("predicate binding parses");
-    let dsl_core::config::dag::SlotStateMachine::Structured(machine) =
+    let SlotStateMachine::Structured(machine) =
         dag.slots[0].state_machine.as_ref().expect("state machine")
     else {
         panic!("expected structured state machine");
@@ -326,7 +326,7 @@ slots:
 "#;
 
     let dag: Dag = serde_yaml::from_str(yaml).expect("predicate binding parses");
-    let dsl_core::config::dag::SlotStateMachine::Structured(machine) =
+    let SlotStateMachine::Structured(machine) =
         dag.slots[0].state_machine.as_ref().expect("state machine")
     else {
         panic!("expected structured state machine");
@@ -336,7 +336,7 @@ slots:
 
     let round_trip = serde_yaml::to_string(&dag).expect("serializes");
     let reparsed: Dag = serde_yaml::from_str(&round_trip).expect("round-trip parses");
-    let dsl_core::config::dag::SlotStateMachine::Structured(reparsed_machine) = reparsed.slots[0]
+    let SlotStateMachine::Structured(reparsed_machine) = reparsed.slots[0]
         .state_machine
         .as_ref()
         .expect("state machine")

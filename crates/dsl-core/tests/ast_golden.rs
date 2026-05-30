@@ -9,7 +9,7 @@
 //!
 //! Snapshots are stored in tests/snapshots/ and checked into git.
 
-use dsl_core::parser::parse_program;
+use dsl_core::parse_program;
 
 // =============================================================================
 // CBU domain — 5 verbs

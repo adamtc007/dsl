@@ -1,6 +1,6 @@
 //! Resolver skeleton for SemOS DAG/constellation composition.
 
-pub mod manifest;
+pub(crate) mod manifest;
 mod version;
 
 pub use manifest::{ManifestOptions, ResolverManifest};
@@ -12,11 +12,11 @@ use dsl_types::{
 };
 use std::collections::BTreeMap;
 
-pub use dsl_types::StructuralFacts;
+pub(crate) use dsl_types::StructuralFacts;
 
 pub type WorkspaceId = String;
 pub type ShapeRef = String;
-pub type SlotId = String;
+pub(crate) type SlotId = String;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ResolvedSource {

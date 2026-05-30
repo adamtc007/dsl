@@ -5,10 +5,10 @@
 //! snapshot tests — they are intentionally more brittle so that any parser
 //! change that silently drops a binding is caught immediately.
 
-use dsl_core::{ast::Statement, parser::parse_program};
+use dsl_core::{Statement, parse_program, VerbCall};
 
 /// Helper: parse source and extract the first VerbCall.
-fn first_verb(source: &str) -> dsl_core::VerbCall {
+fn first_verb(source: &str) -> VerbCall {
     let program = parse_program(source).expect("parse failed");
     for stmt in program.statements {
         if let Statement::VerbCall(vc) = stmt {

@@ -1,4 +1,4 @@
-use dsl_core::config::{
+use dsl_core::{
     validate_verbs_config, ConfigLoader, ValidationContext, VerbFlavour, VerbsConfig,
 };
 

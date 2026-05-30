@@ -159,7 +159,7 @@ pub enum StateSelector {
     Set(Vec<String>),
 }
 
-pub use dsl_types::{
+pub(crate) use dsl_types::{
     AuditClass, ClosureType, CompletenessAssertionConfig, EligibilityConstraint, RoleGuard,
 };
 

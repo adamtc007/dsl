@@ -44,7 +44,7 @@ use crate::ast::*;
 // ============================================================================
 
 /// Input type with location tracking
-pub type NomSpan<'a> = LocatedSpan<&'a str>;
+pub(crate) type NomSpan<'a> = LocatedSpan<&'a str>;
 
 // ============================================================================
 // Public API

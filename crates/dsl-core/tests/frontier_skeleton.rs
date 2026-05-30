@@ -1,12 +1,10 @@
 use std::collections::BTreeMap;
 
 use dsl_core::{
-    config::dag::{ClosureType, PredicateBinding},
-    frontier::{EntityRef, FrontierFact, GreenWhenStatus, HydrateFrontierError},
-    resolver::{
-        ResolvedSlot, ResolvedSource, ResolvedTemplate, ResolvedTransition, ResolverProvenance,
-        SlotProvenance, VersionHash,
-    },
+    ClosureType, PredicateBinding,
+    EntityRef, FrontierFact, GreenWhenStatus, HydrateFrontierError, CompletenessAssertionStatus,
+    ResolvedSlot, ResolvedSource, ResolvedTemplate, ResolvedTransition, ResolverProvenance,
+    SlotProvenance, VersionHash,
 };
 use sem_os_core::hydrate_frontier;
 use dsl_types::CompletenessAssertionConfig;
@@ -167,7 +165,7 @@ fn hydrate_frontier_returns_awaiting_completeness_for_open_slot_with_stale_asser
 
     assert_eq!(
         frontier.reachable[0].status,
-        GreenWhenStatus::AwaitingCompleteness(dsl_core::frontier::CompletenessAssertionStatus {
+        GreenWhenStatus::AwaitingCompleteness(CompletenessAssertionStatus {
             assertion: "evidence.state = COMPLETE".to_string(),
             satisfied: false,
         })

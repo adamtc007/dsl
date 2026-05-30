@@ -1,5 +1,5 @@
-use dsl_core::config::{
-    dag::EligibilityConstraint, validate_resolved_template_gate_metadata, DagError,
+use dsl_core::{
+    EligibilityConstraint, validate_resolved_template_gate_metadata, DagError,
     DagValidationContext,
 };
 use sem_os_core::resolver::{resolve_template, ResolverInputs};

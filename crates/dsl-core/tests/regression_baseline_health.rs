@@ -67,7 +67,7 @@ fn snapshots_dir_exists() {
 /// checking that the core parser public API is accessible.
 #[test]
 fn core_parser_api_accessible() {
-    let program = dsl_core::parser::parse_program(r#"(session.info)"#)
+    let program = dsl_core::parse_program(r#"(session.info)"#)
         .expect("parse_program must succeed for a trivial verb call");
     assert_eq!(program.statements.len(), 1);
 }
@@ -75,9 +75,9 @@ fn core_parser_api_accessible() {
 /// Verify compile_to_steps is accessible and produces a non-empty result.
 #[test]
 fn compiler_api_accessible() {
-    let program = dsl_core::parser::parse_program(r#"(cbu.create :name "Test" :jurisdiction "LU")"#)
+    let program = dsl_core::parse_program(r#"(cbu.create :name "Test" :jurisdiction "LU")"#)
         .expect("parse failed");
-    let compiled = dsl_core::compiler::compile_to_steps(&program);
+    let compiled = dsl_core::compile_to_steps(&program);
     assert!(compiled.is_ok(), "compile_to_steps should succeed");
     assert_eq!(compiled.steps.len(), 1);
 }

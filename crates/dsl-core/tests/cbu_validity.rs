@@ -1,12 +1,9 @@
 use std::collections::BTreeMap;
 
 use dsl_core::{
-    config::dag::PredicateBinding,
-    frontier::{EntityRef, FrontierFact, GreenWhenStatus, InvalidFactDetail},
-    resolver::{
-        ResolvedSlot, ResolvedTemplate, ResolvedTransition, ResolverProvenance, SlotProvenance,
-        VersionHash,
-    },
+    PredicateBinding, EntityRef, FrontierFact, GreenWhenStatus, InvalidFactDetail,
+    ResolvedSlot, ResolvedTemplate, ResolvedTransition, ResolverProvenance, SlotProvenance,
+    VersionHash,
 };
 use sem_os_core::hydrate_frontier;
 

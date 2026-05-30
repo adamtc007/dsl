@@ -18,18 +18,18 @@
 //! let verbs = loader.load_verbs()?;
 //! ```
 
-pub mod dag;
-pub mod dag_validator;
-pub mod effect_class;
-pub mod escalation;
-pub mod green_when_coverage;
-pub mod loader;
-pub mod phrase_gen;
-pub mod predicate;                  // used by sem_os_core::frontier::hydrator
-pub mod resource_dependency;
-pub mod runbook_composition;
-pub mod types;
-pub mod validator;
+pub(crate) mod dag;
+pub(crate) mod dag_validator;
+pub(crate) mod effect_class;
+pub(crate) mod escalation;
+pub(crate) mod green_when_coverage;
+pub(crate) mod loader;
+pub(crate) mod phrase_gen;
+pub(crate) mod predicate;                  // used by sem_os_core::frontier::hydrator
+pub(crate) mod resource_dependency;
+pub(crate) mod runbook_composition;
+pub(crate) mod types;
+pub(crate) mod validator;
 
 pub use dag::{load_dags_from_dir, load_domain_pack_owned_dags, Dag, LoadedDag};
 // ob-poc-specific filesystem walkers (validate_constellation_map_dir_*)
@@ -74,7 +74,8 @@ pub use types::{
     SlotType, SourceOfTruth, StateEffect, ThreeAxisDeclaration, TransitionArgs, TransitionEdge,
     VerbBehavior, VerbConfig, VerbConsumes, VerbFlavour, VerbLifecycle, VerbMetadata,
     VerbOutputConfig, VerbProduces, VerbRoleGuard, VerbScope, VerbSentences, VerbStatus, VerbTier,
-    VerbTransitions, VerbsConfig, WarningRule,
+    VerbTransitions, VerbsConfig, WarningRule, PolicyConfig, VerbWriteConfig,
+    BatchPolicyConfig, DynamicVerbConfig, LockAccessConfig, LockModeConfig,
 };
 pub(crate) use validator::StructuralError;
 pub use validator::{

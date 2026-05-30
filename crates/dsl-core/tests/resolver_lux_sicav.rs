@@ -1,6 +1,5 @@
 use dsl_core::{
-    config::dag::{ClosureType, EligibilityConstraint},
-    resolver::ResolvedSource,
+    ClosureType, EligibilityConstraint, ResolvedSource,
 };
 use sem_os_core::resolver::{resolve_template, ResolverInputs};
 mod core_map {

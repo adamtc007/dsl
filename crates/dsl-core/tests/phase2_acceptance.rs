@@ -1,4 +1,4 @@
-use dsl_core::config::{validate_resolved_template_gate_metadata, DagValidationContext};
+use dsl_core::{validate_resolved_template_gate_metadata, DagValidationContext};
 use sem_os_core::resolver::{resolve_template, ResolverInputs};
 use std::{collections::HashSet, path::PathBuf};
 

@@ -12,16 +12,16 @@
 //! preserved — i.e., that a consumer step that uses @cbu in an argument is
 //! not placed before the producer step that binds @cbu.
 
-use dsl_core::{compiler::compile_to_steps, parser::parse_program};
+use dsl_core::{compile_to_steps, parse_program, CompileStep};
 
 /// Compile the source and return the compiled steps.
-fn compile(source: &str) -> Vec<dsl_core::compiler::CompileStep> {
+fn compile(source: &str) -> Vec<CompileStep> {
     let program = parse_program(source).expect("parse failed");
     compile_to_steps(&program).steps
 }
 
 /// Assert that source_stmt indices are strictly increasing in the compiled output.
-fn assert_steps_in_source_order(steps: &[dsl_core::compiler::CompileStep], source: &str) {
+fn assert_steps_in_source_order(steps: &[CompileStep], source: &str) {
     for window in steps.windows(2) {
         let (a, b) = (&window[0], &window[1]);
         assert!(

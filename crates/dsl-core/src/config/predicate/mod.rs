@@ -1,14 +1,16 @@
 //! Machine-readable `green_when` predicate support.
 
-pub mod ast;
-pub mod parser;
+pub(crate) mod ast;
+pub(crate) mod parser;
 
 pub(crate) use ast::{EntityQualifier, RelationScope};
 pub use ast::{
     AttrValue, CmpOp, EntityRef, EntitySetRef,
-    Predicate, State, Validity,
+    Predicate, Validity,
 };
-pub use parser::{parse_green_when, ParseError};
+pub(crate) use ast::State;
+pub use parser::parse_green_when;
+pub(crate) use parser::ParseError;
 
 #[cfg(test)]
 mod integration_tests;

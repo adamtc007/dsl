@@ -16,10 +16,10 @@
 //! Snapshots use `assert_debug_snapshot!` because `CompileStep` and
 //! `CompiledSteps` do not implement `serde::Serialize`.
 
-use dsl_core::{compiler::compile_to_steps, parser::parse_program};
+use dsl_core::{compile_to_steps, parse_program, CompiledSteps};
 
 /// Parse source and compile to steps.  Panics if parsing fails.
-fn compile(source: &str) -> dsl_core::compiler::CompiledSteps {
+fn compile(source: &str) -> CompiledSteps {
     let program = parse_program(source).expect("parse failed");
     compile_to_steps(&program)
 }

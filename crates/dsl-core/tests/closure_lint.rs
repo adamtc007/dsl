@@ -1,5 +1,5 @@
-use dsl_core::config::{
-    dag::PredicateBinding, validate_resolved_template_gate_metadata, DagError, DagValidationContext,
+use dsl_core::{
+    PredicateBinding, validate_resolved_template_gate_metadata, DagError, DagValidationContext,
 };
 use sem_os_core::resolver::{resolve_template, ResolverInputs};
 use std::{

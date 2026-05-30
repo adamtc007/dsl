@@ -1,6 +1,5 @@
 use dsl_core::{
-    config::dag::{ClosureType, EligibilityConstraint, PredicateBinding},
-    resolver::ResolvedSource,
+    ClosureType, EligibilityConstraint, PredicateBinding, ResolvedSource, SlotStateMachine,
 };
 use sem_os_core::resolver::{
     resolve_template, InsertBetween, ResolveError, ResolverInputs, SlotGateMetadataRefinement,
@@ -217,7 +216,7 @@ fn shape_rule_composition_applies_replaceable_predicate_binding_refinement() {
         .iter_mut()
         .find(|slot| slot.id == "cbu")
         .expect("cbu slot loaded");
-    let dsl_core::config::dag::SlotStateMachine::Structured(machine) =
+    let SlotStateMachine::Structured(machine) =
         cbu.state_machine.as_mut().expect("cbu state machine")
     else {
         panic!("cbu state machine should be structured");

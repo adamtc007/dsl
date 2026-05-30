@@ -23,7 +23,7 @@ pub struct ParseError {
 /// # Examples
 ///
 /// ```
-/// use dsl_core::config::predicate::{parse_green_when, Predicate};
+/// use dsl_core::{parse_green_when, Predicate};
 ///
 /// let ast = parse_green_when(
 ///     "board_review exists AND board_review.state = COMPLETE",

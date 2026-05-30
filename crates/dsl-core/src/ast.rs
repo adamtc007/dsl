@@ -689,7 +689,7 @@ impl Span {
 // =============================================================================
 
 /// Visitor trait for walking the AST
-pub trait AstVisitor {
+pub(crate) trait AstVisitor {
     /// Visit a statement
     fn visit_statement(&mut self, stmt: &Statement) {
         match stmt {
@@ -738,7 +738,7 @@ pub trait AstVisitor {
 }
 
 /// Collect all unresolved entity refs in the AST
-pub fn find_unresolved_refs(program: &Program) -> Vec<&AstNode> {
+pub(crate) fn find_unresolved_refs(program: &Program) -> Vec<&AstNode> {
     struct Collector<'a> {
         refs: Vec<&'a AstNode>,
     }
