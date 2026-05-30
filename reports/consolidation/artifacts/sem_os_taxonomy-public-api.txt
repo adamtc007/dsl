@@ -1,0 +1,212 @@
+warning: patch `bpmn-lite-engine v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-engine)` was not used in the crate graph
+warning: patch `bpmn-lite-ffi-grpc v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-ffi-grpc)` was not used in the crate graph
+warning: patch `bpmn-lite-ffi-http v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-ffi-http)` was not used in the crate graph
+warning: patch `bpmn-lite-server v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-server)` was not used in the crate graph
+warning: patch `bpmn-lite-store v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-store)` was not used in the crate graph
+warning: patch `dmn-lite-bridge v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dmn-lite-bridge)` was not used in the crate graph
+warning: patch `dsl-bus-client v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-client)` was not used in the crate graph
+warning: patch `dsl-bus-protocol v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-protocol)` was not used in the crate graph
+warning: patch `dsl-bus-server v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-server)` was not used in the crate graph
+warning: patch `dsl-bus-storage v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-storage)` was not used in the crate graph
+warning: patch `dsl-manifest v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-manifest)` was not used in the crate graph
+warning: patch `ffi-catalogue v0.1.0 (/Users/adamtc007/dev/bpmn-lite/ffi-catalogue)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+    Checking sem_os_ontology v0.1.0 (/Users/adamtc007/dev/sem-os/crates/sem_os_ontology)
+ Documenting sem_os_taxonomy v0.1.0 (/Users/adamtc007/dev/sem-os/crates/sem_os_taxonomy)
+warning: unresolved link to `SnapshotRow`
+ --> crates/sem_os_taxonomy/src/lib.rs:3:60
+  |
+3 | //! Builds a [`TaxonomyTree`] from a flat list of active [`SnapshotRow`]s and
+  |                                                            ^^^^^^^^^^^ no item named `SnapshotRow` in scope
+  |
+  = help: to escape `[` and `]` characters, add '\' before them like `\[` or `\]`
+  = note: `#[warn(rustdoc::broken_intra_doc_links)]` on by default
+
+warning: `sem_os_taxonomy` (lib doc) generated 1 warning
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.98s
+pub mod sem_os_taxonomy
+pub use sem_os_taxonomy::MembershipKind
+pub struct sem_os_taxonomy::MemberSummary
+pub sem_os_taxonomy::MemberSummary::fqn: alloc::string::String
+pub sem_os_taxonomy::MemberSummary::kind: sem_os_ontology::membership::MembershipKind
+pub sem_os_taxonomy::MemberSummary::object_type: alloc::string::String
+impl core::clone::Clone for sem_os_taxonomy::MemberSummary
+pub fn sem_os_taxonomy::MemberSummary::clone(&self) -> sem_os_taxonomy::MemberSummary
+impl core::fmt::Debug for sem_os_taxonomy::MemberSummary
+pub fn sem_os_taxonomy::MemberSummary::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_taxonomy::MemberSummary
+pub fn sem_os_taxonomy::MemberSummary::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_taxonomy::MemberSummary
+pub fn sem_os_taxonomy::MemberSummary::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_taxonomy::MemberSummary
+impl core::marker::Send for sem_os_taxonomy::MemberSummary
+impl core::marker::Sync for sem_os_taxonomy::MemberSummary
+impl core::marker::Unpin for sem_os_taxonomy::MemberSummary
+impl core::marker::UnsafeUnpin for sem_os_taxonomy::MemberSummary
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_taxonomy::MemberSummary
+impl core::panic::unwind_safe::UnwindSafe for sem_os_taxonomy::MemberSummary
+impl<T, U> core::convert::Into<U> for sem_os_taxonomy::MemberSummary where U: core::convert::From<T>
+pub fn sem_os_taxonomy::MemberSummary::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_taxonomy::MemberSummary where U: core::convert::Into<T>
+pub type sem_os_taxonomy::MemberSummary::Error = core::convert::Infallible
+pub fn sem_os_taxonomy::MemberSummary::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_taxonomy::MemberSummary where U: core::convert::TryFrom<T>
+pub type sem_os_taxonomy::MemberSummary::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_taxonomy::MemberSummary::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_taxonomy::MemberSummary where T: core::clone::Clone
+pub type sem_os_taxonomy::MemberSummary::Owned = T
+pub fn sem_os_taxonomy::MemberSummary::clone_into(&self, &mut T)
+pub fn sem_os_taxonomy::MemberSummary::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_taxonomy::MemberSummary where T: 'static + ?core::marker::Sized
+pub fn sem_os_taxonomy::MemberSummary::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_taxonomy::MemberSummary where T: ?core::marker::Sized
+pub fn sem_os_taxonomy::MemberSummary::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_taxonomy::MemberSummary where T: ?core::marker::Sized
+pub fn sem_os_taxonomy::MemberSummary::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_taxonomy::MemberSummary where T: core::clone::Clone
+pub unsafe fn sem_os_taxonomy::MemberSummary::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_taxonomy::MemberSummary
+pub fn sem_os_taxonomy::MemberSummary::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_taxonomy::MemberSummary where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_taxonomy::TaxonomyMeta
+pub sem_os_taxonomy::TaxonomyMeta::classification_axis: core::option::Option<alloc::string::String>
+pub sem_os_taxonomy::TaxonomyMeta::description: alloc::string::String
+pub sem_os_taxonomy::TaxonomyMeta::domain: alloc::string::String
+pub sem_os_taxonomy::TaxonomyMeta::fqn: alloc::string::String
+pub sem_os_taxonomy::TaxonomyMeta::max_depth: core::option::Option<u32>
+pub sem_os_taxonomy::TaxonomyMeta::name: alloc::string::String
+impl core::clone::Clone for sem_os_taxonomy::TaxonomyMeta
+pub fn sem_os_taxonomy::TaxonomyMeta::clone(&self) -> sem_os_taxonomy::TaxonomyMeta
+impl core::fmt::Debug for sem_os_taxonomy::TaxonomyMeta
+pub fn sem_os_taxonomy::TaxonomyMeta::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_taxonomy::TaxonomyMeta
+pub fn sem_os_taxonomy::TaxonomyMeta::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_taxonomy::TaxonomyMeta
+pub fn sem_os_taxonomy::TaxonomyMeta::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_taxonomy::TaxonomyMeta
+impl core::marker::Send for sem_os_taxonomy::TaxonomyMeta
+impl core::marker::Sync for sem_os_taxonomy::TaxonomyMeta
+impl core::marker::Unpin for sem_os_taxonomy::TaxonomyMeta
+impl core::marker::UnsafeUnpin for sem_os_taxonomy::TaxonomyMeta
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_taxonomy::TaxonomyMeta
+impl core::panic::unwind_safe::UnwindSafe for sem_os_taxonomy::TaxonomyMeta
+impl<T, U> core::convert::Into<U> for sem_os_taxonomy::TaxonomyMeta where U: core::convert::From<T>
+pub fn sem_os_taxonomy::TaxonomyMeta::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_taxonomy::TaxonomyMeta where U: core::convert::Into<T>
+pub type sem_os_taxonomy::TaxonomyMeta::Error = core::convert::Infallible
+pub fn sem_os_taxonomy::TaxonomyMeta::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_taxonomy::TaxonomyMeta where U: core::convert::TryFrom<T>
+pub type sem_os_taxonomy::TaxonomyMeta::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_taxonomy::TaxonomyMeta::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_taxonomy::TaxonomyMeta where T: core::clone::Clone
+pub type sem_os_taxonomy::TaxonomyMeta::Owned = T
+pub fn sem_os_taxonomy::TaxonomyMeta::clone_into(&self, &mut T)
+pub fn sem_os_taxonomy::TaxonomyMeta::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_taxonomy::TaxonomyMeta where T: 'static + ?core::marker::Sized
+pub fn sem_os_taxonomy::TaxonomyMeta::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_taxonomy::TaxonomyMeta where T: ?core::marker::Sized
+pub fn sem_os_taxonomy::TaxonomyMeta::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_taxonomy::TaxonomyMeta where T: ?core::marker::Sized
+pub fn sem_os_taxonomy::TaxonomyMeta::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_taxonomy::TaxonomyMeta where T: core::clone::Clone
+pub unsafe fn sem_os_taxonomy::TaxonomyMeta::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_taxonomy::TaxonomyMeta
+pub fn sem_os_taxonomy::TaxonomyMeta::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_taxonomy::TaxonomyMeta where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_taxonomy::TaxonomyTree
+pub sem_os_taxonomy::TaxonomyTree::member_count: usize
+pub sem_os_taxonomy::TaxonomyTree::meta: sem_os_taxonomy::TaxonomyMeta
+pub sem_os_taxonomy::TaxonomyTree::node_count: usize
+pub sem_os_taxonomy::TaxonomyTree::root: sem_os_taxonomy::TaxonomyTreeNode
+impl sem_os_taxonomy::TaxonomyTree
+pub fn sem_os_taxonomy::TaxonomyTree::to_json(&self) -> core::result::Result<alloc::string::String, serde_json::error::Error>
+pub fn sem_os_taxonomy::TaxonomyTree::to_yaml(&self) -> core::result::Result<alloc::string::String, serde_yaml::error::Error>
+impl core::clone::Clone for sem_os_taxonomy::TaxonomyTree
+pub fn sem_os_taxonomy::TaxonomyTree::clone(&self) -> sem_os_taxonomy::TaxonomyTree
+impl core::fmt::Debug for sem_os_taxonomy::TaxonomyTree
+pub fn sem_os_taxonomy::TaxonomyTree::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_taxonomy::TaxonomyTree
+pub fn sem_os_taxonomy::TaxonomyTree::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_taxonomy::TaxonomyTree
+pub fn sem_os_taxonomy::TaxonomyTree::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_taxonomy::TaxonomyTree
+impl core::marker::Send for sem_os_taxonomy::TaxonomyTree
+impl core::marker::Sync for sem_os_taxonomy::TaxonomyTree
+impl core::marker::Unpin for sem_os_taxonomy::TaxonomyTree
+impl core::marker::UnsafeUnpin for sem_os_taxonomy::TaxonomyTree
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_taxonomy::TaxonomyTree
+impl core::panic::unwind_safe::UnwindSafe for sem_os_taxonomy::TaxonomyTree
+impl<T, U> core::convert::Into<U> for sem_os_taxonomy::TaxonomyTree where U: core::convert::From<T>
+pub fn sem_os_taxonomy::TaxonomyTree::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_taxonomy::TaxonomyTree where U: core::convert::Into<T>
+pub type sem_os_taxonomy::TaxonomyTree::Error = core::convert::Infallible
+pub fn sem_os_taxonomy::TaxonomyTree::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_taxonomy::TaxonomyTree where U: core::convert::TryFrom<T>
+pub type sem_os_taxonomy::TaxonomyTree::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_taxonomy::TaxonomyTree::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_taxonomy::TaxonomyTree where T: core::clone::Clone
+pub type sem_os_taxonomy::TaxonomyTree::Owned = T
+pub fn sem_os_taxonomy::TaxonomyTree::clone_into(&self, &mut T)
+pub fn sem_os_taxonomy::TaxonomyTree::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_taxonomy::TaxonomyTree where T: 'static + ?core::marker::Sized
+pub fn sem_os_taxonomy::TaxonomyTree::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_taxonomy::TaxonomyTree where T: ?core::marker::Sized
+pub fn sem_os_taxonomy::TaxonomyTree::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_taxonomy::TaxonomyTree where T: ?core::marker::Sized
+pub fn sem_os_taxonomy::TaxonomyTree::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_taxonomy::TaxonomyTree where T: core::clone::Clone
+pub unsafe fn sem_os_taxonomy::TaxonomyTree::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_taxonomy::TaxonomyTree
+pub fn sem_os_taxonomy::TaxonomyTree::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_taxonomy::TaxonomyTree where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_taxonomy::TaxonomyTreeNode
+pub sem_os_taxonomy::TaxonomyTreeNode::children: alloc::vec::Vec<sem_os_taxonomy::TaxonomyTreeNode>
+pub sem_os_taxonomy::TaxonomyTreeNode::description: core::option::Option<alloc::string::String>
+pub sem_os_taxonomy::TaxonomyTreeNode::fqn: alloc::string::String
+pub sem_os_taxonomy::TaxonomyTreeNode::labels: alloc::collections::btree::map::BTreeMap<alloc::string::String, alloc::string::String>
+pub sem_os_taxonomy::TaxonomyTreeNode::members: alloc::vec::Vec<sem_os_taxonomy::MemberSummary>
+pub sem_os_taxonomy::TaxonomyTreeNode::name: alloc::string::String
+pub sem_os_taxonomy::TaxonomyTreeNode::sort_order: i32
+impl core::clone::Clone for sem_os_taxonomy::TaxonomyTreeNode
+pub fn sem_os_taxonomy::TaxonomyTreeNode::clone(&self) -> sem_os_taxonomy::TaxonomyTreeNode
+impl core::fmt::Debug for sem_os_taxonomy::TaxonomyTreeNode
+pub fn sem_os_taxonomy::TaxonomyTreeNode::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_taxonomy::TaxonomyTreeNode
+pub fn sem_os_taxonomy::TaxonomyTreeNode::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_taxonomy::TaxonomyTreeNode
+pub fn sem_os_taxonomy::TaxonomyTreeNode::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_taxonomy::TaxonomyTreeNode
+impl core::marker::Send for sem_os_taxonomy::TaxonomyTreeNode
+impl core::marker::Sync for sem_os_taxonomy::TaxonomyTreeNode
+impl core::marker::Unpin for sem_os_taxonomy::TaxonomyTreeNode
+impl core::marker::UnsafeUnpin for sem_os_taxonomy::TaxonomyTreeNode
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_taxonomy::TaxonomyTreeNode
+impl core::panic::unwind_safe::UnwindSafe for sem_os_taxonomy::TaxonomyTreeNode
+impl<T, U> core::convert::Into<U> for sem_os_taxonomy::TaxonomyTreeNode where U: core::convert::From<T>
+pub fn sem_os_taxonomy::TaxonomyTreeNode::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_taxonomy::TaxonomyTreeNode where U: core::convert::Into<T>
+pub type sem_os_taxonomy::TaxonomyTreeNode::Error = core::convert::Infallible
+pub fn sem_os_taxonomy::TaxonomyTreeNode::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_taxonomy::TaxonomyTreeNode where U: core::convert::TryFrom<T>
+pub type sem_os_taxonomy::TaxonomyTreeNode::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_taxonomy::TaxonomyTreeNode::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_taxonomy::TaxonomyTreeNode where T: core::clone::Clone
+pub type sem_os_taxonomy::TaxonomyTreeNode::Owned = T
+pub fn sem_os_taxonomy::TaxonomyTreeNode::clone_into(&self, &mut T)
+pub fn sem_os_taxonomy::TaxonomyTreeNode::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_taxonomy::TaxonomyTreeNode where T: 'static + ?core::marker::Sized
+pub fn sem_os_taxonomy::TaxonomyTreeNode::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_taxonomy::TaxonomyTreeNode where T: ?core::marker::Sized
+pub fn sem_os_taxonomy::TaxonomyTreeNode::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_taxonomy::TaxonomyTreeNode where T: ?core::marker::Sized
+pub fn sem_os_taxonomy::TaxonomyTreeNode::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_taxonomy::TaxonomyTreeNode where T: core::clone::Clone
+pub unsafe fn sem_os_taxonomy::TaxonomyTreeNode::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_taxonomy::TaxonomyTreeNode
+pub fn sem_os_taxonomy::TaxonomyTreeNode::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_taxonomy::TaxonomyTreeNode where T: for<'de> serde_core::de::Deserialize<'de>
+pub fn sem_os_taxonomy::build_all_taxonomy_trees(&[sem_os_types::SnapshotRow]) -> alloc::vec::Vec<sem_os_taxonomy::TaxonomyTree>
+pub fn sem_os_taxonomy::build_taxonomy_tree(&[sem_os_types::SnapshotRow], &str) -> core::option::Option<sem_os_taxonomy::TaxonomyTree>

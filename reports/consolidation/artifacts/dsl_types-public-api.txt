@@ -1,0 +1,648 @@
+warning: patch `sem_os_ontology v0.1.0 (/Users/adamtc007/dev/sem-os/crates/sem_os_ontology)` was not used in the crate graph
+warning: patch `sem_os_policy v0.1.0 (/Users/adamtc007/dev/sem-os/crates/sem_os_policy)` was not used in the crate graph
+warning: patch `bpmn-lite-engine v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-engine)` was not used in the crate graph
+warning: patch `bpmn-lite-ffi-grpc v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-ffi-grpc)` was not used in the crate graph
+warning: patch `bpmn-lite-ffi-http v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-ffi-http)` was not used in the crate graph
+warning: patch `bpmn-lite-server v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-server)` was not used in the crate graph
+warning: patch `bpmn-lite-store v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-store)` was not used in the crate graph
+warning: patch `dmn-lite-bridge v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dmn-lite-bridge)` was not used in the crate graph
+warning: patch `dsl-bus-client v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-client)` was not used in the crate graph
+warning: patch `dsl-bus-protocol v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-protocol)` was not used in the crate graph
+warning: patch `dsl-bus-server v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-server)` was not used in the crate graph
+warning: patch `dsl-bus-storage v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-storage)` was not used in the crate graph
+warning: patch `dsl-manifest v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-manifest)` was not used in the crate graph
+warning: patch `ffi-catalogue v0.1.0 (/Users/adamtc007/dev/bpmn-lite/ffi-catalogue)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+ Documenting dsl_types v0.1.0 (/Users/adamtc007/dev/dsl/crates/dsl_types)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.74s
+pub mod dsl_types
+pub enum dsl_types::Cardinality
+pub dsl_types::Cardinality::Mandatory
+pub dsl_types::Cardinality::Optional
+pub dsl_types::Cardinality::Recursive
+pub dsl_types::Cardinality::Root
+impl core::clone::Clone for dsl_types::Cardinality
+pub fn dsl_types::Cardinality::clone(&self) -> dsl_types::Cardinality
+impl core::cmp::Eq for dsl_types::Cardinality
+impl core::cmp::PartialEq for dsl_types::Cardinality
+pub fn dsl_types::Cardinality::eq(&self, &dsl_types::Cardinality) -> bool
+impl core::fmt::Debug for dsl_types::Cardinality
+pub fn dsl_types::Cardinality::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for dsl_types::Cardinality
+impl core::marker::StructuralPartialEq for dsl_types::Cardinality
+impl serde_core::ser::Serialize for dsl_types::Cardinality
+pub fn dsl_types::Cardinality::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_types::Cardinality
+pub fn dsl_types::Cardinality::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_types::Cardinality
+impl core::marker::Send for dsl_types::Cardinality
+impl core::marker::Sync for dsl_types::Cardinality
+impl core::marker::Unpin for dsl_types::Cardinality
+impl core::marker::UnsafeUnpin for dsl_types::Cardinality
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_types::Cardinality
+impl core::panic::unwind_safe::UnwindSafe for dsl_types::Cardinality
+impl<Q, K> equivalent::Equivalent<K> for dsl_types::Cardinality where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::Cardinality::equivalent(&self, &K) -> bool
+impl<Q, K> hashbrown::Equivalent<K> for dsl_types::Cardinality where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::Cardinality::equivalent(&self, &K) -> bool
+impl<T, U> core::convert::Into<U> for dsl_types::Cardinality where U: core::convert::From<T>
+pub fn dsl_types::Cardinality::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for dsl_types::Cardinality where U: core::convert::Into<T>
+pub type dsl_types::Cardinality::Error = core::convert::Infallible
+pub fn dsl_types::Cardinality::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for dsl_types::Cardinality where U: core::convert::TryFrom<T>
+pub type dsl_types::Cardinality::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn dsl_types::Cardinality::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for dsl_types::Cardinality where T: core::clone::Clone
+pub type dsl_types::Cardinality::Owned = T
+pub fn dsl_types::Cardinality::clone_into(&self, &mut T)
+pub fn dsl_types::Cardinality::to_owned(&self) -> T
+impl<T> core::any::Any for dsl_types::Cardinality where T: 'static + ?core::marker::Sized
+pub fn dsl_types::Cardinality::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for dsl_types::Cardinality where T: ?core::marker::Sized
+pub fn dsl_types::Cardinality::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for dsl_types::Cardinality where T: ?core::marker::Sized
+pub fn dsl_types::Cardinality::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for dsl_types::Cardinality where T: core::clone::Clone
+pub unsafe fn dsl_types::Cardinality::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for dsl_types::Cardinality
+pub fn dsl_types::Cardinality::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for dsl_types::Cardinality where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum dsl_types::ClosureType
+pub dsl_types::ClosureType::ClosedBounded
+pub dsl_types::ClosureType::ClosedUnbounded
+pub dsl_types::ClosureType::Open
+impl core::clone::Clone for dsl_types::ClosureType
+pub fn dsl_types::ClosureType::clone(&self) -> dsl_types::ClosureType
+impl core::cmp::Eq for dsl_types::ClosureType
+impl core::cmp::PartialEq for dsl_types::ClosureType
+pub fn dsl_types::ClosureType::eq(&self, &dsl_types::ClosureType) -> bool
+impl core::fmt::Debug for dsl_types::ClosureType
+pub fn dsl_types::ClosureType::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for dsl_types::ClosureType
+impl serde_core::ser::Serialize for dsl_types::ClosureType
+pub fn dsl_types::ClosureType::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_types::ClosureType
+pub fn dsl_types::ClosureType::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_types::ClosureType
+impl core::marker::Send for dsl_types::ClosureType
+impl core::marker::Sync for dsl_types::ClosureType
+impl core::marker::Unpin for dsl_types::ClosureType
+impl core::marker::UnsafeUnpin for dsl_types::ClosureType
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_types::ClosureType
+impl core::panic::unwind_safe::UnwindSafe for dsl_types::ClosureType
+impl<Q, K> equivalent::Equivalent<K> for dsl_types::ClosureType where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::ClosureType::equivalent(&self, &K) -> bool
+impl<Q, K> hashbrown::Equivalent<K> for dsl_types::ClosureType where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::ClosureType::equivalent(&self, &K) -> bool
+impl<T, U> core::convert::Into<U> for dsl_types::ClosureType where U: core::convert::From<T>
+pub fn dsl_types::ClosureType::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for dsl_types::ClosureType where U: core::convert::Into<T>
+pub type dsl_types::ClosureType::Error = core::convert::Infallible
+pub fn dsl_types::ClosureType::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for dsl_types::ClosureType where U: core::convert::TryFrom<T>
+pub type dsl_types::ClosureType::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn dsl_types::ClosureType::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for dsl_types::ClosureType where T: core::clone::Clone
+pub type dsl_types::ClosureType::Owned = T
+pub fn dsl_types::ClosureType::clone_into(&self, &mut T)
+pub fn dsl_types::ClosureType::to_owned(&self) -> T
+impl<T> core::any::Any for dsl_types::ClosureType where T: 'static + ?core::marker::Sized
+pub fn dsl_types::ClosureType::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for dsl_types::ClosureType where T: ?core::marker::Sized
+pub fn dsl_types::ClosureType::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for dsl_types::ClosureType where T: ?core::marker::Sized
+pub fn dsl_types::ClosureType::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for dsl_types::ClosureType where T: core::clone::Clone
+pub unsafe fn dsl_types::ClosureType::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for dsl_types::ClosureType
+pub fn dsl_types::ClosureType::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for dsl_types::ClosureType where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum dsl_types::DependencyEntry
+pub dsl_types::DependencyEntry::Explicit
+pub dsl_types::DependencyEntry::Explicit::min_state: alloc::string::String
+pub dsl_types::DependencyEntry::Explicit::slot: alloc::string::String
+pub dsl_types::DependencyEntry::Simple(alloc::string::String)
+impl dsl_types::DependencyEntry
+pub fn dsl_types::DependencyEntry::min_state(&self) -> &str
+pub fn dsl_types::DependencyEntry::slot_name(&self) -> &str
+impl core::clone::Clone for dsl_types::DependencyEntry
+pub fn dsl_types::DependencyEntry::clone(&self) -> dsl_types::DependencyEntry
+impl core::cmp::Eq for dsl_types::DependencyEntry
+impl core::cmp::PartialEq for dsl_types::DependencyEntry
+pub fn dsl_types::DependencyEntry::eq(&self, &dsl_types::DependencyEntry) -> bool
+impl core::fmt::Debug for dsl_types::DependencyEntry
+pub fn dsl_types::DependencyEntry::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for dsl_types::DependencyEntry
+impl serde_core::ser::Serialize for dsl_types::DependencyEntry
+pub fn dsl_types::DependencyEntry::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_types::DependencyEntry
+pub fn dsl_types::DependencyEntry::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_types::DependencyEntry
+impl core::marker::Send for dsl_types::DependencyEntry
+impl core::marker::Sync for dsl_types::DependencyEntry
+impl core::marker::Unpin for dsl_types::DependencyEntry
+impl core::marker::UnsafeUnpin for dsl_types::DependencyEntry
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_types::DependencyEntry
+impl core::panic::unwind_safe::UnwindSafe for dsl_types::DependencyEntry
+impl<Q, K> equivalent::Equivalent<K> for dsl_types::DependencyEntry where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::DependencyEntry::equivalent(&self, &K) -> bool
+impl<Q, K> hashbrown::Equivalent<K> for dsl_types::DependencyEntry where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::DependencyEntry::equivalent(&self, &K) -> bool
+impl<T, U> core::convert::Into<U> for dsl_types::DependencyEntry where U: core::convert::From<T>
+pub fn dsl_types::DependencyEntry::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for dsl_types::DependencyEntry where U: core::convert::Into<T>
+pub type dsl_types::DependencyEntry::Error = core::convert::Infallible
+pub fn dsl_types::DependencyEntry::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for dsl_types::DependencyEntry where U: core::convert::TryFrom<T>
+pub type dsl_types::DependencyEntry::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn dsl_types::DependencyEntry::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for dsl_types::DependencyEntry where T: core::clone::Clone
+pub type dsl_types::DependencyEntry::Owned = T
+pub fn dsl_types::DependencyEntry::clone_into(&self, &mut T)
+pub fn dsl_types::DependencyEntry::to_owned(&self) -> T
+impl<T> core::any::Any for dsl_types::DependencyEntry where T: 'static + ?core::marker::Sized
+pub fn dsl_types::DependencyEntry::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for dsl_types::DependencyEntry where T: ?core::marker::Sized
+pub fn dsl_types::DependencyEntry::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for dsl_types::DependencyEntry where T: ?core::marker::Sized
+pub fn dsl_types::DependencyEntry::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for dsl_types::DependencyEntry where T: core::clone::Clone
+pub unsafe fn dsl_types::DependencyEntry::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for dsl_types::DependencyEntry
+pub fn dsl_types::DependencyEntry::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for dsl_types::DependencyEntry where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum dsl_types::EligibilityConstraint
+pub dsl_types::EligibilityConstraint::EntityKinds
+pub dsl_types::EligibilityConstraint::EntityKinds::entity_kinds: alloc::vec::Vec<alloc::string::String>
+pub dsl_types::EligibilityConstraint::ShapeTaxonomyPosition
+pub dsl_types::EligibilityConstraint::ShapeTaxonomyPosition::shape_taxonomy_position: alloc::string::String
+impl core::clone::Clone for dsl_types::EligibilityConstraint
+pub fn dsl_types::EligibilityConstraint::clone(&self) -> dsl_types::EligibilityConstraint
+impl core::cmp::Eq for dsl_types::EligibilityConstraint
+impl core::cmp::PartialEq for dsl_types::EligibilityConstraint
+pub fn dsl_types::EligibilityConstraint::eq(&self, &dsl_types::EligibilityConstraint) -> bool
+impl core::fmt::Debug for dsl_types::EligibilityConstraint
+pub fn dsl_types::EligibilityConstraint::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for dsl_types::EligibilityConstraint
+impl serde_core::ser::Serialize for dsl_types::EligibilityConstraint
+pub fn dsl_types::EligibilityConstraint::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_types::EligibilityConstraint
+pub fn dsl_types::EligibilityConstraint::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_types::EligibilityConstraint
+impl core::marker::Send for dsl_types::EligibilityConstraint
+impl core::marker::Sync for dsl_types::EligibilityConstraint
+impl core::marker::Unpin for dsl_types::EligibilityConstraint
+impl core::marker::UnsafeUnpin for dsl_types::EligibilityConstraint
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_types::EligibilityConstraint
+impl core::panic::unwind_safe::UnwindSafe for dsl_types::EligibilityConstraint
+impl<Q, K> equivalent::Equivalent<K> for dsl_types::EligibilityConstraint where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::EligibilityConstraint::equivalent(&self, &K) -> bool
+impl<Q, K> hashbrown::Equivalent<K> for dsl_types::EligibilityConstraint where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::EligibilityConstraint::equivalent(&self, &K) -> bool
+impl<T, U> core::convert::Into<U> for dsl_types::EligibilityConstraint where U: core::convert::From<T>
+pub fn dsl_types::EligibilityConstraint::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for dsl_types::EligibilityConstraint where U: core::convert::Into<T>
+pub type dsl_types::EligibilityConstraint::Error = core::convert::Infallible
+pub fn dsl_types::EligibilityConstraint::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for dsl_types::EligibilityConstraint where U: core::convert::TryFrom<T>
+pub type dsl_types::EligibilityConstraint::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn dsl_types::EligibilityConstraint::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for dsl_types::EligibilityConstraint where T: core::clone::Clone
+pub type dsl_types::EligibilityConstraint::Owned = T
+pub fn dsl_types::EligibilityConstraint::clone_into(&self, &mut T)
+pub fn dsl_types::EligibilityConstraint::to_owned(&self) -> T
+impl<T> core::any::Any for dsl_types::EligibilityConstraint where T: 'static + ?core::marker::Sized
+pub fn dsl_types::EligibilityConstraint::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for dsl_types::EligibilityConstraint where T: ?core::marker::Sized
+pub fn dsl_types::EligibilityConstraint::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for dsl_types::EligibilityConstraint where T: ?core::marker::Sized
+pub fn dsl_types::EligibilityConstraint::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for dsl_types::EligibilityConstraint where T: core::clone::Clone
+pub unsafe fn dsl_types::EligibilityConstraint::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for dsl_types::EligibilityConstraint
+pub fn dsl_types::EligibilityConstraint::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for dsl_types::EligibilityConstraint where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum dsl_types::SlotType
+pub dsl_types::SlotType::Case
+pub dsl_types::SlotType::Cbu
+pub dsl_types::SlotType::Entity
+pub dsl_types::SlotType::EntityGraph
+pub dsl_types::SlotType::Mandate
+pub dsl_types::SlotType::Tollgate
+impl core::clone::Clone for dsl_types::SlotType
+pub fn dsl_types::SlotType::clone(&self) -> dsl_types::SlotType
+impl core::cmp::Eq for dsl_types::SlotType
+impl core::cmp::PartialEq for dsl_types::SlotType
+pub fn dsl_types::SlotType::eq(&self, &dsl_types::SlotType) -> bool
+impl core::fmt::Debug for dsl_types::SlotType
+pub fn dsl_types::SlotType::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for dsl_types::SlotType
+impl core::marker::StructuralPartialEq for dsl_types::SlotType
+impl serde_core::ser::Serialize for dsl_types::SlotType
+pub fn dsl_types::SlotType::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_types::SlotType
+pub fn dsl_types::SlotType::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_types::SlotType
+impl core::marker::Send for dsl_types::SlotType
+impl core::marker::Sync for dsl_types::SlotType
+impl core::marker::Unpin for dsl_types::SlotType
+impl core::marker::UnsafeUnpin for dsl_types::SlotType
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_types::SlotType
+impl core::panic::unwind_safe::UnwindSafe for dsl_types::SlotType
+impl<Q, K> equivalent::Equivalent<K> for dsl_types::SlotType where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::SlotType::equivalent(&self, &K) -> bool
+impl<Q, K> hashbrown::Equivalent<K> for dsl_types::SlotType where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::SlotType::equivalent(&self, &K) -> bool
+impl<T, U> core::convert::Into<U> for dsl_types::SlotType where U: core::convert::From<T>
+pub fn dsl_types::SlotType::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for dsl_types::SlotType where U: core::convert::Into<T>
+pub type dsl_types::SlotType::Error = core::convert::Infallible
+pub fn dsl_types::SlotType::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for dsl_types::SlotType where U: core::convert::TryFrom<T>
+pub type dsl_types::SlotType::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn dsl_types::SlotType::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for dsl_types::SlotType where T: core::clone::Clone
+pub type dsl_types::SlotType::Owned = T
+pub fn dsl_types::SlotType::clone_into(&self, &mut T)
+pub fn dsl_types::SlotType::to_owned(&self) -> T
+impl<T> core::any::Any for dsl_types::SlotType where T: 'static + ?core::marker::Sized
+pub fn dsl_types::SlotType::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for dsl_types::SlotType where T: ?core::marker::Sized
+pub fn dsl_types::SlotType::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for dsl_types::SlotType where T: ?core::marker::Sized
+pub fn dsl_types::SlotType::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for dsl_types::SlotType where T: core::clone::Clone
+pub unsafe fn dsl_types::SlotType::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for dsl_types::SlotType
+pub fn dsl_types::SlotType::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for dsl_types::SlotType where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum dsl_types::VerbPaletteEntry
+pub dsl_types::VerbPaletteEntry::Gated
+pub dsl_types::VerbPaletteEntry::Gated::verb: alloc::string::String
+pub dsl_types::VerbPaletteEntry::Gated::when: dsl_types::constellation_map_def::VerbAvailability
+pub dsl_types::VerbPaletteEntry::Simple(alloc::string::String)
+impl dsl_types::VerbPaletteEntry
+pub fn dsl_types::VerbPaletteEntry::verb_fqn(&self) -> &str
+impl core::clone::Clone for dsl_types::VerbPaletteEntry
+pub fn dsl_types::VerbPaletteEntry::clone(&self) -> dsl_types::VerbPaletteEntry
+impl core::cmp::Eq for dsl_types::VerbPaletteEntry
+impl core::cmp::PartialEq for dsl_types::VerbPaletteEntry
+pub fn dsl_types::VerbPaletteEntry::eq(&self, &dsl_types::VerbPaletteEntry) -> bool
+impl core::fmt::Debug for dsl_types::VerbPaletteEntry
+pub fn dsl_types::VerbPaletteEntry::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for dsl_types::VerbPaletteEntry
+impl serde_core::ser::Serialize for dsl_types::VerbPaletteEntry
+pub fn dsl_types::VerbPaletteEntry::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_types::VerbPaletteEntry
+pub fn dsl_types::VerbPaletteEntry::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_types::VerbPaletteEntry
+impl core::marker::Send for dsl_types::VerbPaletteEntry
+impl core::marker::Sync for dsl_types::VerbPaletteEntry
+impl core::marker::Unpin for dsl_types::VerbPaletteEntry
+impl core::marker::UnsafeUnpin for dsl_types::VerbPaletteEntry
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_types::VerbPaletteEntry
+impl core::panic::unwind_safe::UnwindSafe for dsl_types::VerbPaletteEntry
+impl<Q, K> equivalent::Equivalent<K> for dsl_types::VerbPaletteEntry where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::VerbPaletteEntry::equivalent(&self, &K) -> bool
+impl<Q, K> hashbrown::Equivalent<K> for dsl_types::VerbPaletteEntry where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::VerbPaletteEntry::equivalent(&self, &K) -> bool
+impl<T, U> core::convert::Into<U> for dsl_types::VerbPaletteEntry where U: core::convert::From<T>
+pub fn dsl_types::VerbPaletteEntry::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for dsl_types::VerbPaletteEntry where U: core::convert::Into<T>
+pub type dsl_types::VerbPaletteEntry::Error = core::convert::Infallible
+pub fn dsl_types::VerbPaletteEntry::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for dsl_types::VerbPaletteEntry where U: core::convert::TryFrom<T>
+pub type dsl_types::VerbPaletteEntry::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn dsl_types::VerbPaletteEntry::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for dsl_types::VerbPaletteEntry where T: core::clone::Clone
+pub type dsl_types::VerbPaletteEntry::Owned = T
+pub fn dsl_types::VerbPaletteEntry::clone_into(&self, &mut T)
+pub fn dsl_types::VerbPaletteEntry::to_owned(&self) -> T
+impl<T> core::any::Any for dsl_types::VerbPaletteEntry where T: 'static + ?core::marker::Sized
+pub fn dsl_types::VerbPaletteEntry::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for dsl_types::VerbPaletteEntry where T: ?core::marker::Sized
+pub fn dsl_types::VerbPaletteEntry::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for dsl_types::VerbPaletteEntry where T: ?core::marker::Sized
+pub fn dsl_types::VerbPaletteEntry::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for dsl_types::VerbPaletteEntry where T: core::clone::Clone
+pub unsafe fn dsl_types::VerbPaletteEntry::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for dsl_types::VerbPaletteEntry
+pub fn dsl_types::VerbPaletteEntry::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for dsl_types::VerbPaletteEntry where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct dsl_types::CompletenessAssertionConfig
+pub dsl_types::CompletenessAssertionConfig::description: core::option::Option<alloc::string::String>
+pub dsl_types::CompletenessAssertionConfig::extra: alloc::collections::btree::map::BTreeMap<alloc::string::String, serde_yaml::value::Value>
+pub dsl_types::CompletenessAssertionConfig::predicate: core::option::Option<alloc::string::String>
+impl core::clone::Clone for dsl_types::CompletenessAssertionConfig
+pub fn dsl_types::CompletenessAssertionConfig::clone(&self) -> dsl_types::CompletenessAssertionConfig
+impl core::fmt::Debug for dsl_types::CompletenessAssertionConfig
+pub fn dsl_types::CompletenessAssertionConfig::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for dsl_types::CompletenessAssertionConfig
+pub fn dsl_types::CompletenessAssertionConfig::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_types::CompletenessAssertionConfig
+pub fn dsl_types::CompletenessAssertionConfig::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_types::CompletenessAssertionConfig
+impl core::marker::Send for dsl_types::CompletenessAssertionConfig
+impl core::marker::Sync for dsl_types::CompletenessAssertionConfig
+impl core::marker::Unpin for dsl_types::CompletenessAssertionConfig
+impl core::marker::UnsafeUnpin for dsl_types::CompletenessAssertionConfig
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_types::CompletenessAssertionConfig
+impl core::panic::unwind_safe::UnwindSafe for dsl_types::CompletenessAssertionConfig
+impl<T, U> core::convert::Into<U> for dsl_types::CompletenessAssertionConfig where U: core::convert::From<T>
+pub fn dsl_types::CompletenessAssertionConfig::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for dsl_types::CompletenessAssertionConfig where U: core::convert::Into<T>
+pub type dsl_types::CompletenessAssertionConfig::Error = core::convert::Infallible
+pub fn dsl_types::CompletenessAssertionConfig::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for dsl_types::CompletenessAssertionConfig where U: core::convert::TryFrom<T>
+pub type dsl_types::CompletenessAssertionConfig::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn dsl_types::CompletenessAssertionConfig::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for dsl_types::CompletenessAssertionConfig where T: core::clone::Clone
+pub type dsl_types::CompletenessAssertionConfig::Owned = T
+pub fn dsl_types::CompletenessAssertionConfig::clone_into(&self, &mut T)
+pub fn dsl_types::CompletenessAssertionConfig::to_owned(&self) -> T
+impl<T> core::any::Any for dsl_types::CompletenessAssertionConfig where T: 'static + ?core::marker::Sized
+pub fn dsl_types::CompletenessAssertionConfig::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for dsl_types::CompletenessAssertionConfig where T: ?core::marker::Sized
+pub fn dsl_types::CompletenessAssertionConfig::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for dsl_types::CompletenessAssertionConfig where T: ?core::marker::Sized
+pub fn dsl_types::CompletenessAssertionConfig::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for dsl_types::CompletenessAssertionConfig where T: core::clone::Clone
+pub unsafe fn dsl_types::CompletenessAssertionConfig::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for dsl_types::CompletenessAssertionConfig
+pub fn dsl_types::CompletenessAssertionConfig::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for dsl_types::CompletenessAssertionConfig where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct dsl_types::ConstellationMapDefBody
+pub dsl_types::ConstellationMapDefBody::constellation: alloc::string::String
+pub dsl_types::ConstellationMapDefBody::description: core::option::Option<alloc::string::String>
+pub dsl_types::ConstellationMapDefBody::fqn: alloc::string::String
+pub dsl_types::ConstellationMapDefBody::jurisdiction: alloc::string::String
+pub dsl_types::ConstellationMapDefBody::slots: alloc::collections::btree::map::BTreeMap<alloc::string::String, dsl_types::SlotDef>
+impl core::clone::Clone for dsl_types::ConstellationMapDefBody
+pub fn dsl_types::ConstellationMapDefBody::clone(&self) -> dsl_types::ConstellationMapDefBody
+impl core::fmt::Debug for dsl_types::ConstellationMapDefBody
+pub fn dsl_types::ConstellationMapDefBody::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for dsl_types::ConstellationMapDefBody
+pub fn dsl_types::ConstellationMapDefBody::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_types::ConstellationMapDefBody
+pub fn dsl_types::ConstellationMapDefBody::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_types::ConstellationMapDefBody
+impl core::marker::Send for dsl_types::ConstellationMapDefBody
+impl core::marker::Sync for dsl_types::ConstellationMapDefBody
+impl core::marker::Unpin for dsl_types::ConstellationMapDefBody
+impl core::marker::UnsafeUnpin for dsl_types::ConstellationMapDefBody
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_types::ConstellationMapDefBody
+impl core::panic::unwind_safe::UnwindSafe for dsl_types::ConstellationMapDefBody
+impl<T, U> core::convert::Into<U> for dsl_types::ConstellationMapDefBody where U: core::convert::From<T>
+pub fn dsl_types::ConstellationMapDefBody::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for dsl_types::ConstellationMapDefBody where U: core::convert::Into<T>
+pub type dsl_types::ConstellationMapDefBody::Error = core::convert::Infallible
+pub fn dsl_types::ConstellationMapDefBody::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for dsl_types::ConstellationMapDefBody where U: core::convert::TryFrom<T>
+pub type dsl_types::ConstellationMapDefBody::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn dsl_types::ConstellationMapDefBody::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for dsl_types::ConstellationMapDefBody where T: core::clone::Clone
+pub type dsl_types::ConstellationMapDefBody::Owned = T
+pub fn dsl_types::ConstellationMapDefBody::clone_into(&self, &mut T)
+pub fn dsl_types::ConstellationMapDefBody::to_owned(&self) -> T
+impl<T> core::any::Any for dsl_types::ConstellationMapDefBody where T: 'static + ?core::marker::Sized
+pub fn dsl_types::ConstellationMapDefBody::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for dsl_types::ConstellationMapDefBody where T: ?core::marker::Sized
+pub fn dsl_types::ConstellationMapDefBody::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for dsl_types::ConstellationMapDefBody where T: ?core::marker::Sized
+pub fn dsl_types::ConstellationMapDefBody::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for dsl_types::ConstellationMapDefBody where T: core::clone::Clone
+pub unsafe fn dsl_types::ConstellationMapDefBody::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for dsl_types::ConstellationMapDefBody
+pub fn dsl_types::ConstellationMapDefBody::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for dsl_types::ConstellationMapDefBody where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct dsl_types::JoinDef
+pub dsl_types::JoinDef::child_fk: alloc::string::String
+pub dsl_types::JoinDef::filter_column: core::option::Option<alloc::string::String>
+pub dsl_types::JoinDef::filter_value: core::option::Option<alloc::string::String>
+pub dsl_types::JoinDef::parent_fk: alloc::string::String
+pub dsl_types::JoinDef::via: alloc::string::String
+impl core::clone::Clone for dsl_types::JoinDef
+pub fn dsl_types::JoinDef::clone(&self) -> dsl_types::JoinDef
+impl core::cmp::Eq for dsl_types::JoinDef
+impl core::cmp::PartialEq for dsl_types::JoinDef
+pub fn dsl_types::JoinDef::eq(&self, &dsl_types::JoinDef) -> bool
+impl core::fmt::Debug for dsl_types::JoinDef
+pub fn dsl_types::JoinDef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for dsl_types::JoinDef
+impl serde_core::ser::Serialize for dsl_types::JoinDef
+pub fn dsl_types::JoinDef::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_types::JoinDef
+pub fn dsl_types::JoinDef::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_types::JoinDef
+impl core::marker::Send for dsl_types::JoinDef
+impl core::marker::Sync for dsl_types::JoinDef
+impl core::marker::Unpin for dsl_types::JoinDef
+impl core::marker::UnsafeUnpin for dsl_types::JoinDef
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_types::JoinDef
+impl core::panic::unwind_safe::UnwindSafe for dsl_types::JoinDef
+impl<Q, K> equivalent::Equivalent<K> for dsl_types::JoinDef where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::JoinDef::equivalent(&self, &K) -> bool
+impl<Q, K> hashbrown::Equivalent<K> for dsl_types::JoinDef where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::JoinDef::equivalent(&self, &K) -> bool
+impl<T, U> core::convert::Into<U> for dsl_types::JoinDef where U: core::convert::From<T>
+pub fn dsl_types::JoinDef::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for dsl_types::JoinDef where U: core::convert::Into<T>
+pub type dsl_types::JoinDef::Error = core::convert::Infallible
+pub fn dsl_types::JoinDef::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for dsl_types::JoinDef where U: core::convert::TryFrom<T>
+pub type dsl_types::JoinDef::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn dsl_types::JoinDef::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for dsl_types::JoinDef where T: core::clone::Clone
+pub type dsl_types::JoinDef::Owned = T
+pub fn dsl_types::JoinDef::clone_into(&self, &mut T)
+pub fn dsl_types::JoinDef::to_owned(&self) -> T
+impl<T> core::any::Any for dsl_types::JoinDef where T: 'static + ?core::marker::Sized
+pub fn dsl_types::JoinDef::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for dsl_types::JoinDef where T: ?core::marker::Sized
+pub fn dsl_types::JoinDef::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for dsl_types::JoinDef where T: ?core::marker::Sized
+pub fn dsl_types::JoinDef::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for dsl_types::JoinDef where T: core::clone::Clone
+pub unsafe fn dsl_types::JoinDef::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for dsl_types::JoinDef
+pub fn dsl_types::JoinDef::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for dsl_types::JoinDef where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct dsl_types::RoleGuard
+pub dsl_types::RoleGuard::all_of: alloc::vec::Vec<alloc::string::String>
+pub dsl_types::RoleGuard::any_of: alloc::vec::Vec<alloc::string::String>
+impl core::clone::Clone for dsl_types::RoleGuard
+pub fn dsl_types::RoleGuard::clone(&self) -> dsl_types::RoleGuard
+impl core::cmp::Eq for dsl_types::RoleGuard
+impl core::cmp::PartialEq for dsl_types::RoleGuard
+pub fn dsl_types::RoleGuard::eq(&self, &dsl_types::RoleGuard) -> bool
+impl core::fmt::Debug for dsl_types::RoleGuard
+pub fn dsl_types::RoleGuard::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for dsl_types::RoleGuard
+impl serde_core::ser::Serialize for dsl_types::RoleGuard
+pub fn dsl_types::RoleGuard::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_types::RoleGuard
+pub fn dsl_types::RoleGuard::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_types::RoleGuard
+impl core::marker::Send for dsl_types::RoleGuard
+impl core::marker::Sync for dsl_types::RoleGuard
+impl core::marker::Unpin for dsl_types::RoleGuard
+impl core::marker::UnsafeUnpin for dsl_types::RoleGuard
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_types::RoleGuard
+impl core::panic::unwind_safe::UnwindSafe for dsl_types::RoleGuard
+impl<Q, K> equivalent::Equivalent<K> for dsl_types::RoleGuard where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::RoleGuard::equivalent(&self, &K) -> bool
+impl<Q, K> hashbrown::Equivalent<K> for dsl_types::RoleGuard where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::RoleGuard::equivalent(&self, &K) -> bool
+impl<T, U> core::convert::Into<U> for dsl_types::RoleGuard where U: core::convert::From<T>
+pub fn dsl_types::RoleGuard::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for dsl_types::RoleGuard where U: core::convert::Into<T>
+pub type dsl_types::RoleGuard::Error = core::convert::Infallible
+pub fn dsl_types::RoleGuard::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for dsl_types::RoleGuard where U: core::convert::TryFrom<T>
+pub type dsl_types::RoleGuard::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn dsl_types::RoleGuard::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for dsl_types::RoleGuard where T: core::clone::Clone
+pub type dsl_types::RoleGuard::Owned = T
+pub fn dsl_types::RoleGuard::clone_into(&self, &mut T)
+pub fn dsl_types::RoleGuard::to_owned(&self) -> T
+impl<T> core::any::Any for dsl_types::RoleGuard where T: 'static + ?core::marker::Sized
+pub fn dsl_types::RoleGuard::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for dsl_types::RoleGuard where T: ?core::marker::Sized
+pub fn dsl_types::RoleGuard::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for dsl_types::RoleGuard where T: ?core::marker::Sized
+pub fn dsl_types::RoleGuard::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for dsl_types::RoleGuard where T: core::clone::Clone
+pub unsafe fn dsl_types::RoleGuard::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for dsl_types::RoleGuard
+pub fn dsl_types::RoleGuard::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for dsl_types::RoleGuard where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct dsl_types::SlotDef
+pub dsl_types::SlotDef::addition_predicates: alloc::vec::Vec<alloc::string::String>
+pub dsl_types::SlotDef::additive_addition_predicates: alloc::vec::Vec<alloc::string::String>
+pub dsl_types::SlotDef::additive_aggregate_breach_checks: alloc::vec::Vec<alloc::string::String>
+pub dsl_types::SlotDef::additive_attachment_predicates: alloc::vec::Vec<alloc::string::String>
+pub dsl_types::SlotDef::aggregate_breach_checks: alloc::vec::Vec<alloc::string::String>
+pub dsl_types::SlotDef::attachment_predicates: alloc::vec::Vec<alloc::string::String>
+pub dsl_types::SlotDef::audit_class: core::option::Option<dsl_types::AuditClass>
+pub dsl_types::SlotDef::cardinality: dsl_types::Cardinality
+pub dsl_types::SlotDef::cardinality_max: core::option::Option<u64>
+pub dsl_types::SlotDef::children: alloc::collections::btree::map::BTreeMap<alloc::string::String, dsl_types::SlotDef>
+pub dsl_types::SlotDef::closure: core::option::Option<dsl_types::ClosureType>
+pub dsl_types::SlotDef::completeness_assertion: core::option::Option<dsl_types::CompletenessAssertionConfig>
+pub dsl_types::SlotDef::depends_on: alloc::vec::Vec<dsl_types::DependencyEntry>
+pub dsl_types::SlotDef::edge_overlays: alloc::vec::Vec<alloc::string::String>
+pub dsl_types::SlotDef::eligibility: core::option::Option<dsl_types::EligibilityConstraint>
+pub dsl_types::SlotDef::entity_kinds: alloc::vec::Vec<alloc::string::String>
+pub dsl_types::SlotDef::entry_state: core::option::Option<alloc::string::String>
+pub dsl_types::SlotDef::join: core::option::Option<dsl_types::JoinDef>
+pub dsl_types::SlotDef::justification_required: core::option::Option<bool>
+pub dsl_types::SlotDef::max_depth: core::option::Option<usize>
+pub dsl_types::SlotDef::occurrence: core::option::Option<usize>
+pub dsl_types::SlotDef::overlays: alloc::vec::Vec<alloc::string::String>
+pub dsl_types::SlotDef::pk: core::option::Option<alloc::string::String>
+pub dsl_types::SlotDef::placeholder: core::option::Option<alloc::string::String>
+pub dsl_types::SlotDef::role_guard: core::option::Option<dsl_types::RoleGuard>
+pub dsl_types::SlotDef::slot_type: dsl_types::SlotType
+pub dsl_types::SlotDef::state_machine: core::option::Option<alloc::string::String>
+pub dsl_types::SlotDef::table: core::option::Option<alloc::string::String>
+pub dsl_types::SlotDef::verbs: alloc::collections::btree::map::BTreeMap<alloc::string::String, dsl_types::VerbPaletteEntry>
+impl core::clone::Clone for dsl_types::SlotDef
+pub fn dsl_types::SlotDef::clone(&self) -> dsl_types::SlotDef
+impl core::fmt::Debug for dsl_types::SlotDef
+pub fn dsl_types::SlotDef::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for dsl_types::SlotDef
+pub fn dsl_types::SlotDef::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_types::SlotDef
+pub fn dsl_types::SlotDef::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_types::SlotDef
+impl core::marker::Send for dsl_types::SlotDef
+impl core::marker::Sync for dsl_types::SlotDef
+impl core::marker::Unpin for dsl_types::SlotDef
+impl core::marker::UnsafeUnpin for dsl_types::SlotDef
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_types::SlotDef
+impl core::panic::unwind_safe::UnwindSafe for dsl_types::SlotDef
+impl<T, U> core::convert::Into<U> for dsl_types::SlotDef where U: core::convert::From<T>
+pub fn dsl_types::SlotDef::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for dsl_types::SlotDef where U: core::convert::Into<T>
+pub type dsl_types::SlotDef::Error = core::convert::Infallible
+pub fn dsl_types::SlotDef::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for dsl_types::SlotDef where U: core::convert::TryFrom<T>
+pub type dsl_types::SlotDef::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn dsl_types::SlotDef::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for dsl_types::SlotDef where T: core::clone::Clone
+pub type dsl_types::SlotDef::Owned = T
+pub fn dsl_types::SlotDef::clone_into(&self, &mut T)
+pub fn dsl_types::SlotDef::to_owned(&self) -> T
+impl<T> core::any::Any for dsl_types::SlotDef where T: 'static + ?core::marker::Sized
+pub fn dsl_types::SlotDef::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for dsl_types::SlotDef where T: ?core::marker::Sized
+pub fn dsl_types::SlotDef::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for dsl_types::SlotDef where T: ?core::marker::Sized
+pub fn dsl_types::SlotDef::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for dsl_types::SlotDef where T: core::clone::Clone
+pub unsafe fn dsl_types::SlotDef::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for dsl_types::SlotDef
+pub fn dsl_types::SlotDef::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for dsl_types::SlotDef where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct dsl_types::StructuralFacts
+pub dsl_types::StructuralFacts::allowed_structure_types: alloc::vec::Vec<alloc::string::String>
+pub dsl_types::StructuralFacts::deferred_roles: alloc::vec::Vec<alloc::string::String>
+pub dsl_types::StructuralFacts::document_bundles: alloc::vec::Vec<alloc::string::String>
+pub dsl_types::StructuralFacts::jurisdiction: core::option::Option<alloc::string::String>
+pub dsl_types::StructuralFacts::optional_roles: alloc::vec::Vec<alloc::string::String>
+pub dsl_types::StructuralFacts::required_roles: alloc::vec::Vec<alloc::string::String>
+pub dsl_types::StructuralFacts::structure_type: core::option::Option<alloc::string::String>
+pub dsl_types::StructuralFacts::trading_profile_type: core::option::Option<alloc::string::String>
+impl core::clone::Clone for dsl_types::StructuralFacts
+pub fn dsl_types::StructuralFacts::clone(&self) -> dsl_types::StructuralFacts
+impl core::cmp::Eq for dsl_types::StructuralFacts
+impl core::cmp::PartialEq for dsl_types::StructuralFacts
+pub fn dsl_types::StructuralFacts::eq(&self, &dsl_types::StructuralFacts) -> bool
+impl core::default::Default for dsl_types::StructuralFacts
+pub fn dsl_types::StructuralFacts::default() -> dsl_types::StructuralFacts
+impl core::fmt::Debug for dsl_types::StructuralFacts
+pub fn dsl_types::StructuralFacts::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for dsl_types::StructuralFacts
+impl serde_core::ser::Serialize for dsl_types::StructuralFacts
+pub fn dsl_types::StructuralFacts::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_types::StructuralFacts
+pub fn dsl_types::StructuralFacts::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_types::StructuralFacts
+impl core::marker::Send for dsl_types::StructuralFacts
+impl core::marker::Sync for dsl_types::StructuralFacts
+impl core::marker::Unpin for dsl_types::StructuralFacts
+impl core::marker::UnsafeUnpin for dsl_types::StructuralFacts
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_types::StructuralFacts
+impl core::panic::unwind_safe::UnwindSafe for dsl_types::StructuralFacts
+impl<Q, K> equivalent::Equivalent<K> for dsl_types::StructuralFacts where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::StructuralFacts::equivalent(&self, &K) -> bool
+impl<Q, K> hashbrown::Equivalent<K> for dsl_types::StructuralFacts where Q: core::cmp::Eq + ?core::marker::Sized, K: core::borrow::Borrow<Q> + ?core::marker::Sized
+pub fn dsl_types::StructuralFacts::equivalent(&self, &K) -> bool
+impl<T, U> core::convert::Into<U> for dsl_types::StructuralFacts where U: core::convert::From<T>
+pub fn dsl_types::StructuralFacts::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for dsl_types::StructuralFacts where U: core::convert::Into<T>
+pub type dsl_types::StructuralFacts::Error = core::convert::Infallible
+pub fn dsl_types::StructuralFacts::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for dsl_types::StructuralFacts where U: core::convert::TryFrom<T>
+pub type dsl_types::StructuralFacts::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn dsl_types::StructuralFacts::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for dsl_types::StructuralFacts where T: core::clone::Clone
+pub type dsl_types::StructuralFacts::Owned = T
+pub fn dsl_types::StructuralFacts::clone_into(&self, &mut T)
+pub fn dsl_types::StructuralFacts::to_owned(&self) -> T
+impl<T> core::any::Any for dsl_types::StructuralFacts where T: 'static + ?core::marker::Sized
+pub fn dsl_types::StructuralFacts::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for dsl_types::StructuralFacts where T: ?core::marker::Sized
+pub fn dsl_types::StructuralFacts::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for dsl_types::StructuralFacts where T: ?core::marker::Sized
+pub fn dsl_types::StructuralFacts::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for dsl_types::StructuralFacts where T: core::clone::Clone
+pub unsafe fn dsl_types::StructuralFacts::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for dsl_types::StructuralFacts
+pub fn dsl_types::StructuralFacts::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for dsl_types::StructuralFacts where T: for<'de> serde_core::de::Deserialize<'de>
+pub type dsl_types::AuditClass = alloc::string::String

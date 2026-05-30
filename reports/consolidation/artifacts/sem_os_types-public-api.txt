@@ -1,0 +1,2058 @@
+warning: patch `bpmn-lite-engine v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-engine)` was not used in the crate graph
+warning: patch `bpmn-lite-ffi-grpc v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-ffi-grpc)` was not used in the crate graph
+warning: patch `bpmn-lite-ffi-http v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-ffi-http)` was not used in the crate graph
+warning: patch `bpmn-lite-server v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-server)` was not used in the crate graph
+warning: patch `bpmn-lite-store v0.1.0 (/Users/adamtc007/dev/bpmn-lite/bpmn-lite-store)` was not used in the crate graph
+warning: patch `dmn-lite-bridge v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dmn-lite-bridge)` was not used in the crate graph
+warning: patch `dsl-bus-client v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-client)` was not used in the crate graph
+warning: patch `dsl-bus-protocol v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-protocol)` was not used in the crate graph
+warning: patch `dsl-bus-server v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-server)` was not used in the crate graph
+warning: patch `dsl-bus-storage v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-bus-storage)` was not used in the crate graph
+warning: patch `dsl-manifest v0.1.0 (/Users/adamtc007/dev/bpmn-lite/dsl-manifest)` was not used in the crate graph
+warning: patch `ffi-catalogue v0.1.0 (/Users/adamtc007/dev/bpmn-lite/ffi-catalogue)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+   Compiling proc-macro2 v1.0.106
+   Compiling quote v1.0.45
+   Compiling unicode-ident v1.0.24
+   Compiling serde_core v1.0.228
+   Compiling autocfg v1.5.1
+   Compiling libc v0.2.186
+   Compiling rustversion v1.0.22
+   Compiling serde v1.0.228
+   Compiling zmij v1.0.21
+   Compiling getrandom v0.4.2
+   Compiling serde_json v1.0.150
+   Compiling num-traits v0.2.19
+    Checking core-foundation-sys v0.8.7
+   Compiling heck v0.5.0
+    Checking cfg-if v1.0.4
+    Checking memchr v2.8.0
+    Checking sha1_smol v1.0.1
+    Checking iana-time-zone v0.1.65
+    Checking itoa v1.0.18
+   Compiling syn v2.0.117
+    Checking uuid v1.23.1
+   Compiling serde_derive v1.0.228
+   Compiling strum_macros v0.26.4
+    Checking strum v0.26.3
+    Checking chrono v0.4.44
+ Documenting sem_os_types v0.1.0 (/Users/adamtc007/dev/sem-os/crates/sem_os_types)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.08s
+pub mod sem_os_types
+pub mod sem_os_types::agent_mode
+pub enum sem_os_types::agent_mode::AgentMode
+pub sem_os_types::agent_mode::AgentMode::Governed
+pub sem_os_types::agent_mode::AgentMode::Maintenance
+pub sem_os_types::agent_mode::AgentMode::Research
+impl sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::allowed_introspect_subcommands(&self) -> &[&str]
+pub fn sem_os_types::agent_mode::AgentMode::allows_authoring(&self) -> bool
+pub fn sem_os_types::agent_mode::AgentMode::allows_business_verbs(&self) -> bool
+pub fn sem_os_types::agent_mode::AgentMode::allows_full_introspect(&self) -> bool
+pub fn sem_os_types::agent_mode::AgentMode::allows_maintenance(&self) -> bool
+pub fn sem_os_types::agent_mode::AgentMode::is_verb_allowed(&self, &str) -> bool
+pub fn sem_os_types::agent_mode::AgentMode::parse(&str) -> core::option::Option<Self>
+impl core::clone::Clone for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::clone(&self) -> sem_os_types::agent_mode::AgentMode
+impl core::cmp::Eq for sem_os_types::agent_mode::AgentMode
+impl core::cmp::PartialEq for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::eq(&self, &sem_os_types::agent_mode::AgentMode) -> bool
+impl core::convert::AsRef<str> for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::as_ref(&self) -> &str
+impl core::convert::TryFrom<&str> for sem_os_types::agent_mode::AgentMode
+pub type sem_os_types::agent_mode::AgentMode::Error = strum::ParseError
+pub fn sem_os_types::agent_mode::AgentMode::try_from(&str) -> core::result::Result<sem_os_types::agent_mode::AgentMode, <Self as core::convert::TryFrom<&str>>::Error>
+impl core::default::Default for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::default() -> sem_os_types::agent_mode::AgentMode
+impl core::fmt::Debug for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::result::Result<(), core::fmt::Error>
+impl core::hash::Hash for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_types::agent_mode::AgentMode
+impl core::marker::StructuralPartialEq for sem_os_types::agent_mode::AgentMode
+impl core::str::traits::FromStr for sem_os_types::agent_mode::AgentMode
+pub type sem_os_types::agent_mode::AgentMode::Err = strum::ParseError
+pub fn sem_os_types::agent_mode::AgentMode::from_str(&str) -> core::result::Result<sem_os_types::agent_mode::AgentMode, <Self as core::str::traits::FromStr>::Err>
+impl serde_core::ser::Serialize for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::agent_mode::AgentMode
+impl core::marker::Send for sem_os_types::agent_mode::AgentMode
+impl core::marker::Sync for sem_os_types::agent_mode::AgentMode
+impl core::marker::Unpin for sem_os_types::agent_mode::AgentMode
+impl core::marker::UnsafeUnpin for sem_os_types::agent_mode::AgentMode
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::agent_mode::AgentMode
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::agent_mode::AgentMode
+impl<T, U> core::convert::Into<U> for sem_os_types::agent_mode::AgentMode where U: core::convert::From<T>
+pub fn sem_os_types::agent_mode::AgentMode::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::agent_mode::AgentMode where U: core::convert::Into<T>
+pub type sem_os_types::agent_mode::AgentMode::Error = core::convert::Infallible
+pub fn sem_os_types::agent_mode::AgentMode::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::agent_mode::AgentMode where U: core::convert::TryFrom<T>
+pub type sem_os_types::agent_mode::AgentMode::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::agent_mode::AgentMode::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::agent_mode::AgentMode where T: core::clone::Clone
+pub type sem_os_types::agent_mode::AgentMode::Owned = T
+pub fn sem_os_types::agent_mode::AgentMode::clone_into(&self, &mut T)
+pub fn sem_os_types::agent_mode::AgentMode::to_owned(&self) -> T
+impl<T> alloc::string::ToString for sem_os_types::agent_mode::AgentMode where T: core::fmt::Display + ?core::marker::Sized
+pub fn sem_os_types::agent_mode::AgentMode::to_string(&self) -> alloc::string::String
+impl<T> core::any::Any for sem_os_types::agent_mode::AgentMode where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::agent_mode::AgentMode::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::agent_mode::AgentMode where T: ?core::marker::Sized
+pub fn sem_os_types::agent_mode::AgentMode::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::agent_mode::AgentMode where T: ?core::marker::Sized
+pub fn sem_os_types::agent_mode::AgentMode::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::agent_mode::AgentMode where T: core::clone::Clone
+pub unsafe fn sem_os_types::agent_mode::AgentMode::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::agent_mode::AgentMode where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum sem_os_types::AgentMode
+pub sem_os_types::AgentMode::Governed
+pub sem_os_types::AgentMode::Maintenance
+pub sem_os_types::AgentMode::Research
+impl sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::allowed_introspect_subcommands(&self) -> &[&str]
+pub fn sem_os_types::agent_mode::AgentMode::allows_authoring(&self) -> bool
+pub fn sem_os_types::agent_mode::AgentMode::allows_business_verbs(&self) -> bool
+pub fn sem_os_types::agent_mode::AgentMode::allows_full_introspect(&self) -> bool
+pub fn sem_os_types::agent_mode::AgentMode::allows_maintenance(&self) -> bool
+pub fn sem_os_types::agent_mode::AgentMode::is_verb_allowed(&self, &str) -> bool
+pub fn sem_os_types::agent_mode::AgentMode::parse(&str) -> core::option::Option<Self>
+impl core::clone::Clone for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::clone(&self) -> sem_os_types::agent_mode::AgentMode
+impl core::cmp::Eq for sem_os_types::agent_mode::AgentMode
+impl core::cmp::PartialEq for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::eq(&self, &sem_os_types::agent_mode::AgentMode) -> bool
+impl core::convert::AsRef<str> for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::as_ref(&self) -> &str
+impl core::convert::TryFrom<&str> for sem_os_types::agent_mode::AgentMode
+pub type sem_os_types::agent_mode::AgentMode::Error = strum::ParseError
+pub fn sem_os_types::agent_mode::AgentMode::try_from(&str) -> core::result::Result<sem_os_types::agent_mode::AgentMode, <Self as core::convert::TryFrom<&str>>::Error>
+impl core::default::Default for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::default() -> sem_os_types::agent_mode::AgentMode
+impl core::fmt::Debug for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::result::Result<(), core::fmt::Error>
+impl core::hash::Hash for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_types::agent_mode::AgentMode
+impl core::marker::StructuralPartialEq for sem_os_types::agent_mode::AgentMode
+impl core::str::traits::FromStr for sem_os_types::agent_mode::AgentMode
+pub type sem_os_types::agent_mode::AgentMode::Err = strum::ParseError
+pub fn sem_os_types::agent_mode::AgentMode::from_str(&str) -> core::result::Result<sem_os_types::agent_mode::AgentMode, <Self as core::str::traits::FromStr>::Err>
+impl serde_core::ser::Serialize for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::agent_mode::AgentMode
+impl core::marker::Send for sem_os_types::agent_mode::AgentMode
+impl core::marker::Sync for sem_os_types::agent_mode::AgentMode
+impl core::marker::Unpin for sem_os_types::agent_mode::AgentMode
+impl core::marker::UnsafeUnpin for sem_os_types::agent_mode::AgentMode
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::agent_mode::AgentMode
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::agent_mode::AgentMode
+impl<T, U> core::convert::Into<U> for sem_os_types::agent_mode::AgentMode where U: core::convert::From<T>
+pub fn sem_os_types::agent_mode::AgentMode::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::agent_mode::AgentMode where U: core::convert::Into<T>
+pub type sem_os_types::agent_mode::AgentMode::Error = core::convert::Infallible
+pub fn sem_os_types::agent_mode::AgentMode::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::agent_mode::AgentMode where U: core::convert::TryFrom<T>
+pub type sem_os_types::agent_mode::AgentMode::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::agent_mode::AgentMode::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::agent_mode::AgentMode where T: core::clone::Clone
+pub type sem_os_types::agent_mode::AgentMode::Owned = T
+pub fn sem_os_types::agent_mode::AgentMode::clone_into(&self, &mut T)
+pub fn sem_os_types::agent_mode::AgentMode::to_owned(&self) -> T
+impl<T> alloc::string::ToString for sem_os_types::agent_mode::AgentMode where T: core::fmt::Display + ?core::marker::Sized
+pub fn sem_os_types::agent_mode::AgentMode::to_string(&self) -> alloc::string::String
+impl<T> core::any::Any for sem_os_types::agent_mode::AgentMode where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::agent_mode::AgentMode::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::agent_mode::AgentMode where T: ?core::marker::Sized
+pub fn sem_os_types::agent_mode::AgentMode::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::agent_mode::AgentMode where T: ?core::marker::Sized
+pub fn sem_os_types::agent_mode::AgentMode::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::agent_mode::AgentMode where T: core::clone::Clone
+pub unsafe fn sem_os_types::agent_mode::AgentMode::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::agent_mode::AgentMode
+pub fn sem_os_types::agent_mode::AgentMode::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::agent_mode::AgentMode where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum sem_os_types::AttributeVisibility
+pub sem_os_types::AttributeVisibility::External
+pub sem_os_types::AttributeVisibility::Internal
+impl core::clone::Clone for sem_os_types::AttributeVisibility
+pub fn sem_os_types::AttributeVisibility::clone(&self) -> sem_os_types::AttributeVisibility
+impl core::cmp::Eq for sem_os_types::AttributeVisibility
+impl core::cmp::PartialEq for sem_os_types::AttributeVisibility
+pub fn sem_os_types::AttributeVisibility::eq(&self, &sem_os_types::AttributeVisibility) -> bool
+impl core::convert::AsRef<str> for sem_os_types::AttributeVisibility
+pub fn sem_os_types::AttributeVisibility::as_ref(&self) -> &str
+impl core::convert::TryFrom<&str> for sem_os_types::AttributeVisibility
+pub type sem_os_types::AttributeVisibility::Error = strum::ParseError
+pub fn sem_os_types::AttributeVisibility::try_from(&str) -> core::result::Result<sem_os_types::AttributeVisibility, <Self as core::convert::TryFrom<&str>>::Error>
+impl core::default::Default for sem_os_types::AttributeVisibility
+pub fn sem_os_types::AttributeVisibility::default() -> sem_os_types::AttributeVisibility
+impl core::fmt::Debug for sem_os_types::AttributeVisibility
+pub fn sem_os_types::AttributeVisibility::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_types::AttributeVisibility
+pub fn sem_os_types::AttributeVisibility::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::result::Result<(), core::fmt::Error>
+impl core::hash::Hash for sem_os_types::AttributeVisibility
+pub fn sem_os_types::AttributeVisibility::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_types::AttributeVisibility
+impl core::marker::StructuralPartialEq for sem_os_types::AttributeVisibility
+impl core::str::traits::FromStr for sem_os_types::AttributeVisibility
+pub type sem_os_types::AttributeVisibility::Err = strum::ParseError
+pub fn sem_os_types::AttributeVisibility::from_str(&str) -> core::result::Result<sem_os_types::AttributeVisibility, <Self as core::str::traits::FromStr>::Err>
+impl serde_core::ser::Serialize for sem_os_types::AttributeVisibility
+pub fn sem_os_types::AttributeVisibility::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::AttributeVisibility
+pub fn sem_os_types::AttributeVisibility::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::AttributeVisibility
+impl core::marker::Send for sem_os_types::AttributeVisibility
+impl core::marker::Sync for sem_os_types::AttributeVisibility
+impl core::marker::Unpin for sem_os_types::AttributeVisibility
+impl core::marker::UnsafeUnpin for sem_os_types::AttributeVisibility
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::AttributeVisibility
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::AttributeVisibility
+impl<T, U> core::convert::Into<U> for sem_os_types::AttributeVisibility where U: core::convert::From<T>
+pub fn sem_os_types::AttributeVisibility::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::AttributeVisibility where U: core::convert::Into<T>
+pub type sem_os_types::AttributeVisibility::Error = core::convert::Infallible
+pub fn sem_os_types::AttributeVisibility::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::AttributeVisibility where U: core::convert::TryFrom<T>
+pub type sem_os_types::AttributeVisibility::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::AttributeVisibility::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::AttributeVisibility where T: core::clone::Clone
+pub type sem_os_types::AttributeVisibility::Owned = T
+pub fn sem_os_types::AttributeVisibility::clone_into(&self, &mut T)
+pub fn sem_os_types::AttributeVisibility::to_owned(&self) -> T
+impl<T> alloc::string::ToString for sem_os_types::AttributeVisibility where T: core::fmt::Display + ?core::marker::Sized
+pub fn sem_os_types::AttributeVisibility::to_string(&self) -> alloc::string::String
+impl<T> core::any::Any for sem_os_types::AttributeVisibility where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::AttributeVisibility::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::AttributeVisibility where T: ?core::marker::Sized
+pub fn sem_os_types::AttributeVisibility::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::AttributeVisibility where T: ?core::marker::Sized
+pub fn sem_os_types::AttributeVisibility::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::AttributeVisibility where T: core::clone::Clone
+pub unsafe fn sem_os_types::AttributeVisibility::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::AttributeVisibility
+pub fn sem_os_types::AttributeVisibility::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::AttributeVisibility where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum sem_os_types::ChangeKind
+pub sem_os_types::ChangeKind::Add
+pub sem_os_types::ChangeKind::Modify
+pub sem_os_types::ChangeKind::Remove
+impl core::clone::Clone for sem_os_types::ChangeKind
+pub fn sem_os_types::ChangeKind::clone(&self) -> sem_os_types::ChangeKind
+impl core::cmp::Eq for sem_os_types::ChangeKind
+impl core::cmp::PartialEq for sem_os_types::ChangeKind
+pub fn sem_os_types::ChangeKind::eq(&self, &sem_os_types::ChangeKind) -> bool
+impl core::convert::AsRef<str> for sem_os_types::ChangeKind
+pub fn sem_os_types::ChangeKind::as_ref(&self) -> &str
+impl core::convert::TryFrom<&str> for sem_os_types::ChangeKind
+pub type sem_os_types::ChangeKind::Error = strum::ParseError
+pub fn sem_os_types::ChangeKind::try_from(&str) -> core::result::Result<sem_os_types::ChangeKind, <Self as core::convert::TryFrom<&str>>::Error>
+impl core::fmt::Debug for sem_os_types::ChangeKind
+pub fn sem_os_types::ChangeKind::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_types::ChangeKind
+pub fn sem_os_types::ChangeKind::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::result::Result<(), core::fmt::Error>
+impl core::hash::Hash for sem_os_types::ChangeKind
+pub fn sem_os_types::ChangeKind::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_types::ChangeKind
+impl core::marker::StructuralPartialEq for sem_os_types::ChangeKind
+impl core::str::traits::FromStr for sem_os_types::ChangeKind
+pub type sem_os_types::ChangeKind::Err = strum::ParseError
+pub fn sem_os_types::ChangeKind::from_str(&str) -> core::result::Result<sem_os_types::ChangeKind, <Self as core::str::traits::FromStr>::Err>
+impl serde_core::ser::Serialize for sem_os_types::ChangeKind
+pub fn sem_os_types::ChangeKind::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::ChangeKind
+pub fn sem_os_types::ChangeKind::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::ChangeKind
+impl core::marker::Send for sem_os_types::ChangeKind
+impl core::marker::Sync for sem_os_types::ChangeKind
+impl core::marker::Unpin for sem_os_types::ChangeKind
+impl core::marker::UnsafeUnpin for sem_os_types::ChangeKind
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::ChangeKind
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::ChangeKind
+impl<T, U> core::convert::Into<U> for sem_os_types::ChangeKind where U: core::convert::From<T>
+pub fn sem_os_types::ChangeKind::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::ChangeKind where U: core::convert::Into<T>
+pub type sem_os_types::ChangeKind::Error = core::convert::Infallible
+pub fn sem_os_types::ChangeKind::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::ChangeKind where U: core::convert::TryFrom<T>
+pub type sem_os_types::ChangeKind::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::ChangeKind::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::ChangeKind where T: core::clone::Clone
+pub type sem_os_types::ChangeKind::Owned = T
+pub fn sem_os_types::ChangeKind::clone_into(&self, &mut T)
+pub fn sem_os_types::ChangeKind::to_owned(&self) -> T
+impl<T> alloc::string::ToString for sem_os_types::ChangeKind where T: core::fmt::Display + ?core::marker::Sized
+pub fn sem_os_types::ChangeKind::to_string(&self) -> alloc::string::String
+impl<T> core::any::Any for sem_os_types::ChangeKind where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::ChangeKind::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::ChangeKind where T: ?core::marker::Sized
+pub fn sem_os_types::ChangeKind::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::ChangeKind where T: ?core::marker::Sized
+pub fn sem_os_types::ChangeKind::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::ChangeKind where T: core::clone::Clone
+pub unsafe fn sem_os_types::ChangeKind::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::ChangeKind
+pub fn sem_os_types::ChangeKind::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::ChangeKind where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum sem_os_types::ChangeSetStatus
+pub sem_os_types::ChangeSetStatus::Approved
+pub sem_os_types::ChangeSetStatus::Draft
+pub sem_os_types::ChangeSetStatus::DryRunFailed
+pub sem_os_types::ChangeSetStatus::DryRunPassed
+pub sem_os_types::ChangeSetStatus::Published
+pub sem_os_types::ChangeSetStatus::Rejected
+pub sem_os_types::ChangeSetStatus::Superseded
+pub sem_os_types::ChangeSetStatus::UnderReview
+pub sem_os_types::ChangeSetStatus::Validated
+impl sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::is_intermediate(&self) -> bool
+pub fn sem_os_types::ChangeSetStatus::is_terminal(&self) -> bool
+impl core::clone::Clone for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::clone(&self) -> sem_os_types::ChangeSetStatus
+impl core::cmp::Eq for sem_os_types::ChangeSetStatus
+impl core::cmp::PartialEq for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::eq(&self, &sem_os_types::ChangeSetStatus) -> bool
+impl core::convert::AsRef<str> for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::as_ref(&self) -> &str
+impl core::convert::TryFrom<&str> for sem_os_types::ChangeSetStatus
+pub type sem_os_types::ChangeSetStatus::Error = strum::ParseError
+pub fn sem_os_types::ChangeSetStatus::try_from(&str) -> core::result::Result<sem_os_types::ChangeSetStatus, <Self as core::convert::TryFrom<&str>>::Error>
+impl core::fmt::Debug for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::result::Result<(), core::fmt::Error>
+impl core::hash::Hash for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_types::ChangeSetStatus
+impl core::marker::StructuralPartialEq for sem_os_types::ChangeSetStatus
+impl core::str::traits::FromStr for sem_os_types::ChangeSetStatus
+pub type sem_os_types::ChangeSetStatus::Err = strum::ParseError
+pub fn sem_os_types::ChangeSetStatus::from_str(&str) -> core::result::Result<sem_os_types::ChangeSetStatus, <Self as core::str::traits::FromStr>::Err>
+impl serde_core::ser::Serialize for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::ChangeSetStatus
+impl core::marker::Send for sem_os_types::ChangeSetStatus
+impl core::marker::Sync for sem_os_types::ChangeSetStatus
+impl core::marker::Unpin for sem_os_types::ChangeSetStatus
+impl core::marker::UnsafeUnpin for sem_os_types::ChangeSetStatus
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::ChangeSetStatus
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::ChangeSetStatus
+impl<T, U> core::convert::Into<U> for sem_os_types::ChangeSetStatus where U: core::convert::From<T>
+pub fn sem_os_types::ChangeSetStatus::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::ChangeSetStatus where U: core::convert::Into<T>
+pub type sem_os_types::ChangeSetStatus::Error = core::convert::Infallible
+pub fn sem_os_types::ChangeSetStatus::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::ChangeSetStatus where U: core::convert::TryFrom<T>
+pub type sem_os_types::ChangeSetStatus::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::ChangeSetStatus::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::ChangeSetStatus where T: core::clone::Clone
+pub type sem_os_types::ChangeSetStatus::Owned = T
+pub fn sem_os_types::ChangeSetStatus::clone_into(&self, &mut T)
+pub fn sem_os_types::ChangeSetStatus::to_owned(&self) -> T
+impl<T> alloc::string::ToString for sem_os_types::ChangeSetStatus where T: core::fmt::Display + ?core::marker::Sized
+pub fn sem_os_types::ChangeSetStatus::to_string(&self) -> alloc::string::String
+impl<T> core::any::Any for sem_os_types::ChangeSetStatus where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::ChangeSetStatus::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::ChangeSetStatus where T: ?core::marker::Sized
+pub fn sem_os_types::ChangeSetStatus::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::ChangeSetStatus where T: ?core::marker::Sized
+pub fn sem_os_types::ChangeSetStatus::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::ChangeSetStatus where T: core::clone::Clone
+pub unsafe fn sem_os_types::ChangeSetStatus::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::ChangeSetStatus where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum sem_os_types::ChangeType
+pub sem_os_types::ChangeType::Breaking
+pub sem_os_types::ChangeType::Created
+pub sem_os_types::ChangeType::Deprecation
+pub sem_os_types::ChangeType::NonBreaking
+pub sem_os_types::ChangeType::Promotion
+pub sem_os_types::ChangeType::Retirement
+impl core::clone::Clone for sem_os_types::ChangeType
+pub fn sem_os_types::ChangeType::clone(&self) -> sem_os_types::ChangeType
+impl core::cmp::Eq for sem_os_types::ChangeType
+impl core::cmp::PartialEq for sem_os_types::ChangeType
+pub fn sem_os_types::ChangeType::eq(&self, &sem_os_types::ChangeType) -> bool
+impl core::convert::AsRef<str> for sem_os_types::ChangeType
+pub fn sem_os_types::ChangeType::as_ref(&self) -> &str
+impl core::convert::TryFrom<&str> for sem_os_types::ChangeType
+pub type sem_os_types::ChangeType::Error = strum::ParseError
+pub fn sem_os_types::ChangeType::try_from(&str) -> core::result::Result<sem_os_types::ChangeType, <Self as core::convert::TryFrom<&str>>::Error>
+impl core::fmt::Debug for sem_os_types::ChangeType
+pub fn sem_os_types::ChangeType::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_types::ChangeType
+pub fn sem_os_types::ChangeType::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::result::Result<(), core::fmt::Error>
+impl core::hash::Hash for sem_os_types::ChangeType
+pub fn sem_os_types::ChangeType::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_types::ChangeType
+impl core::marker::StructuralPartialEq for sem_os_types::ChangeType
+impl core::str::traits::FromStr for sem_os_types::ChangeType
+pub type sem_os_types::ChangeType::Err = strum::ParseError
+pub fn sem_os_types::ChangeType::from_str(&str) -> core::result::Result<sem_os_types::ChangeType, <Self as core::str::traits::FromStr>::Err>
+impl serde_core::ser::Serialize for sem_os_types::ChangeType
+pub fn sem_os_types::ChangeType::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::ChangeType
+pub fn sem_os_types::ChangeType::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::ChangeType
+impl core::marker::Send for sem_os_types::ChangeType
+impl core::marker::Sync for sem_os_types::ChangeType
+impl core::marker::Unpin for sem_os_types::ChangeType
+impl core::marker::UnsafeUnpin for sem_os_types::ChangeType
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::ChangeType
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::ChangeType
+impl<T, U> core::convert::Into<U> for sem_os_types::ChangeType where U: core::convert::From<T>
+pub fn sem_os_types::ChangeType::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::ChangeType where U: core::convert::Into<T>
+pub type sem_os_types::ChangeType::Error = core::convert::Infallible
+pub fn sem_os_types::ChangeType::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::ChangeType where U: core::convert::TryFrom<T>
+pub type sem_os_types::ChangeType::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::ChangeType::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::ChangeType where T: core::clone::Clone
+pub type sem_os_types::ChangeType::Owned = T
+pub fn sem_os_types::ChangeType::clone_into(&self, &mut T)
+pub fn sem_os_types::ChangeType::to_owned(&self) -> T
+impl<T> alloc::string::ToString for sem_os_types::ChangeType where T: core::fmt::Display + ?core::marker::Sized
+pub fn sem_os_types::ChangeType::to_string(&self) -> alloc::string::String
+impl<T> core::any::Any for sem_os_types::ChangeType where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::ChangeType::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::ChangeType where T: ?core::marker::Sized
+pub fn sem_os_types::ChangeType::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::ChangeType where T: ?core::marker::Sized
+pub fn sem_os_types::ChangeType::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::ChangeType where T: core::clone::Clone
+pub unsafe fn sem_os_types::ChangeType::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::ChangeType
+pub fn sem_os_types::ChangeType::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::ChangeType where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum sem_os_types::ChangesetStatus
+pub sem_os_types::ChangesetStatus::Approved
+pub sem_os_types::ChangesetStatus::Draft
+pub sem_os_types::ChangesetStatus::DryRunFailed
+pub sem_os_types::ChangesetStatus::DryRunPassed
+pub sem_os_types::ChangesetStatus::Published
+pub sem_os_types::ChangesetStatus::Rejected
+pub sem_os_types::ChangesetStatus::Superseded
+pub sem_os_types::ChangesetStatus::UnderReview
+pub sem_os_types::ChangesetStatus::Validated
+impl sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::is_intermediate(&self) -> bool
+pub fn sem_os_types::ChangeSetStatus::is_terminal(&self) -> bool
+impl core::clone::Clone for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::clone(&self) -> sem_os_types::ChangeSetStatus
+impl core::cmp::Eq for sem_os_types::ChangeSetStatus
+impl core::cmp::PartialEq for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::eq(&self, &sem_os_types::ChangeSetStatus) -> bool
+impl core::convert::AsRef<str> for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::as_ref(&self) -> &str
+impl core::convert::TryFrom<&str> for sem_os_types::ChangeSetStatus
+pub type sem_os_types::ChangeSetStatus::Error = strum::ParseError
+pub fn sem_os_types::ChangeSetStatus::try_from(&str) -> core::result::Result<sem_os_types::ChangeSetStatus, <Self as core::convert::TryFrom<&str>>::Error>
+impl core::fmt::Debug for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::result::Result<(), core::fmt::Error>
+impl core::hash::Hash for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_types::ChangeSetStatus
+impl core::marker::StructuralPartialEq for sem_os_types::ChangeSetStatus
+impl core::str::traits::FromStr for sem_os_types::ChangeSetStatus
+pub type sem_os_types::ChangeSetStatus::Err = strum::ParseError
+pub fn sem_os_types::ChangeSetStatus::from_str(&str) -> core::result::Result<sem_os_types::ChangeSetStatus, <Self as core::str::traits::FromStr>::Err>
+impl serde_core::ser::Serialize for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::ChangeSetStatus
+impl core::marker::Send for sem_os_types::ChangeSetStatus
+impl core::marker::Sync for sem_os_types::ChangeSetStatus
+impl core::marker::Unpin for sem_os_types::ChangeSetStatus
+impl core::marker::UnsafeUnpin for sem_os_types::ChangeSetStatus
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::ChangeSetStatus
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::ChangeSetStatus
+impl<T, U> core::convert::Into<U> for sem_os_types::ChangeSetStatus where U: core::convert::From<T>
+pub fn sem_os_types::ChangeSetStatus::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::ChangeSetStatus where U: core::convert::Into<T>
+pub type sem_os_types::ChangeSetStatus::Error = core::convert::Infallible
+pub fn sem_os_types::ChangeSetStatus::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::ChangeSetStatus where U: core::convert::TryFrom<T>
+pub type sem_os_types::ChangeSetStatus::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::ChangeSetStatus::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::ChangeSetStatus where T: core::clone::Clone
+pub type sem_os_types::ChangeSetStatus::Owned = T
+pub fn sem_os_types::ChangeSetStatus::clone_into(&self, &mut T)
+pub fn sem_os_types::ChangeSetStatus::to_owned(&self) -> T
+impl<T> alloc::string::ToString for sem_os_types::ChangeSetStatus where T: core::fmt::Display + ?core::marker::Sized
+pub fn sem_os_types::ChangeSetStatus::to_string(&self) -> alloc::string::String
+impl<T> core::any::Any for sem_os_types::ChangeSetStatus where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::ChangeSetStatus::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::ChangeSetStatus where T: ?core::marker::Sized
+pub fn sem_os_types::ChangeSetStatus::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::ChangeSetStatus where T: ?core::marker::Sized
+pub fn sem_os_types::ChangeSetStatus::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::ChangeSetStatus where T: core::clone::Clone
+pub unsafe fn sem_os_types::ChangeSetStatus::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::ChangeSetStatus
+pub fn sem_os_types::ChangeSetStatus::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::ChangeSetStatus where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum sem_os_types::Classification
+pub sem_os_types::Classification::Confidential
+pub sem_os_types::Classification::Internal
+pub sem_os_types::Classification::Public
+pub sem_os_types::Classification::Restricted
+impl core::clone::Clone for sem_os_types::Classification
+pub fn sem_os_types::Classification::clone(&self) -> sem_os_types::Classification
+impl core::cmp::Eq for sem_os_types::Classification
+impl core::cmp::PartialEq for sem_os_types::Classification
+pub fn sem_os_types::Classification::eq(&self, &sem_os_types::Classification) -> bool
+impl core::default::Default for sem_os_types::Classification
+pub fn sem_os_types::Classification::default() -> sem_os_types::Classification
+impl core::fmt::Debug for sem_os_types::Classification
+pub fn sem_os_types::Classification::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for sem_os_types::Classification
+impl core::marker::StructuralPartialEq for sem_os_types::Classification
+impl serde_core::ser::Serialize for sem_os_types::Classification
+pub fn sem_os_types::Classification::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::Classification
+pub fn sem_os_types::Classification::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::Classification
+impl core::marker::Send for sem_os_types::Classification
+impl core::marker::Sync for sem_os_types::Classification
+impl core::marker::Unpin for sem_os_types::Classification
+impl core::marker::UnsafeUnpin for sem_os_types::Classification
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::Classification
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::Classification
+impl<T, U> core::convert::Into<U> for sem_os_types::Classification where U: core::convert::From<T>
+pub fn sem_os_types::Classification::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::Classification where U: core::convert::Into<T>
+pub type sem_os_types::Classification::Error = core::convert::Infallible
+pub fn sem_os_types::Classification::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::Classification where U: core::convert::TryFrom<T>
+pub type sem_os_types::Classification::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::Classification::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::Classification where T: core::clone::Clone
+pub type sem_os_types::Classification::Owned = T
+pub fn sem_os_types::Classification::clone_into(&self, &mut T)
+pub fn sem_os_types::Classification::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::Classification where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::Classification::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::Classification where T: ?core::marker::Sized
+pub fn sem_os_types::Classification::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::Classification where T: ?core::marker::Sized
+pub fn sem_os_types::Classification::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::Classification where T: core::clone::Clone
+pub unsafe fn sem_os_types::Classification::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::Classification
+pub fn sem_os_types::Classification::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::Classification where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum sem_os_types::EvidenceGrade
+pub sem_os_types::EvidenceGrade::AllowedWithConstraints
+pub sem_os_types::EvidenceGrade::None
+pub sem_os_types::EvidenceGrade::Prohibited
+pub sem_os_types::EvidenceGrade::RegulatoryEvidence
+impl core::clone::Clone for sem_os_types::EvidenceGrade
+pub fn sem_os_types::EvidenceGrade::clone(&self) -> sem_os_types::EvidenceGrade
+impl core::cmp::Eq for sem_os_types::EvidenceGrade
+impl core::cmp::PartialEq for sem_os_types::EvidenceGrade
+pub fn sem_os_types::EvidenceGrade::eq(&self, &sem_os_types::EvidenceGrade) -> bool
+impl core::convert::AsRef<str> for sem_os_types::EvidenceGrade
+pub fn sem_os_types::EvidenceGrade::as_ref(&self) -> &str
+impl core::convert::TryFrom<&str> for sem_os_types::EvidenceGrade
+pub type sem_os_types::EvidenceGrade::Error = strum::ParseError
+pub fn sem_os_types::EvidenceGrade::try_from(&str) -> core::result::Result<sem_os_types::EvidenceGrade, <Self as core::convert::TryFrom<&str>>::Error>
+impl core::default::Default for sem_os_types::EvidenceGrade
+pub fn sem_os_types::EvidenceGrade::default() -> sem_os_types::EvidenceGrade
+impl core::fmt::Debug for sem_os_types::EvidenceGrade
+pub fn sem_os_types::EvidenceGrade::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_types::EvidenceGrade
+pub fn sem_os_types::EvidenceGrade::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::result::Result<(), core::fmt::Error>
+impl core::hash::Hash for sem_os_types::EvidenceGrade
+pub fn sem_os_types::EvidenceGrade::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_types::EvidenceGrade
+impl core::marker::StructuralPartialEq for sem_os_types::EvidenceGrade
+impl core::str::traits::FromStr for sem_os_types::EvidenceGrade
+pub type sem_os_types::EvidenceGrade::Err = strum::ParseError
+pub fn sem_os_types::EvidenceGrade::from_str(&str) -> core::result::Result<sem_os_types::EvidenceGrade, <Self as core::str::traits::FromStr>::Err>
+impl serde_core::ser::Serialize for sem_os_types::EvidenceGrade
+pub fn sem_os_types::EvidenceGrade::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::EvidenceGrade
+pub fn sem_os_types::EvidenceGrade::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::EvidenceGrade
+impl core::marker::Send for sem_os_types::EvidenceGrade
+impl core::marker::Sync for sem_os_types::EvidenceGrade
+impl core::marker::Unpin for sem_os_types::EvidenceGrade
+impl core::marker::UnsafeUnpin for sem_os_types::EvidenceGrade
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::EvidenceGrade
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::EvidenceGrade
+impl<T, U> core::convert::Into<U> for sem_os_types::EvidenceGrade where U: core::convert::From<T>
+pub fn sem_os_types::EvidenceGrade::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::EvidenceGrade where U: core::convert::Into<T>
+pub type sem_os_types::EvidenceGrade::Error = core::convert::Infallible
+pub fn sem_os_types::EvidenceGrade::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::EvidenceGrade where U: core::convert::TryFrom<T>
+pub type sem_os_types::EvidenceGrade::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::EvidenceGrade::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::EvidenceGrade where T: core::clone::Clone
+pub type sem_os_types::EvidenceGrade::Owned = T
+pub fn sem_os_types::EvidenceGrade::clone_into(&self, &mut T)
+pub fn sem_os_types::EvidenceGrade::to_owned(&self) -> T
+impl<T> alloc::string::ToString for sem_os_types::EvidenceGrade where T: core::fmt::Display + ?core::marker::Sized
+pub fn sem_os_types::EvidenceGrade::to_string(&self) -> alloc::string::String
+impl<T> core::any::Any for sem_os_types::EvidenceGrade where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::EvidenceGrade::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::EvidenceGrade where T: ?core::marker::Sized
+pub fn sem_os_types::EvidenceGrade::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::EvidenceGrade where T: ?core::marker::Sized
+pub fn sem_os_types::EvidenceGrade::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::EvidenceGrade where T: core::clone::Clone
+pub unsafe fn sem_os_types::EvidenceGrade::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::EvidenceGrade
+pub fn sem_os_types::EvidenceGrade::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::EvidenceGrade where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum sem_os_types::GateSeverity
+pub sem_os_types::GateSeverity::Error
+pub sem_os_types::GateSeverity::Warning
+impl core::clone::Clone for sem_os_types::GateSeverity
+pub fn sem_os_types::GateSeverity::clone(&self) -> sem_os_types::GateSeverity
+impl core::cmp::Eq for sem_os_types::GateSeverity
+impl core::cmp::PartialEq for sem_os_types::GateSeverity
+pub fn sem_os_types::GateSeverity::eq(&self, &sem_os_types::GateSeverity) -> bool
+impl core::fmt::Debug for sem_os_types::GateSeverity
+pub fn sem_os_types::GateSeverity::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_types::GateSeverity
+pub fn sem_os_types::GateSeverity::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for sem_os_types::GateSeverity
+impl core::marker::StructuralPartialEq for sem_os_types::GateSeverity
+impl serde_core::ser::Serialize for sem_os_types::GateSeverity
+pub fn sem_os_types::GateSeverity::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::GateSeverity
+pub fn sem_os_types::GateSeverity::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::GateSeverity
+impl core::marker::Send for sem_os_types::GateSeverity
+impl core::marker::Sync for sem_os_types::GateSeverity
+impl core::marker::Unpin for sem_os_types::GateSeverity
+impl core::marker::UnsafeUnpin for sem_os_types::GateSeverity
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::GateSeverity
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::GateSeverity
+impl<T, U> core::convert::Into<U> for sem_os_types::GateSeverity where U: core::convert::From<T>
+pub fn sem_os_types::GateSeverity::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::GateSeverity where U: core::convert::Into<T>
+pub type sem_os_types::GateSeverity::Error = core::convert::Infallible
+pub fn sem_os_types::GateSeverity::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::GateSeverity where U: core::convert::TryFrom<T>
+pub type sem_os_types::GateSeverity::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::GateSeverity::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::GateSeverity where T: core::clone::Clone
+pub type sem_os_types::GateSeverity::Owned = T
+pub fn sem_os_types::GateSeverity::clone_into(&self, &mut T)
+pub fn sem_os_types::GateSeverity::to_owned(&self) -> T
+impl<T> alloc::string::ToString for sem_os_types::GateSeverity where T: core::fmt::Display + ?core::marker::Sized
+pub fn sem_os_types::GateSeverity::to_string(&self) -> alloc::string::String
+impl<T> core::any::Any for sem_os_types::GateSeverity where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::GateSeverity::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::GateSeverity where T: ?core::marker::Sized
+pub fn sem_os_types::GateSeverity::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::GateSeverity where T: ?core::marker::Sized
+pub fn sem_os_types::GateSeverity::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::GateSeverity where T: core::clone::Clone
+pub unsafe fn sem_os_types::GateSeverity::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::GateSeverity
+pub fn sem_os_types::GateSeverity::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::GateSeverity where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum sem_os_types::GovernanceTier
+pub sem_os_types::GovernanceTier::Governed
+pub sem_os_types::GovernanceTier::Operational
+impl core::clone::Clone for sem_os_types::GovernanceTier
+pub fn sem_os_types::GovernanceTier::clone(&self) -> sem_os_types::GovernanceTier
+impl core::cmp::Eq for sem_os_types::GovernanceTier
+impl core::cmp::PartialEq for sem_os_types::GovernanceTier
+pub fn sem_os_types::GovernanceTier::eq(&self, &sem_os_types::GovernanceTier) -> bool
+impl core::convert::AsRef<str> for sem_os_types::GovernanceTier
+pub fn sem_os_types::GovernanceTier::as_ref(&self) -> &str
+impl core::convert::TryFrom<&str> for sem_os_types::GovernanceTier
+pub type sem_os_types::GovernanceTier::Error = strum::ParseError
+pub fn sem_os_types::GovernanceTier::try_from(&str) -> core::result::Result<sem_os_types::GovernanceTier, <Self as core::convert::TryFrom<&str>>::Error>
+impl core::fmt::Debug for sem_os_types::GovernanceTier
+pub fn sem_os_types::GovernanceTier::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_types::GovernanceTier
+pub fn sem_os_types::GovernanceTier::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::result::Result<(), core::fmt::Error>
+impl core::hash::Hash for sem_os_types::GovernanceTier
+pub fn sem_os_types::GovernanceTier::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_types::GovernanceTier
+impl core::marker::StructuralPartialEq for sem_os_types::GovernanceTier
+impl core::str::traits::FromStr for sem_os_types::GovernanceTier
+pub type sem_os_types::GovernanceTier::Err = strum::ParseError
+pub fn sem_os_types::GovernanceTier::from_str(&str) -> core::result::Result<sem_os_types::GovernanceTier, <Self as core::str::traits::FromStr>::Err>
+impl serde_core::ser::Serialize for sem_os_types::GovernanceTier
+pub fn sem_os_types::GovernanceTier::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::GovernanceTier
+pub fn sem_os_types::GovernanceTier::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::GovernanceTier
+impl core::marker::Send for sem_os_types::GovernanceTier
+impl core::marker::Sync for sem_os_types::GovernanceTier
+impl core::marker::Unpin for sem_os_types::GovernanceTier
+impl core::marker::UnsafeUnpin for sem_os_types::GovernanceTier
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::GovernanceTier
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::GovernanceTier
+impl<T, U> core::convert::Into<U> for sem_os_types::GovernanceTier where U: core::convert::From<T>
+pub fn sem_os_types::GovernanceTier::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::GovernanceTier where U: core::convert::Into<T>
+pub type sem_os_types::GovernanceTier::Error = core::convert::Infallible
+pub fn sem_os_types::GovernanceTier::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::GovernanceTier where U: core::convert::TryFrom<T>
+pub type sem_os_types::GovernanceTier::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::GovernanceTier::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::GovernanceTier where T: core::clone::Clone
+pub type sem_os_types::GovernanceTier::Owned = T
+pub fn sem_os_types::GovernanceTier::clone_into(&self, &mut T)
+pub fn sem_os_types::GovernanceTier::to_owned(&self) -> T
+impl<T> alloc::string::ToString for sem_os_types::GovernanceTier where T: core::fmt::Display + ?core::marker::Sized
+pub fn sem_os_types::GovernanceTier::to_string(&self) -> alloc::string::String
+impl<T> core::any::Any for sem_os_types::GovernanceTier where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::GovernanceTier::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::GovernanceTier where T: ?core::marker::Sized
+pub fn sem_os_types::GovernanceTier::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::GovernanceTier where T: ?core::marker::Sized
+pub fn sem_os_types::GovernanceTier::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::GovernanceTier where T: core::clone::Clone
+pub unsafe fn sem_os_types::GovernanceTier::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::GovernanceTier
+pub fn sem_os_types::GovernanceTier::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::GovernanceTier where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum sem_os_types::HandlingControl
+pub sem_os_types::HandlingControl::DualControl
+pub sem_os_types::HandlingControl::MaskByDefault
+pub sem_os_types::HandlingControl::NoExport
+pub sem_os_types::HandlingControl::NoLlmExternal
+pub sem_os_types::HandlingControl::SecureViewerOnly
+impl core::clone::Clone for sem_os_types::HandlingControl
+pub fn sem_os_types::HandlingControl::clone(&self) -> sem_os_types::HandlingControl
+impl core::cmp::Eq for sem_os_types::HandlingControl
+impl core::cmp::PartialEq for sem_os_types::HandlingControl
+pub fn sem_os_types::HandlingControl::eq(&self, &sem_os_types::HandlingControl) -> bool
+impl core::fmt::Debug for sem_os_types::HandlingControl
+pub fn sem_os_types::HandlingControl::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_types::HandlingControl
+impl serde_core::ser::Serialize for sem_os_types::HandlingControl
+pub fn sem_os_types::HandlingControl::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::HandlingControl
+pub fn sem_os_types::HandlingControl::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::HandlingControl
+impl core::marker::Send for sem_os_types::HandlingControl
+impl core::marker::Sync for sem_os_types::HandlingControl
+impl core::marker::Unpin for sem_os_types::HandlingControl
+impl core::marker::UnsafeUnpin for sem_os_types::HandlingControl
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::HandlingControl
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::HandlingControl
+impl<T, U> core::convert::Into<U> for sem_os_types::HandlingControl where U: core::convert::From<T>
+pub fn sem_os_types::HandlingControl::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::HandlingControl where U: core::convert::Into<T>
+pub type sem_os_types::HandlingControl::Error = core::convert::Infallible
+pub fn sem_os_types::HandlingControl::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::HandlingControl where U: core::convert::TryFrom<T>
+pub type sem_os_types::HandlingControl::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::HandlingControl::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::HandlingControl where T: core::clone::Clone
+pub type sem_os_types::HandlingControl::Owned = T
+pub fn sem_os_types::HandlingControl::clone_into(&self, &mut T)
+pub fn sem_os_types::HandlingControl::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::HandlingControl where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::HandlingControl::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::HandlingControl where T: ?core::marker::Sized
+pub fn sem_os_types::HandlingControl::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::HandlingControl where T: ?core::marker::Sized
+pub fn sem_os_types::HandlingControl::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::HandlingControl where T: core::clone::Clone
+pub unsafe fn sem_os_types::HandlingControl::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::HandlingControl
+pub fn sem_os_types::HandlingControl::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::HandlingControl where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum sem_os_types::ObjectType
+pub sem_os_types::ObjectType::AttributeDef
+pub sem_os_types::ObjectType::ConstellationFamilyDef
+pub sem_os_types::ObjectType::ConstellationMap
+pub sem_os_types::ObjectType::DagTaxonomy
+pub sem_os_types::ObjectType::DerivationSpec
+pub sem_os_types::ObjectType::DocumentTypeDef
+pub sem_os_types::ObjectType::DomainPack
+pub sem_os_types::ObjectType::EntityTypeDef
+pub sem_os_types::ObjectType::EvidenceRequirement
+pub sem_os_types::ObjectType::EvidenceStrategyDef
+pub sem_os_types::ObjectType::MacroDef
+pub sem_os_types::ObjectType::MembershipRule
+pub sem_os_types::ObjectType::ObservationDef
+pub sem_os_types::ObjectType::PhraseMapping
+pub sem_os_types::ObjectType::PolicyRule
+pub sem_os_types::ObjectType::ProofObligationDef
+pub sem_os_types::ObjectType::RelationshipTypeDef
+pub sem_os_types::ObjectType::RequirementProfileDef
+pub sem_os_types::ObjectType::ServiceResourceDef
+pub sem_os_types::ObjectType::SharedAtom
+pub sem_os_types::ObjectType::StateGraph
+pub sem_os_types::ObjectType::StateMachine
+pub sem_os_types::ObjectType::TaxonomyDef
+pub sem_os_types::ObjectType::TaxonomyNode
+pub sem_os_types::ObjectType::UniverseDef
+pub sem_os_types::ObjectType::VerbContract
+pub sem_os_types::ObjectType::ViewDef
+impl core::clone::Clone for sem_os_types::ObjectType
+pub fn sem_os_types::ObjectType::clone(&self) -> sem_os_types::ObjectType
+impl core::cmp::Eq for sem_os_types::ObjectType
+impl core::cmp::PartialEq for sem_os_types::ObjectType
+pub fn sem_os_types::ObjectType::eq(&self, &sem_os_types::ObjectType) -> bool
+impl core::convert::AsRef<str> for sem_os_types::ObjectType
+pub fn sem_os_types::ObjectType::as_ref(&self) -> &str
+impl core::convert::TryFrom<&str> for sem_os_types::ObjectType
+pub type sem_os_types::ObjectType::Error = strum::ParseError
+pub fn sem_os_types::ObjectType::try_from(&str) -> core::result::Result<sem_os_types::ObjectType, <Self as core::convert::TryFrom<&str>>::Error>
+impl core::fmt::Debug for sem_os_types::ObjectType
+pub fn sem_os_types::ObjectType::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_types::ObjectType
+pub fn sem_os_types::ObjectType::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::result::Result<(), core::fmt::Error>
+impl core::hash::Hash for sem_os_types::ObjectType
+pub fn sem_os_types::ObjectType::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_types::ObjectType
+impl core::marker::StructuralPartialEq for sem_os_types::ObjectType
+impl core::str::traits::FromStr for sem_os_types::ObjectType
+pub type sem_os_types::ObjectType::Err = strum::ParseError
+pub fn sem_os_types::ObjectType::from_str(&str) -> core::result::Result<sem_os_types::ObjectType, <Self as core::str::traits::FromStr>::Err>
+impl serde_core::ser::Serialize for sem_os_types::ObjectType
+pub fn sem_os_types::ObjectType::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::ObjectType
+pub fn sem_os_types::ObjectType::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::ObjectType
+impl core::marker::Send for sem_os_types::ObjectType
+impl core::marker::Sync for sem_os_types::ObjectType
+impl core::marker::Unpin for sem_os_types::ObjectType
+impl core::marker::UnsafeUnpin for sem_os_types::ObjectType
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::ObjectType
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::ObjectType
+impl<T, U> core::convert::Into<U> for sem_os_types::ObjectType where U: core::convert::From<T>
+pub fn sem_os_types::ObjectType::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::ObjectType where U: core::convert::Into<T>
+pub type sem_os_types::ObjectType::Error = core::convert::Infallible
+pub fn sem_os_types::ObjectType::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::ObjectType where U: core::convert::TryFrom<T>
+pub type sem_os_types::ObjectType::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::ObjectType::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::ObjectType where T: core::clone::Clone
+pub type sem_os_types::ObjectType::Owned = T
+pub fn sem_os_types::ObjectType::clone_into(&self, &mut T)
+pub fn sem_os_types::ObjectType::to_owned(&self) -> T
+impl<T> alloc::string::ToString for sem_os_types::ObjectType where T: core::fmt::Display + ?core::marker::Sized
+pub fn sem_os_types::ObjectType::to_string(&self) -> alloc::string::String
+impl<T> core::any::Any for sem_os_types::ObjectType where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::ObjectType::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::ObjectType where T: ?core::marker::Sized
+pub fn sem_os_types::ObjectType::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::ObjectType where T: ?core::marker::Sized
+pub fn sem_os_types::ObjectType::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::ObjectType where T: core::clone::Clone
+pub unsafe fn sem_os_types::ObjectType::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::ObjectType
+pub fn sem_os_types::ObjectType::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::ObjectType where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum sem_os_types::ReviewVerdict
+pub sem_os_types::ReviewVerdict::Approved
+pub sem_os_types::ReviewVerdict::Rejected
+pub sem_os_types::ReviewVerdict::RequestedChanges
+impl core::clone::Clone for sem_os_types::ReviewVerdict
+pub fn sem_os_types::ReviewVerdict::clone(&self) -> sem_os_types::ReviewVerdict
+impl core::cmp::Eq for sem_os_types::ReviewVerdict
+impl core::cmp::PartialEq for sem_os_types::ReviewVerdict
+pub fn sem_os_types::ReviewVerdict::eq(&self, &sem_os_types::ReviewVerdict) -> bool
+impl core::convert::AsRef<str> for sem_os_types::ReviewVerdict
+pub fn sem_os_types::ReviewVerdict::as_ref(&self) -> &str
+impl core::convert::TryFrom<&str> for sem_os_types::ReviewVerdict
+pub type sem_os_types::ReviewVerdict::Error = strum::ParseError
+pub fn sem_os_types::ReviewVerdict::try_from(&str) -> core::result::Result<sem_os_types::ReviewVerdict, <Self as core::convert::TryFrom<&str>>::Error>
+impl core::fmt::Debug for sem_os_types::ReviewVerdict
+pub fn sem_os_types::ReviewVerdict::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_types::ReviewVerdict
+pub fn sem_os_types::ReviewVerdict::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::result::Result<(), core::fmt::Error>
+impl core::hash::Hash for sem_os_types::ReviewVerdict
+pub fn sem_os_types::ReviewVerdict::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_types::ReviewVerdict
+impl core::marker::StructuralPartialEq for sem_os_types::ReviewVerdict
+impl core::str::traits::FromStr for sem_os_types::ReviewVerdict
+pub type sem_os_types::ReviewVerdict::Err = strum::ParseError
+pub fn sem_os_types::ReviewVerdict::from_str(&str) -> core::result::Result<sem_os_types::ReviewVerdict, <Self as core::str::traits::FromStr>::Err>
+impl serde_core::ser::Serialize for sem_os_types::ReviewVerdict
+pub fn sem_os_types::ReviewVerdict::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::ReviewVerdict
+pub fn sem_os_types::ReviewVerdict::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::ReviewVerdict
+impl core::marker::Send for sem_os_types::ReviewVerdict
+impl core::marker::Sync for sem_os_types::ReviewVerdict
+impl core::marker::Unpin for sem_os_types::ReviewVerdict
+impl core::marker::UnsafeUnpin for sem_os_types::ReviewVerdict
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::ReviewVerdict
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::ReviewVerdict
+impl<T, U> core::convert::Into<U> for sem_os_types::ReviewVerdict where U: core::convert::From<T>
+pub fn sem_os_types::ReviewVerdict::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::ReviewVerdict where U: core::convert::Into<T>
+pub type sem_os_types::ReviewVerdict::Error = core::convert::Infallible
+pub fn sem_os_types::ReviewVerdict::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::ReviewVerdict where U: core::convert::TryFrom<T>
+pub type sem_os_types::ReviewVerdict::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::ReviewVerdict::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::ReviewVerdict where T: core::clone::Clone
+pub type sem_os_types::ReviewVerdict::Owned = T
+pub fn sem_os_types::ReviewVerdict::clone_into(&self, &mut T)
+pub fn sem_os_types::ReviewVerdict::to_owned(&self) -> T
+impl<T> alloc::string::ToString for sem_os_types::ReviewVerdict where T: core::fmt::Display + ?core::marker::Sized
+pub fn sem_os_types::ReviewVerdict::to_string(&self) -> alloc::string::String
+impl<T> core::any::Any for sem_os_types::ReviewVerdict where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::ReviewVerdict::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::ReviewVerdict where T: ?core::marker::Sized
+pub fn sem_os_types::ReviewVerdict::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::ReviewVerdict where T: ?core::marker::Sized
+pub fn sem_os_types::ReviewVerdict::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::ReviewVerdict where T: core::clone::Clone
+pub unsafe fn sem_os_types::ReviewVerdict::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::ReviewVerdict
+pub fn sem_os_types::ReviewVerdict::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::ReviewVerdict where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum sem_os_types::SnapshotStatus
+pub sem_os_types::SnapshotStatus::Active
+pub sem_os_types::SnapshotStatus::Deprecated
+pub sem_os_types::SnapshotStatus::Draft
+pub sem_os_types::SnapshotStatus::Retired
+impl core::clone::Clone for sem_os_types::SnapshotStatus
+pub fn sem_os_types::SnapshotStatus::clone(&self) -> sem_os_types::SnapshotStatus
+impl core::cmp::Eq for sem_os_types::SnapshotStatus
+impl core::cmp::PartialEq for sem_os_types::SnapshotStatus
+pub fn sem_os_types::SnapshotStatus::eq(&self, &sem_os_types::SnapshotStatus) -> bool
+impl core::convert::AsRef<str> for sem_os_types::SnapshotStatus
+pub fn sem_os_types::SnapshotStatus::as_ref(&self) -> &str
+impl core::convert::TryFrom<&str> for sem_os_types::SnapshotStatus
+pub type sem_os_types::SnapshotStatus::Error = strum::ParseError
+pub fn sem_os_types::SnapshotStatus::try_from(&str) -> core::result::Result<sem_os_types::SnapshotStatus, <Self as core::convert::TryFrom<&str>>::Error>
+impl core::fmt::Debug for sem_os_types::SnapshotStatus
+pub fn sem_os_types::SnapshotStatus::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_types::SnapshotStatus
+pub fn sem_os_types::SnapshotStatus::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::result::Result<(), core::fmt::Error>
+impl core::hash::Hash for sem_os_types::SnapshotStatus
+pub fn sem_os_types::SnapshotStatus::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_types::SnapshotStatus
+impl core::marker::StructuralPartialEq for sem_os_types::SnapshotStatus
+impl core::str::traits::FromStr for sem_os_types::SnapshotStatus
+pub type sem_os_types::SnapshotStatus::Err = strum::ParseError
+pub fn sem_os_types::SnapshotStatus::from_str(&str) -> core::result::Result<sem_os_types::SnapshotStatus, <Self as core::str::traits::FromStr>::Err>
+impl serde_core::ser::Serialize for sem_os_types::SnapshotStatus
+pub fn sem_os_types::SnapshotStatus::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::SnapshotStatus
+pub fn sem_os_types::SnapshotStatus::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::SnapshotStatus
+impl core::marker::Send for sem_os_types::SnapshotStatus
+impl core::marker::Sync for sem_os_types::SnapshotStatus
+impl core::marker::Unpin for sem_os_types::SnapshotStatus
+impl core::marker::UnsafeUnpin for sem_os_types::SnapshotStatus
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::SnapshotStatus
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::SnapshotStatus
+impl<T, U> core::convert::Into<U> for sem_os_types::SnapshotStatus where U: core::convert::From<T>
+pub fn sem_os_types::SnapshotStatus::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::SnapshotStatus where U: core::convert::Into<T>
+pub type sem_os_types::SnapshotStatus::Error = core::convert::Infallible
+pub fn sem_os_types::SnapshotStatus::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::SnapshotStatus where U: core::convert::TryFrom<T>
+pub type sem_os_types::SnapshotStatus::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::SnapshotStatus::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::SnapshotStatus where T: core::clone::Clone
+pub type sem_os_types::SnapshotStatus::Owned = T
+pub fn sem_os_types::SnapshotStatus::clone_into(&self, &mut T)
+pub fn sem_os_types::SnapshotStatus::to_owned(&self) -> T
+impl<T> alloc::string::ToString for sem_os_types::SnapshotStatus where T: core::fmt::Display + ?core::marker::Sized
+pub fn sem_os_types::SnapshotStatus::to_string(&self) -> alloc::string::String
+impl<T> core::any::Any for sem_os_types::SnapshotStatus where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::SnapshotStatus::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::SnapshotStatus where T: ?core::marker::Sized
+pub fn sem_os_types::SnapshotStatus::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::SnapshotStatus where T: ?core::marker::Sized
+pub fn sem_os_types::SnapshotStatus::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::SnapshotStatus where T: core::clone::Clone
+pub unsafe fn sem_os_types::SnapshotStatus::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::SnapshotStatus
+pub fn sem_os_types::SnapshotStatus::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::SnapshotStatus where T: for<'de> serde_core::de::Deserialize<'de>
+pub enum sem_os_types::TrustClass
+pub sem_os_types::TrustClass::Convenience
+pub sem_os_types::TrustClass::DecisionSupport
+pub sem_os_types::TrustClass::Proof
+impl core::clone::Clone for sem_os_types::TrustClass
+pub fn sem_os_types::TrustClass::clone(&self) -> sem_os_types::TrustClass
+impl core::cmp::Eq for sem_os_types::TrustClass
+impl core::cmp::PartialEq for sem_os_types::TrustClass
+pub fn sem_os_types::TrustClass::eq(&self, &sem_os_types::TrustClass) -> bool
+impl core::convert::AsRef<str> for sem_os_types::TrustClass
+pub fn sem_os_types::TrustClass::as_ref(&self) -> &str
+impl core::convert::TryFrom<&str> for sem_os_types::TrustClass
+pub type sem_os_types::TrustClass::Error = strum::ParseError
+pub fn sem_os_types::TrustClass::try_from(&str) -> core::result::Result<sem_os_types::TrustClass, <Self as core::convert::TryFrom<&str>>::Error>
+impl core::fmt::Debug for sem_os_types::TrustClass
+pub fn sem_os_types::TrustClass::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_types::TrustClass
+pub fn sem_os_types::TrustClass::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::result::Result<(), core::fmt::Error>
+impl core::hash::Hash for sem_os_types::TrustClass
+pub fn sem_os_types::TrustClass::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_types::TrustClass
+impl core::marker::StructuralPartialEq for sem_os_types::TrustClass
+impl core::str::traits::FromStr for sem_os_types::TrustClass
+pub type sem_os_types::TrustClass::Err = strum::ParseError
+pub fn sem_os_types::TrustClass::from_str(&str) -> core::result::Result<sem_os_types::TrustClass, <Self as core::str::traits::FromStr>::Err>
+impl serde_core::ser::Serialize for sem_os_types::TrustClass
+pub fn sem_os_types::TrustClass::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::TrustClass
+pub fn sem_os_types::TrustClass::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::TrustClass
+impl core::marker::Send for sem_os_types::TrustClass
+impl core::marker::Sync for sem_os_types::TrustClass
+impl core::marker::Unpin for sem_os_types::TrustClass
+impl core::marker::UnsafeUnpin for sem_os_types::TrustClass
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::TrustClass
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::TrustClass
+impl<T, U> core::convert::Into<U> for sem_os_types::TrustClass where U: core::convert::From<T>
+pub fn sem_os_types::TrustClass::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::TrustClass where U: core::convert::Into<T>
+pub type sem_os_types::TrustClass::Error = core::convert::Infallible
+pub fn sem_os_types::TrustClass::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::TrustClass where U: core::convert::TryFrom<T>
+pub type sem_os_types::TrustClass::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::TrustClass::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::TrustClass where T: core::clone::Clone
+pub type sem_os_types::TrustClass::Owned = T
+pub fn sem_os_types::TrustClass::clone_into(&self, &mut T)
+pub fn sem_os_types::TrustClass::to_owned(&self) -> T
+impl<T> alloc::string::ToString for sem_os_types::TrustClass where T: core::fmt::Display + ?core::marker::Sized
+pub fn sem_os_types::TrustClass::to_string(&self) -> alloc::string::String
+impl<T> core::any::Any for sem_os_types::TrustClass where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::TrustClass::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::TrustClass where T: ?core::marker::Sized
+pub fn sem_os_types::TrustClass::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::TrustClass where T: ?core::marker::Sized
+pub fn sem_os_types::TrustClass::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::TrustClass where T: core::clone::Clone
+pub unsafe fn sem_os_types::TrustClass::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::TrustClass
+pub fn sem_os_types::TrustClass::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::TrustClass where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::AddChangesetEntryInput
+pub sem_os_types::AddChangesetEntryInput::base_snapshot_id: core::option::Option<uuid::Uuid>
+pub sem_os_types::AddChangesetEntryInput::change_kind: sem_os_types::ChangeKind
+pub sem_os_types::AddChangesetEntryInput::draft_payload: serde_json::value::Value
+pub sem_os_types::AddChangesetEntryInput::object_fqn: alloc::string::String
+pub sem_os_types::AddChangesetEntryInput::object_type: sem_os_types::ObjectType
+impl core::clone::Clone for sem_os_types::AddChangesetEntryInput
+pub fn sem_os_types::AddChangesetEntryInput::clone(&self) -> sem_os_types::AddChangesetEntryInput
+impl core::fmt::Debug for sem_os_types::AddChangesetEntryInput
+pub fn sem_os_types::AddChangesetEntryInput::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::AddChangesetEntryInput
+pub fn sem_os_types::AddChangesetEntryInput::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::AddChangesetEntryInput
+pub fn sem_os_types::AddChangesetEntryInput::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::AddChangesetEntryInput
+impl core::marker::Send for sem_os_types::AddChangesetEntryInput
+impl core::marker::Sync for sem_os_types::AddChangesetEntryInput
+impl core::marker::Unpin for sem_os_types::AddChangesetEntryInput
+impl core::marker::UnsafeUnpin for sem_os_types::AddChangesetEntryInput
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::AddChangesetEntryInput
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::AddChangesetEntryInput
+impl<T, U> core::convert::Into<U> for sem_os_types::AddChangesetEntryInput where U: core::convert::From<T>
+pub fn sem_os_types::AddChangesetEntryInput::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::AddChangesetEntryInput where U: core::convert::Into<T>
+pub type sem_os_types::AddChangesetEntryInput::Error = core::convert::Infallible
+pub fn sem_os_types::AddChangesetEntryInput::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::AddChangesetEntryInput where U: core::convert::TryFrom<T>
+pub type sem_os_types::AddChangesetEntryInput::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::AddChangesetEntryInput::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::AddChangesetEntryInput where T: core::clone::Clone
+pub type sem_os_types::AddChangesetEntryInput::Owned = T
+pub fn sem_os_types::AddChangesetEntryInput::clone_into(&self, &mut T)
+pub fn sem_os_types::AddChangesetEntryInput::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::AddChangesetEntryInput where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::AddChangesetEntryInput::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::AddChangesetEntryInput where T: ?core::marker::Sized
+pub fn sem_os_types::AddChangesetEntryInput::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::AddChangesetEntryInput where T: ?core::marker::Sized
+pub fn sem_os_types::AddChangesetEntryInput::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::AddChangesetEntryInput where T: core::clone::Clone
+pub unsafe fn sem_os_types::AddChangesetEntryInput::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::AddChangesetEntryInput
+pub fn sem_os_types::AddChangesetEntryInput::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::AddChangesetEntryInput where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::AuditEntry
+pub sem_os_types::AuditEntry::action: alloc::string::String
+pub sem_os_types::AuditEntry::details: serde_json::value::Value
+impl core::clone::Clone for sem_os_types::AuditEntry
+pub fn sem_os_types::AuditEntry::clone(&self) -> sem_os_types::AuditEntry
+impl core::fmt::Debug for sem_os_types::AuditEntry
+pub fn sem_os_types::AuditEntry::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::AuditEntry
+pub fn sem_os_types::AuditEntry::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::AuditEntry
+pub fn sem_os_types::AuditEntry::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::AuditEntry
+impl core::marker::Send for sem_os_types::AuditEntry
+impl core::marker::Sync for sem_os_types::AuditEntry
+impl core::marker::Unpin for sem_os_types::AuditEntry
+impl core::marker::UnsafeUnpin for sem_os_types::AuditEntry
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::AuditEntry
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::AuditEntry
+impl<T, U> core::convert::Into<U> for sem_os_types::AuditEntry where U: core::convert::From<T>
+pub fn sem_os_types::AuditEntry::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::AuditEntry where U: core::convert::Into<T>
+pub type sem_os_types::AuditEntry::Error = core::convert::Infallible
+pub fn sem_os_types::AuditEntry::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::AuditEntry where U: core::convert::TryFrom<T>
+pub type sem_os_types::AuditEntry::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::AuditEntry::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::AuditEntry where T: core::clone::Clone
+pub type sem_os_types::AuditEntry::Owned = T
+pub fn sem_os_types::AuditEntry::clone_into(&self, &mut T)
+pub fn sem_os_types::AuditEntry::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::AuditEntry where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::AuditEntry::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::AuditEntry where T: ?core::marker::Sized
+pub fn sem_os_types::AuditEntry::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::AuditEntry where T: ?core::marker::Sized
+pub fn sem_os_types::AuditEntry::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::AuditEntry where T: core::clone::Clone
+pub unsafe fn sem_os_types::AuditEntry::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::AuditEntry
+pub fn sem_os_types::AuditEntry::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::AuditEntry where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::Changeset
+pub sem_os_types::Changeset::changeset_id: uuid::Uuid
+pub sem_os_types::Changeset::created_at: chrono::datetime::DateTime<chrono::offset::utc::Utc>
+pub sem_os_types::Changeset::owner_actor_id: alloc::string::String
+pub sem_os_types::Changeset::scope: alloc::string::String
+pub sem_os_types::Changeset::status: sem_os_types::ChangeSetStatus
+pub sem_os_types::Changeset::updated_at: chrono::datetime::DateTime<chrono::offset::utc::Utc>
+impl core::clone::Clone for sem_os_types::Changeset
+pub fn sem_os_types::Changeset::clone(&self) -> sem_os_types::Changeset
+impl core::fmt::Debug for sem_os_types::Changeset
+pub fn sem_os_types::Changeset::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::Changeset
+pub fn sem_os_types::Changeset::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::Changeset
+pub fn sem_os_types::Changeset::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::Changeset
+impl core::marker::Send for sem_os_types::Changeset
+impl core::marker::Sync for sem_os_types::Changeset
+impl core::marker::Unpin for sem_os_types::Changeset
+impl core::marker::UnsafeUnpin for sem_os_types::Changeset
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::Changeset
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::Changeset
+impl<T, U> core::convert::Into<U> for sem_os_types::Changeset where U: core::convert::From<T>
+pub fn sem_os_types::Changeset::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::Changeset where U: core::convert::Into<T>
+pub type sem_os_types::Changeset::Error = core::convert::Infallible
+pub fn sem_os_types::Changeset::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::Changeset where U: core::convert::TryFrom<T>
+pub type sem_os_types::Changeset::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::Changeset::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::Changeset where T: core::clone::Clone
+pub type sem_os_types::Changeset::Owned = T
+pub fn sem_os_types::Changeset::clone_into(&self, &mut T)
+pub fn sem_os_types::Changeset::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::Changeset where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::Changeset::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::Changeset where T: ?core::marker::Sized
+pub fn sem_os_types::Changeset::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::Changeset where T: ?core::marker::Sized
+pub fn sem_os_types::Changeset::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::Changeset where T: core::clone::Clone
+pub unsafe fn sem_os_types::Changeset::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::Changeset
+pub fn sem_os_types::Changeset::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::Changeset where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::ChangesetEntry
+pub sem_os_types::ChangesetEntry::base_snapshot_id: core::option::Option<uuid::Uuid>
+pub sem_os_types::ChangesetEntry::change_kind: sem_os_types::ChangeKind
+pub sem_os_types::ChangesetEntry::changeset_id: uuid::Uuid
+pub sem_os_types::ChangesetEntry::created_at: chrono::datetime::DateTime<chrono::offset::utc::Utc>
+pub sem_os_types::ChangesetEntry::draft_payload: serde_json::value::Value
+pub sem_os_types::ChangesetEntry::entry_id: uuid::Uuid
+pub sem_os_types::ChangesetEntry::object_fqn: alloc::string::String
+pub sem_os_types::ChangesetEntry::object_type: sem_os_types::ObjectType
+impl core::clone::Clone for sem_os_types::ChangesetEntry
+pub fn sem_os_types::ChangesetEntry::clone(&self) -> sem_os_types::ChangesetEntry
+impl core::fmt::Debug for sem_os_types::ChangesetEntry
+pub fn sem_os_types::ChangesetEntry::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::ChangesetEntry
+pub fn sem_os_types::ChangesetEntry::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::ChangesetEntry
+pub fn sem_os_types::ChangesetEntry::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::ChangesetEntry
+impl core::marker::Send for sem_os_types::ChangesetEntry
+impl core::marker::Sync for sem_os_types::ChangesetEntry
+impl core::marker::Unpin for sem_os_types::ChangesetEntry
+impl core::marker::UnsafeUnpin for sem_os_types::ChangesetEntry
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::ChangesetEntry
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::ChangesetEntry
+impl<T, U> core::convert::Into<U> for sem_os_types::ChangesetEntry where U: core::convert::From<T>
+pub fn sem_os_types::ChangesetEntry::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::ChangesetEntry where U: core::convert::Into<T>
+pub type sem_os_types::ChangesetEntry::Error = core::convert::Infallible
+pub fn sem_os_types::ChangesetEntry::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::ChangesetEntry where U: core::convert::TryFrom<T>
+pub type sem_os_types::ChangesetEntry::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::ChangesetEntry::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::ChangesetEntry where T: core::clone::Clone
+pub type sem_os_types::ChangesetEntry::Owned = T
+pub fn sem_os_types::ChangesetEntry::clone_into(&self, &mut T)
+pub fn sem_os_types::ChangesetEntry::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::ChangesetEntry where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::ChangesetEntry::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::ChangesetEntry where T: ?core::marker::Sized
+pub fn sem_os_types::ChangesetEntry::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::ChangesetEntry where T: ?core::marker::Sized
+pub fn sem_os_types::ChangesetEntry::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::ChangesetEntry where T: core::clone::Clone
+pub unsafe fn sem_os_types::ChangesetEntry::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::ChangesetEntry
+pub fn sem_os_types::ChangesetEntry::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::ChangesetEntry where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::ChangesetReview
+pub sem_os_types::ChangesetReview::actor_id: alloc::string::String
+pub sem_os_types::ChangesetReview::changeset_id: uuid::Uuid
+pub sem_os_types::ChangesetReview::comment: core::option::Option<alloc::string::String>
+pub sem_os_types::ChangesetReview::review_id: uuid::Uuid
+pub sem_os_types::ChangesetReview::reviewed_at: chrono::datetime::DateTime<chrono::offset::utc::Utc>
+pub sem_os_types::ChangesetReview::verdict: sem_os_types::ReviewVerdict
+impl core::clone::Clone for sem_os_types::ChangesetReview
+pub fn sem_os_types::ChangesetReview::clone(&self) -> sem_os_types::ChangesetReview
+impl core::fmt::Debug for sem_os_types::ChangesetReview
+pub fn sem_os_types::ChangesetReview::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::ChangesetReview
+pub fn sem_os_types::ChangesetReview::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::ChangesetReview
+pub fn sem_os_types::ChangesetReview::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::ChangesetReview
+impl core::marker::Send for sem_os_types::ChangesetReview
+impl core::marker::Sync for sem_os_types::ChangesetReview
+impl core::marker::Unpin for sem_os_types::ChangesetReview
+impl core::marker::UnsafeUnpin for sem_os_types::ChangesetReview
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::ChangesetReview
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::ChangesetReview
+impl<T, U> core::convert::Into<U> for sem_os_types::ChangesetReview where U: core::convert::From<T>
+pub fn sem_os_types::ChangesetReview::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::ChangesetReview where U: core::convert::Into<T>
+pub type sem_os_types::ChangesetReview::Error = core::convert::Infallible
+pub fn sem_os_types::ChangesetReview::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::ChangesetReview where U: core::convert::TryFrom<T>
+pub type sem_os_types::ChangesetReview::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::ChangesetReview::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::ChangesetReview where T: core::clone::Clone
+pub type sem_os_types::ChangesetReview::Owned = T
+pub fn sem_os_types::ChangesetReview::clone_into(&self, &mut T)
+pub fn sem_os_types::ChangesetReview::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::ChangesetReview where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::ChangesetReview::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::ChangesetReview where T: ?core::marker::Sized
+pub fn sem_os_types::ChangesetReview::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::ChangesetReview where T: ?core::marker::Sized
+pub fn sem_os_types::ChangesetReview::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::ChangesetReview where T: core::clone::Clone
+pub unsafe fn sem_os_types::ChangesetReview::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::ChangesetReview
+pub fn sem_os_types::ChangesetReview::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::ChangesetReview where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::CreateChangesetInput
+pub sem_os_types::CreateChangesetInput::owner_actor_id: alloc::string::String
+pub sem_os_types::CreateChangesetInput::scope: alloc::string::String
+impl core::clone::Clone for sem_os_types::CreateChangesetInput
+pub fn sem_os_types::CreateChangesetInput::clone(&self) -> sem_os_types::CreateChangesetInput
+impl core::fmt::Debug for sem_os_types::CreateChangesetInput
+pub fn sem_os_types::CreateChangesetInput::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::CreateChangesetInput
+pub fn sem_os_types::CreateChangesetInput::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::CreateChangesetInput
+pub fn sem_os_types::CreateChangesetInput::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::CreateChangesetInput
+impl core::marker::Send for sem_os_types::CreateChangesetInput
+impl core::marker::Sync for sem_os_types::CreateChangesetInput
+impl core::marker::Unpin for sem_os_types::CreateChangesetInput
+impl core::marker::UnsafeUnpin for sem_os_types::CreateChangesetInput
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::CreateChangesetInput
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::CreateChangesetInput
+impl<T, U> core::convert::Into<U> for sem_os_types::CreateChangesetInput where U: core::convert::From<T>
+pub fn sem_os_types::CreateChangesetInput::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::CreateChangesetInput where U: core::convert::Into<T>
+pub type sem_os_types::CreateChangesetInput::Error = core::convert::Infallible
+pub fn sem_os_types::CreateChangesetInput::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::CreateChangesetInput where U: core::convert::TryFrom<T>
+pub type sem_os_types::CreateChangesetInput::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::CreateChangesetInput::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::CreateChangesetInput where T: core::clone::Clone
+pub type sem_os_types::CreateChangesetInput::Owned = T
+pub fn sem_os_types::CreateChangesetInput::clone_into(&self, &mut T)
+pub fn sem_os_types::CreateChangesetInput::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::CreateChangesetInput where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::CreateChangesetInput::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::CreateChangesetInput where T: ?core::marker::Sized
+pub fn sem_os_types::CreateChangesetInput::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::CreateChangesetInput where T: ?core::marker::Sized
+pub fn sem_os_types::CreateChangesetInput::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::CreateChangesetInput where T: core::clone::Clone
+pub unsafe fn sem_os_types::CreateChangesetInput::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::CreateChangesetInput
+pub fn sem_os_types::CreateChangesetInput::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::CreateChangesetInput where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::DependentSnapshot
+pub sem_os_types::DependentSnapshot::fqn: alloc::string::String
+pub sem_os_types::DependentSnapshot::object_type: sem_os_types::ObjectType
+pub sem_os_types::DependentSnapshot::snapshot_id: uuid::Uuid
+impl core::clone::Clone for sem_os_types::DependentSnapshot
+pub fn sem_os_types::DependentSnapshot::clone(&self) -> sem_os_types::DependentSnapshot
+impl core::fmt::Debug for sem_os_types::DependentSnapshot
+pub fn sem_os_types::DependentSnapshot::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::DependentSnapshot
+pub fn sem_os_types::DependentSnapshot::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::DependentSnapshot
+pub fn sem_os_types::DependentSnapshot::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::DependentSnapshot
+impl core::marker::Send for sem_os_types::DependentSnapshot
+impl core::marker::Sync for sem_os_types::DependentSnapshot
+impl core::marker::Unpin for sem_os_types::DependentSnapshot
+impl core::marker::UnsafeUnpin for sem_os_types::DependentSnapshot
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::DependentSnapshot
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::DependentSnapshot
+impl<T, U> core::convert::Into<U> for sem_os_types::DependentSnapshot where U: core::convert::From<T>
+pub fn sem_os_types::DependentSnapshot::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::DependentSnapshot where U: core::convert::Into<T>
+pub type sem_os_types::DependentSnapshot::Error = core::convert::Infallible
+pub fn sem_os_types::DependentSnapshot::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::DependentSnapshot where U: core::convert::TryFrom<T>
+pub type sem_os_types::DependentSnapshot::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::DependentSnapshot::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::DependentSnapshot where T: core::clone::Clone
+pub type sem_os_types::DependentSnapshot::Owned = T
+pub fn sem_os_types::DependentSnapshot::clone_into(&self, &mut T)
+pub fn sem_os_types::DependentSnapshot::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::DependentSnapshot where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::DependentSnapshot::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::DependentSnapshot where T: ?core::marker::Sized
+pub fn sem_os_types::DependentSnapshot::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::DependentSnapshot where T: ?core::marker::Sized
+pub fn sem_os_types::DependentSnapshot::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::DependentSnapshot where T: core::clone::Clone
+pub unsafe fn sem_os_types::DependentSnapshot::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::DependentSnapshot
+pub fn sem_os_types::DependentSnapshot::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::DependentSnapshot where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::EventId(pub uuid::Uuid)
+impl core::clone::Clone for sem_os_types::EventId
+pub fn sem_os_types::EventId::clone(&self) -> sem_os_types::EventId
+impl core::cmp::Eq for sem_os_types::EventId
+impl core::cmp::PartialEq for sem_os_types::EventId
+pub fn sem_os_types::EventId::eq(&self, &sem_os_types::EventId) -> bool
+impl core::fmt::Debug for sem_os_types::EventId
+pub fn sem_os_types::EventId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for sem_os_types::EventId
+pub fn sem_os_types::EventId::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::StructuralPartialEq for sem_os_types::EventId
+impl serde_core::ser::Serialize for sem_os_types::EventId
+pub fn sem_os_types::EventId::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::EventId
+pub fn sem_os_types::EventId::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::EventId
+impl core::marker::Send for sem_os_types::EventId
+impl core::marker::Sync for sem_os_types::EventId
+impl core::marker::Unpin for sem_os_types::EventId
+impl core::marker::UnsafeUnpin for sem_os_types::EventId
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::EventId
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::EventId
+impl<T, U> core::convert::Into<U> for sem_os_types::EventId where U: core::convert::From<T>
+pub fn sem_os_types::EventId::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::EventId where U: core::convert::Into<T>
+pub type sem_os_types::EventId::Error = core::convert::Infallible
+pub fn sem_os_types::EventId::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::EventId where U: core::convert::TryFrom<T>
+pub type sem_os_types::EventId::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::EventId::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::EventId where T: core::clone::Clone
+pub type sem_os_types::EventId::Owned = T
+pub fn sem_os_types::EventId::clone_into(&self, &mut T)
+pub fn sem_os_types::EventId::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::EventId where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::EventId::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::EventId where T: ?core::marker::Sized
+pub fn sem_os_types::EventId::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::EventId where T: ?core::marker::Sized
+pub fn sem_os_types::EventId::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::EventId where T: core::clone::Clone
+pub unsafe fn sem_os_types::EventId::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::EventId
+pub fn sem_os_types::EventId::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::EventId where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::EvidenceInstance
+pub sem_os_types::EvidenceInstance::attribute_fqn: alloc::string::String
+pub sem_os_types::EvidenceInstance::confidence: f32
+pub sem_os_types::EvidenceInstance::evidence_grade: alloc::string::String
+pub sem_os_types::EvidenceInstance::observed_at: core::option::Option<chrono::datetime::DateTime<chrono::offset::utc::Utc>>
+pub sem_os_types::EvidenceInstance::raw_payload: core::option::Option<serde_json::value::Value>
+pub sem_os_types::EvidenceInstance::subject_ref: uuid::Uuid
+impl core::clone::Clone for sem_os_types::EvidenceInstance
+pub fn sem_os_types::EvidenceInstance::clone(&self) -> sem_os_types::EvidenceInstance
+impl core::fmt::Debug for sem_os_types::EvidenceInstance
+pub fn sem_os_types::EvidenceInstance::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::EvidenceInstance
+pub fn sem_os_types::EvidenceInstance::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::EvidenceInstance
+pub fn sem_os_types::EvidenceInstance::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::EvidenceInstance
+impl core::marker::Send for sem_os_types::EvidenceInstance
+impl core::marker::Sync for sem_os_types::EvidenceInstance
+impl core::marker::Unpin for sem_os_types::EvidenceInstance
+impl core::marker::UnsafeUnpin for sem_os_types::EvidenceInstance
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::EvidenceInstance
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::EvidenceInstance
+impl<T, U> core::convert::Into<U> for sem_os_types::EvidenceInstance where U: core::convert::From<T>
+pub fn sem_os_types::EvidenceInstance::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::EvidenceInstance where U: core::convert::Into<T>
+pub type sem_os_types::EvidenceInstance::Error = core::convert::Infallible
+pub fn sem_os_types::EvidenceInstance::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::EvidenceInstance where U: core::convert::TryFrom<T>
+pub type sem_os_types::EvidenceInstance::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::EvidenceInstance::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::EvidenceInstance where T: core::clone::Clone
+pub type sem_os_types::EvidenceInstance::Owned = T
+pub fn sem_os_types::EvidenceInstance::clone_into(&self, &mut T)
+pub fn sem_os_types::EvidenceInstance::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::EvidenceInstance where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::EvidenceInstance::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::EvidenceInstance where T: ?core::marker::Sized
+pub fn sem_os_types::EvidenceInstance::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::EvidenceInstance where T: ?core::marker::Sized
+pub fn sem_os_types::EvidenceInstance::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::EvidenceInstance where T: core::clone::Clone
+pub unsafe fn sem_os_types::EvidenceInstance::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::EvidenceInstance
+pub fn sem_os_types::EvidenceInstance::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::EvidenceInstance where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::Fqn(pub alloc::string::String)
+impl sem_os_types::Fqn
+pub fn sem_os_types::Fqn::as_str(&self) -> &str
+pub fn sem_os_types::Fqn::new(impl core::convert::Into<alloc::string::String>) -> Self
+impl core::clone::Clone for sem_os_types::Fqn
+pub fn sem_os_types::Fqn::clone(&self) -> sem_os_types::Fqn
+impl core::cmp::Eq for sem_os_types::Fqn
+impl core::cmp::PartialEq for sem_os_types::Fqn
+pub fn sem_os_types::Fqn::eq(&self, &sem_os_types::Fqn) -> bool
+impl core::fmt::Debug for sem_os_types::Fqn
+pub fn sem_os_types::Fqn::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_types::Fqn
+pub fn sem_os_types::Fqn::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for sem_os_types::Fqn
+pub fn sem_os_types::Fqn::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::StructuralPartialEq for sem_os_types::Fqn
+impl serde_core::ser::Serialize for sem_os_types::Fqn
+pub fn sem_os_types::Fqn::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::Fqn
+pub fn sem_os_types::Fqn::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::Fqn
+impl core::marker::Send for sem_os_types::Fqn
+impl core::marker::Sync for sem_os_types::Fqn
+impl core::marker::Unpin for sem_os_types::Fqn
+impl core::marker::UnsafeUnpin for sem_os_types::Fqn
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::Fqn
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::Fqn
+impl<T, U> core::convert::Into<U> for sem_os_types::Fqn where U: core::convert::From<T>
+pub fn sem_os_types::Fqn::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::Fqn where U: core::convert::Into<T>
+pub type sem_os_types::Fqn::Error = core::convert::Infallible
+pub fn sem_os_types::Fqn::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::Fqn where U: core::convert::TryFrom<T>
+pub type sem_os_types::Fqn::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::Fqn::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::Fqn where T: core::clone::Clone
+pub type sem_os_types::Fqn::Owned = T
+pub fn sem_os_types::Fqn::clone_into(&self, &mut T)
+pub fn sem_os_types::Fqn::to_owned(&self) -> T
+impl<T> alloc::string::ToString for sem_os_types::Fqn where T: core::fmt::Display + ?core::marker::Sized
+pub fn sem_os_types::Fqn::to_string(&self) -> alloc::string::String
+impl<T> core::any::Any for sem_os_types::Fqn where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::Fqn::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::Fqn where T: ?core::marker::Sized
+pub fn sem_os_types::Fqn::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::Fqn where T: ?core::marker::Sized
+pub fn sem_os_types::Fqn::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::Fqn where T: core::clone::Clone
+pub unsafe fn sem_os_types::Fqn::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::Fqn
+pub fn sem_os_types::Fqn::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::Fqn where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::Manifest
+pub sem_os_types::Manifest::entries: alloc::vec::Vec<sem_os_types::SnapshotSummary>
+pub sem_os_types::Manifest::published_at: chrono::datetime::DateTime<chrono::offset::utc::Utc>
+pub sem_os_types::Manifest::snapshot_set_id: sem_os_types::SnapshotSetId
+impl core::clone::Clone for sem_os_types::Manifest
+pub fn sem_os_types::Manifest::clone(&self) -> sem_os_types::Manifest
+impl core::fmt::Debug for sem_os_types::Manifest
+pub fn sem_os_types::Manifest::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::Manifest
+pub fn sem_os_types::Manifest::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::Manifest
+pub fn sem_os_types::Manifest::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::Manifest
+impl core::marker::Send for sem_os_types::Manifest
+impl core::marker::Sync for sem_os_types::Manifest
+impl core::marker::Unpin for sem_os_types::Manifest
+impl core::marker::UnsafeUnpin for sem_os_types::Manifest
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::Manifest
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::Manifest
+impl<T, U> core::convert::Into<U> for sem_os_types::Manifest where U: core::convert::From<T>
+pub fn sem_os_types::Manifest::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::Manifest where U: core::convert::Into<T>
+pub type sem_os_types::Manifest::Error = core::convert::Infallible
+pub fn sem_os_types::Manifest::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::Manifest where U: core::convert::TryFrom<T>
+pub type sem_os_types::Manifest::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::Manifest::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::Manifest where T: core::clone::Clone
+pub type sem_os_types::Manifest::Owned = T
+pub fn sem_os_types::Manifest::clone_into(&self, &mut T)
+pub fn sem_os_types::Manifest::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::Manifest where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::Manifest::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::Manifest where T: ?core::marker::Sized
+pub fn sem_os_types::Manifest::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::Manifest where T: ?core::marker::Sized
+pub fn sem_os_types::Manifest::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::Manifest where T: core::clone::Clone
+pub unsafe fn sem_os_types::Manifest::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::Manifest
+pub fn sem_os_types::Manifest::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::Manifest where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::OutboxEvent
+pub sem_os_types::OutboxEvent::attempt_count: u32
+pub sem_os_types::OutboxEvent::correlation_id: uuid::Uuid
+pub sem_os_types::OutboxEvent::created_at: chrono::datetime::DateTime<chrono::offset::utc::Utc>
+pub sem_os_types::OutboxEvent::event_id: sem_os_types::EventId
+pub sem_os_types::OutboxEvent::event_type: alloc::string::String
+pub sem_os_types::OutboxEvent::outbox_seq: i64
+pub sem_os_types::OutboxEvent::payload: serde_json::value::Value
+pub sem_os_types::OutboxEvent::snapshot_set_id: sem_os_types::SnapshotSetId
+impl core::clone::Clone for sem_os_types::OutboxEvent
+pub fn sem_os_types::OutboxEvent::clone(&self) -> sem_os_types::OutboxEvent
+impl core::fmt::Debug for sem_os_types::OutboxEvent
+pub fn sem_os_types::OutboxEvent::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::OutboxEvent
+pub fn sem_os_types::OutboxEvent::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::OutboxEvent
+pub fn sem_os_types::OutboxEvent::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::OutboxEvent
+impl core::marker::Send for sem_os_types::OutboxEvent
+impl core::marker::Sync for sem_os_types::OutboxEvent
+impl core::marker::Unpin for sem_os_types::OutboxEvent
+impl core::marker::UnsafeUnpin for sem_os_types::OutboxEvent
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::OutboxEvent
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::OutboxEvent
+impl<T, U> core::convert::Into<U> for sem_os_types::OutboxEvent where U: core::convert::From<T>
+pub fn sem_os_types::OutboxEvent::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::OutboxEvent where U: core::convert::Into<T>
+pub type sem_os_types::OutboxEvent::Error = core::convert::Infallible
+pub fn sem_os_types::OutboxEvent::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::OutboxEvent where U: core::convert::TryFrom<T>
+pub type sem_os_types::OutboxEvent::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::OutboxEvent::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::OutboxEvent where T: core::clone::Clone
+pub type sem_os_types::OutboxEvent::Owned = T
+pub fn sem_os_types::OutboxEvent::clone_into(&self, &mut T)
+pub fn sem_os_types::OutboxEvent::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::OutboxEvent where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::OutboxEvent::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::OutboxEvent where T: ?core::marker::Sized
+pub fn sem_os_types::OutboxEvent::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::OutboxEvent where T: ?core::marker::Sized
+pub fn sem_os_types::OutboxEvent::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::OutboxEvent where T: core::clone::Clone
+pub unsafe fn sem_os_types::OutboxEvent::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::OutboxEvent
+pub fn sem_os_types::OutboxEvent::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::OutboxEvent where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::PublishInput
+pub sem_os_types::PublishInput::payload: serde_json::value::Value
+impl core::clone::Clone for sem_os_types::PublishInput
+pub fn sem_os_types::PublishInput::clone(&self) -> sem_os_types::PublishInput
+impl core::fmt::Debug for sem_os_types::PublishInput
+pub fn sem_os_types::PublishInput::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::PublishInput
+pub fn sem_os_types::PublishInput::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::PublishInput
+pub fn sem_os_types::PublishInput::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::PublishInput
+impl core::marker::Send for sem_os_types::PublishInput
+impl core::marker::Sync for sem_os_types::PublishInput
+impl core::marker::Unpin for sem_os_types::PublishInput
+impl core::marker::UnsafeUnpin for sem_os_types::PublishInput
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::PublishInput
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::PublishInput
+impl<T, U> core::convert::Into<U> for sem_os_types::PublishInput where U: core::convert::From<T>
+pub fn sem_os_types::PublishInput::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::PublishInput where U: core::convert::Into<T>
+pub type sem_os_types::PublishInput::Error = core::convert::Infallible
+pub fn sem_os_types::PublishInput::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::PublishInput where U: core::convert::TryFrom<T>
+pub type sem_os_types::PublishInput::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::PublishInput::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::PublishInput where T: core::clone::Clone
+pub type sem_os_types::PublishInput::Owned = T
+pub fn sem_os_types::PublishInput::clone_into(&self, &mut T)
+pub fn sem_os_types::PublishInput::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::PublishInput where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::PublishInput::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::PublishInput where T: ?core::marker::Sized
+pub fn sem_os_types::PublishInput::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::PublishInput where T: ?core::marker::Sized
+pub fn sem_os_types::PublishInput::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::PublishInput where T: core::clone::Clone
+pub unsafe fn sem_os_types::PublishInput::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::PublishInput
+pub fn sem_os_types::PublishInput::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::PublishInput where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::SecurityLabel
+pub sem_os_types::SecurityLabel::classification: sem_os_types::Classification
+pub sem_os_types::SecurityLabel::handling_controls: alloc::vec::Vec<sem_os_types::HandlingControl>
+pub sem_os_types::SecurityLabel::jurisdictions: alloc::vec::Vec<alloc::string::String>
+pub sem_os_types::SecurityLabel::pii: bool
+pub sem_os_types::SecurityLabel::purpose_limitation: alloc::vec::Vec<alloc::string::String>
+impl core::clone::Clone for sem_os_types::SecurityLabel
+pub fn sem_os_types::SecurityLabel::clone(&self) -> sem_os_types::SecurityLabel
+impl core::cmp::PartialEq for sem_os_types::SecurityLabel
+pub fn sem_os_types::SecurityLabel::eq(&self, &sem_os_types::SecurityLabel) -> bool
+impl core::default::Default for sem_os_types::SecurityLabel
+pub fn sem_os_types::SecurityLabel::default() -> sem_os_types::SecurityLabel
+impl core::fmt::Debug for sem_os_types::SecurityLabel
+pub fn sem_os_types::SecurityLabel::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_types::SecurityLabel
+impl serde_core::ser::Serialize for sem_os_types::SecurityLabel
+pub fn sem_os_types::SecurityLabel::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::SecurityLabel
+pub fn sem_os_types::SecurityLabel::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::SecurityLabel
+impl core::marker::Send for sem_os_types::SecurityLabel
+impl core::marker::Sync for sem_os_types::SecurityLabel
+impl core::marker::Unpin for sem_os_types::SecurityLabel
+impl core::marker::UnsafeUnpin for sem_os_types::SecurityLabel
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::SecurityLabel
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::SecurityLabel
+impl<T, U> core::convert::Into<U> for sem_os_types::SecurityLabel where U: core::convert::From<T>
+pub fn sem_os_types::SecurityLabel::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::SecurityLabel where U: core::convert::Into<T>
+pub type sem_os_types::SecurityLabel::Error = core::convert::Infallible
+pub fn sem_os_types::SecurityLabel::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::SecurityLabel where U: core::convert::TryFrom<T>
+pub type sem_os_types::SecurityLabel::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::SecurityLabel::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::SecurityLabel where T: core::clone::Clone
+pub type sem_os_types::SecurityLabel::Owned = T
+pub fn sem_os_types::SecurityLabel::clone_into(&self, &mut T)
+pub fn sem_os_types::SecurityLabel::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::SecurityLabel where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::SecurityLabel::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::SecurityLabel where T: ?core::marker::Sized
+pub fn sem_os_types::SecurityLabel::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::SecurityLabel where T: ?core::marker::Sized
+pub fn sem_os_types::SecurityLabel::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::SecurityLabel where T: core::clone::Clone
+pub unsafe fn sem_os_types::SecurityLabel::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::SecurityLabel
+pub fn sem_os_types::SecurityLabel::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::SecurityLabel where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::SnapshotExport
+pub sem_os_types::SnapshotExport::fqn: sem_os_types::Fqn
+pub sem_os_types::SnapshotExport::object_type: sem_os_types::ObjectType
+pub sem_os_types::SnapshotExport::payload: serde_json::value::Value
+pub sem_os_types::SnapshotExport::snapshot_id: sem_os_types::SnapshotId
+impl core::clone::Clone for sem_os_types::SnapshotExport
+pub fn sem_os_types::SnapshotExport::clone(&self) -> sem_os_types::SnapshotExport
+impl core::fmt::Debug for sem_os_types::SnapshotExport
+pub fn sem_os_types::SnapshotExport::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::SnapshotExport
+pub fn sem_os_types::SnapshotExport::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::SnapshotExport
+pub fn sem_os_types::SnapshotExport::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::SnapshotExport
+impl core::marker::Send for sem_os_types::SnapshotExport
+impl core::marker::Sync for sem_os_types::SnapshotExport
+impl core::marker::Unpin for sem_os_types::SnapshotExport
+impl core::marker::UnsafeUnpin for sem_os_types::SnapshotExport
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::SnapshotExport
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::SnapshotExport
+impl<T, U> core::convert::Into<U> for sem_os_types::SnapshotExport where U: core::convert::From<T>
+pub fn sem_os_types::SnapshotExport::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::SnapshotExport where U: core::convert::Into<T>
+pub type sem_os_types::SnapshotExport::Error = core::convert::Infallible
+pub fn sem_os_types::SnapshotExport::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::SnapshotExport where U: core::convert::TryFrom<T>
+pub type sem_os_types::SnapshotExport::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::SnapshotExport::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::SnapshotExport where T: core::clone::Clone
+pub type sem_os_types::SnapshotExport::Owned = T
+pub fn sem_os_types::SnapshotExport::clone_into(&self, &mut T)
+pub fn sem_os_types::SnapshotExport::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::SnapshotExport where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::SnapshotExport::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::SnapshotExport where T: ?core::marker::Sized
+pub fn sem_os_types::SnapshotExport::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::SnapshotExport where T: ?core::marker::Sized
+pub fn sem_os_types::SnapshotExport::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::SnapshotExport where T: core::clone::Clone
+pub unsafe fn sem_os_types::SnapshotExport::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::SnapshotExport
+pub fn sem_os_types::SnapshotExport::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::SnapshotExport where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::SnapshotId(pub uuid::Uuid)
+impl core::clone::Clone for sem_os_types::SnapshotId
+pub fn sem_os_types::SnapshotId::clone(&self) -> sem_os_types::SnapshotId
+impl core::cmp::Eq for sem_os_types::SnapshotId
+impl core::cmp::PartialEq for sem_os_types::SnapshotId
+pub fn sem_os_types::SnapshotId::eq(&self, &sem_os_types::SnapshotId) -> bool
+impl core::fmt::Debug for sem_os_types::SnapshotId
+pub fn sem_os_types::SnapshotId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for sem_os_types::SnapshotId
+pub fn sem_os_types::SnapshotId::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::StructuralPartialEq for sem_os_types::SnapshotId
+impl serde_core::ser::Serialize for sem_os_types::SnapshotId
+pub fn sem_os_types::SnapshotId::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::SnapshotId
+pub fn sem_os_types::SnapshotId::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::SnapshotId
+impl core::marker::Send for sem_os_types::SnapshotId
+impl core::marker::Sync for sem_os_types::SnapshotId
+impl core::marker::Unpin for sem_os_types::SnapshotId
+impl core::marker::UnsafeUnpin for sem_os_types::SnapshotId
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::SnapshotId
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::SnapshotId
+impl<T, U> core::convert::Into<U> for sem_os_types::SnapshotId where U: core::convert::From<T>
+pub fn sem_os_types::SnapshotId::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::SnapshotId where U: core::convert::Into<T>
+pub type sem_os_types::SnapshotId::Error = core::convert::Infallible
+pub fn sem_os_types::SnapshotId::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::SnapshotId where U: core::convert::TryFrom<T>
+pub type sem_os_types::SnapshotId::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::SnapshotId::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::SnapshotId where T: core::clone::Clone
+pub type sem_os_types::SnapshotId::Owned = T
+pub fn sem_os_types::SnapshotId::clone_into(&self, &mut T)
+pub fn sem_os_types::SnapshotId::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::SnapshotId where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::SnapshotId::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::SnapshotId where T: ?core::marker::Sized
+pub fn sem_os_types::SnapshotId::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::SnapshotId where T: ?core::marker::Sized
+pub fn sem_os_types::SnapshotId::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::SnapshotId where T: core::clone::Clone
+pub unsafe fn sem_os_types::SnapshotId::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::SnapshotId
+pub fn sem_os_types::SnapshotId::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::SnapshotId where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::SnapshotMeta
+pub sem_os_types::SnapshotMeta::approved_by: core::option::Option<alloc::string::String>
+pub sem_os_types::SnapshotMeta::change_rationale: core::option::Option<alloc::string::String>
+pub sem_os_types::SnapshotMeta::change_type: sem_os_types::ChangeType
+pub sem_os_types::SnapshotMeta::created_by: alloc::string::String
+pub sem_os_types::SnapshotMeta::governance_tier: sem_os_types::GovernanceTier
+pub sem_os_types::SnapshotMeta::object_id: uuid::Uuid
+pub sem_os_types::SnapshotMeta::object_type: sem_os_types::ObjectType
+pub sem_os_types::SnapshotMeta::predecessor_id: core::option::Option<uuid::Uuid>
+pub sem_os_types::SnapshotMeta::security_label: sem_os_types::SecurityLabel
+pub sem_os_types::SnapshotMeta::status: sem_os_types::SnapshotStatus
+pub sem_os_types::SnapshotMeta::trust_class: sem_os_types::TrustClass
+pub sem_os_types::SnapshotMeta::version_major: i32
+pub sem_os_types::SnapshotMeta::version_minor: i32
+impl sem_os_types::SnapshotMeta
+pub fn sem_os_types::SnapshotMeta::new_at_tier(sem_os_types::GovernanceTier, sem_os_types::ObjectType, uuid::Uuid, impl core::convert::Into<alloc::string::String>) -> Self
+pub fn sem_os_types::SnapshotMeta::new_operational(sem_os_types::ObjectType, uuid::Uuid, impl core::convert::Into<alloc::string::String>) -> Self
+impl core::clone::Clone for sem_os_types::SnapshotMeta
+pub fn sem_os_types::SnapshotMeta::clone(&self) -> sem_os_types::SnapshotMeta
+impl core::fmt::Debug for sem_os_types::SnapshotMeta
+pub fn sem_os_types::SnapshotMeta::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::SnapshotMeta
+pub fn sem_os_types::SnapshotMeta::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::SnapshotMeta
+pub fn sem_os_types::SnapshotMeta::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::SnapshotMeta
+impl core::marker::Send for sem_os_types::SnapshotMeta
+impl core::marker::Sync for sem_os_types::SnapshotMeta
+impl core::marker::Unpin for sem_os_types::SnapshotMeta
+impl core::marker::UnsafeUnpin for sem_os_types::SnapshotMeta
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::SnapshotMeta
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::SnapshotMeta
+impl<T, U> core::convert::Into<U> for sem_os_types::SnapshotMeta where U: core::convert::From<T>
+pub fn sem_os_types::SnapshotMeta::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::SnapshotMeta where U: core::convert::Into<T>
+pub type sem_os_types::SnapshotMeta::Error = core::convert::Infallible
+pub fn sem_os_types::SnapshotMeta::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::SnapshotMeta where U: core::convert::TryFrom<T>
+pub type sem_os_types::SnapshotMeta::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::SnapshotMeta::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::SnapshotMeta where T: core::clone::Clone
+pub type sem_os_types::SnapshotMeta::Owned = T
+pub fn sem_os_types::SnapshotMeta::clone_into(&self, &mut T)
+pub fn sem_os_types::SnapshotMeta::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::SnapshotMeta where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::SnapshotMeta::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::SnapshotMeta where T: ?core::marker::Sized
+pub fn sem_os_types::SnapshotMeta::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::SnapshotMeta where T: ?core::marker::Sized
+pub fn sem_os_types::SnapshotMeta::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::SnapshotMeta where T: core::clone::Clone
+pub unsafe fn sem_os_types::SnapshotMeta::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::SnapshotMeta
+pub fn sem_os_types::SnapshotMeta::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::SnapshotMeta where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::SnapshotRow
+pub sem_os_types::SnapshotRow::approved_by: core::option::Option<alloc::string::String>
+pub sem_os_types::SnapshotRow::change_rationale: core::option::Option<alloc::string::String>
+pub sem_os_types::SnapshotRow::change_type: sem_os_types::ChangeType
+pub sem_os_types::SnapshotRow::created_at: chrono::datetime::DateTime<chrono::offset::utc::Utc>
+pub sem_os_types::SnapshotRow::created_by: alloc::string::String
+pub sem_os_types::SnapshotRow::definition: serde_json::value::Value
+pub sem_os_types::SnapshotRow::effective_from: chrono::datetime::DateTime<chrono::offset::utc::Utc>
+pub sem_os_types::SnapshotRow::effective_until: core::option::Option<chrono::datetime::DateTime<chrono::offset::utc::Utc>>
+pub sem_os_types::SnapshotRow::governance_tier: sem_os_types::GovernanceTier
+pub sem_os_types::SnapshotRow::object_id: uuid::Uuid
+pub sem_os_types::SnapshotRow::object_type: sem_os_types::ObjectType
+pub sem_os_types::SnapshotRow::predecessor_id: core::option::Option<uuid::Uuid>
+pub sem_os_types::SnapshotRow::security_label: serde_json::value::Value
+pub sem_os_types::SnapshotRow::snapshot_id: uuid::Uuid
+pub sem_os_types::SnapshotRow::snapshot_set_id: core::option::Option<uuid::Uuid>
+pub sem_os_types::SnapshotRow::status: sem_os_types::SnapshotStatus
+pub sem_os_types::SnapshotRow::trust_class: sem_os_types::TrustClass
+pub sem_os_types::SnapshotRow::version_major: i32
+pub sem_os_types::SnapshotRow::version_minor: i32
+impl sem_os_types::SnapshotRow
+pub fn sem_os_types::SnapshotRow::parse_definition<T: serde_core::de::DeserializeOwned>(&self) -> core::result::Result<T, serde_json::error::Error>
+pub fn sem_os_types::SnapshotRow::parse_security_label(&self) -> core::result::Result<sem_os_types::SecurityLabel, serde_json::error::Error>
+pub fn sem_os_types::SnapshotRow::version_string(&self) -> alloc::string::String
+impl core::clone::Clone for sem_os_types::SnapshotRow
+pub fn sem_os_types::SnapshotRow::clone(&self) -> sem_os_types::SnapshotRow
+impl core::fmt::Debug for sem_os_types::SnapshotRow
+pub fn sem_os_types::SnapshotRow::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::SnapshotRow
+pub fn sem_os_types::SnapshotRow::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::SnapshotRow
+pub fn sem_os_types::SnapshotRow::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::SnapshotRow
+impl core::marker::Send for sem_os_types::SnapshotRow
+impl core::marker::Sync for sem_os_types::SnapshotRow
+impl core::marker::Unpin for sem_os_types::SnapshotRow
+impl core::marker::UnsafeUnpin for sem_os_types::SnapshotRow
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::SnapshotRow
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::SnapshotRow
+impl<T, U> core::convert::Into<U> for sem_os_types::SnapshotRow where U: core::convert::From<T>
+pub fn sem_os_types::SnapshotRow::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::SnapshotRow where U: core::convert::Into<T>
+pub type sem_os_types::SnapshotRow::Error = core::convert::Infallible
+pub fn sem_os_types::SnapshotRow::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::SnapshotRow where U: core::convert::TryFrom<T>
+pub type sem_os_types::SnapshotRow::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::SnapshotRow::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::SnapshotRow where T: core::clone::Clone
+pub type sem_os_types::SnapshotRow::Owned = T
+pub fn sem_os_types::SnapshotRow::clone_into(&self, &mut T)
+pub fn sem_os_types::SnapshotRow::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::SnapshotRow where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::SnapshotRow::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::SnapshotRow where T: ?core::marker::Sized
+pub fn sem_os_types::SnapshotRow::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::SnapshotRow where T: ?core::marker::Sized
+pub fn sem_os_types::SnapshotRow::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::SnapshotRow where T: core::clone::Clone
+pub unsafe fn sem_os_types::SnapshotRow::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::SnapshotRow
+pub fn sem_os_types::SnapshotRow::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::SnapshotRow where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::SnapshotSetId(pub uuid::Uuid)
+impl core::clone::Clone for sem_os_types::SnapshotSetId
+pub fn sem_os_types::SnapshotSetId::clone(&self) -> sem_os_types::SnapshotSetId
+impl core::cmp::Eq for sem_os_types::SnapshotSetId
+impl core::cmp::PartialEq for sem_os_types::SnapshotSetId
+pub fn sem_os_types::SnapshotSetId::eq(&self, &sem_os_types::SnapshotSetId) -> bool
+impl core::fmt::Debug for sem_os_types::SnapshotSetId
+pub fn sem_os_types::SnapshotSetId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for sem_os_types::SnapshotSetId
+pub fn sem_os_types::SnapshotSetId::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::StructuralPartialEq for sem_os_types::SnapshotSetId
+impl serde_core::ser::Serialize for sem_os_types::SnapshotSetId
+pub fn sem_os_types::SnapshotSetId::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::SnapshotSetId
+pub fn sem_os_types::SnapshotSetId::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::SnapshotSetId
+impl core::marker::Send for sem_os_types::SnapshotSetId
+impl core::marker::Sync for sem_os_types::SnapshotSetId
+impl core::marker::Unpin for sem_os_types::SnapshotSetId
+impl core::marker::UnsafeUnpin for sem_os_types::SnapshotSetId
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::SnapshotSetId
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::SnapshotSetId
+impl<T, U> core::convert::Into<U> for sem_os_types::SnapshotSetId where U: core::convert::From<T>
+pub fn sem_os_types::SnapshotSetId::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::SnapshotSetId where U: core::convert::Into<T>
+pub type sem_os_types::SnapshotSetId::Error = core::convert::Infallible
+pub fn sem_os_types::SnapshotSetId::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::SnapshotSetId where U: core::convert::TryFrom<T>
+pub type sem_os_types::SnapshotSetId::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::SnapshotSetId::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::SnapshotSetId where T: core::clone::Clone
+pub type sem_os_types::SnapshotSetId::Owned = T
+pub fn sem_os_types::SnapshotSetId::clone_into(&self, &mut T)
+pub fn sem_os_types::SnapshotSetId::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::SnapshotSetId where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::SnapshotSetId::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::SnapshotSetId where T: ?core::marker::Sized
+pub fn sem_os_types::SnapshotSetId::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::SnapshotSetId where T: ?core::marker::Sized
+pub fn sem_os_types::SnapshotSetId::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::SnapshotSetId where T: core::clone::Clone
+pub unsafe fn sem_os_types::SnapshotSetId::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::SnapshotSetId
+pub fn sem_os_types::SnapshotSetId::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::SnapshotSetId where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::SnapshotSummary
+pub sem_os_types::SnapshotSummary::content_hash: alloc::string::String
+pub sem_os_types::SnapshotSummary::fqn: sem_os_types::Fqn
+pub sem_os_types::SnapshotSummary::object_type: sem_os_types::ObjectType
+pub sem_os_types::SnapshotSummary::snapshot_id: sem_os_types::SnapshotId
+impl core::clone::Clone for sem_os_types::SnapshotSummary
+pub fn sem_os_types::SnapshotSummary::clone(&self) -> sem_os_types::SnapshotSummary
+impl core::fmt::Debug for sem_os_types::SnapshotSummary
+pub fn sem_os_types::SnapshotSummary::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::SnapshotSummary
+pub fn sem_os_types::SnapshotSummary::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::SnapshotSummary
+pub fn sem_os_types::SnapshotSummary::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::SnapshotSummary
+impl core::marker::Send for sem_os_types::SnapshotSummary
+impl core::marker::Sync for sem_os_types::SnapshotSummary
+impl core::marker::Unpin for sem_os_types::SnapshotSummary
+impl core::marker::UnsafeUnpin for sem_os_types::SnapshotSummary
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::SnapshotSummary
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::SnapshotSummary
+impl<T, U> core::convert::Into<U> for sem_os_types::SnapshotSummary where U: core::convert::From<T>
+pub fn sem_os_types::SnapshotSummary::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::SnapshotSummary where U: core::convert::Into<T>
+pub type sem_os_types::SnapshotSummary::Error = core::convert::Infallible
+pub fn sem_os_types::SnapshotSummary::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::SnapshotSummary where U: core::convert::TryFrom<T>
+pub type sem_os_types::SnapshotSummary::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::SnapshotSummary::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::SnapshotSummary where T: core::clone::Clone
+pub type sem_os_types::SnapshotSummary::Owned = T
+pub fn sem_os_types::SnapshotSummary::clone_into(&self, &mut T)
+pub fn sem_os_types::SnapshotSummary::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::SnapshotSummary where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::SnapshotSummary::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::SnapshotSummary where T: ?core::marker::Sized
+pub fn sem_os_types::SnapshotSummary::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::SnapshotSummary where T: ?core::marker::Sized
+pub fn sem_os_types::SnapshotSummary::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::SnapshotSummary where T: core::clone::Clone
+pub unsafe fn sem_os_types::SnapshotSummary::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::SnapshotSummary
+pub fn sem_os_types::SnapshotSummary::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::SnapshotSummary where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::SubmitReviewInput
+pub sem_os_types::SubmitReviewInput::actor_id: alloc::string::String
+pub sem_os_types::SubmitReviewInput::comment: core::option::Option<alloc::string::String>
+pub sem_os_types::SubmitReviewInput::verdict: sem_os_types::ReviewVerdict
+impl core::clone::Clone for sem_os_types::SubmitReviewInput
+pub fn sem_os_types::SubmitReviewInput::clone(&self) -> sem_os_types::SubmitReviewInput
+impl core::fmt::Debug for sem_os_types::SubmitReviewInput
+pub fn sem_os_types::SubmitReviewInput::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::SubmitReviewInput
+pub fn sem_os_types::SubmitReviewInput::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::SubmitReviewInput
+pub fn sem_os_types::SubmitReviewInput::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::SubmitReviewInput
+impl core::marker::Send for sem_os_types::SubmitReviewInput
+impl core::marker::Sync for sem_os_types::SubmitReviewInput
+impl core::marker::Unpin for sem_os_types::SubmitReviewInput
+impl core::marker::UnsafeUnpin for sem_os_types::SubmitReviewInput
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::SubmitReviewInput
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::SubmitReviewInput
+impl<T, U> core::convert::Into<U> for sem_os_types::SubmitReviewInput where U: core::convert::From<T>
+pub fn sem_os_types::SubmitReviewInput::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::SubmitReviewInput where U: core::convert::Into<T>
+pub type sem_os_types::SubmitReviewInput::Error = core::convert::Infallible
+pub fn sem_os_types::SubmitReviewInput::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::SubmitReviewInput where U: core::convert::TryFrom<T>
+pub type sem_os_types::SubmitReviewInput::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::SubmitReviewInput::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::SubmitReviewInput where T: core::clone::Clone
+pub type sem_os_types::SubmitReviewInput::Owned = T
+pub fn sem_os_types::SubmitReviewInput::clone_into(&self, &mut T)
+pub fn sem_os_types::SubmitReviewInput::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::SubmitReviewInput where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::SubmitReviewInput::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::SubmitReviewInput where T: ?core::marker::Sized
+pub fn sem_os_types::SubmitReviewInput::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::SubmitReviewInput where T: ?core::marker::Sized
+pub fn sem_os_types::SubmitReviewInput::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::SubmitReviewInput where T: core::clone::Clone
+pub unsafe fn sem_os_types::SubmitReviewInput::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::SubmitReviewInput
+pub fn sem_os_types::SubmitReviewInput::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::SubmitReviewInput where T: for<'de> serde_core::de::Deserialize<'de>
+pub struct sem_os_types::TypedObject
+pub sem_os_types::TypedObject::definition: serde_json::value::Value
+pub sem_os_types::TypedObject::fqn: sem_os_types::Fqn
+pub sem_os_types::TypedObject::object_type: sem_os_types::ObjectType
+pub sem_os_types::TypedObject::snapshot_id: sem_os_types::SnapshotId
+impl core::clone::Clone for sem_os_types::TypedObject
+pub fn sem_os_types::TypedObject::clone(&self) -> sem_os_types::TypedObject
+impl core::fmt::Debug for sem_os_types::TypedObject
+pub fn sem_os_types::TypedObject::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for sem_os_types::TypedObject
+pub fn sem_os_types::TypedObject::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_types::TypedObject
+pub fn sem_os_types::TypedObject::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_types::TypedObject
+impl core::marker::Send for sem_os_types::TypedObject
+impl core::marker::Sync for sem_os_types::TypedObject
+impl core::marker::Unpin for sem_os_types::TypedObject
+impl core::marker::UnsafeUnpin for sem_os_types::TypedObject
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_types::TypedObject
+impl core::panic::unwind_safe::UnwindSafe for sem_os_types::TypedObject
+impl<T, U> core::convert::Into<U> for sem_os_types::TypedObject where U: core::convert::From<T>
+pub fn sem_os_types::TypedObject::into(self) -> U
+impl<T, U> core::convert::TryFrom<U> for sem_os_types::TypedObject where U: core::convert::Into<T>
+pub type sem_os_types::TypedObject::Error = core::convert::Infallible
+pub fn sem_os_types::TypedObject::try_from(U) -> core::result::Result<T, <T as core::convert::TryFrom<U>>::Error>
+impl<T, U> core::convert::TryInto<U> for sem_os_types::TypedObject where U: core::convert::TryFrom<T>
+pub type sem_os_types::TypedObject::Error = <U as core::convert::TryFrom<T>>::Error
+pub fn sem_os_types::TypedObject::try_into(self) -> core::result::Result<U, <U as core::convert::TryFrom<T>>::Error>
+impl<T> alloc::borrow::ToOwned for sem_os_types::TypedObject where T: core::clone::Clone
+pub type sem_os_types::TypedObject::Owned = T
+pub fn sem_os_types::TypedObject::clone_into(&self, &mut T)
+pub fn sem_os_types::TypedObject::to_owned(&self) -> T
+impl<T> core::any::Any for sem_os_types::TypedObject where T: 'static + ?core::marker::Sized
+pub fn sem_os_types::TypedObject::type_id(&self) -> core::any::TypeId
+impl<T> core::borrow::Borrow<T> for sem_os_types::TypedObject where T: ?core::marker::Sized
+pub fn sem_os_types::TypedObject::borrow(&self) -> &T
+impl<T> core::borrow::BorrowMut<T> for sem_os_types::TypedObject where T: ?core::marker::Sized
+pub fn sem_os_types::TypedObject::borrow_mut(&mut self) -> &mut T
+impl<T> core::clone::CloneToUninit for sem_os_types::TypedObject where T: core::clone::Clone
+pub unsafe fn sem_os_types::TypedObject::clone_to_uninit(&self, *mut u8)
+impl<T> core::convert::From<T> for sem_os_types::TypedObject
+pub fn sem_os_types::TypedObject::from(T) -> T
+impl<T> serde_core::de::DeserializeOwned for sem_os_types::TypedObject where T: for<'de> serde_core::de::Deserialize<'de>
