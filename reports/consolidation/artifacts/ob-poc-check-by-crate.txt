@@ -1,0 +1,222 @@
+OB-POC CRATES CHECK RESULTS
+===========================
+
+Crate: bpmn-controller
+Status: PASS
+------------------------------------------------------------
+Crate: bpmn-runtime
+Status: PASS
+------------------------------------------------------------
+Crate: bpmn-test-harness
+Status: PASS
+------------------------------------------------------------
+Crate: dsl-analysis
+Status: PASS
+------------------------------------------------------------
+Crate: dsl-ast
+Status: PASS
+------------------------------------------------------------
+Crate: dsl-atoms
+Status: PASS
+------------------------------------------------------------
+Crate: dsl-bpmn-frontend
+Status: PASS
+------------------------------------------------------------
+Crate: dsl-diagnostics
+Status: PASS
+------------------------------------------------------------
+Crate: dsl-lowering
+Status: PASS
+------------------------------------------------------------
+Crate: dsl-lsp
+Status: FAIL
+Error Summary:
+warning: patch `sem_os_taxonomy v0.1.0 (/Users/adamtc007/dev/dsl/crates/sem_os_taxonomy)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+warning: unused imports: `EntityQualifier` and `RelationScope`
+ --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/predicate/mod.rs:6:22
+  |
+------------------------------------------------------------
+Crate: dsl-migrate
+Status: PASS
+------------------------------------------------------------
+Crate: dsl-migrate-verify
+Status: PASS
+------------------------------------------------------------
+Crate: dsl-parser
+Status: PASS
+------------------------------------------------------------
+Crate: dsl-render
+Status: PASS
+------------------------------------------------------------
+Crate: dsl-resolution
+Status: PASS
+------------------------------------------------------------
+Crate: dsl-runtime
+Status: FAIL
+Error Summary:
+warning: patch `sem_os_taxonomy v0.1.0 (/Users/adamtc007/dev/dsl/crates/sem_os_taxonomy)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+warning: unused imports: `EntityQualifier` and `RelationScope`
+ --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/predicate/mod.rs:6:22
+  |
+------------------------------------------------------------
+Crate: dsl-sage
+Status: PASS
+------------------------------------------------------------
+Crate: dsl-semos-frontend
+Status: PASS
+------------------------------------------------------------
+Crate: entity-gateway
+Status: PASS
+------------------------------------------------------------
+Crate: inspector-projection
+Status: PASS
+------------------------------------------------------------
+Crate: ob-agentic
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-agent
+Status: FAIL
+Error Summary:
+warning: patch `sem_os_taxonomy v0.1.0 (/Users/adamtc007/dev/dsl/crates/sem_os_taxonomy)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+warning: unused imports: `EntityQualifier` and `RelationScope`
+ --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/predicate/mod.rs:6:22
+  |
+------------------------------------------------------------
+Crate: ob-poc-authoring
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-bods
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-booking-principal
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-boundary
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-bus-handler
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-compiler
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-deal
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-derived-attributes
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-diagnostics
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-entity-linking
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-journey
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-macros
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-manifest-export
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-ontology
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-sage
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-semtaxonomy
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-taxonomy
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-trading-profile
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-types
+Status: PASS
+------------------------------------------------------------
+Crate: ob-poc-web
+Status: FAIL
+Error Summary:
+warning: patch `sem_os_taxonomy v0.1.0 (/Users/adamtc007/dev/dsl/crates/sem_os_taxonomy)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+warning: unused imports: `EntityQualifier` and `RelationScope`
+ --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/predicate/mod.rs:6:22
+  |
+------------------------------------------------------------
+Crate: ob-semantic-matcher
+Status: PASS
+------------------------------------------------------------
+Crate: ob-templates
+Status: PASS
+------------------------------------------------------------
+Crate: ob-workflow
+Status: PASS
+------------------------------------------------------------
+Crate: playbook-core
+Status: PASS
+------------------------------------------------------------
+Crate: sem_os_client
+Status: PASS
+------------------------------------------------------------
+Crate: sem_os_harness
+Status: FAIL
+Error Summary:
+warning: patch `sem_os_taxonomy v0.1.0 (/Users/adamtc007/dev/dsl/crates/sem_os_taxonomy)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+warning: unused imports: `EntityQualifier` and `RelationScope`
+ --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/predicate/mod.rs:6:22
+  |
+------------------------------------------------------------
+Crate: sem_os_mcp
+Status: PASS
+------------------------------------------------------------
+Crate: sem_os_obpoc_adapter
+Status: PASS
+------------------------------------------------------------
+Crate: sem_os_postgres
+Status: FAIL
+Error Summary:
+warning: patch `sem_os_taxonomy v0.1.0 (/Users/adamtc007/dev/dsl/crates/sem_os_taxonomy)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+warning: unused imports: `EntityQualifier` and `RelationScope`
+ --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/predicate/mod.rs:6:22
+  |
+------------------------------------------------------------
+Crate: sem_os_server
+Status: FAIL
+Error Summary:
+warning: patch `sem_os_taxonomy v0.1.0 (/Users/adamtc007/dev/dsl/crates/sem_os_taxonomy)` was not used in the crate graph
+help: Check that the patched package version and available features are compatible
+      with the dependency requirements. If the patch has a different version from
+      what is locked in the Cargo.lock file, run `cargo update` to use the new
+      version. This may also occur with an optional dependency that is not enabled.
+warning: unused imports: `EntityQualifier` and `RelationScope`
+ --> /Users/adamtc007/dev/dsl/crates/dsl-core/src/config/predicate/mod.rs:6:22
+  |
+------------------------------------------------------------
