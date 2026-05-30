@@ -50,7 +50,7 @@ pub struct Program {
 
 impl Program {
     /// Render the program back to DSL source (for execution - shows UUIDs when resolved)
-    pub fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(&self) -> String {
         self.statements
             .iter()
             .map(|s| s.to_dsl_string())
@@ -60,7 +60,7 @@ impl Program {
 
     /// Render for USER display - human readable, no UUIDs
     /// Use this for: chat UI, agent responses, DSL review panels
-    pub fn to_user_dsl_string(&self) -> String {
+    pub(crate) fn to_user_dsl_string(&self) -> String {
         self.statements
             .iter()
             .map(|s| s.to_user_dsl_string())
@@ -78,7 +78,7 @@ pub enum Statement {
 
 impl Statement {
     /// Render the statement back to DSL source (for execution)
-    pub fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(&self) -> String {
         match self {
             Statement::VerbCall(vc) => vc.to_dsl_string(),
             Statement::Comment(c) => format!("; {}", c),
@@ -86,7 +86,7 @@ impl Statement {
     }
 
     /// Render for USER display - human readable, no UUIDs
-    pub fn to_user_dsl_string(&self) -> String {
+    pub(crate) fn to_user_dsl_string(&self) -> String {
         match self {
             Statement::VerbCall(vc) => vc.to_user_dsl_string(),
             Statement::Comment(c) => format!("; {}", c),
@@ -107,7 +107,7 @@ pub struct VerbCall {
 
 impl VerbCall {
     /// Render the verb call back to DSL source (for execution - shows UUIDs)
-    pub fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(&self) -> String {
         let mut parts = vec![format!("({}.{}", self.domain, self.verb)];
 
         for arg in &self.arguments {
@@ -123,7 +123,7 @@ impl VerbCall {
     }
 
     /// Render for USER display - human readable, no UUIDs
-    pub fn to_user_dsl_string(&self) -> String {
+    pub(crate) fn to_user_dsl_string(&self) -> String {
         let mut parts = vec![format!("({}.{}", self.domain, self.verb)];
 
         for arg in &self.arguments {
@@ -146,12 +146,12 @@ impl VerbCall {
     }
 
     /// Find an argument by key name
-    pub fn get_arg(&self, key: &str) -> Option<&Argument> {
+    pub(crate) fn get_arg(&self, key: &str) -> Option<&Argument> {
         self.arguments.iter().find(|a| a.key == key)
     }
 
     /// Find an argument value by key name
-    pub fn get_value(&self, key: &str) -> Option<&AstNode> {
+    pub(crate) fn get_value(&self, key: &str) -> Option<&AstNode> {
         self.get_arg(key).map(|a| &a.value)
     }
 }
@@ -290,7 +290,7 @@ impl AstNode {
     // =========================================================================
 
     /// Render the node back to DSL source (for execution - shows UUIDs when resolved)
-    pub fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(&self) -> String {
         match self {
             AstNode::Literal(lit, _) => lit.to_dsl_string(),
             AstNode::SymbolRef { name, .. } => format!("@{}", name),
@@ -326,7 +326,7 @@ impl AstNode {
     ///
     /// Always shows the human-readable `value` field from EntityRef,
     /// never the resolved UUID. This lets users review intent, not implementation.
-    pub fn to_user_dsl_string(&self) -> String {
+    pub(crate) fn to_user_dsl_string(&self) -> String {
         match self {
             AstNode::Literal(lit, _) => lit.to_dsl_string(),
             AstNode::SymbolRef { name, .. } => format!("@{}", name),
@@ -359,7 +359,7 @@ impl AstNode {
     }
 
     /// Create an integer literal (with synthetic span)
-    pub fn integer(i: i64) -> Self {
+    pub(crate) fn integer(i: i64) -> Self {
         AstNode::Literal(Literal::Integer(i), Span::synthetic())
     }
 
@@ -382,7 +382,7 @@ impl AstNode {
     }
 
     /// Create a resolved entity reference
-    pub fn resolved_entity_ref(
+    pub(crate) fn resolved_entity_ref(
         entity_type: impl Into<String>,
         search_column: impl Into<String>,
         value: impl Into<String>,
@@ -401,7 +401,7 @@ impl AstNode {
     }
 
     /// Create a symbol reference
-    pub fn symbol_ref(name: impl Into<String>, span: Span) -> Self {
+    pub(crate) fn symbol_ref(name: impl Into<String>, span: Span) -> Self {
         AstNode::SymbolRef {
             name: name.into(),
             span,
@@ -413,7 +413,7 @@ impl AstNode {
     // =========================================================================
 
     /// Is this an unresolved entity reference?
-    pub fn is_unresolved_entity_ref(&self) -> bool {
+    pub(crate) fn is_unresolved_entity_ref(&self) -> bool {
         matches!(
             self,
             AstNode::EntityRef {
@@ -424,7 +424,7 @@ impl AstNode {
     }
 
     /// Is this a resolved entity reference?
-    pub fn is_resolved_entity_ref(&self) -> bool {
+    pub(crate) fn is_resolved_entity_ref(&self) -> bool {
         matches!(
             self,
             AstNode::EntityRef {
@@ -436,12 +436,12 @@ impl AstNode {
 
 
     /// Is this a symbol reference?
-    pub fn is_symbol_ref(&self) -> bool {
+    pub(crate) fn is_symbol_ref(&self) -> bool {
         matches!(self, AstNode::SymbolRef { .. })
     }
 
     /// Is this a literal?
-    pub fn is_literal(&self) -> bool {
+    pub(crate) fn is_literal(&self) -> bool {
         matches!(self, AstNode::Literal(_, _))
     }
 
@@ -450,7 +450,7 @@ impl AstNode {
     // =========================================================================
 
     /// Get as string (from literal or entity ref value)
-    pub fn as_string(&self) -> Option<&str> {
+    pub(crate) fn as_string(&self) -> Option<&str> {
         match self {
             AstNode::Literal(Literal::String(s), _) => Some(s),
             AstNode::EntityRef { value, .. } => Some(value),
@@ -459,7 +459,7 @@ impl AstNode {
     }
 
     /// Get as UUID (from resolved entity ref)
-    pub fn as_uuid(&self) -> Option<Uuid> {
+    pub(crate) fn as_uuid(&self) -> Option<Uuid> {
         match self {
             AstNode::EntityRef {
                 resolved_key: Some(key),
@@ -472,7 +472,7 @@ impl AstNode {
     }
 
     /// Get the resolved key from an entity ref
-    pub fn resolved_key(&self) -> Option<&str> {
+    pub(crate) fn resolved_key(&self) -> Option<&str> {
         match self {
             AstNode::EntityRef { resolved_key, .. } => resolved_key.as_deref(),
             _ => None,
@@ -488,7 +488,7 @@ impl AstNode {
     }
 
     /// Get integer value
-    pub fn as_integer(&self) -> Option<i64> {
+    pub(crate) fn as_integer(&self) -> Option<i64> {
         match self {
             AstNode::Literal(Literal::Integer(i), _) => Some(*i),
             _ => None,
@@ -496,7 +496,7 @@ impl AstNode {
     }
 
     /// Get decimal value
-    pub fn as_decimal(&self) -> Option<Decimal> {
+    pub(crate) fn as_decimal(&self) -> Option<Decimal> {
         match self {
             AstNode::Literal(Literal::Decimal(d), _) => Some(*d),
             AstNode::Literal(Literal::Integer(i), _) => Some(Decimal::from(*i)),
@@ -505,7 +505,7 @@ impl AstNode {
     }
 
     /// Get boolean value
-    pub fn as_boolean(&self) -> Option<bool> {
+    pub(crate) fn as_boolean(&self) -> Option<bool> {
         match self {
             AstNode::Literal(Literal::Boolean(b), _) => Some(*b),
             _ => None,
@@ -513,7 +513,7 @@ impl AstNode {
     }
 
     /// Get list items
-    pub fn as_list(&self) -> Option<&[AstNode]> {
+    pub(crate) fn as_list(&self) -> Option<&[AstNode]> {
         match self {
             AstNode::List { items, .. } => Some(items),
             _ => None,
@@ -521,7 +521,7 @@ impl AstNode {
     }
 
     /// Get map entries
-    pub fn as_map(&self) -> Option<&[(String, AstNode)]> {
+    pub(crate) fn as_map(&self) -> Option<&[(String, AstNode)]> {
         match self {
             AstNode::Map { entries, .. } => Some(entries),
             _ => None,
@@ -529,7 +529,7 @@ impl AstNode {
     }
 
     /// Get the span of this node
-    pub fn span(&self) -> Span {
+    pub(crate) fn span(&self) -> Span {
         match self {
             AstNode::Literal(_, span) => *span,
             AstNode::SymbolRef { span, .. } => *span,
@@ -551,7 +551,7 @@ impl AstNode {
     ///
     /// # Panics
     /// Panics if `key` is not a valid UUID. Use `try_with_resolved_key` for fallible version.
-    pub fn with_resolved_key(&self, key: String) -> Self {
+    pub(crate) fn with_resolved_key(&self, key: String) -> Self {
         self.try_with_resolved_key(key)
             .expect("resolved_key must be a valid UUID")
     }
@@ -561,7 +561,7 @@ impl AstNode {
     /// Returns Ok(new_node) if key is a valid UUID, Err if not.
     /// This enforces that only UUIDs can be resolved keys - codes like
     /// "DIRECTOR" or "LU" should remain as string literals.
-    pub fn try_with_resolved_key(&self, key: String) -> Result<Self, String> {
+    pub(crate) fn try_with_resolved_key(&self, key: String) -> Result<Self, String> {
         // Validate UUID format
         uuid::Uuid::parse_str(&key).map_err(|_| {
             format!(
@@ -623,7 +623,7 @@ pub enum Literal {
 
 impl Literal {
     /// Render the literal back to DSL source
-    pub fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(&self) -> String {
         match self {
             Literal::String(s) => format!("\"{}\"", s.replace('\"', "\\\"")),
             Literal::Integer(i) => i.to_string(),
@@ -654,7 +654,7 @@ impl Span {
     }
 
     /// Create a span covering two spans
-    pub fn merge(a: Span, b: Span) -> Span {
+    pub(crate) fn merge(a: Span, b: Span) -> Span {
         Span {
             start: a.start.min(b.start),
             end: a.end.max(b.end),
@@ -675,7 +675,7 @@ impl Span {
     ///
     /// Synthetic spans use a special marker (usize::MAX) to indicate
     /// they don't correspond to actual source text.
-    pub fn synthetic() -> Self {
+    pub(crate) fn synthetic() -> Self {
         Self {
             start: usize::MAX,
             end: usize::MAX,
@@ -772,17 +772,17 @@ pub struct EntityRefStats {
 
 impl EntityRefStats {
     /// Returns true if all EntityRefs are resolved
-    pub fn is_fully_resolved(&self) -> bool {
+    pub(crate) fn is_fully_resolved(&self) -> bool {
         self.unresolved_count == 0
     }
 
     /// Returns the number of resolved EntityRefs
-    pub fn resolved_count(&self) -> i32 {
+    pub(crate) fn resolved_count(&self) -> i32 {
         self.total_refs - self.unresolved_count
     }
 
     /// Returns resolution progress as a percentage (0-100)
-    pub fn resolution_percentage(&self) -> u8 {
+    pub(crate) fn resolution_percentage(&self) -> u8 {
         if self.total_refs == 0 {
             100
         } else {
@@ -876,7 +876,7 @@ pub enum ViewportVerb {
 
 impl ViewportVerb {
     /// Get the span of this verb
-    pub fn span(&self) -> Span {
+    pub(crate) fn span(&self) -> Span {
         match self {
             ViewportVerb::Focus { span, .. } => *span,
             ViewportVerb::Enhance { span, .. } => *span,
@@ -890,7 +890,7 @@ impl ViewportVerb {
     }
 
     /// Get the verb name for display
-    pub fn verb_name(&self) -> &'static str {
+    pub(crate) fn verb_name(&self) -> &'static str {
         match self {
             ViewportVerb::Focus { .. } => "focus",
             ViewportVerb::Enhance { .. } => "enhance",
@@ -904,7 +904,7 @@ impl ViewportVerb {
     }
 
     /// Render the verb back to DSL source
-    pub fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(&self) -> String {
         match self {
             ViewportVerb::Focus { target, .. } => {
                 format!("(viewport.focus {})", target.to_dsl_string())
@@ -965,7 +965,7 @@ pub enum FocusTarget {
 
 impl FocusTarget {
     /// Get the span of this target
-    pub fn span(&self) -> Span {
+    pub(crate) fn span(&self) -> Span {
         match self {
             FocusTarget::Cbu { span, .. } => *span,
             FocusTarget::Entity { span, .. } => *span,
@@ -979,7 +979,7 @@ impl FocusTarget {
     }
 
     /// Render the target to DSL string
-    pub fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(&self) -> String {
         match self {
             FocusTarget::Cbu { cbu_ref, .. } => format!(":cbu \"{}\"", cbu_ref),
             FocusTarget::Entity { entity_ref, .. } => format!(":entity \"{}\"", entity_ref),
@@ -1019,7 +1019,7 @@ pub enum EnhanceArg {
 
 impl EnhanceArg {
     /// Render the argument to DSL string
-    pub fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(&self) -> String {
         match self {
             EnhanceArg::Plus => "+".to_string(),
             EnhanceArg::Minus => "-".to_string(),
@@ -1045,7 +1045,7 @@ pub enum NavTarget {
 
 impl NavTarget {
     /// Get the span of this target
-    pub fn span(&self) -> Span {
+    pub(crate) fn span(&self) -> Span {
         match self {
             NavTarget::Entity { span, .. } => *span,
             NavTarget::Direction { span, .. } => *span,
@@ -1054,7 +1054,7 @@ impl NavTarget {
     }
 
     /// Render the target to DSL string
-    pub fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(&self) -> String {
         match self {
             NavTarget::Entity { entity_ref, .. } => format!("\"{}\"", entity_ref),
             NavTarget::Direction { direction, .. } => direction.to_dsl_string(),
@@ -1076,7 +1076,7 @@ pub enum NavDirection {
 
 impl NavDirection {
     /// Render the direction to DSL string
-    pub fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(&self) -> String {
         match self {
             NavDirection::Left => "left".to_string(),
             NavDirection::Right => "right".to_string(),
@@ -1131,7 +1131,7 @@ pub enum ViewType {
 
 impl ViewType {
     /// Render the view type to DSL string
-    pub fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(&self) -> String {
         match self {
             ViewType::Structure => "structure".to_string(),
             ViewType::Ownership => "ownership".to_string(),
@@ -1195,7 +1195,7 @@ pub enum ConfidenceZone {
 
 impl ConfidenceZone {
     /// Render the zone to DSL string
-    pub fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(&self) -> String {
         match self {
             ConfidenceZone::Core => "core".to_string(),
             ConfidenceZone::Shell => "shell".to_string(),
@@ -1216,7 +1216,7 @@ impl ConfidenceZone {
     }
 
     /// Get the minimum confidence score for this zone
-    pub fn min_confidence(&self) -> f32 {
+    pub(crate) fn min_confidence(&self) -> f32 {
         match self {
             ConfidenceZone::Core => 0.95,
             ConfidenceZone::Shell => 0.70,
@@ -1226,7 +1226,7 @@ impl ConfidenceZone {
     }
 
     /// Determine which zone a confidence score belongs to
-    pub fn from_score(score: f32) -> Self {
+    pub(crate) fn from_score(score: f32) -> Self {
         if score >= 0.95 {
             ConfidenceZone::Core
         } else if score >= 0.70 {
@@ -1257,7 +1257,7 @@ pub enum ExportFormat {
 
 impl ExportFormat {
     /// Render the format to DSL string
-    pub fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(&self) -> String {
         match self {
             ExportFormat::Png => "png".to_string(),
             ExportFormat::Svg => "svg".to_string(),
@@ -1288,7 +1288,7 @@ impl ExportFormat {
     }
 
     /// Get the MIME type for this format
-    pub fn mime_type(&self) -> &'static str {
+    pub(crate) fn mime_type(&self) -> &'static str {
         match self {
             ExportFormat::Png => "image/png",
             ExportFormat::Svg => "image/svg+xml",

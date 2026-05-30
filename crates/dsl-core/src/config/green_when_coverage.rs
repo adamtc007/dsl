@@ -21,7 +21,7 @@ pub struct GreenWhenCoverageRow {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum GreenWhenExclusionReason {
+pub(crate) enum GreenWhenExclusionReason {
     EntryState,
     SourceOnlyState,
     DiscretionaryDestination,
@@ -36,7 +36,7 @@ pub struct GreenWhenCoverageSummary {
 }
 
 
-pub fn green_when_coverage_for_dags(
+pub(crate) fn green_when_coverage_for_dags(
     dags: &BTreeMap<String, Dag>,
     discretionary_verbs: &HashSet<String>,
 ) -> Vec<GreenWhenCoverageRow> {
@@ -51,7 +51,7 @@ pub fn green_when_coverage_for_dags(
     rows
 }
 
-pub fn green_when_coverage_for_dag(
+pub(crate) fn green_when_coverage_for_dag(
     workspace: &str,
     dag: &Dag,
     discretionary_verbs: &HashSet<String>,
@@ -79,7 +79,7 @@ pub fn green_when_coverage_for_dag(
     rows
 }
 
-pub fn green_when_coverage_summary(rows: &[GreenWhenCoverageRow]) -> GreenWhenCoverageSummary {
+pub(crate) fn green_when_coverage_summary(rows: &[GreenWhenCoverageRow]) -> GreenWhenCoverageSummary {
     let total_states = rows.len();
     let candidate_states = rows.iter().filter(|row| row.candidate).count();
     let covered_candidate_states = rows

@@ -155,7 +155,7 @@ impl DagEdge {
     ///
     /// Three edge types impose order: `BindingEdge`, `StateEdge`, `SnapshotVersionEdge`.
     /// `ResourceCoordEdge`, `JoinBarrierEdge`, and `CancellationScopeEdge` do not.
-    pub fn imposes_order(&self) -> bool {
+    pub(crate) fn imposes_order(&self) -> bool {
         matches!(
             self,
             DagEdge::BindingEdge { .. }
@@ -165,7 +165,7 @@ impl DagEdge {
     }
 
     /// Returns `(from, to)` for ordering edges; `None` for non-ordering edges.
-    pub fn ordering_pair(&self) -> Option<(NodeId, NodeId)> {
+    pub(crate) fn ordering_pair(&self) -> Option<(NodeId, NodeId)> {
         match self {
             DagEdge::BindingEdge { from, to, .. } => Some((*from, *to)),
             DagEdge::StateEdge { from, to } => Some((*from, *to)),
@@ -205,7 +205,7 @@ impl PopulatedExecutionDag {
     ///
     /// Used by the topological sort to derive execution order from typed edges
     /// rather than from untyped `Injection` records.
-    pub fn ordering_pairs(&self) -> Vec<(usize, usize)> {
+    pub(crate) fn ordering_pairs(&self) -> Vec<(usize, usize)> {
         self.edges
             .iter()
             .filter_map(|e| e.ordering_pair())

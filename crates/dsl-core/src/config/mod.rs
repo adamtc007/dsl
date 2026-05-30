@@ -35,25 +35,34 @@ pub use dag::{load_dags_from_dir, load_domain_pack_owned_dags, Dag, LoadedDag};
 // ob-poc-specific filesystem walkers (validate_constellation_map_dir_*)
 // are pub(crate) in dag_validator — not
 // re-exported here because they assume ob-poc's config directory layout.
+pub(crate) use dag_validator::{
+    validate_constellation_map_schema_coordination, DagWarning,
+};
 pub use dag_validator::{
-    validate_constellation_map_schema_coordination,
     validate_dags_with_context, validate_resolved_template_gate_metadata, DagError,
-    DagValidationContext, DagValidationReport, DagWarning, SchemaCoordinationKnownDeferred,
+    DagValidationContext, DagValidationReport, SchemaCoordinationKnownDeferred,
+};
+pub(crate) use green_when_coverage::{
+    green_when_coverage_for_dag, green_when_coverage_for_dags, green_when_coverage_summary,
+    GreenWhenExclusionReason,
 };
 pub use green_when_coverage::{
-    green_when_coverage_for_dag, green_when_coverage_for_dags, green_when_coverage_summary,
-    GreenWhenCoverageRow, GreenWhenCoverageSummary, GreenWhenExclusionReason,
+    GreenWhenCoverageRow, GreenWhenCoverageSummary,
 };
 
+pub(crate) use escalation::{
+    compute_effective_tier, EvaluationContext,
+};
 pub use escalation::{
-    compute_effective_tier, compute_effective_tier_with_trace, evaluate_predicate,
-    EvaluationContext,
+    compute_effective_tier_with_trace, evaluate_predicate,
 };
 pub use loader::ConfigLoader;
 
+pub(crate) use runbook_composition::{
+    compute_runbook_tier, AggregationRule, CrossScopeRule, RunbookStep,
+};
 pub use runbook_composition::{
-    component_a, component_b, component_c, compute_runbook_tier,
-    AggregationRule, CrossScopeRule, RunbookStep,
+    component_a, component_b, component_c,
 };
 pub use types::{
     ActionClass, AppliesTo, ArgConfig, ArgType, ArgValidation, ConfirmPolicyConfig,
@@ -67,7 +76,8 @@ pub use types::{
     VerbOutputConfig, VerbProduces, VerbRoleGuard, VerbScope, VerbSentences, VerbStatus, VerbTier,
     VerbTransitions, VerbsConfig, WarningRule,
 };
+pub(crate) use validator::StructuralError;
 pub use validator::{
-    validate_verbs_config, Location, PolicyWarning, StructuralError, ValidationContext,
+    validate_verbs_config, Location, PolicyWarning, ValidationContext,
     ValidationReport, WellFormednessError,
 };

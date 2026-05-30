@@ -50,7 +50,7 @@ impl Location {
             path: None,
         }
     }
-    pub fn verb_path(fqn: impl Into<String>, path: impl Into<String>) -> Self {
+    pub(crate) fn verb_path(fqn: impl Into<String>, path: impl Into<String>) -> Self {
         Self {
             fqn: fqn.into(),
             path: Some(path.into()),
@@ -69,7 +69,7 @@ impl std::fmt::Display for Location {
 
 /// Structural errors — the declaration is mechanically inconsistent.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum StructuralError {
+pub(crate) enum StructuralError {
     /// `state_effect: transition` declared without a `transitions:` block
     /// OR with an empty `transitions.edges` list.
     TransitionWithoutEdges(Location),
@@ -298,7 +298,7 @@ pub struct ValidationReport {
 }
 
 impl ValidationReport {
-    pub fn is_clean(&self) -> bool {
+    pub(crate) fn is_clean(&self) -> bool {
         self.structural.is_empty() && self.well_formedness.is_empty()
     }
     pub fn error_count(&self) -> usize {

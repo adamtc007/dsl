@@ -1395,7 +1395,7 @@ impl SearchKeyConfig {
     }
 
     /// Check if this is a simple (single-column) search key
-    pub fn is_simple(&self) -> bool {
+    pub(crate) fn is_simple(&self) -> bool {
         matches!(self, SearchKeyConfig::Simple(_))
     }
 
@@ -1414,7 +1414,7 @@ impl SearchKeyConfig {
     }
 
     /// Get discriminator fields if this is a composite key
-    pub fn discriminators(&self) -> &[SearchDiscriminator] {
+    pub(crate) fn discriminators(&self) -> &[SearchDiscriminator] {
         match self {
             SearchKeyConfig::Simple(_) => &[],
             SearchKeyConfig::Composite(c) => &c.discriminators,
@@ -1423,7 +1423,7 @@ impl SearchKeyConfig {
 
 
     /// Get minimum confidence threshold (defaults to 0.8)
-    pub fn min_confidence(&self) -> f32 {
+    pub(crate) fn min_confidence(&self) -> f32 {
         match self {
             SearchKeyConfig::Simple(_) => 0.8,
             SearchKeyConfig::Composite(c) => c.min_confidence,
@@ -1431,7 +1431,7 @@ impl SearchKeyConfig {
     }
 
     /// Serialize back to s-expression string
-    pub fn to_sexpr(&self) -> String {
+    pub(crate) fn to_sexpr(&self) -> String {
         match self {
             SearchKeyConfig::Simple(col) => col.clone(),
             SearchKeyConfig::Composite(c) => c.to_sexpr(),
@@ -1574,7 +1574,7 @@ impl CompositeSearchKey {
     }
 
     /// Serialize to s-expression string
-    pub fn to_sexpr(&self) -> String {
+    pub(crate) fn to_sexpr(&self) -> String {
         let mut parts = vec![self.primary.clone()];
 
         for d in &self.discriminators {
@@ -1788,7 +1788,7 @@ fn default_selectivity() -> f32 {
 
 impl SearchDiscriminator {
     /// Get the argument name (uses field name if from_arg not specified)
-    pub fn arg_name(&self) -> &str {
+    pub(crate) fn arg_name(&self) -> &str {
         self.from_arg.as_deref().unwrap_or(&self.field)
     }
 }

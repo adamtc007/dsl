@@ -147,7 +147,7 @@ impl Diagnostic {
     }
 
     /// Create a warning diagnostic
-    pub fn warning(code: DiagnosticCode, message: impl Into<String>) -> Self {
+    pub(crate) fn warning(code: DiagnosticCode, message: impl Into<String>) -> Self {
         Self {
             severity: Severity::Warning,
             code,
@@ -159,7 +159,7 @@ impl Diagnostic {
     }
 
     /// Create a hint diagnostic
-    pub fn hint(code: DiagnosticCode, message: impl Into<String>) -> Self {
+    pub(crate) fn hint(code: DiagnosticCode, message: impl Into<String>) -> Self {
         Self {
             severity: Severity::Hint,
             code,

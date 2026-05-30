@@ -26,7 +26,7 @@ use std::collections::HashMap;
 /// Evaluation context — the three argument kinds referenced by the
 /// restricted DSL per v1.1 R6.
 #[derive(Debug, Clone, Default)]
-pub struct EvaluationContext {
+pub(crate) struct EvaluationContext {
     /// Verb argument values, keyed by argument name.
     pub args: HashMap<String, serde_json::Value>,
     /// Entity attributes, keyed by `entity_kind` → attr_name → value.
@@ -37,16 +37,16 @@ pub struct EvaluationContext {
 }
 
 impl EvaluationContext {
-    pub fn new() -> Self {
+    pub(crate) fn new() -> Self {
         Self::default()
     }
 
-    pub fn with_arg(mut self, name: impl Into<String>, value: serde_json::Value) -> Self {
+    pub(crate) fn with_arg(mut self, name: impl Into<String>, value: serde_json::Value) -> Self {
         self.args.insert(name.into(), value);
         self
     }
 
-    pub fn with_entity_attr(
+    pub(crate) fn with_entity_attr(
         mut self,
         entity_kind: impl Into<String>,
         attr: impl Into<String>,
@@ -59,7 +59,7 @@ impl EvaluationContext {
         self
     }
 
-    pub fn with_flag(mut self, flag: impl Into<String>, value: bool) -> Self {
+    pub(crate) fn with_flag(mut self, flag: impl Into<String>, value: bool) -> Self {
         self.context_flags.insert(flag.into(), value);
         self
     }
@@ -125,7 +125,7 @@ pub fn evaluate_predicate(pred: &EscalationPredicate, ctx: &EvaluationContext) -
 
 /// Compute effective tier per P11:
 /// `effective = max(baseline, max(matching_rule.tier))`.
-pub fn compute_effective_tier(
+pub(crate) fn compute_effective_tier(
     decl: &ConsequenceDeclaration,
     ctx: &EvaluationContext,
 ) -> ConsequenceTier {

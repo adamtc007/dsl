@@ -36,7 +36,7 @@ use std::collections::HashSet;
 /// `RunbookStep` is intentionally minimal — only the fields the three
 /// composition components need. The verb's full declaration is upstream.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct RunbookStep {
+pub(crate) struct RunbookStep {
     /// Verb FQN. Enables traceability; not used in tier math directly.
     pub verb_fqn: String,
     /// Effective tier after per-verb escalation rules applied.
@@ -64,7 +64,7 @@ pub struct RunbookStep {
 /// A catalogue-declared aggregation pattern. Fires when a runbook matches
 /// the pattern (bulk cardinality, repeated effects, high-volume updates).
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum AggregationRule {
+pub(crate) enum AggregationRule {
     /// Runbook has at least `threshold` steps total.
     BulkCardinality {
         name: String,
@@ -90,7 +90,7 @@ pub enum AggregationRule {
 }
 
 impl AggregationRule {
-    pub fn name(&self) -> &str {
+    pub(crate) fn name(&self) -> &str {
         match self {
             Self::BulkCardinality { name, .. }
             | Self::RepeatedExternalEffect { name, .. }
@@ -98,7 +98,7 @@ impl AggregationRule {
         }
     }
 
-    pub fn tier(&self) -> ConsequenceTier {
+    pub(crate) fn tier(&self) -> ConsequenceTier {
         match self {
             Self::BulkCardinality { tier, .. }
             | Self::RepeatedExternalEffect { tier, .. }
@@ -106,7 +106,7 @@ impl AggregationRule {
         }
     }
 
-    pub fn matches(&self, steps: &[RunbookStep]) -> bool {
+    pub(crate) fn matches(&self, steps: &[RunbookStep]) -> bool {
         match self {
             Self::BulkCardinality { threshold, .. } => steps.len() >= *threshold,
             Self::RepeatedExternalEffect {
@@ -136,7 +136,7 @@ impl AggregationRule {
 /// A catalogue-declared cross-scope pattern. Fires when a runbook spans
 /// multiple scopes (workspaces, DAGs, entity kinds).
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum CrossScopeRule {
+pub(crate) enum CrossScopeRule {
     /// Runbook touches at least `min_workspaces` distinct workspaces.
     MultiWorkspace {
         name: String,
@@ -158,7 +158,7 @@ pub enum CrossScopeRule {
 }
 
 impl CrossScopeRule {
-    pub fn name(&self) -> &str {
+    pub(crate) fn name(&self) -> &str {
         match self {
             Self::MultiWorkspace { name, .. }
             | Self::MultiDag { name, .. }
@@ -166,7 +166,7 @@ impl CrossScopeRule {
         }
     }
 
-    pub fn tier(&self) -> ConsequenceTier {
+    pub(crate) fn tier(&self) -> ConsequenceTier {
         match self {
             Self::MultiWorkspace { tier, .. }
             | Self::MultiDag { tier, .. }
@@ -174,7 +174,7 @@ impl CrossScopeRule {
         }
     }
 
-    pub fn matches(&self, steps: &[RunbookStep]) -> bool {
+    pub(crate) fn matches(&self, steps: &[RunbookStep]) -> bool {
         match self {
             Self::MultiWorkspace { min_workspaces, .. } => {
                 let distinct: HashSet<&str> = steps.iter().map(|s| s.workspace.as_str()).collect();
@@ -209,7 +209,7 @@ impl CrossScopeRule {
 ///   defaults to `Benign` when no rules match.
 /// - Component C (optional): max tier of matching cross-scope rules —
 ///   defaults to `Benign` when no rules match.
-pub fn compute_runbook_tier(
+pub(crate) fn compute_runbook_tier(
     steps: &[RunbookStep],
     aggregation: &[AggregationRule],
     cross_scope: &[CrossScopeRule],

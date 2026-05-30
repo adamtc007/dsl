@@ -382,7 +382,7 @@ impl std::fmt::Display for DagError {
 
 /// Policy / lint warnings — advisory.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub enum DagWarning {
+pub(crate) enum DagWarning {
     // V1.3-4
     LongLivedSlotMissingSuspended {
         location: DagLocation,
@@ -476,7 +476,7 @@ pub struct DagValidationReport {
 }
 
 impl DagValidationReport {
-    pub fn is_clean(&self) -> bool {
+    pub(crate) fn is_clean(&self) -> bool {
         self.errors.is_empty()
     }
     pub fn error_count(&self) -> usize {
@@ -630,7 +630,7 @@ pub fn validate_resolved_template_gate_metadata(
 ///
 /// This intentionally parses a lightweight raw YAML shape instead of depending
 /// on `sem_os_core::constellation_map_def`, keeping `dsl-core` dependency-free.
-pub fn validate_constellation_map_schema_coordination(
+pub(crate) fn validate_constellation_map_schema_coordination(
     loaded: &BTreeMap<String, LoadedDag>,
     source_name: &str,
     yaml: &str,
@@ -684,7 +684,7 @@ pub(crate) fn validate_constellation_map_dir_schema_coordination(
 }
 
 
-pub fn harden_schema_coordination_warnings(
+pub(crate) fn harden_schema_coordination_warnings(
     report: &mut DagValidationReport,
     known_deferred: &[SchemaCoordinationKnownDeferred],
 ) {

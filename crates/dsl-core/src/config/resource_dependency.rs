@@ -93,7 +93,7 @@ pub enum ResourceDependency {
 
 impl ResourceDependency {
     /// Construct an `EntityUuid` dependency with a known UUID.
-    pub fn entity_uuid(entity_type: impl Into<String>, uuid: uuid::Uuid) -> Self {
+    pub(crate) fn entity_uuid(entity_type: impl Into<String>, uuid: uuid::Uuid) -> Self {
         Self::EntityUuid {
             entity_type: entity_type.into(),
             uuid: Some(uuid),
@@ -102,7 +102,7 @@ impl ResourceDependency {
 
     /// Construct an `EntityUuid` dependency whose UUID is not yet known
     /// (resolved from a binding reference at execution time).
-    pub fn entity_uuid_binding(entity_type: impl Into<String>) -> Self {
+    pub(crate) fn entity_uuid_binding(entity_type: impl Into<String>) -> Self {
         Self::EntityUuid {
             entity_type: entity_type.into(),
             uuid: None,
@@ -110,7 +110,7 @@ impl ResourceDependency {
     }
 
     /// Construct a `NaturalKey` dependency.
-    pub fn natural_key(entity_type: impl Into<String>) -> Self {
+    pub(crate) fn natural_key(entity_type: impl Into<String>) -> Self {
         Self::NaturalKey {
             entity_type: entity_type.into(),
             normalized_key_hash: None,
@@ -166,7 +166,7 @@ pub struct ResolvedResourceDependency {
 
 impl ResolvedResourceDependency {
     /// An entity UUID that was resolved at compile time.
-    pub fn compile_resolved_entity(entity_type: impl Into<String>, uuid: uuid::Uuid) -> Self {
+    pub(crate) fn compile_resolved_entity(entity_type: impl Into<String>, uuid: uuid::Uuid) -> Self {
         Self {
             dependency: ResourceDependency::entity_uuid(entity_type, uuid),
             resolution_mode: ResolutionMode::CompileResolved,
@@ -175,7 +175,7 @@ impl ResolvedResourceDependency {
     }
 
     /// An entity UUID that will be supplied by a binding (produced upstream).
-    pub fn binding_resolved_entity(entity_type: impl Into<String>, slot: BindingSlotId) -> Self {
+    pub(crate) fn binding_resolved_entity(entity_type: impl Into<String>, slot: BindingSlotId) -> Self {
         Self {
             dependency: ResourceDependency::entity_uuid_binding(entity_type),
             resolution_mode: ResolutionMode::BindingResolved,
@@ -184,7 +184,7 @@ impl ResolvedResourceDependency {
     }
 
     /// An entity created-or-returned by natural key (ensure pattern).
-    pub fn runtime_create_natural_key(entity_type: impl Into<String>) -> Self {
+    pub(crate) fn runtime_create_natural_key(entity_type: impl Into<String>) -> Self {
         Self {
             dependency: ResourceDependency::natural_key(entity_type),
             resolution_mode: ResolutionMode::RuntimeCreate,

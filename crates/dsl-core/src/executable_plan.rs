@@ -138,7 +138,7 @@ pub enum EffectClass {
 /// `AtomicBounded` and `AdministrativeExclusive` are Phase 6.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub enum TransactionPolicy {
+pub(crate) enum TransactionPolicy {
     /// One transaction, short duration, all coordination held to commit.
     /// Plans with `ReadModifyWrite` or `CrossResourceInvariant` verbs.
     AtomicShort,
@@ -159,7 +159,7 @@ impl TransactionPolicy {
     /// Compiler calls this on the set of `effect_class` values across all
     /// `RuntimeInstruction`s to produce `recommended_transaction_policy`.
     /// Admission controller may refine (Phase 6).
-    pub fn from_effect_classes(classes: impl IntoIterator<Item = EffectClass>) -> Self {
+    pub(crate) fn from_effect_classes(classes: impl IntoIterator<Item = EffectClass>) -> Self {
         let mut policy = TransactionPolicy::ReadOnly;
         for class in classes {
             let candidate = match class {

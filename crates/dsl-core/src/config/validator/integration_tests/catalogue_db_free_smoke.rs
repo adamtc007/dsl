@@ -12,7 +12,7 @@
 //! This test mirrors the startup gate in `ob-poc-web/src/main.rs` — both
 //! run the same validator code path, both without DB access.
 
-use dsl_core::config::{validate_verbs_config, ConfigLoader, ValidationContext, VerbsConfig};
+use crate::config::{validate_verbs_config, ConfigLoader, ValidationContext, VerbsConfig};
 
 fn load_real_catalogue() -> VerbsConfig {
     // Ensure DATABASE_URL is NOT consulted — catalogue load is pure YAML.

@@ -91,7 +91,7 @@ impl BindingContext {
     }
 
     /// Merge another context into this one
-    pub fn merge(&mut self, other: &BindingContext) {
+    pub(crate) fn merge(&mut self, other: &BindingContext) {
         for (name, info) in &other.bindings {
             self.bindings.insert(name.clone(), info.clone());
         }
@@ -108,7 +108,7 @@ impl BindingContext {
     }
 
     /// Get all binding names
-    pub fn names(&self) -> impl Iterator<Item = &str> {
+    pub(crate) fn names(&self) -> impl Iterator<Item = &str> {
         self.bindings.keys().map(|s| s.as_str())
     }
 
@@ -123,7 +123,7 @@ impl BindingContext {
     }
 
     /// Get the set of available types (for verb satisfaction checking)
-    pub fn available_types(&self) -> std::collections::HashSet<String> {
+    pub(crate) fn available_types(&self) -> std::collections::HashSet<String> {
         let mut types = std::collections::HashSet::new();
         for info in self.bindings.values() {
             types.insert(info.produced_type.clone());

@@ -39,10 +39,10 @@ pub use config::resource_dependency::{
 };
 
 pub use diagnostics::{Diagnostic, DiagnosticCode, Severity, SourceSpan};
+pub(crate) use executable_plan::TransactionPolicy;
 pub use executable_plan::{
     AuthorityContext, BindingFrameSchema, BindingSlot, EffectClass, ExecutablePlan,
     ExecutionStepSummary, InstructionInput, PlanId, RuntimeInstruction, SemOsSnapshotId,
-    TransactionPolicy,
 };
 pub use execution_dag::{BindingSlotId, DagEdge, JoinBarrierMode, NodeId, PopulatedExecutionDag};
 pub use parser::parse_program;

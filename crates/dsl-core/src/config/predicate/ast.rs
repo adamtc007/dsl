@@ -90,14 +90,14 @@ pub struct EntitySetRef {
 
 /// Qualifier attached to a set reference.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub enum EntityQualifier {
+pub(crate) enum EntityQualifier {
     /// The authored predicate says the required population must be complete.
     Required,
 }
 
 /// Relationship or scope phrase preserved as structure.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub enum RelationScope {
+pub(crate) enum RelationScope {
     /// Scoped to the current instance of the named kind.
     This(String),
 
