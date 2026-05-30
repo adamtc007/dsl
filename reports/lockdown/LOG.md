@@ -5,4 +5,5 @@
 | :--- | :--- | :--- | :--- | :--- |
 | 2026-05-30 | 00-baseline | 0 | N/A | GREEN |
 | 2026-05-30 | 01-tranche-a | -58 | c9a23f2 | GREEN |
-| 2026-05-30 | 02-downstream-rescan | 0 | cd8686e | GREEN |
+| 2026-05-30 | 02-downstream-rescan | 0 | cb3acdf | GREEN |
+| 2026-05-30 | 03-delete-revalidation | 0 | debd2a5 | GREEN |
