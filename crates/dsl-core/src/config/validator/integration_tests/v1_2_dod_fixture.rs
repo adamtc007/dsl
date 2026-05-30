@@ -8,7 +8,7 @@
 //!
 //! Companion fixture: `tests/fixtures/v1_2_dod_fixture/verbs.yaml`.
 
-use dsl_core::config::{validate_verbs_config, StructuralError, ValidationContext, VerbsConfig};
+use crate::config::{validate_verbs_config, StructuralError, ValidationContext, VerbsConfig};
 use std::fs;
 
 fn load_v1_2_fixture() -> VerbsConfig {

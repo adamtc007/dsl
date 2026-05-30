@@ -1,5 +1,5 @@
-use dsl_core::config::dag::{load_dags_from_dir, SlotStateMachine};
-use dsl_core::config::predicate::{
+use crate::config::dag::{load_dags_from_dir, SlotStateMachine};
+use crate::config::predicate::{
     parse_green_when, CmpOp, EntityQualifier, EntityRef, EntitySetRef, Predicate, RelationScope,
     Validity,
 };
@@ -242,7 +242,7 @@ fn symbolic_attribute_threshold_fixture_is_structured() {
                 && attr == "value"
                 && matches!(
                     value,
-                    dsl_core::config::predicate::AttrValue::Symbol(symbol)
+                    crate::config::predicate::AttrValue::Symbol(symbol)
                         if symbol == "registration_threshold"
                 )
         )

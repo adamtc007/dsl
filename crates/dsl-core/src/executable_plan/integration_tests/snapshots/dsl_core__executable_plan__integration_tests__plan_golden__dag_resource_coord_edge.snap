@@ -1,0 +1,16 @@
+---
+source: crates/dsl-core/src/executable_plan/integration_tests/plan_golden.rs
+expression: dag
+---
+PopulatedExecutionDag {
+    edges: [
+        ResourceCoordEdge {
+            node_a: NodeId(
+                0,
+            ),
+            node_b: NodeId(
+                2,
+            ),
+        },
+    ],
+}

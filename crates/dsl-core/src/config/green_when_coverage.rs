@@ -182,3 +182,6 @@ fn split_tupleish(value: &str) -> Vec<String> {
         .map(ToOwned::to_owned)
         .collect()
 }
+
+#[cfg(test)]
+mod integration_tests;

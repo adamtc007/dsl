@@ -12,7 +12,7 @@
 //!
 //! No DB required — all tests run in pure Rust.
 
-use dsl_core::{
+use crate::{
     EffectClass, TransactionPolicy,
     execution_dag::{BindingSlotId, DagEdge, JoinBarrierMode, NodeId, PopulatedExecutionDag},
 };

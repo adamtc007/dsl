@@ -1,4 +1,4 @@
-use dsl_core::config::{
+use crate::config::{
     dag::{ClosureType, EligibilityConstraint},
     validate_constellation_map_schema_coordination, Dag, LoadedDag,
 };

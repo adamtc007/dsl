@@ -1,0 +1,25 @@
+---
+source: crates/dsl-core/src/executable_plan/integration_tests/plan_golden.rs
+expression: dag
+---
+PopulatedExecutionDag {
+    edges: [
+        JoinBarrierEdge {
+            predecessors: [
+                NodeId(
+                    0,
+                ),
+                NodeId(
+                    1,
+                ),
+                NodeId(
+                    2,
+                ),
+            ],
+            join_node: NodeId(
+                3,
+            ),
+            mode: WaitAll,
+        },
+    ],
+}

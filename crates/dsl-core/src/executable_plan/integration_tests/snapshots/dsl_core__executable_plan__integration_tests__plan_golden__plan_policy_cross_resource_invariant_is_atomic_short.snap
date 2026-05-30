@@ -1,0 +1,5 @@
+---
+source: crates/dsl-core/src/executable_plan/integration_tests/plan_golden.rs
+expression: policy
+---
+AtomicShort

@@ -13,7 +13,7 @@
 //!    and an ad-hoc REPL runbook built from the same step sequence
 //!    (P12 invariant).
 
-use dsl_core::config::{
+use crate::config::{
     compute_effective_tier, compute_runbook_tier,
     validate_verbs_config, AggregationRule, ConsequenceTier, CrossScopeRule, EvaluationContext,
     ExternalEffect, RunbookStep, StateEffect, ValidationContext, VerbsConfig,

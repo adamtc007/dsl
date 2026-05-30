@@ -8,3 +8,6 @@ pub use ast::{
     Predicate, RelationScope, State, Validity,
 };
 pub use parser::{parse_green_when, ParseError};
+
+#[cfg(test)]
+mod integration_tests;

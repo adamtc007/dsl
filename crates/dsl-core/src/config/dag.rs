@@ -1192,3 +1192,6 @@ slots:
         assert!(matches!(sm, SlotStateMachine::Reference(_)));
     }
 }
+
+#[cfg(test)]
+mod integration_tests;

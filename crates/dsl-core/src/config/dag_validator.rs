@@ -2425,3 +2425,6 @@ derived_cross_workspace_state:
         );
     }
 }
+
+#[cfg(test)]
+mod integration_tests;

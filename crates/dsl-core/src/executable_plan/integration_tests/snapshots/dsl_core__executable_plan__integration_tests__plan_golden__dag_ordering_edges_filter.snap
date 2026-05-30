@@ -1,0 +1,14 @@
+---
+source: crates/dsl-core/src/executable_plan/integration_tests/plan_golden.rs
+expression: ordering_pairs
+---
+[
+    (
+        0,
+        1,
+    ),
+    (
+        1,
+        2,
+    ),
+]

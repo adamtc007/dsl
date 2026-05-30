@@ -1,0 +1,46 @@
+---
+source: crates/dsl-core/src/executable_plan/integration_tests/plan_golden.rs
+expression: dag
+---
+PopulatedExecutionDag {
+    edges: [
+        BindingEdge {
+            from: NodeId(
+                0,
+            ),
+            to: NodeId(
+                1,
+            ),
+            slot: BindingSlotId(
+                "cbu",
+            ),
+        },
+        BindingEdge {
+            from: NodeId(
+                1,
+            ),
+            to: NodeId(
+                2,
+            ),
+            slot: BindingSlotId(
+                "case",
+            ),
+        },
+        ResourceCoordEdge {
+            node_a: NodeId(
+                0,
+            ),
+            node_b: NodeId(
+                3,
+            ),
+        },
+        StateEdge {
+            from: NodeId(
+                2,
+            ),
+            to: NodeId(
+                4,
+            ),
+        },
+    ],
+}

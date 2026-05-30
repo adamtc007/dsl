@@ -442,3 +442,6 @@ mod tests {
         assert_eq!(compute_effective_tier(&d, &ctx), ConsequenceTier::Benign);
     }
 }
+
+#[cfg(test)]
+mod integration_tests;

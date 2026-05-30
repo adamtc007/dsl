@@ -2,7 +2,7 @@
 // config/sem_os_seeds/ which doesn't exist in the dsl satellite repo.
 // Tests depending on them are covered by ob-poc's own test suite.
 
-use dsl_core::config::{
+use crate::config::{
     validate_constellation_map_schema_coordination, validate_dags_with_context, Dag, DagError,
     DagValidationContext, DagWarning, LoadedDag,
 };
@@ -295,7 +295,7 @@ slots:
 "#,
     );
 
-    dsl_core::config::dag_validator::harden_schema_coordination_warnings(&mut report, &[]);
+    crate::config::dag_validator::harden_schema_coordination_warnings(&mut report, &[]);
 
     assert!(report.warnings.is_empty(), "{:#?}", report.warnings);
     assert!(report.errors.iter().any(|error| matches!(

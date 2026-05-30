@@ -1,0 +1,21 @@
+---
+source: crates/dsl-core/src/executable_plan/integration_tests/plan_golden.rs
+expression: dag
+---
+PopulatedExecutionDag {
+    edges: [
+        CancellationScopeEdge {
+            trigger: NodeId(
+                0,
+            ),
+            scope: [
+                NodeId(
+                    1,
+                ),
+                NodeId(
+                    2,
+                ),
+            ],
+        },
+    ],
+}

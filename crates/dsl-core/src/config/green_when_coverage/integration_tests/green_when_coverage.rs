@@ -1,4 +1,4 @@
-use dsl_core::config::{
+use crate::config::{
     green_when_coverage_for_dag, green_when_coverage_for_dags, green_when_coverage_summary,
     load_dags_from_dir, ConfigLoader, Dag, GreenWhenExclusionReason, VerbFlavour, VerbsConfig,
 };

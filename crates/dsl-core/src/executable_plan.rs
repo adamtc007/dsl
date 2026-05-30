@@ -469,3 +469,6 @@ mod tests {
         assert_ne!(a, b);
     }
 }
+
+#[cfg(test)]
+mod integration_tests;
