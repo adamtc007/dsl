@@ -22,7 +22,7 @@
 
 pub(crate) mod constellation_map_def;
 pub(crate) mod resolver_facts;
-pub mod dag;
+pub(crate) mod dag;
 
 pub use constellation_map_def::{
     AuditClass, Cardinality, ClosureType, CompletenessAssertionConfig, ConstellationMapDefBody,
@@ -30,3 +30,12 @@ pub use constellation_map_def::{
     VerbPaletteEntry,
 };
 pub use resolver_facts::StructuralFacts;
+
+pub use dag::{
+    Dag, LoadedDag, Slot, SlotStateMachine, StateMachine, StateDef, TransitionDef, Severity,
+    CrossWorkspaceConstraint, DerivedCrossWorkspaceState, CascadeRule, EntryVia, Phase,
+    StateSelector, PredicateBinding, DerivationCondition, ParentSlot, ParentJoin,
+    StateDependency, DualLifecycle, PeriodicReviewCadence, RiskTierOverride, ReviewScope,
+    EvidenceType, CategoryGated, ProductModuleGates, ConditionalGate, PruneCascadeRule,
+    PruneCascadeTarget, PrunePreValidation, ExpectedLifetime, PredicateBindingSourceKind,
+};

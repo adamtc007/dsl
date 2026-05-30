@@ -1,5 +1,5 @@
 use crate::config::dag::load_dags_from_dir;
-use dsl_types::dag::SlotStateMachine;
+use dsl_types::SlotStateMachine;
 use crate::config::predicate::{
     parse_green_when, CmpOp, EntityQualifier, EntityRef, EntitySetRef, Predicate, RelationScope,
     Validity,

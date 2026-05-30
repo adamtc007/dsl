@@ -8,28 +8,29 @@
 //! parent_slot/state_dependency, expected_lifetime, dual_lifecycle,
 //! periodic_review_cadence, evidence_types, category_gated).
 
-#![allow(unreachable_pub)]
-
 use anyhow::{Context, Result};
 use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
 // Re-export all relocated types from dsl_types::dag module
-pub use dsl_types::dag::{
-    Dag, OverallLifecycle, Phase, ProgressionVerbs, Derivation, DerivationCondition,
-    StructuredDerivationCondition, StateSelector, Slot, SlotStateMachine, StateMachine,
-    PredicateBinding, PredicateRequiredUniverse, PredicateBindingSourceKind, ExpectedLifetime,
-    StateDef, EntryVia, TransitionDef, CrossSlotConstraint, Severity,
-    CrossWorkspaceConstraint, DerivedCrossWorkspaceState, ExposureConfig, Visibility,
-    ParentSlot, ParentJoin, StateDependency, CascadeRule, DualLifecycle,
-    PeriodicReviewCadence, RiskTierOverride, ReviewScope, EvidenceType, CategoryGated,
-    ProductModuleGates, ConditionalGate, PruneCascadeRule, PruneCascadeTarget,
-    PrunePreValidation, LoadedDag,
+// Re-exports reached by external crates (facade/config re-exports)
+pub use dsl_types::{
+    Dag, Phase, DerivationCondition, StateSelector, Slot, SlotStateMachine,
+    PredicateBinding, Severity, CrossWorkspaceConstraint, DerivedCrossWorkspaceState,
+    CascadeRule, EntryVia, LoadedDag,
 };
 
-// Re-export level-0 types previously imported/used in this module
-pub use dsl_types::{
+// Re-exports reached only inside dsl-core
+pub(crate) use dsl_types::{
+    StateMachine, StateDef, TransitionDef, ParentSlot, ParentJoin, StateDependency,
+    PeriodicReviewCadence, RiskTierOverride, ReviewScope, EvidenceType, CategoryGated,
+    ProductModuleGates, ConditionalGate, PruneCascadeRule, PruneCascadeTarget,
+    PrunePreValidation, ExpectedLifetime, PredicateBindingSourceKind, DualLifecycle,
+};
+
+// Re-exports of level-0 types reached only inside dsl-core
+pub(crate) use dsl_types::{
     AuditClass, ClosureType, CompletenessAssertionConfig, EligibilityConstraint, RoleGuard,
 };
 

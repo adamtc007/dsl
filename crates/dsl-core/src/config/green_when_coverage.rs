@@ -4,7 +4,7 @@
 //! predicates are backfilled workspace by workspace. This module deliberately
 //! reports coverage; it does not invent predicates.
 
-use dsl_types::dag::{Dag, SlotStateMachine, StateDef, TransitionDef};
+use dsl_types::{Dag, SlotStateMachine, StateDef, TransitionDef};
 use serde_yaml::Value as YamlValue;
 use std::collections::{BTreeMap, BTreeSet, HashSet};
 
