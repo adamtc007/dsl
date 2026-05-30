@@ -199,10 +199,7 @@ impl PopulatedExecutionDag {
         self.edges.push(edge);
     }
 
-    /// Returns all edges that impose hard execution ordering (v0.5 §4.2).
-    pub fn ordering_edges(&self) -> impl Iterator<Item = &DagEdge> {
-        self.edges.iter().filter(|e| e.imposes_order())
-    }
+
 
     /// Returns `(from_step_idx, to_step_idx)` pairs for all ordering edges.
     ///
@@ -216,17 +213,5 @@ impl PopulatedExecutionDag {
             .collect()
     }
 
-    /// Returns all `ResourceCoordEdge` entries.
-    ///
-    /// Used by the coordination strategy table (T12) to determine which
-    /// node pairs need coordination and at what granularity.
-    pub fn coordination_edges(&self) -> impl Iterator<Item = (&NodeId, &NodeId)> {
-        self.edges.iter().filter_map(|e| {
-            if let DagEdge::ResourceCoordEdge { node_a, node_b } = e {
-                Some((node_a, node_b))
-            } else {
-                None
-            }
-        })
-    }
+
 }

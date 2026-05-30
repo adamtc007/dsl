@@ -874,27 +874,6 @@ pub struct VerbProduces {
     pub initial_state: Option<String>,
 }
 
-impl VerbProduces {
-    /// Resolve the subtype for a given verb call's arguments
-    /// Returns static subtype if set, otherwise extracts from subtype_from_arg
-    pub fn resolve_subtype(&self, args: &[super::super::ast::Argument]) -> Option<String> {
-        // Static subtype takes precedence
-        if let Some(ref st) = self.subtype {
-            return Some(st.clone());
-        }
-
-        // Dynamic subtype from arg
-        if let Some(ref arg_name) = self.subtype_from_arg {
-            return args
-                .iter()
-                .find(|a| a.key == *arg_name)
-                .and_then(|a| a.value.as_string())
-                .map(|s| s.to_string());
-        }
-
-        None
-    }
-}
 
 /// Dataflow: what a verb consumes (dependencies)
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -1442,24 +1421,6 @@ impl SearchKeyConfig {
         }
     }
 
-    /// Get resolution tiers (defaults to [ResolutionTier::Fuzzy] for simple keys)
-    pub fn resolution_tiers(&self) -> Vec<ResolutionTier> {
-        match self {
-            SearchKeyConfig::Simple(_) => vec![ResolutionTier::Fuzzy],
-            SearchKeyConfig::Composite(c) => {
-                if c.resolution_tiers.is_empty() {
-                    vec![
-                        ResolutionTier::Exact,
-                        ResolutionTier::Composite,
-                        ResolutionTier::Contextual,
-                        ResolutionTier::Fuzzy,
-                    ]
-                } else {
-                    c.resolution_tiers.clone()
-                }
-            }
-        }
-    }
 
     /// Get minimum confidence threshold (defaults to 0.8)
     pub fn min_confidence(&self) -> f32 {

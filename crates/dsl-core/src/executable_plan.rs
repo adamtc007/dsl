@@ -69,11 +69,7 @@ impl Default for PlanId {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
 pub struct SemOsSnapshotId(pub u64);
 
-impl SemOsSnapshotId {
-    pub fn unknown() -> Self {
-        Self(0)
-    }
-}
+
 
 // =============================================================================
 // Effect class (v0.5 §5.2)
@@ -350,66 +346,7 @@ impl ExecutablePlan {
     /// Current plan format version.
     pub const FORMAT_VERSION: u32 = 1;
 
-    /// Build an `ExecutablePlan` from an `ExecutionPlan` and context.
-    ///
-    /// - `snapshot_id`: the active SDG snapshot at compilation time, if known.
-    /// - `authority`: actor and client-group identity for this plan.
-    ///
-    /// `effect_class` on each instruction is derived from `VerbConfig` once
-    /// T04 lands; until then all instructions carry `effect_class: None` and
-    /// `recommended_transaction_policy` defaults to `AtomicShort`.
-    pub fn from_execution_plan(
-        plan: &crate::execution_dag::PopulatedExecutionDag,
-        steps: &[ExecutionStepSummary],
-        snapshot_id: Option<SemOsSnapshotId>,
-        authority: AuthorityContext,
-    ) -> Self {
-        let instructions: Vec<RuntimeInstruction> = steps
-            .iter()
-            .map(|s| RuntimeInstruction {
-                node_id: NodeId(s.step_index),
-                verb_fqn: s.verb_fqn.clone(),
-                inputs: s
-                    .input_names
-                    .iter()
-                    .map(|name| InstructionInput::Literal {
-                        value: serde_json::Value::String(name.clone()),
-                    })
-                    .collect(),
-                output_binding: s.bind_as.as_ref().map(BindingSlotId::new),
-                effect_class: s.effect_class,
-                resource_dependencies: s.resource_dependencies.clone(),
-                source_stmt: s.step_index,
-            })
-            .collect();
 
-        // Derive recommended policy from effect classes.
-        let classes = instructions.iter().filter_map(|i| i.effect_class);
-        let recommended_transaction_policy = TransactionPolicy::from_effect_classes(classes);
-
-        // Build binding frame schema from output bindings.
-        let slots: Vec<BindingSlot> = instructions
-            .iter()
-            .filter_map(|i| {
-                i.output_binding.as_ref().map(|slot| BindingSlot {
-                    name: slot.clone(),
-                    entity_type: None, // populated in T10
-                })
-            })
-            .collect();
-
-        Self {
-            plan_id: PlanId::new(),
-            plan_format_version: Self::FORMAT_VERSION,
-            sem_os_snapshot_id: snapshot_id,
-            compile_timestamp: Utc::now(),
-            authority_context: authority,
-            recommended_transaction_policy,
-            instructions,
-            dag: plan.clone(),
-            bindings: BindingFrameSchema { slots },
-        }
-    }
 }
 
 /// Minimal summary of an `ExecutionStep` for `ExecutablePlan` construction.

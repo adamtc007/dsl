@@ -103,6 +103,10 @@ fn byte_to_line_col(source: &str, offset: usize) -> (u32, u32) {
     (line, col)
 }
 
+
+
+
+
 /// Related information for multi-location diagnostics
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct RelatedInfo {
@@ -184,17 +188,7 @@ impl Diagnostic {
         self
     }
 
-    /// Add suggested fix
-    pub fn with_fix(mut self, fix: SuggestedFix) -> Self {
-        self.suggested_fix = Some(fix);
-        self
-    }
 
-    /// Add related information
-    pub fn with_related(mut self, related: RelatedInfo) -> Self {
-        self.related.push(related);
-        self
-    }
 
     /// Check if this is an error
     pub fn is_error(&self) -> bool {
@@ -305,6 +299,8 @@ mod tests {
         assert!(diag.span.is_some());
         assert_eq!(diag.span.as_ref().unwrap().start_col, 5);
     }
+
+
 
     #[test]
     fn test_byte_to_line_col() {

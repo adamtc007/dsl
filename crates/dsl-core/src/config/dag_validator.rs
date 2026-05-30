@@ -683,16 +683,6 @@ pub(crate) fn validate_constellation_map_dir_schema_coordination(
     Ok(report)
 }
 
-#[allow(dead_code)]
-pub(crate) fn validate_constellation_map_dir_schema_coordination_strict(
-    loaded: &BTreeMap<String, LoadedDag>,
-    dir: &Path,
-    known_deferred: &[SchemaCoordinationKnownDeferred],
-) -> std::io::Result<DagValidationReport> {
-    let mut report = validate_constellation_map_dir_schema_coordination(loaded, dir)?;
-    harden_schema_coordination_warnings(&mut report, known_deferred);
-    Ok(report)
-}
 
 pub fn harden_schema_coordination_warnings(
     report: &mut DagValidationReport,
