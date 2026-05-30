@@ -30,12 +30,12 @@ fn lux_aif_raif_yaml() -> String {
 }
 
 #[derive(Debug, serde::Deserialize)]
-struct RawConstellationMap {
-    slots: BTreeMap<String, RawConstellationSlot>,
+struct PilotConstellationMap {
+    slots: BTreeMap<String, PilotConstellationSlot>,
 }
 
 #[derive(Debug, serde::Deserialize)]
-struct RawConstellationSlot {
+struct PilotConstellationSlot {
     #[serde(default)]
     closure: Option<ClosureType>,
     #[serde(default)]
@@ -129,7 +129,7 @@ fn cbu_dag_pilot_slots_have_gate_metadata() {
 #[ignore = "requires ob-poc config/ not present in dsl satellite"]
 fn lux_sicav_constellation_pilot_slots_have_gate_metadata() {
     let yaml = lux_sicav_yaml();
-    let map: RawConstellationMap = serde_yaml::from_str(&yaml).expect("Lux SICAV parses");
+    let map: PilotConstellationMap = serde_yaml::from_str(&yaml).expect("Lux SICAV parses");
 
     for slot_id in [
         "management_company",

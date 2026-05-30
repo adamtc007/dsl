@@ -146,20 +146,16 @@ pub fn load_constellation_maps_from_dir(
             .with_context(|| format!("cannot read constellation map {path:?}"))?;
         let seed: SeedConstellationMap = serde_yaml::from_str(&raw)
             .with_context(|| format!("failed to parse constellation map {path:?}"))?;
-        let body = core_map::ConstellationMapDefBody {
-            fqn: seed.constellation.clone(),
-            constellation: seed.constellation,
-            description: seed.description,
-            jurisdiction: seed.jurisdiction,
-            slots: seed.slots,
-        };
+        let legacy_stack_before = seed.legacy_stack.before.clone();
+        let legacy_stack_after = seed.legacy_stack.after.clone();
+        let body = core_map::ConstellationMapDefBody::from_seed(seed);
         out.insert(
             body.constellation.clone(),
             LoadedConstellationMap {
                 source_path: path,
                 body,
-                legacy_stack_before: seed.legacy_stack.before,
-                legacy_stack_after: seed.legacy_stack.after,
+                legacy_stack_before,
+                legacy_stack_after,
             },
         );
     }

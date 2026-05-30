@@ -16,6 +16,18 @@ pub struct ConstellationMapDefBody {
     pub slots: BTreeMap<String, SlotDef>,
 }
 
+impl ConstellationMapDefBody {
+    pub fn from_seed(seed: SeedConstellationMap) -> Self {
+        ConstellationMapDefBody {
+            fqn: seed.constellation.clone(),
+            constellation: seed.constellation,
+            description: seed.description,
+            jurisdiction: seed.jurisdiction,
+            slots: seed.slots,
+        }
+    }
+}
+
 /// Closure semantics for a composite slot.
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]

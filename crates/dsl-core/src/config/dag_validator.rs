@@ -24,6 +24,7 @@
 //! helpers are limited to reading authored YAML into those pure checks.
 
 use crate::config::dag::*;
+use dsl_types::{ConstellationMapDefBody, SeedConstellationMap, SlotDef};
 use crate::config::predicate::{parse_green_when, EntityRef, EntitySetRef, Predicate};
 use crate::resolver::{ResolvedSlot, ResolvedTemplate};
 use std::collections::{BTreeMap, HashMap, HashSet};
@@ -627,17 +628,14 @@ pub fn validate_resolved_template_gate_metadata(
 
 
 /// Validate one constellation map's schema coordination against loaded DAGs.
-///
-/// This intentionally parses a lightweight raw YAML shape instead of depending
-/// on `sem_os_core::constellation_map_def`, keeping `dsl-core` dependency-free.
 pub(crate) fn validate_constellation_map_schema_coordination(
     loaded: &BTreeMap<String, LoadedDag>,
     source_name: &str,
     yaml: &str,
 ) -> DagValidationReport {
     let mut report = DagValidationReport::default();
-    let map = match serde_yaml::from_str::<RawConstellationMap>(yaml) {
-        Ok(map) => map,
+    let seed = match serde_yaml::from_str::<SeedConstellationMap>(yaml) {
+        Ok(seed) => seed,
         Err(err) => {
             report.errors.push(DagError::SchemaCoordinationParseError {
                 location: DagLocation {
@@ -649,6 +647,7 @@ pub(crate) fn validate_constellation_map_schema_coordination(
             return report;
         }
     };
+    let map = ConstellationMapDefBody::from_seed(seed);
 
     validate_raw_constellation_map_schema_coordination(loaded, source_name, &map, &mut report);
     report
@@ -1666,58 +1665,13 @@ fn validate_validity_window_expired_state(
     }
 }
 
-#[derive(Debug, serde::Deserialize)]
-struct RawConstellationMap {
-    #[serde(default)]
-    constellation: Option<String>,
-    #[serde(default)]
-    slots: BTreeMap<String, RawConstellationSlot>,
-}
-
-#[derive(Debug, Default, serde::Deserialize)]
-struct RawConstellationSlot {
-    #[serde(default)]
-    state_machine: Option<String>,
-    #[serde(default)]
-    closure: Option<serde_yaml::Value>,
-    #[serde(default)]
-    eligibility: Option<serde_yaml::Value>,
-    #[serde(default)]
-    cardinality_max: Option<serde_yaml::Value>,
-    #[serde(default)]
-    entry_state: Option<serde_yaml::Value>,
-    #[serde(default)]
-    attachment_predicates: Vec<String>,
-    #[serde(default)]
-    addition_predicates: Vec<String>,
-    #[serde(default)]
-    aggregate_breach_checks: Vec<String>,
-    #[serde(default, rename = "+attachment_predicates")]
-    additive_attachment_predicates: Vec<String>,
-    #[serde(default, rename = "+addition_predicates")]
-    additive_addition_predicates: Vec<String>,
-    #[serde(default, rename = "+aggregate_breach_checks")]
-    additive_aggregate_breach_checks: Vec<String>,
-    #[serde(default)]
-    role_guard: Option<serde_yaml::Value>,
-    #[serde(default)]
-    justification_required: Option<serde_yaml::Value>,
-    #[serde(default)]
-    audit_class: Option<serde_yaml::Value>,
-    #[serde(default)]
-    completeness_assertion: Option<serde_yaml::Value>,
-}
-
 fn validate_raw_constellation_map_schema_coordination(
     loaded: &BTreeMap<String, LoadedDag>,
     source_name: &str,
-    map: &RawConstellationMap,
+    map: &ConstellationMapDefBody,
     report: &mut DagValidationReport,
 ) {
-    let constellation = map
-        .constellation
-        .as_deref()
-        .unwrap_or("<unknown-constellation>");
+    let constellation = &map.constellation;
     for (slot_id, slot) in &map.slots {
         let location = DagLocation {
             workspace: constellation.to_string(),
@@ -1793,7 +1747,7 @@ fn warn_state_machine_mismatch(
     slot_id: &str,
     dag_workspace: &str,
     dag_slot: &Slot,
-    constellation_slot: &RawConstellationSlot,
+    constellation_slot: &SlotDef,
     report: &mut DagValidationReport,
 ) {
     let Some(constellation_state_machine) = &constellation_slot.state_machine else {
@@ -1820,7 +1774,7 @@ fn warn_gate_field_drift(
     slot_id: &str,
     dag_workspace: &str,
     dag_slot: &Slot,
-    constellation_slot: &RawConstellationSlot,
+    constellation_slot: &SlotDef,
     report: &mut DagValidationReport,
 ) {
     let checks = [
