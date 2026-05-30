@@ -22,6 +22,7 @@
 
 pub(crate) mod constellation_map_def;
 pub(crate) mod resolver_facts;
+pub mod dag;
 
 pub use constellation_map_def::{
     AuditClass, Cardinality, ClosureType, CompletenessAssertionConfig, ConstellationMapDefBody,
