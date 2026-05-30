@@ -11,6 +11,8 @@
 | 2026-05-30 | 05-tranche-b | 0 | 3a90b90 | GREEN |
 | 2026-05-30 | 07-tranche-c | -22 | 777f448 | GREEN |
 | 2026-05-30 | 08-tranche-c-closeout | +4 | 9a85990 | GREEN |
+| 2026-05-30 | 09-final-acceptance | -28 | 962d73b | GREEN |
+
 
 
 
