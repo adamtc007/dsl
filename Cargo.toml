@@ -1,6 +1,23 @@
 [workspace]
-members = ["crates/dsl_types", "crates/dsl-core"]
+members = [
+    "crates/dsl_types",
+    "crates/dsl-core",
+    "crates/sem_os_types",
+    "crates/sem_os_core",
+    "crates/sem_os_ontology",
+    "crates/sem_os_policy",
+    "crates/sem_os_taxonomy",
+]
 resolver = "2"
+
+[workspace.dependencies]
+dsl_types       = { path = "crates/dsl_types" }
+dsl-core        = { path = "crates/dsl-core" }
+sem_os_types    = { path = "crates/sem_os_types" }
+sem_os_core     = { path = "crates/sem_os_core" }
+sem_os_ontology = { path = "crates/sem_os_ontology" }
+sem_os_policy   = { path = "crates/sem_os_policy" }
+sem_os_taxonomy = { path = "crates/sem_os_taxonomy" }
 
 [workspace.lints.rust]
 unreachable_pub = "deny"

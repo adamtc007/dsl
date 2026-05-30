@@ -32,7 +32,7 @@ rust_decimal = { version = "1", features = ["serde"] }
 pretty_assertions = "1"
 tempfile = "3"
 insta = { version = "1", features = ["yaml"] }
-sem_os_core = { git = "https://github.com/adamtc007/sem-os", tag = "v0.1.2" }
+sem_os_core.workspace = true
 
 [features]
 default = []
