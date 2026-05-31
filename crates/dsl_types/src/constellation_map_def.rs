@@ -263,3 +263,25 @@ pub struct SeedConstellationMap {
     #[serde(default)]
     pub slots: BTreeMap<String, SlotDef>,
 }
+
+/// A unique key identifying a slot across the workspace constellations.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+pub struct SlotKey {
+    pub constellation: String,
+    pub path: String, // dot-separated path string
+}
+
+/// The status of the gating evaluation for a registered slot.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub enum GatingStatus {
+    Pending,
+    Gated,
+    Rejected { reasons: Vec<String> },
+}
+
+/// The gating state for a single slot in the additive layer.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct SlotGatingState {
+    pub status: GatingStatus,
+}
+

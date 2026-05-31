@@ -9,6 +9,8 @@
 use std::collections::HashMap;
 use uuid::Uuid;
 
+use crate::config::types::VerbProduces;
+
 
 // =============================================================================
 // BINDING INFO
@@ -63,7 +65,16 @@ impl BindingInfo {
         false
     }
 
-
+    /// Create from a VerbProduces definition
+    pub fn from_produces(name: &str, produces: &VerbProduces) -> Self {
+        Self {
+            name: name.to_string(),
+            produced_type: produces.produced_type.clone(),
+            subtype: produces.subtype.clone(),
+            entity_pk: Uuid::nil(), // Not yet executed
+            resolved: produces.resolved,
+        }
+    }
 
     /// Format for display: "@fund (cbu)" or "@john (entity/proper_person)"
     pub fn display(&self) -> String {
@@ -123,7 +134,7 @@ impl BindingContext {
     }
 
     /// Get the set of available types (for verb satisfaction checking)
-    pub(crate) fn available_types(&self) -> std::collections::HashSet<String> {
+    pub fn available_types(&self) -> std::collections::HashSet<String> {
         let mut types = std::collections::HashSet::new();
         for info in self.bindings.values() {
             types.insert(info.produced_type.clone());
@@ -144,7 +155,23 @@ impl BindingContext {
         self.bindings.len()
     }
 
+    /// Format for LLM context
+    pub fn to_llm_context(&self) -> String {
+        if self.is_empty() {
+            return "No bindings available.".to_string();
+        }
 
+        let mut lines = vec!["Available bindings:".to_string()];
+        for info in self.bindings.values() {
+            let pk_str = if info.entity_pk.is_nil() {
+                "[pending]".to_string()
+            } else {
+                info.entity_pk.to_string()
+            };
+            lines.push(format!("  {} → pk: {}", info.display(), pk_str));
+        }
+        lines.join("\n")
+    }
 }
 
 // =============================================================================

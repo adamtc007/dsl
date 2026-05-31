@@ -1414,7 +1414,7 @@ impl SearchKeyConfig {
     }
 
     /// Get discriminator fields if this is a composite key
-    pub(crate) fn discriminators(&self) -> &[SearchDiscriminator] {
+    pub fn discriminators(&self) -> &[SearchDiscriminator] {
         match self {
             SearchKeyConfig::Simple(_) => &[],
             SearchKeyConfig::Composite(c) => &c.discriminators,
@@ -1788,7 +1788,7 @@ fn default_selectivity() -> f32 {
 
 impl SearchDiscriminator {
     /// Get the argument name (uses field name if from_arg not specified)
-    pub(crate) fn arg_name(&self) -> &str {
+    pub fn arg_name(&self) -> &str {
         self.from_arg.as_deref().unwrap_or(&self.field)
     }
 }

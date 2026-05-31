@@ -50,7 +50,7 @@ pub struct Program {
 
 impl Program {
     /// Render the program back to DSL source (for execution - shows UUIDs when resolved)
-    pub(crate) fn to_dsl_string(&self) -> String {
+    pub fn to_dsl_string(&self) -> String {
         self.statements
             .iter()
             .map(|s| s.to_dsl_string())
@@ -60,7 +60,7 @@ impl Program {
 
     /// Render for USER display - human readable, no UUIDs
     /// Use this for: chat UI, agent responses, DSL review panels
-    pub(crate) fn to_user_dsl_string(&self) -> String {
+    pub fn to_user_dsl_string(&self) -> String {
         self.statements
             .iter()
             .map(|s| s.to_user_dsl_string())
@@ -78,7 +78,7 @@ pub enum Statement {
 
 impl Statement {
     /// Render the statement back to DSL source (for execution)
-    pub(crate) fn to_dsl_string(&self) -> String {
+    pub fn to_dsl_string(&self) -> String {
         match self {
             Statement::VerbCall(vc) => vc.to_dsl_string(),
             Statement::Comment(c) => format!("; {}", c),
@@ -86,7 +86,7 @@ impl Statement {
     }
 
     /// Render for USER display - human readable, no UUIDs
-    pub(crate) fn to_user_dsl_string(&self) -> String {
+    pub fn to_user_dsl_string(&self) -> String {
         match self {
             Statement::VerbCall(vc) => vc.to_user_dsl_string(),
             Statement::Comment(c) => format!("; {}", c),
@@ -107,7 +107,7 @@ pub struct VerbCall {
 
 impl VerbCall {
     /// Render the verb call back to DSL source (for execution - shows UUIDs)
-    pub(crate) fn to_dsl_string(&self) -> String {
+    pub fn to_dsl_string(&self) -> String {
         let mut parts = vec![format!("({}.{}", self.domain, self.verb)];
 
         for arg in &self.arguments {
@@ -123,7 +123,7 @@ impl VerbCall {
     }
 
     /// Render for USER display - human readable, no UUIDs
-    pub(crate) fn to_user_dsl_string(&self) -> String {
+    pub fn to_user_dsl_string(&self) -> String {
         let mut parts = vec![format!("({}.{}", self.domain, self.verb)];
 
         for arg in &self.arguments {
@@ -290,7 +290,7 @@ impl AstNode {
     // =========================================================================
 
     /// Render the node back to DSL source (for execution - shows UUIDs when resolved)
-    pub(crate) fn to_dsl_string(&self) -> String {
+    pub fn to_dsl_string(&self) -> String {
         match self {
             AstNode::Literal(lit, _) => lit.to_dsl_string(),
             AstNode::SymbolRef { name, .. } => format!("@{}", name),
@@ -326,7 +326,7 @@ impl AstNode {
     ///
     /// Always shows the human-readable `value` field from EntityRef,
     /// never the resolved UUID. This lets users review intent, not implementation.
-    pub(crate) fn to_user_dsl_string(&self) -> String {
+    pub fn to_user_dsl_string(&self) -> String {
         match self {
             AstNode::Literal(lit, _) => lit.to_dsl_string(),
             AstNode::SymbolRef { name, .. } => format!("@{}", name),
@@ -413,7 +413,7 @@ impl AstNode {
     // =========================================================================
 
     /// Is this an unresolved entity reference?
-    pub(crate) fn is_unresolved_entity_ref(&self) -> bool {
+    pub fn is_unresolved_entity_ref(&self) -> bool {
         matches!(
             self,
             AstNode::EntityRef {
@@ -424,7 +424,7 @@ impl AstNode {
     }
 
     /// Is this a resolved entity reference?
-    pub(crate) fn is_resolved_entity_ref(&self) -> bool {
+    pub fn is_resolved_entity_ref(&self) -> bool {
         matches!(
             self,
             AstNode::EntityRef {
@@ -434,6 +434,10 @@ impl AstNode {
         )
     }
 
+    /// Is this any kind of entity reference?
+    pub fn is_entity_ref(&self) -> bool {
+        matches!(self, AstNode::EntityRef { .. })
+    }
 
     /// Is this a symbol reference?
     pub fn is_symbol_ref(&self) -> bool {
@@ -441,7 +445,7 @@ impl AstNode {
     }
 
     /// Is this a literal?
-    pub(crate) fn is_literal(&self) -> bool {
+    pub fn is_literal(&self) -> bool {
         matches!(self, AstNode::Literal(_, _))
     }
 
@@ -459,7 +463,7 @@ impl AstNode {
     }
 
     /// Get as UUID (from resolved entity ref)
-    pub(crate) fn as_uuid(&self) -> Option<Uuid> {
+    pub fn as_uuid(&self) -> Option<Uuid> {
         match self {
             AstNode::EntityRef {
                 resolved_key: Some(key),
@@ -675,11 +679,16 @@ impl Span {
     ///
     /// Synthetic spans use a special marker (usize::MAX) to indicate
     /// they don't correspond to actual source text.
-    pub(crate) fn synthetic() -> Self {
+    pub fn synthetic() -> Self {
         Self {
             start: usize::MAX,
             end: usize::MAX,
         }
+    }
+
+    /// Check if this span is synthetic (generated, not from source)
+    pub fn is_synthetic(&self) -> bool {
+        self.start == usize::MAX && self.end == usize::MAX
     }
 
 }
@@ -758,6 +767,99 @@ pub(crate) fn find_unresolved_refs(program: &Program) -> Vec<&AstNode> {
         collector.visit_statement(stmt);
     }
     collector.refs
+}
+
+/// Location of an unresolved EntityRef in the AST
+#[derive(Debug, Clone)]
+pub struct UnresolvedRefLocation {
+    /// Statement index in AST (0-based)
+    pub statement_index: usize,
+    /// Argument key containing the EntityRef
+    pub arg_key: String,
+    /// Entity type for search (e.g., "cbu", "entity", "product")
+    pub entity_type: String,
+    /// The search text entered by user
+    pub search_text: String,
+    /// Search column from lookup config (e.g., "name")
+    pub search_column: Option<String>,
+    /// Unique ref_id for commit targeting (span-based, e.g., "0:15-30")
+    pub ref_id: Option<String>,
+}
+
+/// Extract locations of all unresolved EntityRefs in the AST
+///
+/// Handles nested structures (lists, maps) and extracts full metadata
+/// including search_column and span-based ref_id for commit targeting.
+///
+/// # Example
+/// ```ignore
+/// let unresolved = find_unresolved_ref_locations(&program);
+/// for loc in unresolved {
+///     println!("Statement {}, arg '{}': resolve '{}' as {} (ref_id: {:?})",
+///         loc.statement_index, loc.arg_key, loc.search_text, loc.entity_type, loc.ref_id);
+/// }
+/// ```
+pub fn find_unresolved_ref_locations(program: &Program) -> Vec<UnresolvedRefLocation> {
+    let mut results = Vec::new();
+
+    for (stmt_idx, stmt) in program.statements.iter().enumerate() {
+        if let Statement::VerbCall(vc) = stmt {
+            for arg in &vc.arguments {
+                collect_unresolved_from_node(&arg.value, &arg.key, stmt_idx, &mut results);
+            }
+        }
+    }
+
+    results
+}
+
+/// Recursively collect unresolved EntityRefs from an AST node
+/// Handles nested Lists and Maps
+fn collect_unresolved_from_node(
+    node: &AstNode,
+    arg_key: &str,
+    stmt_idx: usize,
+    results: &mut Vec<UnresolvedRefLocation>,
+) {
+    match node {
+        AstNode::EntityRef {
+            entity_type,
+            search_column,
+            value,
+            resolved_key,
+            span,
+            ref_id,
+            ..
+        } if resolved_key.is_none() => {
+            // Use the stored ref_id if present (set during enrichment with list_index),
+            // otherwise generate from span. This ensures list items have unique ref_ids.
+            let final_ref_id = ref_id
+                .clone()
+                .unwrap_or_else(|| format!("{}:{}-{}", stmt_idx, span.start, span.end));
+            results.push(UnresolvedRefLocation {
+                statement_index: stmt_idx,
+                arg_key: arg_key.to_string(),
+                entity_type: entity_type.clone(),
+                search_text: value.clone(),
+                search_column: Some(search_column.clone()),
+                ref_id: Some(final_ref_id),
+            });
+        }
+        AstNode::EntityRef { .. } => {
+            // resolved_key.is_some() — already resolved, nothing to collect.
+        }
+        AstNode::List { items, .. } => {
+            for item in items {
+                collect_unresolved_from_node(item, arg_key, stmt_idx, results);
+            }
+        }
+        AstNode::Map { entries, .. } => {
+            for (_, value) in entries {
+                collect_unresolved_from_node(value, arg_key, stmt_idx, results);
+            }
+        }
+        _ => {}
+    }
 }
 
 

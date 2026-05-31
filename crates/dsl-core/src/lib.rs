@@ -28,7 +28,8 @@ pub(crate) mod viewport_parser;
 // Re-export from ast
 pub use ast::{
     count_entity_refs, Argument, AstNode, ConfidenceZone, EnhanceArg, EntityRefStats,
-    FocusTarget, Literal, Program, Span, Statement, VerbCall,
+    FocusTarget, Literal, Program, Span, Statement, VerbCall, UnresolvedRefLocation,
+    find_unresolved_ref_locations,
 };
 
 // Re-export from binding_context
@@ -50,14 +51,19 @@ pub use config::{
     validate_verbs_config, ValidationContext, ValidationReport, VerbBehavior, VerbConfig,
     VerbConsumes, VerbFlavour, VerbLifecycle, VerbMetadata, VerbOutputConfig, VerbProduces,
     VerbRoleGuard, VerbScope, VerbSentences, VerbStatus, VerbTier, VerbTransitions, VerbsConfig,
-    WellFormednessError,
+    WellFormednessError, StructuralError, DagWarning,
     load_dags_from_dir, load_domain_pack_owned_dags,
     validate_dags_with_context, validate_resolved_template_gate_metadata,
+    validate_slot_gating_states,
     ConfigLoader, PolicyConfig, VerbWriteConfig,
     BatchPolicyConfig, DynamicVerbConfig, LockAccessConfig, LockModeConfig,
     ResolvedResourceDependency, ResourceDependency, PhraseGenNouns, generate_phrases,
 };
-pub use config::{VerbManifest, VerbDeclaration, ManifestError, WiringReport, wiring_check, set_phrase_gen_nouns};
+pub use config::{
+    VerbManifest, VerbDeclaration, ManifestError, WiringReport, wiring_check, set_phrase_gen_nouns,
+    LoadedPack, load_packs_from_dir, flatten_pack_entries,
+    collect_declared_fqns, validate_pack_fqns, entity_kinds_from_taxonomy_yaml,
+};
 
 
 // Re-export from config::dag
@@ -108,4 +114,4 @@ pub use resolver::{
 };
 
 // Re-export from dsl_types
-pub use dsl_types::{ClosureType, RoleGuard, EligibilityConstraint};
+pub use dsl_types::{ClosureType, RoleGuard, EligibilityConstraint, SlotKey, GatingStatus, SlotGatingState};

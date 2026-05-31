@@ -24,7 +24,7 @@
 //! helpers are limited to reading authored YAML into those pure checks.
 
 use crate::config::dag::*;
-use dsl_types::{ConstellationMapDefBody, SeedConstellationMap, SlotDef};
+use dsl_types::{ConstellationMapDefBody, SeedConstellationMap, SlotDef, SlotKey, GatingStatus, SlotGatingState};
 use crate::config::predicate::{parse_green_when, EntityRef, EntitySetRef, Predicate};
 use crate::resolver::{ResolvedSlot, ResolvedTemplate};
 use std::collections::{BTreeMap, HashMap, HashSet};
@@ -176,6 +176,10 @@ pub enum DagError {
     SchemaCoordinationParseError {
         location: DagLocation,
         reason: String,
+    },
+    OrphanSlotGatingKey {
+        constellation: String,
+        path: String,
     },
 }
 
@@ -377,13 +381,19 @@ impl std::fmt::Display for DagError {
                     "{location}: failed to parse constellation map — {reason}"
                 )
             }
+            Self::OrphanSlotGatingKey { constellation, path } => {
+                write!(
+                    f,
+                    "Gating state maps to non-existent slot path '{path}' in constellation '{constellation}'"
+                )
+            }
         }
     }
 }
 
 /// Policy / lint warnings — advisory.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) enum DagWarning {
+pub enum DagWarning {
     // V1.3-4
     LongLivedSlotMissingSuspended {
         location: DagLocation,
@@ -625,7 +635,17 @@ pub fn validate_resolved_template_gate_metadata(
     report
 }
 
+/// Parse `config/ontology/entity_taxonomy.yaml`-style YAML into known entity kinds.
+pub fn entity_kinds_from_taxonomy_yaml(yaml: &str) -> Result<HashSet<String>, serde_yaml::Error> {
+    #[derive(serde::Deserialize)]
+    struct EntityTaxonomy {
+        #[serde(default)]
+        entities: BTreeMap<String, serde_yaml::Value>,
+    }
 
+    let parsed: EntityTaxonomy = serde_yaml::from_str(yaml)?;
+    Ok(parsed.entities.into_keys().collect())
+}
 
 /// Validate one constellation map's schema coordination against loaded DAGs.
 pub(crate) fn validate_constellation_map_schema_coordination(
@@ -1944,6 +1964,59 @@ fn detect_derivation_cycles(
     }
 }
 
+/// Validate a set of slot gating states against the loaded constellations registry.
+/// Returns a validation report containing `DagError::OrphanSlotGatingKey`
+/// for any gating keys that do not resolve to an authored SlotDef in the topology.
+pub fn validate_slot_gating_states(
+    constellations: &BTreeMap<String, SeedConstellationMap>,
+    gating_states: &BTreeMap<SlotKey, SlotGatingState>,
+) -> DagValidationReport {
+    let mut report = DagValidationReport::default();
+    
+    for (key, _) in gating_states {
+        // Look up constellation in loaded constellations
+        let const_map = match constellations.get(&key.constellation) {
+            Some(map) => map,
+            None => {
+                report.errors.push(DagError::OrphanSlotGatingKey {
+                    constellation: key.constellation.clone(),
+                    path: key.path.clone(),
+                });
+                continue;
+            }
+        };
+        
+        // Walk the dot-path segment-by-segment down the nested BTreeMap<String, SlotDef>
+        let segments: Vec<&str> = key.path.split('.').collect();
+        let mut current_slots = &const_map.slots;
+        let mut resolved = true;
+        
+        for (i, &segment) in segments.iter().enumerate() {
+            match current_slots.get(segment) {
+                Some(slot_def) => {
+                    // If we have more segments to walk, we need to go into children
+                    if i < segments.len() - 1 {
+                        current_slots = &slot_def.children;
+                    }
+                }
+                None => {
+                    resolved = false;
+                    break;
+                }
+            }
+        }
+        
+        if !resolved {
+            report.errors.push(DagError::OrphanSlotGatingKey {
+                constellation: key.constellation.clone(),
+                path: key.path.clone(),
+            });
+        }
+    }
+    
+    report
+}
+
 // ---------------------------------------------------------------------------
 // Tests
 // ---------------------------------------------------------------------------
@@ -2367,6 +2440,88 @@ derived_cross_workspace_state:
             "expected clean, got: {:#?}",
             report.errors
         );
+    }
+
+    #[test]
+    fn test_validate_slot_gating_states_subset_direction() {
+        let constellation_yaml = r#"
+constellation: my_constellation
+jurisdiction: GB
+slots:
+  parent_slot:
+    type: cbu
+    cardinality: root
+    children:
+      child_slot:
+        type: entity
+        cardinality: optional
+"#;
+        let seed: SeedConstellationMap = serde_yaml::from_str(constellation_yaml).unwrap();
+        let mut constellations = BTreeMap::new();
+        constellations.insert("my_constellation".to_string(), seed);
+
+        // 1. Ghost key (present in gating, unresolved in topology) -> Fail
+        let mut gating_states = BTreeMap::new();
+        gating_states.insert(
+            SlotKey {
+                constellation: "my_constellation".to_string(),
+                path: "parent_slot.does_not_exist".to_string(),
+            },
+            SlotGatingState {
+                status: GatingStatus::Pending,
+            },
+        );
+        let report = validate_slot_gating_states(&constellations, &gating_states);
+        assert!(!report.is_clean());
+        assert_eq!(report.errors.len(), 1);
+        match &report.errors[0] {
+            DagError::OrphanSlotGatingKey { constellation, path } => {
+                assert_eq!(constellation, "my_constellation");
+                assert_eq!(path, "parent_slot.does_not_exist");
+            }
+            _ => panic!("Expected OrphanSlotGatingKey error"),
+        }
+
+        // 2. Valid key (present in gating, resolved in topology) -> Pass
+        let mut gating_states = BTreeMap::new();
+        gating_states.insert(
+            SlotKey {
+                constellation: "my_constellation".to_string(),
+                path: "parent_slot.child_slot".to_string(),
+            },
+            SlotGatingState {
+                status: GatingStatus::Gated,
+            },
+        );
+        let report = validate_slot_gating_states(&constellations, &gating_states);
+        assert!(report.is_clean(), "Expected clean report, got: {:?}", report.errors);
+
+        // 3. Sparse absence (topology slot with no gating entry) -> Pass
+        let gating_states = BTreeMap::new(); // Empty, meaning both parent_slot and parent_slot.child_slot are absent in gating
+        let report = validate_slot_gating_states(&constellations, &gating_states);
+        assert!(report.is_clean(), "Expected clean report, got: {:?}", report.errors);
+        
+        // 4. Unknown constellation -> Fail
+        let mut gating_states = BTreeMap::new();
+        gating_states.insert(
+            SlotKey {
+                constellation: "unknown_constellation".to_string(),
+                path: "parent_slot".to_string(),
+            },
+            SlotGatingState {
+                status: GatingStatus::Pending,
+            },
+        );
+        let report = validate_slot_gating_states(&constellations, &gating_states);
+        assert!(!report.is_clean());
+        assert_eq!(report.errors.len(), 1);
+        match &report.errors[0] {
+            DagError::OrphanSlotGatingKey { constellation, path } => {
+                assert_eq!(constellation, "unknown_constellation");
+                assert_eq!(path, "parent_slot");
+            }
+            _ => panic!("Expected OrphanSlotGatingKey error"),
+        }
     }
 }
 

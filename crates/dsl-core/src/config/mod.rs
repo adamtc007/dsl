@@ -25,6 +25,7 @@ pub(crate) mod escalation;
 pub(crate) mod green_when_coverage;
 pub(crate) mod loader;
 pub(crate) mod manifest;
+pub(crate) mod pack_loader;
 pub(crate) mod phrase_gen;
 pub(crate) mod predicate;                  // used by sem_os_core::frontier::hydrator
 pub(crate) mod resource_dependency;
@@ -36,12 +37,12 @@ pub use dag::{load_dags_from_dir, load_domain_pack_owned_dags, Dag, LoadedDag};
 // ob-poc-specific filesystem walkers (validate_constellation_map_dir_*)
 // are pub(crate) in dag_validator — not
 // re-exported here because they assume ob-poc's config directory layout.
-pub(crate) use dag_validator::{
-    validate_constellation_map_schema_coordination, DagWarning,
-};
+pub(crate) use dag_validator::validate_constellation_map_schema_coordination;
+pub use dag_validator::DagWarning;
 pub use dag_validator::{
     validate_dags_with_context, validate_resolved_template_gate_metadata, DagError,
-    DagValidationContext, DagValidationReport,
+    DagValidationContext, DagValidationReport, entity_kinds_from_taxonomy_yaml,
+    validate_slot_gating_states,
 };
 pub(crate) use green_when_coverage::{
     green_when_coverage_for_dag, green_when_coverage_for_dags, green_when_coverage_summary,
@@ -69,13 +70,14 @@ pub use types::{
     VerbTransitions, VerbsConfig, PolicyConfig, VerbWriteConfig,
     BatchPolicyConfig, DynamicVerbConfig, LockAccessConfig, LockModeConfig,
 };
-pub(crate) use validator::StructuralError;
+pub use validator::StructuralError;
 pub use validator::{
     validate_verbs_config, Location, PolicyWarning, ValidationContext,
-    ValidationReport, WellFormednessError,
+    ValidationReport, WellFormednessError, collect_declared_fqns, validate_pack_fqns,
 };
 
 pub use resource_dependency::{ResolvedResourceDependency, ResourceDependency};
 pub use phrase_gen::{generate_phrases, PhraseGenNouns, set_phrase_gen_nouns};
 pub use manifest::{VerbManifest, VerbDeclaration, ManifestError, WiringReport, wiring_check};
+pub use pack_loader::{LoadedPack, load_packs_from_dir, flatten_pack_entries};
 

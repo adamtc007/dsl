@@ -318,18 +318,192 @@ impl ConfigLoader {
         }
     }
 
+    /// Load subject kind registry from `config/subject_kind_registry.yaml`.
+    ///
+    /// Returns `(hints_map, domains_map)` ready to construct a
+    /// `dsl_analysis::entity_kind::SubjectKindRegistry`. Returns empty maps
+    /// with a warning if the file is absent.
+    pub fn load_subject_kind_registry(
+        &self,
+    ) -> Result<(
+        std::collections::HashMap<String, String>,
+        std::collections::HashMap<String, String>,
+    )> {
+        let path = Path::new(&self.config_dir).join("subject_kind_registry.yaml");
+        if !path.exists() {
+            tracing::warn!(
+                "subject_kind_registry.yaml not found at {:?} — \
+                 subject kind inference will return None for all hints",
+                path
+            );
+            return Ok((
+                std::collections::HashMap::new(),
+                std::collections::HashMap::new(),
+            ));
+        }
+        let content =
+            std::fs::read_to_string(&path).with_context(|| format!("reading {path:?}"))?;
 
+        #[derive(serde::Deserialize)]
+        struct Registry {
+            hints: std::collections::HashMap<String, String>,
+            domains: std::collections::HashMap<String, String>,
+        }
 
+        let raw: Registry =
+            serde_yaml::from_str(&content).with_context(|| format!("parsing {path:?}"))?;
 
+        let normalize = |m: std::collections::HashMap<String, String>| {
+            m.into_iter()
+                .map(|(k, v)| (k.trim().to_ascii_lowercase(), v.trim().to_ascii_lowercase()))
+                .collect()
+        };
 
+        Ok((normalize(raw.hints), normalize(raw.domains)))
+    }
 
+    /// Load slot state table from `config/slot_state_table.yaml`.
+    ///
+    /// Returns a `HashMap<"workspace.slot", (table, status_col, pk)>` ready to pass to
+    /// `dsl_runtime::cross_workspace::set_slot_state_table()`.
+    /// Returns an empty map (with a warning) if the file is absent.
+    pub fn load_slot_state_table(
+        &self,
+    ) -> Result<std::collections::HashMap<String, (String, String, String)>> {
+        let path = Path::new(&self.config_dir).join("slot_state_table.yaml");
+        if !path.exists() {
+            tracing::warn!(
+                "slot_state_table.yaml not found at {:?} — \
+                 PostgresSlotStateProvider will fail all slot lookups",
+                path
+            );
+            return Ok(std::collections::HashMap::new());
+        }
+        let content =
+            std::fs::read_to_string(&path).with_context(|| format!("reading {path:?}"))?;
 
+        #[derive(serde::Deserialize)]
+        #[serde(transparent)]
+        struct RawTable(std::collections::HashMap<String, Vec<String>>);
 
+        let raw: RawTable =
+            serde_yaml::from_str(&content).with_context(|| format!("parsing {path:?}"))?;
 
+        let mut out = std::collections::HashMap::new();
+        for (key, parts) in raw.0 {
+            if parts.len() != 3 {
+                anyhow::bail!(
+                    "{path:?}: entry {key:?} must have exactly 3 elements [table, status_col, pk], got {}",
+                    parts.len()
+                );
+            }
+            out.insert(key, (parts[0].clone(), parts[1].clone(), parts[2].clone()));
+        }
+        Ok(out)
+    }
 
+    /// Load atom-path → table-name map from `config/atom_path_table_map.yaml`.
+    ///
+    /// Returns a flat `HashMap<atom_path_prefix, table_name>` ready to pass to
+    /// `dsl_runtime::cross_workspace::set_atom_path_table_map()`. Returns an
+    /// empty map (with a warning) if the file is absent — `build_atom_table_map`
+    /// will then fall back to using each prefix verbatim as the table name.
+    pub fn load_atom_path_table_map(&self) -> Result<std::collections::HashMap<String, String>> {
+        let path = Path::new(&self.config_dir).join("atom_path_table_map.yaml");
+        if !path.exists() {
+            tracing::warn!(
+                "atom_path_table_map.yaml not found at {:?} — \
+                 platform DAG derivation will use each atom-path prefix \
+                 verbatim as its backing-table name",
+                path
+            );
+            return Ok(std::collections::HashMap::new());
+        }
+        let content =
+            std::fs::read_to_string(&path).with_context(|| format!("reading {path:?}"))?;
+        let raw: std::collections::HashMap<String, String> =
+            serde_yaml::from_str(&content).with_context(|| format!("parsing {path:?}"))?;
+        Ok(raw
+            .into_iter()
+            .map(|(k, v)| (k.trim().to_string(), v.trim().to_string()))
+            .collect())
+    }
 
+    /// Load table PK overrides from `config/table_pk_overrides.yaml`.
+    ///
+    /// Returns a flat `HashMap<table_name, pk_column>` ready to pass to
+    /// `dsl_runtime::cross_workspace::set_table_pk_overrides()`. Returns an
+    /// empty map (with a warning) if the file is absent.
+    pub fn load_table_pk_overrides(&self) -> Result<std::collections::HashMap<String, String>> {
+        let path = Path::new(&self.config_dir).join("table_pk_overrides.yaml");
+        if !path.exists() {
+            tracing::warn!(
+                "table_pk_overrides.yaml not found at {:?} — \
+                 SqlPredicateResolver will use generic PK heuristic only",
+                path
+            );
+            return Ok(std::collections::HashMap::new());
+        }
+        let content =
+            std::fs::read_to_string(&path).with_context(|| format!("reading {path:?}"))?;
+        let raw: std::collections::HashMap<String, String> =
+            serde_yaml::from_str(&content).with_context(|| format!("parsing {path:?}"))?;
+        Ok(raw
+            .into_iter()
+            .map(|(k, v)| (k.trim().to_string(), v.trim().to_string()))
+            .collect())
+    }
 
+    /// Load entity kind aliases from `config/entity_kind_aliases.yaml`.
+    ///
+    /// Returns a flat `HashMap<alias, canonical>` ready to pass to
+    /// `dsl_analysis::entity_kind::set_entity_kind_aliases()`.
+    ///
+    /// Returns an empty map (with a warning) if the file does not exist —
+    /// allows running without aliases (identity canonicalization).
+    pub fn load_entity_kind_aliases(&self) -> Result<std::collections::HashMap<String, String>> {
+        let path = Path::new(&self.config_dir).join("entity_kind_aliases.yaml");
+        if !path.exists() {
+            tracing::warn!(
+                "entity_kind_aliases.yaml not found at {:?} — \
+                 entity kind canonicalization will be identity",
+                path
+            );
+            return Ok(std::collections::HashMap::new());
+        }
+        let content =
+            std::fs::read_to_string(&path).with_context(|| format!("reading {path:?}"))?;
+        let raw: std::collections::HashMap<String, String> =
+            serde_yaml::from_str(&content).with_context(|| format!("parsing {path:?}"))?;
+        // Normalize keys and values to lowercase for consistent lookup.
+        let aliases = raw
+            .into_iter()
+            .map(|(k, v)| (k.trim().to_ascii_lowercase(), v.trim().to_ascii_lowercase()))
+            .collect();
+        Ok(aliases)
+    }
 
+    /// Load phrase generation noun vocabulary from `config/phrase_gen_nouns.yaml`.
+    ///
+    /// Returns a `HashMap<domain, Vec<noun_synonyms>>` ready to pass to
+    /// `dsl_core::config::set_phrase_gen_nouns()`. Must be called **before**
+    /// `load_verbs()` so phrase enrichment uses the registered vocabulary.
+    pub fn load_phrase_gen_nouns(&self) -> Result<super::phrase_gen::PhraseGenNouns> {
+        let path = Path::new(&self.config_dir).join("phrase_gen_nouns.yaml");
+        if !path.exists() {
+            tracing::warn!(
+                "phrase_gen_nouns.yaml not found at {:?} — \
+                 verb phrases will not expand domain noun synonyms",
+                path
+            );
+            return Ok(std::collections::HashMap::new());
+        }
+        let content =
+            std::fs::read_to_string(&path).with_context(|| format!("reading {path:?}"))?;
+        let raw: std::collections::HashMap<String, Vec<String>> =
+            serde_yaml::from_str(&content).with_context(|| format!("parsing {path:?}"))?;
+        Ok(raw)
+    }
 }
 
 /// Recursively find all .yaml files in a directory

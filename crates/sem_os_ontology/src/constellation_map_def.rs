@@ -11,5 +11,6 @@
 pub use dsl_types::{
     AuditClass, Cardinality, ClosureType, CompletenessAssertionConfig, ConstellationMapDefBody,
     DependencyEntry, EligibilityConstraint, JoinDef, RoleGuard, SlotDef, SlotType,
-    VerbPaletteEntry,
+    VerbPaletteEntry, VerbAvailability,
+    SlotKey, GatingStatus, SlotGatingState,
 };

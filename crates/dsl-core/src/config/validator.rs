@@ -69,7 +69,7 @@ impl std::fmt::Display for Location {
 
 /// Structural errors — the declaration is mechanically inconsistent.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) enum StructuralError {
+pub enum StructuralError {
     /// `state_effect: transition` declared without a `transitions:` block
     /// OR with an empty `transitions.edges` list.
     TransitionWithoutEdges(Location),
@@ -298,7 +298,7 @@ pub struct ValidationReport {
 }
 
 impl ValidationReport {
-    pub(crate) fn is_clean(&self) -> bool {
+    pub fn is_clean(&self) -> bool {
         self.structural.is_empty() && self.well_formedness.is_empty()
     }
     pub fn error_count(&self) -> usize {
@@ -690,6 +690,33 @@ pub fn validate_verbs_config(config: &VerbsConfig, ctx: &ValidationContext) -> V
         }
     }
     report
+}
+
+/// Collect FQNs from a `VerbsConfig`
+pub fn collect_declared_fqns(config: &VerbsConfig) -> HashSet<String> {
+    let mut out = HashSet::new();
+    for (domain_name, domain) in &config.domains {
+        for verb_name in domain.verbs.keys() {
+            out.insert(format!("{domain_name}.{verb_name}"));
+        }
+    }
+    out
+}
+
+/// Validate pack FQNs
+pub fn validate_pack_fqns(
+    declared_verbs: &HashSet<String>,
+    macro_fqns: &HashSet<String>,
+    pack_entries: impl IntoIterator<Item = (String, String)>,
+) -> Vec<WellFormednessError> {
+    let mut errors = Vec::new();
+    for (pack_name, fqn) in pack_entries {
+        if declared_verbs.contains(&fqn) || macro_fqns.contains(&fqn) {
+            continue;
+        }
+        errors.push(WellFormednessError::PackFqnWithoutDeclaration { pack_name, fqn });
+    }
+    errors
 }
 
 
