@@ -2,7 +2,7 @@
 .cargo/config.toml
 
 # Test scratch and consolidation reports
-config
+/config
 crates/dsl-core/config
 reports/consolidation/
 

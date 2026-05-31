@@ -24,7 +24,13 @@ pub type PhraseGenNouns = HashMap<String, Vec<String>>;
 
 static PHRASE_GEN_NOUNS: OnceLock<PhraseGenNouns> = OnceLock::new();
 
-
+/// Register the consumer's domain noun vocabulary.
+///
+/// Must be called before `load_verbs()` so phrase enrichment uses the right
+/// vocabulary. Subsequent calls are silently ignored (OnceLock semantics).
+pub fn set_phrase_gen_nouns(nouns: PhraseGenNouns) {
+    let _ = PHRASE_GEN_NOUNS.set(nouns);
+}
 /// Verb action synonyms for phrase generation.
 ///
 /// Maps common verb actions (create, list, get, etc.) to natural language

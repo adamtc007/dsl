@@ -146,12 +146,12 @@ impl VerbCall {
     }
 
     /// Find an argument by key name
-    pub(crate) fn get_arg(&self, key: &str) -> Option<&Argument> {
+    pub fn get_arg(&self, key: &str) -> Option<&Argument> {
         self.arguments.iter().find(|a| a.key == key)
     }
 
     /// Find an argument value by key name
-    pub(crate) fn get_value(&self, key: &str) -> Option<&AstNode> {
+    pub fn get_value(&self, key: &str) -> Option<&AstNode> {
         self.get_arg(key).map(|a| &a.value)
     }
 }
@@ -436,7 +436,7 @@ impl AstNode {
 
 
     /// Is this a symbol reference?
-    pub(crate) fn is_symbol_ref(&self) -> bool {
+    pub fn is_symbol_ref(&self) -> bool {
         matches!(self, AstNode::SymbolRef { .. })
     }
 
@@ -450,7 +450,7 @@ impl AstNode {
     // =========================================================================
 
     /// Get as string (from literal or entity ref value)
-    pub(crate) fn as_string(&self) -> Option<&str> {
+    pub fn as_string(&self) -> Option<&str> {
         match self {
             AstNode::Literal(Literal::String(s), _) => Some(s),
             AstNode::EntityRef { value, .. } => Some(value),
@@ -488,7 +488,7 @@ impl AstNode {
     }
 
     /// Get integer value
-    pub(crate) fn as_integer(&self) -> Option<i64> {
+    pub fn as_integer(&self) -> Option<i64> {
         match self {
             AstNode::Literal(Literal::Integer(i), _) => Some(*i),
             _ => None,
@@ -496,7 +496,7 @@ impl AstNode {
     }
 
     /// Get decimal value
-    pub(crate) fn as_decimal(&self) -> Option<Decimal> {
+    pub fn as_decimal(&self) -> Option<Decimal> {
         match self {
             AstNode::Literal(Literal::Decimal(d), _) => Some(*d),
             AstNode::Literal(Literal::Integer(i), _) => Some(Decimal::from(*i)),
@@ -505,7 +505,7 @@ impl AstNode {
     }
 
     /// Get boolean value
-    pub(crate) fn as_boolean(&self) -> Option<bool> {
+    pub fn as_boolean(&self) -> Option<bool> {
         match self {
             AstNode::Literal(Literal::Boolean(b), _) => Some(*b),
             _ => None,
@@ -513,7 +513,7 @@ impl AstNode {
     }
 
     /// Get list items
-    pub(crate) fn as_list(&self) -> Option<&[AstNode]> {
+    pub fn as_list(&self) -> Option<&[AstNode]> {
         match self {
             AstNode::List { items, .. } => Some(items),
             _ => None,
@@ -521,7 +521,7 @@ impl AstNode {
     }
 
     /// Get map entries
-    pub(crate) fn as_map(&self) -> Option<&[(String, AstNode)]> {
+    pub fn as_map(&self) -> Option<&[(String, AstNode)]> {
         match self {
             AstNode::Map { entries, .. } => Some(entries),
             _ => None,
@@ -529,7 +529,7 @@ impl AstNode {
     }
 
     /// Get the span of this node
-    pub(crate) fn span(&self) -> Span {
+    pub fn span(&self) -> Span {
         match self {
             AstNode::Literal(_, span) => *span,
             AstNode::SymbolRef { span, .. } => *span,

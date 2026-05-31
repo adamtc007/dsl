@@ -57,6 +57,8 @@ pub use config::{
     BatchPolicyConfig, DynamicVerbConfig, LockAccessConfig, LockModeConfig,
     ResolvedResourceDependency, ResourceDependency, PhraseGenNouns, generate_phrases,
 };
+pub use config::{VerbManifest, VerbDeclaration, ManifestError, WiringReport, wiring_check, set_phrase_gen_nouns};
+
 
 // Re-export from config::dag
 pub use config::dag::{

@@ -24,6 +24,7 @@ pub(crate) mod effect_class;
 pub(crate) mod escalation;
 pub(crate) mod green_when_coverage;
 pub(crate) mod loader;
+pub(crate) mod manifest;
 pub(crate) mod phrase_gen;
 pub(crate) mod predicate;                  // used by sem_os_core::frontier::hydrator
 pub(crate) mod resource_dependency;
@@ -75,5 +76,6 @@ pub use validator::{
 };
 
 pub use resource_dependency::{ResolvedResourceDependency, ResourceDependency};
-pub use phrase_gen::{generate_phrases, PhraseGenNouns};
+pub use phrase_gen::{generate_phrases, PhraseGenNouns, set_phrase_gen_nouns};
+pub use manifest::{VerbManifest, VerbDeclaration, ManifestError, WiringReport, wiring_check};
 
