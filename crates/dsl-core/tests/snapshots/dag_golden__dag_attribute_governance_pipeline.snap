@@ -1,6 +1,5 @@
 ---
 source: crates/dsl-core/tests/dag_golden.rs
-assertion_line: 201
 expression: compiled
 ---
 CompiledSteps {
@@ -27,6 +26,7 @@ CompiledSteps {
                         },
                     },
                 ],
+                lens_override: None,
                 binding: Some(
                     "cs",
                 ),
@@ -107,6 +107,7 @@ CompiledSteps {
                         },
                     },
                 ],
+                lens_override: None,
                 binding: None,
                 span: Span {
                     start: 82,
@@ -185,6 +186,7 @@ CompiledSteps {
                         },
                     },
                 ],
+                lens_override: None,
                 binding: None,
                 span: Span {
                     start: 205,
@@ -213,6 +215,7 @@ CompiledSteps {
                         },
                     },
                 ],
+                lens_override: None,
                 binding: None,
                 span: Span {
                     start: 342,
@@ -257,6 +260,7 @@ CompiledSteps {
                         },
                     },
                 ],
+                lens_override: None,
                 binding: None,
                 span: Span {
                     start: 389,

@@ -1,6 +1,5 @@
 ---
 source: crates/dsl-core/tests/ast_golden.rs
-assertion_line: 232
 expression: program
 ---
 Program {
@@ -10,6 +9,7 @@ Program {
                 domain: "view",
                 verb: "universe",
                 arguments: [],
+                lens_override: None,
                 binding: None,
                 span: Span {
                     start: 0,

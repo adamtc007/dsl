@@ -1,6 +1,5 @@
 ---
 source: crates/dsl-core/tests/dag_golden.rs
-assertion_line: 105
 expression: compiled
 ---
 CompiledSteps {
@@ -43,6 +42,7 @@ CompiledSteps {
                         },
                     },
                 ],
+                lens_override: None,
                 binding: Some(
                     "person1",
                 ),
@@ -91,6 +91,7 @@ CompiledSteps {
                         },
                     },
                 ],
+                lens_override: None,
                 binding: Some(
                     "person2",
                 ),
@@ -123,6 +124,7 @@ CompiledSteps {
                         },
                     },
                 ],
+                lens_override: None,
                 binding: Some(
                     "company",
                 ),

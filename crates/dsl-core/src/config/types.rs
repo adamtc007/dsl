@@ -186,6 +186,16 @@ pub struct VerbConfig {
     /// YAML: `effect_class: read_modify_write`
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub effect_class: Option<EffectClass>,
+    /// Active lens mapping to slots depending on the active pack/lens context
+    #[serde(default)]
+    pub lens_bindings: HashMap<String, LensBindingConfig>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
+pub struct LensBindingConfig {
+    pub target_workspace: String,
+    pub target_slot: String,
+    pub transition_surface: String,
 }
 
 impl Default for VerbConfig {
@@ -215,6 +225,7 @@ impl Default for VerbConfig {
             audit_class: None,
             transition_args: None,
             effect_class: None,
+            lens_bindings: HashMap::new(),
         }
     }
 }

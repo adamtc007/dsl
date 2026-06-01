@@ -170,6 +170,10 @@ fn verb_call<'a, E: NomParseError<NomSpan<'a>> + ContextError<NomSpan<'a>>>(
     let (input, arguments) = many0(argument_with_span)(input)?;
     let (input, _) = multispace0(input)?;
 
+    // Parse optional :with-lens or :lens override
+    let (input, lens_override) = opt(lens_override_parser)(input)?;
+    let (input, _) = multispace0(input)?;
+
     // Parse optional :as @symbol binding
     let (input, binding) = opt(as_binding_parser)(input)?;
 
@@ -185,10 +189,21 @@ fn verb_call<'a, E: NomParseError<NomSpan<'a>> + ContextError<NomSpan<'a>>>(
             domain,
             verb,
             arguments,
+            lens_override,
             binding,
             span: Span::new(start_offset, end_offset),
         },
     ))
+}
+
+/// Parse the :with-lens or :lens directive
+fn lens_override_parser<'a, E: NomParseError<NomSpan<'a>>>(
+    input: NomSpan<'a>,
+) -> IResult<NomSpan<'a>, String, E> {
+    let (input, _) = alt((tag(":with-lens"), tag(":lens")))(input)?;
+    let (input, _) = multispace1(input)?;
+    let (input, name) = kebab_identifier(input)?;
+    Ok((input, name.to_string()))
 }
 
 /// Parse the :as @symbol binding directive
@@ -686,6 +701,35 @@ mod tests {
 
         if let Statement::VerbCall(vc) = &result.statements[0] {
             assert_eq!(vc.binding, Some("fund".to_string()));
+        } else {
+            panic!("Expected VerbCall");
+        }
+    }
+
+    #[test]
+    fn test_lens_override() {
+        // Test with :with-lens keyword and binding
+        let input = r#"(cbu.update :id 123 :with-lens kyc_review :as @symbol)"#;
+        let result = parse_program(input).unwrap();
+
+        if let Statement::VerbCall(vc) = &result.statements[0] {
+            assert_eq!(vc.domain, "cbu");
+            assert_eq!(vc.verb, "update");
+            assert_eq!(vc.lens_override, Some("kyc_review".to_string()));
+            assert_eq!(vc.binding, Some("symbol".to_string()));
+        } else {
+            panic!("Expected VerbCall");
+        }
+
+        // Test with :lens keyword without binding
+        let input = r#"(cbu.update :id 123 :lens onboarding-lens)"#;
+        let result = parse_program(input).unwrap();
+
+        if let Statement::VerbCall(vc) = &result.statements[0] {
+            assert_eq!(vc.domain, "cbu");
+            assert_eq!(vc.verb, "update");
+            assert_eq!(vc.lens_override, Some("onboarding-lens".to_string()));
+            assert_eq!(vc.binding, None);
         } else {
             panic!("Expected VerbCall");
         }

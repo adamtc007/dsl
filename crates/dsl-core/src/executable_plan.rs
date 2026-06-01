@@ -29,6 +29,8 @@ use uuid::Uuid;
 
 use crate::config::resource_dependency::ResolvedResourceDependency;
 use crate::execution_dag::{BindingSlotId, NodeId, PopulatedExecutionDag};
+use crate::ast::{Program, Statement};
+use crate::config::pack_loader::LoadedPack;
 
 // =============================================================================
 // Identity types
@@ -67,9 +69,27 @@ impl Default for PlanId {
 /// Structurally identical to `ob-poc-types::CatalogueSnapshotId(u64)`.
 /// Converted at the ob-poc boundary via `Into`/`From`.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, serde::Serialize, serde::Deserialize)]
-pub(crate) struct SemOsSnapshotId(pub(crate) u64);
+pub struct SemOsSnapshotId(pub u64);
 
+/// Context envelope describing the SemOS Pack and DAG constraints for plan execution.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, PartialEq, Eq)]
+pub struct PackDagContext {
+    pub pack_id: String,
+    pub pack_version: String,
+    pub sem_os_snapshot_id: SemOsSnapshotId,
+    pub dag_id: String,
+    pub dag_version: String,
+    pub scenario_id: Option<String>,
+    pub domain_lens_id: String,
+}
 
+/// Lens binding coordinate resolved for a runtime instruction.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize, PartialEq, Eq)]
+pub struct LensBinding {
+    pub target_workspace: String,
+    pub target_slot: String,
+    pub transition_surface: String,
+}
 
 // =============================================================================
 // Effect class (v0.5 §5.2)
@@ -261,6 +281,8 @@ pub(crate) struct RuntimeInstruction {
     pub node_id: NodeId,
     /// Fully-qualified verb name (e.g., "cbu.assign-role").
     pub verb_fqn: String,
+    /// Lens binding resolved for this instruction under the active pack/lens context.
+    pub lens_binding: Option<LensBinding>,
     /// Typed inputs — literals or binding references.
     pub inputs: Vec<InstructionInput>,
     /// Binding slot this instruction populates, if it produces a binding.
@@ -314,6 +336,9 @@ pub(crate) struct ExecutablePlan {
 
     /// Plan format version. Runtime refuses unknown versions.
     pub plan_format_version: u32,
+
+    /// Optional context envelope describing the SemOS Pack and DAG constraints for this plan.
+    pub pack_context: Option<PackDagContext>,
 
     /// The Semantic Dependency Graph snapshot this plan was compiled against.
     /// `None` until snapshot-id wiring is complete in the ob-poc loader.
@@ -405,6 +430,210 @@ mod tests {
         let b = PlanId::new();
         assert_ne!(a, b);
     }
+
+    #[test]
+    fn test_validate_program_admission() {
+        use crate::ast::{Program, Statement, VerbCall, Span};
+        use crate::config::pack_loader::LoadedPack;
+        use crate::config::VerbConfig;
+        
+        struct TestCatalog {
+            pack: LoadedPack,
+            verb_config: VerbConfig,
+        }
+        impl CatalogProvider for TestCatalog {
+            fn get_pack_at_snapshot(
+                &self,
+                _pack_id: &str,
+                _snapshot_id: SemOsSnapshotId,
+            ) -> Result<LoadedPack, String> {
+                Ok(self.pack.clone())
+            }
+
+            fn get_verb_config(
+                &self,
+                _verb_fqn: &str,
+                _snapshot_id: SemOsSnapshotId,
+            ) -> Result<VerbConfig, String> {
+                Ok(self.verb_config.clone())
+            }
+        }
+
+        let program = Program {
+            statements: vec![Statement::VerbCall(VerbCall {
+                domain: "cbu".to_string(),
+                verb: "update".to_string(),
+                arguments: vec![],
+                lens_override: None,
+                binding: None,
+                span: Span::default(),
+            })],
+        };
+
+        // 1. Context is None, enforce is false: passes
+        let res = validate_program_admission(&program, &None, &TestCatalog {
+            pack: LoadedPack {
+                name: "test".to_string(),
+                workspaces: vec!["cbu".to_string()],
+                allowed_verbs: vec![],
+                ..Default::default()
+            },
+            verb_config: VerbConfig::default(),
+        }, false);
+        assert!(res.is_ok());
+
+        // 2. Context is Some, verb is in allowed_verbs: passes
+        let context = PackDagContext {
+            pack_id: "kyc".to_string(),
+            pack_version: "1.0".to_string(),
+            sem_os_snapshot_id: SemOsSnapshotId(42),
+            dag_id: "dag".to_string(),
+            dag_version: "1.0".to_string(),
+            scenario_id: None,
+            domain_lens_id: "kyc_lens".to_string(),
+        };
+        let res = validate_program_admission(&program, &Some(context.clone()), &TestCatalog {
+            pack: LoadedPack {
+                name: "kyc".to_string(),
+                workspaces: vec!["cbu".to_string()],
+                allowed_verbs: vec!["cbu.update".to_string()],
+                ..Default::default()
+            },
+            verb_config: VerbConfig::default(),
+        }, false);
+        assert!(res.is_ok());
+
+        // 3. Context is Some, verb not allowed: errors
+        let res = validate_program_admission(&program, &Some(context.clone()), &TestCatalog {
+            pack: LoadedPack {
+                name: "kyc".to_string(),
+                workspaces: vec!["cbu".to_string()],
+                allowed_verbs: vec!["cbu.create".to_string()],
+                ..Default::default()
+            },
+            verb_config: VerbConfig::default(),
+        }, false);
+        assert!(res.is_err());
+        assert_eq!(
+            res.unwrap_err(),
+            "Verb 'cbu.update' is not admitted by active pack 'kyc'"
+        );
+
+        // 4. Context is None, enforce is true: errors
+        let res = validate_program_admission(&program, &None, &TestCatalog {
+            pack: LoadedPack {
+                name: "test".to_string(),
+                workspaces: vec!["cbu".to_string()],
+                allowed_verbs: vec![],
+                ..Default::default()
+            },
+            verb_config: VerbConfig::default(),
+        }, true);
+        assert!(res.is_err());
+        assert_eq!(
+            res.unwrap_err(),
+            "Pack/DAG context is required when enforce_pack_context is enabled"
+        );
+
+        // 5. Lens override points to workspace not in pack.workspaces: errors
+        let program_with_override = Program {
+            statements: vec![Statement::VerbCall(VerbCall {
+                domain: "cbu".to_string(),
+                verb: "update".to_string(),
+                arguments: vec![],
+                lens_override: Some("unauthorized_lens".to_string()),
+                binding: None,
+                span: Span::default(),
+            })],
+        };
+        
+        let mut verb_config = VerbConfig::default();
+        verb_config.lens_bindings.insert(
+            "unauthorized_lens".to_string(),
+            crate::config::types::LensBindingConfig {
+                target_workspace: "unauthorized_workspace".to_string(),
+                target_slot: "cbu".to_string(),
+                transition_surface: "update".to_string(),
+            },
+        );
+
+        let res = validate_program_admission(&program_with_override, &Some(context), &TestCatalog {
+            pack: LoadedPack {
+                name: "kyc".to_string(),
+                workspaces: vec!["cbu".to_string()], // only cbu workspace allowed
+                allowed_verbs: vec!["cbu.update".to_string()],
+                ..Default::default()
+            },
+            verb_config,
+        }, false);
+        assert!(res.is_err());
+        assert!(res.unwrap_err().contains("Target workspace 'unauthorized_workspace' is not admitted by active pack"));
+    }
+}
+
+pub trait CatalogProvider {
+    fn get_pack_at_snapshot(
+        &self,
+        pack_id: &str,
+        snapshot_id: SemOsSnapshotId,
+    ) -> Result<LoadedPack, String>;
+
+    fn get_verb_config(
+        &self,
+        verb_fqn: &str,
+        snapshot_id: SemOsSnapshotId,
+    ) -> Result<crate::config::VerbConfig, String>;
+}
+
+pub fn validate_program_admission(
+    program: &Program,
+    context: &Option<PackDagContext>,
+    catalog: &dyn CatalogProvider,
+    enforce_pack_context: bool,
+) -> Result<(), String> {
+    let Some(context) = context else {
+        if enforce_pack_context {
+            return Err("Pack/DAG context is required when enforce_pack_context is enabled".to_string());
+        }
+        // Bypassed: un-governed script mode
+        return Ok(());
+    };
+    let pack = catalog
+        .get_pack_at_snapshot(&context.pack_id, context.sem_os_snapshot_id)
+        .map_err(|e| format!("Failed to load pack configuration at snapshot: {e}"))?;
+
+    for stmt in &program.statements {
+        if let Statement::VerbCall(vc) = stmt {
+            let fqn = vc.full_name();
+            // 1. Verb FQN check
+            if !pack.allowed_verbs.contains(&fqn) {
+                return Err(format!(
+                    "Verb '{}' is not admitted by active pack '{}'",
+                    fqn, context.pack_id
+                ));
+            }
+
+            // 2. Validate lens/workspace boundary
+            let lens_id = vc.lens_override.as_deref().unwrap_or(&context.domain_lens_id);
+            let verb_config = catalog
+                .get_verb_config(&fqn, context.sem_os_snapshot_id)
+                .map_err(|e| format!("Failed to load verb configuration for '{fqn}': {e}"))?;
+
+            let target_workspace = if let Some(binding) = verb_config.lens_bindings.get(lens_id) {
+                binding.target_workspace.clone()
+            } else {
+                vc.domain.clone()
+            };
+
+            if !pack.workspaces.contains(&target_workspace) {
+                return Err(format!(
+                    "Target workspace '{}' is not admitted by active pack '{}' (resolved via lens '{}' for verb '{}')",
+                    target_workspace, context.pack_id, lens_id, fqn
+                ));
+            }
+        }
+    }
+    Ok(())
 }
 
 #[cfg(test)]

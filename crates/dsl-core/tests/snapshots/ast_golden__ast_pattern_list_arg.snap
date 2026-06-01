@@ -1,6 +1,5 @@
 ---
 source: crates/dsl-core/tests/ast_golden.rs
-assertion_line: 360
 expression: program
 ---
 Program {
@@ -83,6 +82,7 @@ Program {
                         },
                     },
                 ],
+                lens_override: None,
                 binding: None,
                 span: Span {
                     start: 0,

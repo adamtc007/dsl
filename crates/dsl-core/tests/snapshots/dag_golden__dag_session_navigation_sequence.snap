@@ -1,6 +1,5 @@
 ---
 source: crates/dsl-core/tests/dag_golden.rs
-assertion_line: 267
 expression: compiled
 ---
 CompiledSteps {
@@ -27,6 +26,7 @@ CompiledSteps {
                         },
                     },
                 ],
+                lens_override: None,
                 binding: None,
                 span: Span {
                     start: 9,
@@ -57,6 +57,7 @@ CompiledSteps {
                         },
                     },
                 ],
+                lens_override: None,
                 binding: None,
                 span: Span {
                     start: 45,
@@ -70,6 +71,7 @@ CompiledSteps {
                 domain: "view",
                 verb: "universe",
                 arguments: [],
+                lens_override: None,
                 binding: None,
                 span: Span {
                     start: 91,
@@ -100,6 +102,7 @@ CompiledSteps {
                         },
                     },
                 ],
+                lens_override: None,
                 binding: None,
                 span: Span {
                     start: 115,

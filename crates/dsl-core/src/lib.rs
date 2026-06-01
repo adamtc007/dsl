@@ -91,7 +91,8 @@ pub(crate) use executable_plan::TransactionPolicy;
 
 // Re-export from executable_plan
 pub use executable_plan::{
-    BindingFrameSchema, BindingSlot, EffectClass,
+    BindingFrameSchema, BindingSlot, EffectClass, LensBinding,
+    SemOsSnapshotId, PackDagContext, CatalogProvider, validate_program_admission,
 };
 
 // Re-export from execution_dag

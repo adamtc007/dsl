@@ -26,9 +26,9 @@
 use crate::config::effect_class::derive_effect_class_from_three_axis;
 use crate::config::types::{
     ConsequenceDeclaration, ConsequenceTier, EscalationPredicate, ExternalEffect, StateEffect,
-    ThreeAxisDeclaration, VerbConfig, VerbFlavour, VerbsConfig,
+    ThreeAxisDeclaration, VerbConfig, VerbFlavour, VerbsConfig, LensBindingConfig,
 };
-use std::collections::HashSet;
+use std::collections::{HashSet, HashMap};
 
 // ---------------------------------------------------------------------------
 // Error + warning taxonomy
@@ -360,6 +360,7 @@ pub(crate) fn validate_verb(fqn: &str, verb: &VerbConfig, ctx: &ValidationContex
     }
     validate_flavour(fqn, verb, ctx, &mut report);
     validate_effect_class(fqn, verb, ctx, &mut report);
+    validate_lens_bindings(fqn, &verb.lens_bindings, ctx, &mut report);
 
     report
 }
@@ -459,6 +460,26 @@ fn validate_effect_class(
     // When require_effect_class == false: silent during rollout.
     // Callers can inspect the report's well_formedness for EffectClassAmbiguous
     // to produce informational output without blocking loads.
+}
+
+fn validate_lens_bindings(
+    fqn: &str,
+    bindings: &HashMap<String, LensBindingConfig>,
+    ctx: &ValidationContext,
+    report: &mut ValidationReport,
+) {
+    if ctx.known_slots.is_empty() {
+        return;
+    }
+    for (pack_id, binding) in bindings {
+        if !ctx.known_slots.contains(&(binding.target_workspace.clone(), binding.target_slot.clone())) {
+            report.structural.push(StructuralError::TransitionArgsSlotNotFound {
+                location: Location::verb_path(fqn, format!("lens_bindings.{}", pack_id)),
+                workspace: binding.target_workspace.clone(),
+                slot: binding.target_slot.clone(),
+            });
+        }
+    }
 }
 
 fn validate_declaration(
@@ -841,6 +862,55 @@ mod tests {
             target_slot: Some("nonexistent_slot".into()),
         });
         let r = validate_verb("test.verb", &vc, &ValidationContext::default());
+        assert!(r.is_clean());
+    }
+
+    #[test]
+    fn lens_bindings_slot_not_found_is_structural_error_when_known_slots_populated() {
+        let mut vc = bare_verb_config();
+        vc.lens_bindings.insert(
+            "onboarding".to_string(),
+            LensBindingConfig {
+                target_workspace: "nonexistent_workspace".into(),
+                target_slot: "nonexistent_slot".into(),
+                transition_surface: "nonexistent_surface".into(),
+            },
+        );
+        let mut ctx = ValidationContext {
+            require_declaration: false,
+            ..Default::default()
+        };
+        ctx.known_slots.insert(("cbu".into(), "cbu".into()));
+
+        let r = validate_verb("test.verb", &vc, &ctx);
+        assert_eq!(r.structural.len(), 1);
+        if let StructuralError::TransitionArgsSlotNotFound { location, workspace, slot } = &r.structural[0] {
+            assert_eq!(workspace, "nonexistent_workspace");
+            assert_eq!(slot, "nonexistent_slot");
+            assert_eq!(location.path.as_deref(), Some("lens_bindings.onboarding"));
+        } else {
+            panic!("Expected TransitionArgsSlotNotFound");
+        }
+    }
+
+    #[test]
+    fn lens_bindings_passes_when_slots_known() {
+        let mut vc = bare_verb_config();
+        vc.lens_bindings.insert(
+            "onboarding".to_string(),
+            LensBindingConfig {
+                target_workspace: "cbu".into(),
+                target_slot: "cbu".into(),
+                transition_surface: "update".into(),
+            },
+        );
+        let mut ctx = ValidationContext {
+            require_declaration: false,
+            ..Default::default()
+        };
+        ctx.known_slots.insert(("cbu".into(), "cbu".into()));
+
+        let r = validate_verb("test.verb", &vc, &ctx);
         assert!(r.is_clean());
     }
 

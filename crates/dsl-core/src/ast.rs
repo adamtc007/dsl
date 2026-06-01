@@ -94,12 +94,14 @@ impl Statement {
     }
 }
 
-/// A verb call: (domain.verb :key value ... :as @symbol)
+/// A verb call: (domain.verb :key value ... :with-lens lens_id :as @symbol)
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct VerbCall {
     pub domain: String,
     pub verb: String,
     pub arguments: Vec<Argument>,
+    /// Optional lens override: :with-lens lens_id
+    pub lens_override: Option<String>,
     /// Optional symbol binding: :as @name
     pub binding: Option<String>,
     pub span: Span,
@@ -112,6 +114,10 @@ impl VerbCall {
 
         for arg in &self.arguments {
             parts.push(format!(":{} {}", arg.key, arg.value.to_dsl_string()));
+        }
+
+        if let Some(ref lens) = self.lens_override {
+            parts.push(format!(":with-lens {}", lens));
         }
 
         if let Some(ref binding) = self.binding {
@@ -128,6 +134,10 @@ impl VerbCall {
 
         for arg in &self.arguments {
             parts.push(format!(":{} {}", arg.key, arg.value.to_user_dsl_string()));
+        }
+
+        if let Some(ref lens) = self.lens_override {
+            parts.push(format!(":with-lens {}", lens));
         }
 
         if let Some(ref binding) = self.binding {
@@ -1457,6 +1467,7 @@ mod tests {
                     span: Span::default(),
                 },
             ],
+            lens_override: None,
             binding: Some("fund".to_string()),
             span: Span::default(),
         };
@@ -1488,6 +1499,7 @@ mod tests {
                         span: Span::default(),
                     },
                 ],
+                lens_override: None,
                 binding: None,
                 span: Span::default(),
             })],
@@ -1509,6 +1521,7 @@ mod tests {
                     value: AstNode::string("Test"),
                     span: Span::default(),
                 }],
+                lens_override: None,
                 binding: None,
                 span: Span::default(),
             })],
@@ -1544,6 +1557,7 @@ mod tests {
                         span: Span::default(),
                     },
                 ],
+                lens_override: None,
                 binding: None,
                 span: Span::default(),
             })],
@@ -1592,6 +1606,7 @@ mod tests {
                         span: Span::default(),
                     },
                 ],
+                lens_override: None,
                 binding: None,
                 span: Span::default(),
             })],
@@ -1635,6 +1650,7 @@ mod tests {
                         span: Span::default(),
                     },
                 ],
+                lens_override: None,
                 binding: None,
                 span: Span::default(),
             })],
