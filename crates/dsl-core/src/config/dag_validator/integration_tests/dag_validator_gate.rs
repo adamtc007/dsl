@@ -6,7 +6,6 @@ use crate::config::{
     validate_constellation_map_schema_coordination, validate_dags_with_context, Dag, DagError,
     DagValidationContext, DagWarning, LoadedDag,
 };
-use dsl_types::{ConstellationMapDefBody, SeedConstellationMap};
 use std::collections::{BTreeMap, HashSet};
 use std::path::PathBuf;
 
