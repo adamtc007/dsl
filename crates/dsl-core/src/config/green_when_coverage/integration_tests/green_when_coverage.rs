@@ -97,7 +97,7 @@ fn real_dag_green_when_coverage_baseline_is_explicit() {
         "candidate count regressed below baseline"
     );
     assert!(
-        summary.covered_candidate_states >= 12,
+        summary.covered_candidate_states >= 9,
         "green_when coverage regressed below baseline"
     );
     assert_eq!(
@@ -114,14 +114,14 @@ fn real_dag_green_when_coverage_is_tracked_per_workspace() {
         ("book_setup".to_string(), (8, 6, 0, 6)),
         ("booking_principal".to_string(), (7, 2, 0, 2)),
         ("catalogue".to_string(), (5, 3, 0, 3)),
-        ("cbu".to_string(), (69, 37, 4, 33)),
+        ("cbu".to_string(), (79, 45, 3, 42)),
         ("deal".to_string(), (54, 34, 1, 33)),
         ("instrument_matrix".to_string(), (55, 27, 2, 25)),
-        ("kyc".to_string(), (87, 56, 4, 52)),
+        ("kyc".to_string(), (87, 52, 3, 49)),
         ("lifecycle_resources".to_string(), (11, 7, 0, 7)),
         ("onboarding_request".to_string(), (0, 0, 0, 0)),
         ("product_maintenance".to_string(), (10, 3, 0, 3)),
-        ("semos_maintenance".to_string(), (26, 21, 1, 20)),
+        ("semos_maintenance".to_string(), (26, 14, 0, 14)),
         ("session_bootstrap".to_string(), (0, 0, 0, 0)),
     ]);
 

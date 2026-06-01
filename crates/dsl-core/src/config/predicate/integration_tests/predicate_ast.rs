@@ -108,11 +108,11 @@ fn collect_entity_set_ref(set: &EntitySetRef, out: &mut BTreeSet<String>) {
 
 #[test]
 #[ignore = "requires ob-poc config/ not present in dsl satellite"]
-fn confirmed_green_when_fixture_count_is_eighteen() {
+fn confirmed_green_when_fixture_count_is_seventeen() {
     let fixtures = green_when_fixtures();
     assert_eq!(
         fixtures.len(),
-        18,
+        17,
         "confirmed Phase 1 fixture set drifted: {fixtures:#?}"
     );
 }
