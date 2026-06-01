@@ -439,6 +439,12 @@ pub enum DagWarning {
         dag_state_machine: String,
         constellation_state_machine: String,
     },
+    MalformedBindingScope {
+        location: DagLocation,
+        slot_id: String,
+        entity_kind: String,
+        scope: String,
+    },
 }
 
 impl std::fmt::Display for DagWarning {
@@ -490,6 +496,16 @@ impl std::fmt::Display for DagWarning {
                 "{location}: constellation slot '{slot_id}' references state_machine \
                  '{constellation_state_machine}' but DAG workspace '{dag_workspace}' \
                  declares '{dag_state_machine}'. Warning only until Phase 2 per D-011."
+            ),
+            Self::MalformedBindingScope {
+                location,
+                slot_id,
+                entity_kind,
+                scope,
+            } => write!(
+                f,
+                "{location}: slot '{slot_id}' predicate binding '{entity_kind}' has malformed scope '{scope}'. \
+                 Expected format: 'constellation-exposed <workspace>.<slot>'"
             ),
         }
     }
@@ -766,7 +782,8 @@ fn schema_coordination_known_deferred_key(
         }),
         DagWarning::LongLivedSlotMissingSuspended { .. }
         | DagWarning::PeriodicReviewCadenceWithoutRereviewTransition { .. }
-        | DagWarning::ValidityWindowWithoutExpiredState { .. } => None,
+        | DagWarning::ValidityWindowWithoutExpiredState { .. }
+        | DagWarning::MalformedBindingScope { .. } => None,
     }
 }
 
@@ -798,7 +815,8 @@ fn schema_coordination_warning_to_error(warning: DagWarning) -> DagError {
         },
         DagWarning::LongLivedSlotMissingSuspended { .. }
         | DagWarning::PeriodicReviewCadenceWithoutRereviewTransition { .. }
-        | DagWarning::ValidityWindowWithoutExpiredState { .. } => {
+        | DagWarning::ValidityWindowWithoutExpiredState { .. }
+        | DagWarning::MalformedBindingScope { .. } => {
             unreachable!("only schema-coordination warnings are promoted")
         }
     }
@@ -1138,10 +1156,43 @@ fn validate_green_when_predicates(
     index: &SlotIndex,
     report: &mut DagValidationReport,
 ) {
+    let slot_ids = dag
+        .slots
+        .iter()
+        .map(|slot| slot.id.as_str())
+        .collect::<HashSet<_>>();
+
     for slot in &dag.slots {
         let Some(SlotStateMachine::Structured(machine)) = slot.state_machine.as_ref() else {
             continue;
         };
+
+        let bound_entities: HashSet<&str> = machine
+            .predicate_bindings
+            .iter()
+            .map(|binding| binding.entity.as_str())
+            .collect();
+
+        // Warning check for malformed constellation-exposed scopes
+        for binding in &machine.predicate_bindings {
+            if let Some(scope) = &binding.scope {
+                if scope.contains("constellation-exposed ") {
+                    let ref_str = scope[scope.find("constellation-exposed ").unwrap() + "constellation-exposed ".len()..].trim();
+                    if !ref_str.contains('.') {
+                        report.warnings.push(DagWarning::MalformedBindingScope {
+                            location: DagLocation {
+                                workspace: workspace.to_string(),
+                                path: format!("slots.{}.state_machine.predicate_bindings", slot.id),
+                            },
+                            slot_id: slot.id.clone(),
+                            entity_kind: binding.entity.clone(),
+                            scope: scope.clone(),
+                        });
+                    }
+                }
+            }
+        }
+
         for state in &machine.states {
             let Some(predicate) = &state.green_when else {
                 continue;
@@ -1166,16 +1217,6 @@ fn validate_green_when_predicates(
                 }
             };
 
-            let bound_entities: HashSet<&str> = machine
-                .predicate_bindings
-                .iter()
-                .map(|binding| binding.entity.as_str())
-                .collect();
-            let slot_ids = dag
-                .slots
-                .iter()
-                .map(|slot| slot.id.as_str())
-                .collect::<HashSet<_>>();
             let mut referenced_entities = HashSet::new();
             collect_predicate_entity_refs(&ast, &mut referenced_entities);
             for entity_kind in referenced_entities {

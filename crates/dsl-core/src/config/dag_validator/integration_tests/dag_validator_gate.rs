@@ -548,5 +548,49 @@ slots:
     );
 }
 
+#[test]
+fn constellation_exposed_binding_malformed_scope_causes_warning() {
+    let loaded_dags = BTreeMap::from([
+        (
+            "demo".to_string(),
+            LoadedDag {
+                source_path: PathBuf::new(),
+                dag: serde_yaml::from_str(r#"
+workspace: demo
+dag_id: demo
+slots:
+  - id: my_slot
+    state_machine:
+      id: my_lifecycle
+      predicate_bindings:
+        - entity: external_entity
+          source_kind: dag_entity
+          scope: constellation-exposed malformed_scope_no_dot
+      states:
+        - id: PENDING
+          entry: true
+        - id: APPROVED
+          green_when: "external_entity.state = APPROVED"
+"#).expect("parses"),
+            }
+        )
+    ]);
+    
+    let context = DagValidationContext {
+        known_entity_kinds: HashSet::new(),
+    };
+    let report = validate_dags_with_context(&loaded_dags, &context);
+    
+    assert!(report.warnings.iter().any(|warning| matches!(
+        warning,
+        DagWarning::MalformedBindingScope {
+            slot_id,
+            entity_kind,
+            scope,
+            ..
+        } if slot_id == "my_slot" && entity_kind == "external_entity" && scope == "constellation-exposed malformed_scope_no_dot"
+    )), "Expected MalformedBindingScope warning but got: {:?}", report.warnings);
+}
+
 
 
