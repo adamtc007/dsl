@@ -312,3 +312,242 @@ slots:
 // Removed: authored_seed_constellation_maps_match_documented_schema_coordination_warnings
 // Removed: strict_authored_seed_schema_coordination_preserves_known_deferred_only
 
+#[test]
+fn invalid_state_references_in_green_when_causes_error() {
+    // 1. Self reference invalid state
+    let errors = validate_one(
+        "demo",
+        r#"
+workspace: demo
+dag_id: demo
+slots:
+  - id: vehicle
+    state_machine:
+      id: vehicle_lifecycle
+      states:
+        - id: PENDING
+          entry: true
+        - id: APPROVED
+          green_when: "vehicle.state = NON_EXISTENT_STATE"
+"#,
+        &[],
+    );
+
+    assert!(errors.iter().any(|error| matches!(
+        error,
+        DagError::InvalidStateReference {
+            slot_id,
+            state_id,
+            ..
+        } if slot_id == "vehicle" && state_id == "NON_EXISTENT_STATE"
+    )));
+
+    // 2. Bound entity reference invalid state
+    let loaded_dags = BTreeMap::from([
+        (
+            "demo".to_string(),
+            LoadedDag {
+                source_path: PathBuf::new(),
+                dag: serde_yaml::from_str(r#"
+workspace: demo
+dag_id: demo
+slots:
+  - id: review
+    state_machine:
+      id: review_lifecycle
+      states:
+        - id: SUBMITTED
+          entry: true
+  - id: vehicle
+    state_machine:
+      id: vehicle_lifecycle
+      predicate_bindings:
+        - entity: review
+          source_kind: dag_entity
+      states:
+        - id: PENDING
+          entry: true
+        - id: APPROVED
+          green_when: "review.state = NON_EXISTENT_REVIEW_STATE"
+"#).expect("parses"),
+            }
+        )
+    ]);
+    
+    let context = DagValidationContext {
+        known_entity_kinds: HashSet::new(),
+    };
+    let errors = validate_dags_with_context(&loaded_dags, &context).errors;
+
+    assert!(errors.iter().any(|error| matches!(
+        error,
+        DagError::InvalidStateReference {
+            slot_id,
+            state_id,
+            ..
+        } if slot_id == "vehicle" && state_id == "NON_EXISTENT_REVIEW_STATE"
+    )));
+}
+
+#[test]
+fn constellation_exposed_binding_valid() {
+    let loaded_dags = BTreeMap::from([
+        (
+            "external_ws".to_string(),
+            LoadedDag {
+                source_path: PathBuf::new(),
+                dag: serde_yaml::from_str(r#"
+workspace: external_ws
+dag_id: external_dag
+slots:
+  - id: external_slot
+    state_machine:
+      id: external_lifecycle
+      states:
+        - id: PENDING
+          entry: true
+        - id: APPROVED
+"#).expect("parses"),
+            }
+        ),
+        (
+            "demo".to_string(),
+            LoadedDag {
+                source_path: PathBuf::new(),
+                dag: serde_yaml::from_str(r#"
+workspace: demo
+dag_id: demo
+slots:
+  - id: my_slot
+    state_machine:
+      id: my_lifecycle
+      predicate_bindings:
+        - entity: external_entity
+          source_kind: dag_entity
+          scope: constellation-exposed external_ws.external_slot
+      states:
+        - id: PENDING
+          entry: true
+        - id: APPROVED
+          green_when: "external_entity.state = APPROVED"
+"#).expect("parses"),
+            }
+        )
+    ]);
+    
+    let context = DagValidationContext {
+        known_entity_kinds: HashSet::new(),
+    };
+    let report = validate_dags_with_context(&loaded_dags, &context);
+    
+    // We expect NO errors in this valid cross-workspace setup.
+    assert!(
+        report.errors.is_empty(),
+        "Expected no errors but got: {:?}",
+        report.errors
+    );
+}
+
+#[test]
+fn constellation_exposed_binding_invalid_state() {
+    let loaded_dags = BTreeMap::from([
+        (
+            "external_ws".to_string(),
+            LoadedDag {
+                source_path: PathBuf::new(),
+                dag: serde_yaml::from_str(r#"
+workspace: external_ws
+dag_id: external_dag
+slots:
+  - id: external_slot
+    state_machine:
+      id: external_lifecycle
+      states:
+        - id: PENDING
+          entry: true
+        - id: APPROVED
+"#).expect("parses"),
+            }
+        ),
+        (
+            "demo".to_string(),
+            LoadedDag {
+                source_path: PathBuf::new(),
+                dag: serde_yaml::from_str(r#"
+workspace: demo
+dag_id: demo
+slots:
+  - id: my_slot
+    state_machine:
+      id: my_lifecycle
+      predicate_bindings:
+        - entity: external_entity
+          source_kind: dag_entity
+          scope: constellation-exposed external_ws.external_slot
+      states:
+        - id: PENDING
+          entry: true
+        - id: APPROVED
+          green_when: "external_entity.state = NON_EXISTENT_STATE"
+"#).expect("parses"),
+            }
+        )
+    ]);
+    
+    let context = DagValidationContext {
+        known_entity_kinds: HashSet::new(),
+    };
+    let report = validate_dags_with_context(&loaded_dags, &context);
+    
+    assert!(report.errors.iter().any(|error| matches!(
+        error,
+        DagError::InvalidStateReference {
+            slot_id,
+            state_id,
+            ..
+        } if slot_id == "my_slot" && state_id == "NON_EXISTENT_STATE"
+    )), "Expected InvalidStateReference but got: {:?}", report.errors);
+}
+
+#[test]
+fn constellation_exposed_binding_non_existent_slot() {
+    let loaded_dags = BTreeMap::from([
+        (
+            "demo".to_string(),
+            LoadedDag {
+                source_path: PathBuf::new(),
+                dag: serde_yaml::from_str(r#"
+workspace: demo
+dag_id: demo
+slots:
+  - id: my_slot
+    state_machine:
+      id: my_lifecycle
+      predicate_bindings:
+        - entity: external_entity
+          source_kind: dag_entity
+          scope: constellation-exposed external_ws.non_existent_slot
+      states:
+        - id: PENDING
+          entry: true
+        - id: APPROVED
+          green_when: "external_entity.state = APPROVED"
+"#).expect("parses"),
+            }
+        )
+    ]);
+    
+    let context = DagValidationContext {
+        known_entity_kinds: HashSet::new(),
+    };
+    let report = validate_dags_with_context(&loaded_dags, &context);
+    
+    // We expect an error because the target slot does not exist in the referenced workspace (or workspace doesn't exist).
+    assert!(
+        !report.errors.is_empty(),
+        "Expected validation errors for referencing a non-existent external slot, but got none."
+    );
+}
+
+
+

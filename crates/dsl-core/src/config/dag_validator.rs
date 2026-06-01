@@ -25,7 +25,7 @@
 
 use crate::config::dag::*;
 use dsl_types::{ConstellationMapDefBody, SeedConstellationMap, SlotDef, SlotKey, GatingStatus, SlotGatingState};
-use crate::config::predicate::{parse_green_when, EntityRef, EntitySetRef, Predicate};
+use crate::config::predicate::{parse_green_when, EntityRef, EntitySetRef, Predicate, Validity};
 use crate::resolver::{ResolvedSlot, ResolvedTemplate};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::path::Path;
@@ -180,6 +180,12 @@ pub enum DagError {
     OrphanSlotGatingKey {
         constellation: String,
         path: String,
+    },
+    InvalidStateReference {
+        location: DagLocation,
+        slot_id: String,
+        state_id: String,
+        reason: String,
     },
 }
 
@@ -387,6 +393,15 @@ impl std::fmt::Display for DagError {
                     "Gating state maps to non-existent slot path '{path}' in constellation '{constellation}'"
                 )
             }
+            Self::InvalidStateReference {
+                location,
+                slot_id,
+                state_id,
+                reason,
+            } => write!(
+                f,
+                "{location}: slot '{slot_id}' references invalid state '{state_id}' — {reason}"
+            ),
         }
     }
 }
@@ -541,7 +556,7 @@ pub fn validate_dags_with_context(
         validate_parent_slots(ws, &ld.dag, &index, &mut report);
         validate_dual_lifecycles(ws, &ld.dag, &mut report);
         validate_category_gated(ws, &ld.dag, &mut report);
-        validate_green_when_predicates(ws, &ld.dag, &mut report);
+        validate_green_when_predicates(ws, &ld.dag, &index, &mut report);
         validate_gate_metadata(ws, &ld.dag, context, &mut report);
 
         // Warnings
@@ -1117,7 +1132,12 @@ fn validate_category_gated(workspace: &str, dag: &Dag, report: &mut DagValidatio
     }
 }
 
-fn validate_green_when_predicates(workspace: &str, dag: &Dag, report: &mut DagValidationReport) {
+fn validate_green_when_predicates(
+    workspace: &str,
+    dag: &Dag,
+    index: &SlotIndex,
+    report: &mut DagValidationReport,
+) {
     for slot in &dag.slots {
         let Some(SlotStateMachine::Structured(machine)) = slot.state_machine.as_ref() else {
             continue;
@@ -1173,9 +1193,18 @@ fn validate_green_when_predicates(workspace: &str, dag: &Dag, report: &mut DagVa
                     .iter()
                     .find(|binding| binding.entity == entity_kind)
                     .expect("bound entity already checked");
+                let is_constellation_exposed = binding
+                    .scope
+                    .as_ref()
+                    .is_some_and(|s| s.contains("constellation-exposed "));
                 let has_carrier = binding.source_entity.is_some()
                     || (binding.source_kind == PredicateBindingSourceKind::DagEntity
-                        && slot_ids.contains(binding.entity.as_str()));
+                        && (slot_ids.contains(binding.entity.as_str())
+                            || (is_constellation_exposed && {
+                                let (target_ws, target_slot) =
+                                    resolve_binding_workspace_and_slot(workspace, binding);
+                                index.slot_exists(&target_ws, &target_slot)
+                            })));
                 if !has_carrier {
                     report
                         .errors
@@ -1185,6 +1214,123 @@ fn validate_green_when_predicates(workspace: &str, dag: &Dag, report: &mut DagVa
                             state_id: state.id.clone(),
                             entity_kind,
                         });
+                }
+            }
+
+            // Verify that all states referenced in the green_when AST exist in the target slot state machine.
+            validate_predicate_states(
+                &location,
+                &slot.id,
+                machine,
+                &ast,
+                workspace,
+                index,
+                report,
+            );
+        }
+    }
+}
+
+fn resolve_binding_workspace_and_slot(
+    current_workspace: &str,
+    binding: &PredicateBinding,
+) -> (String, String) {
+    if let Some(scope) = &binding.scope {
+        // e.g. "constellation-exposed instrument_matrix.trading_profile"
+        if let Some(pos) = scope.find("constellation-exposed ") {
+            let ref_str = scope[pos + "constellation-exposed ".len()..].trim();
+            if let Some((ws, slot)) = ref_str.split_once('.') {
+                return (ws.to_string(), slot.to_string());
+            }
+        }
+    }
+    
+    // Default to current workspace and source_entity (or entity) as slot ID
+    let slot_id = binding.source_entity.clone()
+        .unwrap_or_else(|| binding.entity.clone());
+    (current_workspace.to_string(), slot_id)
+}
+
+fn validate_predicate_states(
+    location: &DagLocation,
+    slot_id: &str,
+    machine: &StateMachine,
+    predicate: &Predicate,
+    current_workspace: &str,
+    index: &SlotIndex,
+    report: &mut DagValidationReport,
+) {
+    match predicate {
+        Predicate::And(items) => {
+            for item in items {
+                validate_predicate_states(location, slot_id, machine, item, current_workspace, index, report);
+            }
+        }
+        Predicate::StateIn { entity, state_set } => {
+            validate_state_set(location, slot_id, machine, entity, state_set, current_workspace, index, report);
+        }
+        Predicate::Every { condition, .. }
+        | Predicate::NoneExists { condition, .. }
+        | Predicate::AtLeastOne { condition, .. } => {
+            validate_predicate_states(location, slot_id, machine, condition, current_workspace, index, report);
+        }
+        Predicate::Count { condition: Some(condition), .. } => {
+            validate_predicate_states(location, slot_id, machine, condition, current_workspace, index, report);
+        }
+        Predicate::Obtained { entity, validity: Validity::StateIn(state_set) } => {
+            validate_state_set(location, slot_id, machine, entity, state_set, current_workspace, index, report);
+        }
+        _ => {}
+    }
+}
+
+#[allow(clippy::too_many_arguments)]
+fn validate_state_set(
+    location: &DagLocation,
+    slot_id: &str,
+    machine: &StateMachine,
+    entity: &EntityRef,
+    state_set: &[String],
+    current_workspace: &str,
+    index: &SlotIndex,
+    report: &mut DagValidationReport,
+) {
+    let entity_name = match entity {
+        EntityRef::This => slot_id,
+        EntityRef::Named(name) | EntityRef::Parent(name) => name.as_str(),
+        EntityRef::Scoped { kind, .. } => kind.as_str(),
+    };
+
+    // Deduplicate states to check
+    let mut unique_states = HashSet::new();
+    for state in state_set {
+        unique_states.insert(state);
+    }
+
+    if entity_name == slot_id {
+        for state in unique_states {
+            if !index.state_exists(current_workspace, slot_id, state) {
+                report.errors.push(DagError::InvalidStateReference {
+                    location: location.clone(),
+                    slot_id: slot_id.to_string(),
+                    state_id: state.clone(),
+                    reason: format!("referenced state '{state}' does not exist on slot '{slot_id}'"),
+                });
+            }
+        }
+    } else if let Some(binding) = machine.predicate_bindings.iter().find(|b| b.entity == entity_name) {
+        let (target_ws, target_slot) = resolve_binding_workspace_and_slot(current_workspace, binding);
+        if index.slot_exists(&target_ws, &target_slot) {
+            for state in unique_states {
+                if !index.state_exists(&target_ws, &target_slot, state) {
+                    report.errors.push(DagError::InvalidStateReference {
+                        location: location.clone(),
+                        slot_id: slot_id.to_string(),
+                        state_id: state.clone(),
+                        reason: format!(
+                            "referenced state '{state}' does not exist on slot '{target_ws}.{target_slot}' mapped by entity '{entity_name}'"
+                        ),
+                    });
                 }
             }
         }
