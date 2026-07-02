@@ -91,8 +91,6 @@ impl ConfigLoader {
         None
     }
 
-
-
     /// Get the config directory as PathBuf
     pub fn config_dir(&self) -> std::path::PathBuf {
         std::path::PathBuf::from(&self.config_dir)
@@ -254,10 +252,6 @@ impl ConfigLoader {
         let report = validate_verbs_config(&config, &ctx);
         build_manifest_with_validation(&config, &report)
     }
-
-
-
-
 
     fn validate_verbs(&self, config: &VerbsConfig) -> Result<()> {
         for (domain, domain_config) in &config.domains {
@@ -602,5 +596,3 @@ fn test_load_verbs_yaml() {
         }
     }
 }
-
-

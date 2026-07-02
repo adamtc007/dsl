@@ -36,8 +36,7 @@ pub struct ResolverProvenance {
     pub dag_paths: Vec<String>,
     pub constellation_paths: Vec<String>,
     pub shape_rule_paths: Vec<String>,
-    pub legacy_constellation_stack:
-        Vec<dsl_types::ConstellationMapDefBody>,
+    pub legacy_constellation_stack: Vec<dsl_types::ConstellationMapDefBody>,
 }
 
 #[derive(Debug, Clone)]

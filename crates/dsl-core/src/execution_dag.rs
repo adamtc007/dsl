@@ -199,12 +199,11 @@ impl PopulatedExecutionDag {
         self.edges.push(edge);
     }
 
-
-
     /// Returns `(from_step_idx, to_step_idx)` pairs for all ordering edges.
     ///
     /// Used by the topological sort to derive execution order from typed edges
     /// rather than from untyped `Injection` records.
+    #[allow(dead_code)]
     pub(crate) fn ordering_pairs(&self) -> Vec<(usize, usize)> {
         self.edges
             .iter()
@@ -212,6 +211,4 @@ impl PopulatedExecutionDag {
             .map(|(from, to)| (from.0, to.0))
             .collect()
     }
-
-
 }

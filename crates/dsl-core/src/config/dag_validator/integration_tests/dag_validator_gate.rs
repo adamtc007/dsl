@@ -342,12 +342,12 @@ slots:
     )));
 
     // 2. Bound entity reference invalid state
-    let loaded_dags = BTreeMap::from([
-        (
-            "demo".to_string(),
-            LoadedDag {
-                source_path: PathBuf::new(),
-                dag: serde_yaml::from_str(r#"
+    let loaded_dags = BTreeMap::from([(
+        "demo".to_string(),
+        LoadedDag {
+            source_path: PathBuf::new(),
+            dag: serde_yaml::from_str(
+                r#"
 workspace: demo
 dag_id: demo
 slots:
@@ -368,11 +368,12 @@ slots:
           entry: true
         - id: APPROVED
           green_when: "review.state = NON_EXISTENT_REVIEW_STATE"
-"#).expect("parses"),
-            }
-        )
-    ]);
-    
+"#,
+            )
+            .expect("parses"),
+        },
+    )]);
+
     let context = DagValidationContext {
         known_entity_kinds: HashSet::new(),
     };
@@ -395,7 +396,8 @@ fn constellation_exposed_binding_valid() {
             "external_ws".to_string(),
             LoadedDag {
                 source_path: PathBuf::new(),
-                dag: serde_yaml::from_str(r#"
+                dag: serde_yaml::from_str(
+                    r#"
 workspace: external_ws
 dag_id: external_dag
 slots:
@@ -406,14 +408,17 @@ slots:
         - id: PENDING
           entry: true
         - id: APPROVED
-"#).expect("parses"),
-            }
+"#,
+                )
+                .expect("parses"),
+            },
         ),
         (
             "demo".to_string(),
             LoadedDag {
                 source_path: PathBuf::new(),
-                dag: serde_yaml::from_str(r#"
+                dag: serde_yaml::from_str(
+                    r#"
 workspace: demo
 dag_id: demo
 slots:
@@ -429,16 +434,18 @@ slots:
           entry: true
         - id: APPROVED
           green_when: "external_entity.state = APPROVED"
-"#).expect("parses"),
-            }
-        )
+"#,
+                )
+                .expect("parses"),
+            },
+        ),
     ]);
-    
+
     let context = DagValidationContext {
         known_entity_kinds: HashSet::new(),
     };
     let report = validate_dags_with_context(&loaded_dags, &context);
-    
+
     // We expect NO errors in this valid cross-workspace setup.
     assert!(
         report.errors.is_empty(),
@@ -454,7 +461,8 @@ fn constellation_exposed_binding_invalid_state() {
             "external_ws".to_string(),
             LoadedDag {
                 source_path: PathBuf::new(),
-                dag: serde_yaml::from_str(r#"
+                dag: serde_yaml::from_str(
+                    r#"
 workspace: external_ws
 dag_id: external_dag
 slots:
@@ -465,14 +473,17 @@ slots:
         - id: PENDING
           entry: true
         - id: APPROVED
-"#).expect("parses"),
-            }
+"#,
+                )
+                .expect("parses"),
+            },
         ),
         (
             "demo".to_string(),
             LoadedDag {
                 source_path: PathBuf::new(),
-                dag: serde_yaml::from_str(r#"
+                dag: serde_yaml::from_str(
+                    r#"
 workspace: demo
 dag_id: demo
 slots:
@@ -488,34 +499,40 @@ slots:
           entry: true
         - id: APPROVED
           green_when: "external_entity.state = NON_EXISTENT_STATE"
-"#).expect("parses"),
-            }
-        )
+"#,
+                )
+                .expect("parses"),
+            },
+        ),
     ]);
-    
+
     let context = DagValidationContext {
         known_entity_kinds: HashSet::new(),
     };
     let report = validate_dags_with_context(&loaded_dags, &context);
-    
-    assert!(report.errors.iter().any(|error| matches!(
-        error,
-        DagError::InvalidStateReference {
-            slot_id,
-            state_id,
-            ..
-        } if slot_id == "my_slot" && state_id == "NON_EXISTENT_STATE"
-    )), "Expected InvalidStateReference but got: {:?}", report.errors);
+
+    assert!(
+        report.errors.iter().any(|error| matches!(
+            error,
+            DagError::InvalidStateReference {
+                slot_id,
+                state_id,
+                ..
+            } if slot_id == "my_slot" && state_id == "NON_EXISTENT_STATE"
+        )),
+        "Expected InvalidStateReference but got: {:?}",
+        report.errors
+    );
 }
 
 #[test]
 fn constellation_exposed_binding_non_existent_slot() {
-    let loaded_dags = BTreeMap::from([
-        (
-            "demo".to_string(),
-            LoadedDag {
-                source_path: PathBuf::new(),
-                dag: serde_yaml::from_str(r#"
+    let loaded_dags = BTreeMap::from([(
+        "demo".to_string(),
+        LoadedDag {
+            source_path: PathBuf::new(),
+            dag: serde_yaml::from_str(
+                r#"
 workspace: demo
 dag_id: demo
 slots:
@@ -531,16 +548,17 @@ slots:
           entry: true
         - id: APPROVED
           green_when: "external_entity.state = APPROVED"
-"#).expect("parses"),
-            }
-        )
-    ]);
-    
+"#,
+            )
+            .expect("parses"),
+        },
+    )]);
+
     let context = DagValidationContext {
         known_entity_kinds: HashSet::new(),
     };
     let report = validate_dags_with_context(&loaded_dags, &context);
-    
+
     // We expect an error because the target slot does not exist in the referenced workspace (or workspace doesn't exist).
     assert!(
         !report.errors.is_empty(),
@@ -550,12 +568,12 @@ slots:
 
 #[test]
 fn constellation_exposed_binding_malformed_scope_causes_warning() {
-    let loaded_dags = BTreeMap::from([
-        (
-            "demo".to_string(),
-            LoadedDag {
-                source_path: PathBuf::new(),
-                dag: serde_yaml::from_str(r#"
+    let loaded_dags = BTreeMap::from([(
+        "demo".to_string(),
+        LoadedDag {
+            source_path: PathBuf::new(),
+            dag: serde_yaml::from_str(
+                r#"
 workspace: demo
 dag_id: demo
 slots:
@@ -571,16 +589,17 @@ slots:
           entry: true
         - id: APPROVED
           green_when: "external_entity.state = APPROVED"
-"#).expect("parses"),
-            }
-        )
-    ]);
-    
+"#,
+            )
+            .expect("parses"),
+        },
+    )]);
+
     let context = DagValidationContext {
         known_entity_kinds: HashSet::new(),
     };
     let report = validate_dags_with_context(&loaded_dags, &context);
-    
+
     assert!(report.warnings.iter().any(|warning| matches!(
         warning,
         DagWarning::MalformedBindingScope {
@@ -591,6 +610,3 @@ slots:
         } if slot_id == "my_slot" && entity_kind == "external_entity" && scope == "constellation-exposed malformed_scope_no_dot"
     )), "Expected MalformedBindingScope warning but got: {:?}", report.warnings);
 }
-
-
-

@@ -23,6 +23,7 @@ fn default_version() -> String {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
+#[allow(dead_code)] // CSG rules — deserialized from YAML, not yet wired
 pub(crate) struct CsgRulesConfig {
     pub version: String,
     #[serde(default)]
@@ -885,7 +886,6 @@ pub struct VerbProduces {
     pub initial_state: Option<String>,
 }
 
-
 /// Dataflow: what a verb consumes (dependencies)
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct VerbConsumes {
@@ -1406,6 +1406,7 @@ impl SearchKeyConfig {
     }
 
     /// Check if this is a simple (single-column) search key
+    #[allow(dead_code)]
     pub(crate) fn is_simple(&self) -> bool {
         matches!(self, SearchKeyConfig::Simple(_))
     }
@@ -1432,8 +1433,8 @@ impl SearchKeyConfig {
         }
     }
 
-
     /// Get minimum confidence threshold (defaults to 0.8)
+    #[allow(dead_code)]
     pub(crate) fn min_confidence(&self) -> f32 {
         match self {
             SearchKeyConfig::Simple(_) => 0.8,
@@ -1918,6 +1919,7 @@ pub struct DynamicSourceConfig {
 // CSG RULE CONFIGS
 // =============================================================================
 #[derive(Debug, Clone, Deserialize, Serialize)]
+#[allow(dead_code)] // CSG rules — deserialized from YAML, not yet wired
 pub(crate) struct ConstraintRule {
     pub id: String,
     pub name: String,
@@ -1928,6 +1930,7 @@ pub(crate) struct ConstraintRule {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
+#[allow(dead_code)] // CSG rules — deserialized from YAML, not yet wired
 pub(crate) struct WarningRule {
     pub id: String,
     pub name: String,
@@ -1940,6 +1943,7 @@ pub(crate) struct WarningRule {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
+#[allow(dead_code)] // CSG rules — deserialized from YAML, not yet wired
 pub(crate) struct JurisdictionRule {
     pub id: String,
     pub name: String,
@@ -1952,6 +1956,7 @@ pub(crate) struct JurisdictionRule {
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
+#[allow(dead_code)] // CSG rules — deserialized from YAML, not yet wired
 pub(crate) struct CompositeRule {
     pub id: String,
     pub name: String,
@@ -1963,6 +1968,7 @@ pub(crate) struct CompositeRule {
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[allow(dead_code)] // CSG rules — deserialized from YAML, not yet wired
 pub(crate) struct RuleCondition {
     #[serde(default)]
     pub verb: Option<String>,
@@ -1981,6 +1987,7 @@ pub(crate) struct RuleCondition {
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[allow(dead_code)] // CSG rules — deserialized from YAML, not yet wired
 pub(crate) struct RuleRequirement {
     #[serde(default)]
     pub entity_type: Option<String>,
@@ -1991,6 +1998,7 @@ pub(crate) struct RuleRequirement {
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[allow(dead_code)] // CSG rules — deserialized from YAML, not yet wired
 pub(crate) struct JurisdictionCondition {
     #[serde(default)]
     pub entity_type: Option<String>,
@@ -2003,6 +2011,7 @@ pub(crate) struct JurisdictionCondition {
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
+#[allow(dead_code)] // CSG rules — deserialized from YAML, not yet wired
 pub(crate) struct AppliesTo {
     #[serde(default)]
     pub client_type: Option<String>,
@@ -2010,6 +2019,7 @@ pub(crate) struct AppliesTo {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
+#[allow(dead_code)] // CSG rules — deserialized from YAML, not yet wired
 pub(crate) enum RuleSeverity {
     Error,
     Warning,

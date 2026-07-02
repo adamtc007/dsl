@@ -22,6 +22,8 @@
 //! evaluation (the Sage/REPL path that combines verb-level escalation +
 //! this composition) wires in later pilot phases.
 
+#![allow(dead_code)] // Runbook composition — pilot P.1.e, wired in Phase 6
+
 use crate::config::types::{ConsequenceTier, ExternalEffect, StateEffect};
 use std::collections::HashSet;
 
@@ -219,7 +221,6 @@ pub(crate) fn compute_runbook_tier(
     let c = component_c(steps, cross_scope);
     a.max(b).max(c)
 }
-
 
 // ---------------------------------------------------------------------------
 // Component implementations (exposed for targeted unit tests)
@@ -506,7 +507,6 @@ mod tests {
         );
     }
 
-
     #[test]
     fn macro_and_adhoc_runbooks_use_same_composition() {
         // P12 invariant: composition applies uniformly regardless of
@@ -539,5 +539,4 @@ mod tests {
         assert_eq!(t1, t2);
         assert_eq!(t1, ConsequenceTier::RequiresConfirmation);
     }
-
 }

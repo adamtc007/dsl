@@ -11,7 +11,6 @@ use uuid::Uuid;
 
 use crate::config::types::VerbProduces;
 
-
 // =============================================================================
 // BINDING INFO
 // =============================================================================
@@ -102,6 +101,7 @@ impl BindingContext {
     }
 
     /// Merge another context into this one
+    #[allow(dead_code)]
     pub(crate) fn merge(&mut self, other: &BindingContext) {
         for (name, info) in &other.bindings {
             self.bindings.insert(name.clone(), info.clone());
@@ -119,6 +119,7 @@ impl BindingContext {
     }
 
     /// Get all binding names
+    #[allow(dead_code)]
     pub(crate) fn names(&self) -> impl Iterator<Item = &str> {
         self.bindings.keys().map(|s| s.as_str())
     }

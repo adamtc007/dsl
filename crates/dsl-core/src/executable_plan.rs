@@ -24,13 +24,15 @@
 //! | `AttemptId` | Per-retry within an execution (not in this struct) |
 //! | `SemOsSnapshotId` | The SDG snapshot this plan was compiled against |
 
+#![allow(dead_code)] // ExecutablePlan v0.5 contract — wired in Phase 6
+
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
 
-use crate::config::resource_dependency::ResolvedResourceDependency;
-use crate::execution_dag::{BindingSlotId, NodeId, PopulatedExecutionDag};
 use crate::ast::{Program, Statement};
 use crate::config::pack_loader::LoadedPack;
+use crate::config::resource_dependency::ResolvedResourceDependency;
+use crate::execution_dag::{BindingSlotId, NodeId, PopulatedExecutionDag};
 
 // =============================================================================
 // Identity types
@@ -370,8 +372,6 @@ pub(crate) struct ExecutablePlan {
 impl ExecutablePlan {
     /// Current plan format version.
     pub(crate) const FORMAT_VERSION: u32 = 1;
-
-
 }
 
 /// Minimal summary of an `ExecutionStep` for `ExecutablePlan` construction.
@@ -433,10 +433,10 @@ mod tests {
 
     #[test]
     fn test_validate_program_admission() {
-        use crate::ast::{Program, Statement, VerbCall, Span};
+        use crate::ast::{Program, Span, Statement, VerbCall};
         use crate::config::pack_loader::LoadedPack;
         use crate::config::VerbConfig;
-        
+
         struct TestCatalog {
             pack: LoadedPack,
             verb_config: VerbConfig,
@@ -471,15 +471,20 @@ mod tests {
         };
 
         // 1. Context is None, enforce is false: passes
-        let res = validate_program_admission(&program, &None, &TestCatalog {
-            pack: LoadedPack {
-                name: "test".to_string(),
-                workspaces: vec!["cbu".to_string()],
-                allowed_verbs: vec![],
-                ..Default::default()
+        let res = validate_program_admission(
+            &program,
+            &None,
+            &TestCatalog {
+                pack: LoadedPack {
+                    name: "test".to_string(),
+                    workspaces: vec!["cbu".to_string()],
+                    allowed_verbs: vec![],
+                    ..Default::default()
+                },
+                verb_config: VerbConfig::default(),
             },
-            verb_config: VerbConfig::default(),
-        }, false);
+            false,
+        );
         assert!(res.is_ok());
 
         // 2. Context is Some, verb is in allowed_verbs: passes
@@ -492,27 +497,37 @@ mod tests {
             scenario_id: None,
             domain_lens_id: "kyc_lens".to_string(),
         };
-        let res = validate_program_admission(&program, &Some(context.clone()), &TestCatalog {
-            pack: LoadedPack {
-                name: "kyc".to_string(),
-                workspaces: vec!["cbu".to_string()],
-                allowed_verbs: vec!["cbu.update".to_string()],
-                ..Default::default()
+        let res = validate_program_admission(
+            &program,
+            &Some(context.clone()),
+            &TestCatalog {
+                pack: LoadedPack {
+                    name: "kyc".to_string(),
+                    workspaces: vec!["cbu".to_string()],
+                    allowed_verbs: vec!["cbu.update".to_string()],
+                    ..Default::default()
+                },
+                verb_config: VerbConfig::default(),
             },
-            verb_config: VerbConfig::default(),
-        }, false);
+            false,
+        );
         assert!(res.is_ok());
 
         // 3. Context is Some, verb not allowed: errors
-        let res = validate_program_admission(&program, &Some(context.clone()), &TestCatalog {
-            pack: LoadedPack {
-                name: "kyc".to_string(),
-                workspaces: vec!["cbu".to_string()],
-                allowed_verbs: vec!["cbu.create".to_string()],
-                ..Default::default()
+        let res = validate_program_admission(
+            &program,
+            &Some(context.clone()),
+            &TestCatalog {
+                pack: LoadedPack {
+                    name: "kyc".to_string(),
+                    workspaces: vec!["cbu".to_string()],
+                    allowed_verbs: vec!["cbu.create".to_string()],
+                    ..Default::default()
+                },
+                verb_config: VerbConfig::default(),
             },
-            verb_config: VerbConfig::default(),
-        }, false);
+            false,
+        );
         assert!(res.is_err());
         assert_eq!(
             res.unwrap_err(),
@@ -520,15 +535,20 @@ mod tests {
         );
 
         // 4. Context is None, enforce is true: errors
-        let res = validate_program_admission(&program, &None, &TestCatalog {
-            pack: LoadedPack {
-                name: "test".to_string(),
-                workspaces: vec!["cbu".to_string()],
-                allowed_verbs: vec![],
-                ..Default::default()
+        let res = validate_program_admission(
+            &program,
+            &None,
+            &TestCatalog {
+                pack: LoadedPack {
+                    name: "test".to_string(),
+                    workspaces: vec!["cbu".to_string()],
+                    allowed_verbs: vec![],
+                    ..Default::default()
+                },
+                verb_config: VerbConfig::default(),
             },
-            verb_config: VerbConfig::default(),
-        }, true);
+            true,
+        );
         assert!(res.is_err());
         assert_eq!(
             res.unwrap_err(),
@@ -546,7 +566,7 @@ mod tests {
                 span: Span::default(),
             })],
         };
-        
+
         let mut verb_config = VerbConfig::default();
         verb_config.lens_bindings.insert(
             "unauthorized_lens".to_string(),
@@ -557,17 +577,24 @@ mod tests {
             },
         );
 
-        let res = validate_program_admission(&program_with_override, &Some(context), &TestCatalog {
-            pack: LoadedPack {
-                name: "kyc".to_string(),
-                workspaces: vec!["cbu".to_string()], // only cbu workspace allowed
-                allowed_verbs: vec!["cbu.update".to_string()],
-                ..Default::default()
+        let res = validate_program_admission(
+            &program_with_override,
+            &Some(context),
+            &TestCatalog {
+                pack: LoadedPack {
+                    name: "kyc".to_string(),
+                    workspaces: vec!["cbu".to_string()], // only cbu workspace allowed
+                    allowed_verbs: vec!["cbu.update".to_string()],
+                    ..Default::default()
+                },
+                verb_config,
             },
-            verb_config,
-        }, false);
+            false,
+        );
         assert!(res.is_err());
-        assert!(res.unwrap_err().contains("Target workspace 'unauthorized_workspace' is not admitted by active pack"));
+        assert!(res
+            .unwrap_err()
+            .contains("Target workspace 'unauthorized_workspace' is not admitted by active pack"));
     }
 }
 
@@ -593,7 +620,9 @@ pub fn validate_program_admission(
 ) -> Result<(), String> {
     let Some(context) = context else {
         if enforce_pack_context {
-            return Err("Pack/DAG context is required when enforce_pack_context is enabled".to_string());
+            return Err(
+                "Pack/DAG context is required when enforce_pack_context is enabled".to_string(),
+            );
         }
         // Bypassed: un-governed script mode
         return Ok(());
@@ -614,7 +643,10 @@ pub fn validate_program_admission(
             }
 
             // 2. Validate lens/workspace boundary
-            let lens_id = vc.lens_override.as_deref().unwrap_or(&context.domain_lens_id);
+            let lens_id = vc
+                .lens_override
+                .as_deref()
+                .unwrap_or(&context.domain_lens_id);
             let verb_config = catalog
                 .get_verb_config(&fqn, context.sem_os_snapshot_id)
                 .map_err(|e| format!("Failed to load verb configuration for '{fqn}': {e}"))?;

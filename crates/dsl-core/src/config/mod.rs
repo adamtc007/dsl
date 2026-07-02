@@ -27,7 +27,7 @@ pub(crate) mod loader;
 pub(crate) mod manifest;
 pub(crate) mod pack_loader;
 pub(crate) mod phrase_gen;
-pub(crate) mod predicate;                  // used by sem_os_core::frontier::hydrator
+pub(crate) mod predicate; // used by sem_os_core::frontier::hydrator
 pub(crate) mod resource_dependency;
 pub(crate) mod runbook_composition;
 pub(crate) mod types;
@@ -37,47 +37,33 @@ pub use dag::{load_dags_from_dir, load_domain_pack_owned_dags, Dag, LoadedDag};
 // ob-poc-specific filesystem walkers (validate_constellation_map_dir_*)
 // are pub(crate) in dag_validator — not
 // re-exported here because they assume ob-poc's config directory layout.
-pub(crate) use dag_validator::validate_constellation_map_schema_coordination;
 pub use dag_validator::DagWarning;
 pub use dag_validator::{
-    validate_dags_with_context, validate_resolved_template_gate_metadata, DagError,
-    DagValidationContext, DagValidationReport, entity_kinds_from_taxonomy_yaml,
-    validate_slot_gating_states,
-};
-pub(crate) use green_when_coverage::{
-    green_when_coverage_for_dag, green_when_coverage_for_dags, green_when_coverage_summary,
-    GreenWhenExclusionReason,
+    entity_kinds_from_taxonomy_yaml, validate_dags_with_context,
+    validate_resolved_template_gate_metadata, validate_slot_gating_states, DagError,
+    DagValidationContext, DagValidationReport,
 };
 
-pub(crate) use escalation::{
-    compute_effective_tier, EvaluationContext,
-};
 pub use loader::ConfigLoader;
 
-pub(crate) use runbook_composition::{
-    compute_runbook_tier, AggregationRule, CrossScopeRule, RunbookStep,
-};
 pub use types::{
-    ActionClass, ArgConfig, ArgType, ArgValidation, ConfirmPolicyConfig,
-    ConsequenceDeclaration, ConsequenceTier, CrudConfig, CrudOperation,
-    DomainConfig, DurableConfig, DurableRuntime, EscalationPredicate,
-    EscalationRule, ExternalEffect, FuzzyCheckConfig, GraphQueryConfig, GraphQueryOperation,
-    HarmClass, LookupConfig, ResolutionMode,
-    ReturnTypeConfig, ReturnsConfig, SearchKeyConfig,
-    SlotType, SourceOfTruth, StateEffect, ThreeAxisDeclaration, TransitionArgs, TransitionEdge,
-    VerbBehavior, VerbConfig, VerbConsumes, VerbFlavour, VerbLifecycle, VerbMetadata,
-    VerbOutputConfig, VerbProduces, VerbRoleGuard, VerbScope, VerbSentences, VerbStatus, VerbTier,
-    VerbTransitions, VerbsConfig, PolicyConfig, VerbWriteConfig,
-    BatchPolicyConfig, DynamicVerbConfig, LockAccessConfig, LockModeConfig,
+    ActionClass, ArgConfig, ArgType, ArgValidation, BatchPolicyConfig, ConfirmPolicyConfig,
+    ConsequenceDeclaration, ConsequenceTier, CrudConfig, CrudOperation, DomainConfig,
+    DurableConfig, DurableRuntime, DynamicVerbConfig, EscalationPredicate, EscalationRule,
+    ExternalEffect, FuzzyCheckConfig, GraphQueryConfig, GraphQueryOperation, HarmClass,
+    LockAccessConfig, LockModeConfig, LookupConfig, PolicyConfig, ResolutionMode, ReturnTypeConfig,
+    ReturnsConfig, SearchKeyConfig, SlotType, SourceOfTruth, StateEffect, ThreeAxisDeclaration,
+    TransitionArgs, TransitionEdge, VerbBehavior, VerbConfig, VerbConsumes, VerbFlavour,
+    VerbLifecycle, VerbMetadata, VerbOutputConfig, VerbProduces, VerbRoleGuard, VerbScope,
+    VerbSentences, VerbStatus, VerbTier, VerbTransitions, VerbWriteConfig, VerbsConfig,
 };
 pub use validator::StructuralError;
 pub use validator::{
-    validate_verbs_config, Location, PolicyWarning, ValidationContext,
-    ValidationReport, WellFormednessError, collect_declared_fqns, validate_pack_fqns,
+    collect_declared_fqns, validate_pack_fqns, validate_verbs_config, Location, PolicyWarning,
+    ValidationContext, ValidationReport, WellFormednessError,
 };
 
+pub use manifest::{wiring_check, ManifestError, VerbDeclaration, VerbManifest, WiringReport};
+pub use pack_loader::{flatten_pack_entries, load_packs_from_dir, LoadedPack};
+pub use phrase_gen::{generate_phrases, set_phrase_gen_nouns, PhraseGenNouns};
 pub use resource_dependency::{ResolvedResourceDependency, ResourceDependency};
-pub use phrase_gen::{generate_phrases, PhraseGenNouns, set_phrase_gen_nouns};
-pub use manifest::{VerbManifest, VerbDeclaration, ManifestError, WiringReport, wiring_check};
-pub use pack_loader::{LoadedPack, load_packs_from_dir, flatten_pack_entries};
-

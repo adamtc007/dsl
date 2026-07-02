@@ -95,7 +95,8 @@ fn ast_kyc_tollgate_evaluate() {
 
 #[test]
 fn ast_deal_create() {
-    let source = r#"(deal.create :client-name "Fidelity International" :product "custody" :as @deal)"#;
+    let source =
+        r#"(deal.create :client-name "Fidelity International" :product "custody" :as @deal)"#;
     let program = parse_program(source).expect("parse failed");
     insta::assert_debug_snapshot!("ast_deal_create", program);
 }
@@ -116,7 +117,8 @@ fn ast_deal_advance_stage() {
 
 #[test]
 fn ast_deal_set_rate_card() {
-    let source = r#"(deal.set-rate-card :deal-id @deal :rate-card-id @rc :effective-from "2026-01-01")"#;
+    let source =
+        r#"(deal.set-rate-card :deal-id @deal :rate-card-id @rc :effective-from "2026-01-01")"#;
     let program = parse_program(source).expect("parse failed");
     insta::assert_debug_snapshot!("ast_deal_set_rate_card", program);
 }
@@ -252,7 +254,8 @@ fn ast_session_undo() {
 
 #[test]
 fn ast_changeset_compose() {
-    let source = r#"(changeset.compose :title "Add KYC attributes" :rationale "Phase 3 expansion" :as @cs)"#;
+    let source =
+        r#"(changeset.compose :title "Add KYC attributes" :rationale "Phase 3 expansion" :as @cs)"#;
     let program = parse_program(source).expect("parse failed");
     insta::assert_debug_snapshot!("ast_changeset_compose", program);
 }
@@ -339,7 +342,8 @@ fn ast_pattern_multi_arg_symbol_chain() {
 #[test]
 fn ast_pattern_numeric_args() {
     // Numeric (integer and decimal) argument values
-    let source = r#"(billing.set-rate :cbu-id @cbu :basis-points 25 :minimum-fee 150.00 :currency "GBP")"#;
+    let source =
+        r#"(billing.set-rate :cbu-id @cbu :basis-points 25 :minimum-fee 150.00 :currency "GBP")"#;
     let program = parse_program(source).expect("parse failed");
     insta::assert_debug_snapshot!("ast_pattern_numeric_args", program);
 }
@@ -347,7 +351,8 @@ fn ast_pattern_numeric_args() {
 #[test]
 fn ast_pattern_boolean_arg() {
     // Boolean flags
-    let source = r#"(trading-profile.enable :cbu-id @cbu :instrument "bond" :enabled false :override true)"#;
+    let source =
+        r#"(trading-profile.enable :cbu-id @cbu :instrument "bond" :enabled false :override true)"#;
     let program = parse_program(source).expect("parse failed");
     insta::assert_debug_snapshot!("ast_pattern_boolean_arg", program);
 }

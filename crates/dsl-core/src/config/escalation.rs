@@ -18,6 +18,8 @@
 //! for validator use; runtime use is equally deterministic given the context
 //! snapshot.
 
+#![allow(dead_code)] // Escalation runtime — pilot P.1.b, wired in Phase 6
+
 use crate::config::types::{
     ConsequenceDeclaration, ConsequenceTier, EscalationPredicate, EscalationRule,
 };
@@ -168,6 +170,7 @@ fn as_f64(v: &serde_json::Value) -> Option<f64> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     use crate::config::types::{ConsequenceTier, EscalationPredicate, EscalationRule};
     use serde_json::json;
 

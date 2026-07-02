@@ -1,6 +1,4 @@
-use dsl_core::{
-    validate_verbs_config, ConfigLoader, ValidationContext, VerbFlavour, VerbsConfig,
-};
+use dsl_core::{validate_verbs_config, ConfigLoader, ValidationContext, VerbFlavour, VerbsConfig};
 
 fn load_real_catalogue() -> VerbsConfig {
     ConfigLoader::from_env()

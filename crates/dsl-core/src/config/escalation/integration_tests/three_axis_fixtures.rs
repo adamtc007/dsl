@@ -14,9 +14,9 @@
 //!    (P12 invariant).
 
 use crate::config::{
-    compute_effective_tier, compute_runbook_tier,
-    validate_verbs_config, AggregationRule, ConsequenceTier, CrossScopeRule, EvaluationContext,
-    ExternalEffect, RunbookStep, StateEffect, ValidationContext, VerbsConfig,
+    compute_effective_tier, compute_runbook_tier, validate_verbs_config, AggregationRule,
+    ConsequenceTier, CrossScopeRule, EvaluationContext, ExternalEffect, RunbookStep, StateEffect,
+    ValidationContext, VerbsConfig,
 };
 use serde_json::json;
 use std::fs;

@@ -103,10 +103,6 @@ fn byte_to_line_col(source: &str, offset: usize) -> (u32, u32) {
     (line, col)
 }
 
-
-
-
-
 /// Related information for multi-location diagnostics
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct RelatedInfo {
@@ -147,6 +143,7 @@ impl Diagnostic {
     }
 
     /// Create a warning diagnostic
+    #[allow(dead_code)]
     pub(crate) fn warning(code: DiagnosticCode, message: impl Into<String>) -> Self {
         Self {
             severity: Severity::Warning,
@@ -187,8 +184,6 @@ impl Diagnostic {
         self.span = Some(span);
         self
     }
-
-
 
     /// Check if this is an error
     pub fn is_error(&self) -> bool {
@@ -299,8 +294,6 @@ mod tests {
         assert!(diag.span.is_some());
         assert_eq!(diag.span.as_ref().unwrap().start_col, 5);
     }
-
-
 
     #[test]
     fn test_byte_to_line_col() {

@@ -25,10 +25,10 @@
 
 use crate::config::effect_class::derive_effect_class_from_three_axis;
 use crate::config::types::{
-    ConsequenceDeclaration, ConsequenceTier, EscalationPredicate, ExternalEffect, StateEffect,
-    ThreeAxisDeclaration, VerbConfig, VerbFlavour, VerbsConfig, LensBindingConfig,
+    ConsequenceDeclaration, ConsequenceTier, EscalationPredicate, ExternalEffect,
+    LensBindingConfig, StateEffect, ThreeAxisDeclaration, VerbConfig, VerbFlavour, VerbsConfig,
 };
-use std::collections::{HashSet, HashMap};
+use std::collections::{HashMap, HashSet};
 
 // ---------------------------------------------------------------------------
 // Error + warning taxonomy
@@ -343,7 +343,11 @@ pub struct ValidationContext {
 
 /// Validate a single verb. Returns a report — callers aggregate across the
 /// catalogue.
-pub(crate) fn validate_verb(fqn: &str, verb: &VerbConfig, ctx: &ValidationContext) -> ValidationReport {
+pub(crate) fn validate_verb(
+    fqn: &str,
+    verb: &VerbConfig,
+    ctx: &ValidationContext,
+) -> ValidationReport {
     let mut report = ValidationReport::default();
 
     match &verb.three_axis {
@@ -472,12 +476,17 @@ fn validate_lens_bindings(
         return;
     }
     for (pack_id, binding) in bindings {
-        if !ctx.known_slots.contains(&(binding.target_workspace.clone(), binding.target_slot.clone())) {
-            report.structural.push(StructuralError::TransitionArgsSlotNotFound {
-                location: Location::verb_path(fqn, format!("lens_bindings.{}", pack_id)),
-                workspace: binding.target_workspace.clone(),
-                slot: binding.target_slot.clone(),
-            });
+        if !ctx.known_slots.contains(&(
+            binding.target_workspace.clone(),
+            binding.target_slot.clone(),
+        )) {
+            report
+                .structural
+                .push(StructuralError::TransitionArgsSlotNotFound {
+                    location: Location::verb_path(fqn, format!("lens_bindings.{}", pack_id)),
+                    workspace: binding.target_workspace.clone(),
+                    slot: binding.target_slot.clone(),
+                });
         }
     }
 }
@@ -740,7 +749,6 @@ pub fn validate_pack_fqns(
     errors
 }
 
-
 // Silence `unused` warnings for fields / variants reserved for P.1.d.
 #[allow(dead_code)]
 fn _reserved_for_p1_d(_: &ExternalEffect) {}
@@ -884,7 +892,12 @@ mod tests {
 
         let r = validate_verb("test.verb", &vc, &ctx);
         assert_eq!(r.structural.len(), 1);
-        if let StructuralError::TransitionArgsSlotNotFound { location, workspace, slot } = &r.structural[0] {
+        if let StructuralError::TransitionArgsSlotNotFound {
+            location,
+            workspace,
+            slot,
+        } = &r.structural[0]
+        {
             assert_eq!(workspace, "nonexistent_workspace");
             assert_eq!(slot, "nonexistent_slot");
             assert_eq!(location.path.as_deref(), Some("lens_bindings.onboarding"));
@@ -1493,7 +1506,6 @@ mod tests {
         let r = validate_verb("test.verb", &vc, &ValidationContext::default());
         assert!(r.is_clean());
     }
-
 }
 
 #[cfg(test)]

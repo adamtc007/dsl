@@ -5,7 +5,7 @@
 //! snapshot tests — they are intentionally more brittle so that any parser
 //! change that silently drops a binding is caught immediately.
 
-use dsl_core::{Statement, parse_program, VerbCall};
+use dsl_core::{parse_program, Statement, VerbCall};
 
 /// Helper: parse source and extract the first VerbCall.
 fn first_verb(source: &str) -> VerbCall {
@@ -50,8 +50,7 @@ fn at_cbu_binding_full_name() {
 
 #[test]
 fn at_entity_binding_captured() {
-    let source =
-        r#"(entity.create :entity-type "company" :name "HSBC Holdings plc" :as @entity)"#;
+    let source = r#"(entity.create :entity-type "company" :name "HSBC Holdings plc" :as @entity)"#;
     let vc = first_verb(source);
     assert_eq!(
         vc.binding.as_deref(),
@@ -62,7 +61,8 @@ fn at_entity_binding_captured() {
 
 #[test]
 fn at_person_binding_captured() {
-    let source = r#"(entity.create-proper-person :first-name "John" :last-name "Smith" :as @person)"#;
+    let source =
+        r#"(entity.create-proper-person :first-name "John" :last-name "Smith" :as @person)"#;
     let vc = first_verb(source);
     assert_eq!(
         vc.binding.as_deref(),
@@ -73,8 +73,7 @@ fn at_person_binding_captured() {
 
 #[test]
 fn at_company_binding_captured() {
-    let source =
-        r#"(entity.create-limited-company :name "Apex Capital Ltd" :jurisdiction "KY" :as @company)"#;
+    let source = r#"(entity.create-limited-company :name "Apex Capital Ltd" :jurisdiction "KY" :as @company)"#;
     let vc = first_verb(source);
     assert_eq!(
         vc.binding.as_deref(),
@@ -262,7 +261,8 @@ fn binding_with_underscores() {
 
 #[test]
 fn binding_does_not_corrupt_domain_or_verb() {
-    let source = r#"(entity.create-proper-person :first-name "Hans" :last-name "Müller" :as @director)"#;
+    let source =
+        r#"(entity.create-proper-person :first-name "Hans" :last-name "Müller" :as @director)"#;
     let vc = first_verb(source);
     assert_eq!(vc.domain, "entity");
     assert_eq!(vc.verb, "create-proper-person");

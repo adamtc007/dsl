@@ -71,10 +71,7 @@ pub enum EntityRef {
     Parent(String),
 
     /// A named entity with an explicit textual scope from the source predicate.
-    Scoped {
-        kind: String,
-        scope: RelationScope,
-    },
+    Scoped { kind: String, scope: RelationScope },
 }
 
 /// A set of entities targeted by a quantified predicate.
@@ -90,14 +87,14 @@ pub struct EntitySetRef {
 
 /// Qualifier attached to a set reference.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub(crate) enum EntityQualifier {
+pub enum EntityQualifier {
     /// The authored predicate says the required population must be complete.
     Required,
 }
 
 /// Relationship or scope phrase preserved as structure.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-pub(crate) enum RelationScope {
+pub enum RelationScope {
     /// Scoped to the current instance of the named kind.
     This(String),
 

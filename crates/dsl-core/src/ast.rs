@@ -369,6 +369,7 @@ impl AstNode {
     }
 
     /// Create an integer literal (with synthetic span)
+    #[allow(dead_code)]
     pub(crate) fn integer(i: i64) -> Self {
         AstNode::Literal(Literal::Integer(i), Span::synthetic())
     }
@@ -391,26 +392,8 @@ impl AstNode {
         }
     }
 
-    /// Create a resolved entity reference
-    pub(crate) fn resolved_entity_ref(
-        entity_type: impl Into<String>,
-        search_column: impl Into<String>,
-        value: impl Into<String>,
-        resolved_key: impl Into<String>,
-        span: Span,
-    ) -> Self {
-        AstNode::EntityRef {
-            entity_type: entity_type.into(),
-            search_column: search_column.into(),
-            value: value.into(),
-            resolved_key: Some(resolved_key.into()),
-            span,
-            ref_id: None,
-            explain: None,
-        }
-    }
-
     /// Create a symbol reference
+    #[allow(dead_code)]
     pub(crate) fn symbol_ref(name: impl Into<String>, span: Span) -> Self {
         AstNode::SymbolRef {
             name: name.into(),
@@ -481,14 +464,6 @@ impl AstNode {
             } => Uuid::parse_str(key).ok(),
             AstNode::Literal(Literal::String(s), _) => Uuid::parse_str(s).ok(),
             AstNode::Literal(Literal::Uuid(u), _) => Some(*u),
-            _ => None,
-        }
-    }
-
-    /// Get the resolved key from an entity ref
-    pub(crate) fn resolved_key(&self) -> Option<&str> {
-        match self {
-            AstNode::EntityRef { resolved_key, .. } => resolved_key.as_deref(),
             _ => None,
         }
     }
@@ -565,6 +540,7 @@ impl AstNode {
     ///
     /// # Panics
     /// Panics if `key` is not a valid UUID. Use `try_with_resolved_key` for fallible version.
+    #[allow(dead_code)]
     pub(crate) fn with_resolved_key(&self, key: String) -> Self {
         self.try_with_resolved_key(key)
             .expect("resolved_key must be a valid UUID")
@@ -575,6 +551,7 @@ impl AstNode {
     /// Returns Ok(new_node) if key is a valid UUID, Err if not.
     /// This enforces that only UUIDs can be resolved keys - codes like
     /// "DIRECTOR" or "LU" should remain as string literals.
+    #[allow(dead_code)]
     pub(crate) fn try_with_resolved_key(&self, key: String) -> Result<Self, String> {
         // Validate UUID format
         uuid::Uuid::parse_str(&key).map_err(|_| {
@@ -668,6 +645,7 @@ impl Span {
     }
 
     /// Create a span covering two spans
+    #[allow(dead_code)]
     pub(crate) fn merge(a: Span, b: Span) -> Span {
         Span {
             start: a.start.min(b.start),
@@ -700,7 +678,6 @@ impl Span {
     pub fn is_synthetic(&self) -> bool {
         self.start == usize::MAX && self.end == usize::MAX
     }
-
 }
 
 // =============================================================================
@@ -757,6 +734,7 @@ pub(crate) trait AstVisitor {
 }
 
 /// Collect all unresolved entity refs in the AST
+#[allow(dead_code)]
 pub(crate) fn find_unresolved_refs(program: &Program) -> Vec<&AstNode> {
     struct Collector<'a> {
         refs: Vec<&'a AstNode>,
@@ -872,7 +850,6 @@ fn collect_unresolved_from_node(
     }
 }
 
-
 /// Entity reference resolution statistics
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub struct EntityRefStats {
@@ -882,6 +859,7 @@ pub struct EntityRefStats {
     pub unresolved_count: i32,
 }
 
+#[allow(dead_code)]
 impl EntityRefStats {
     /// Returns true if all EntityRefs are resolved
     pub(crate) fn is_fully_resolved(&self) -> bool {
@@ -988,6 +966,7 @@ pub(crate) enum ViewportVerb {
 
 impl ViewportVerb {
     /// Get the span of this verb
+    #[allow(dead_code)]
     pub(crate) fn span(&self) -> Span {
         match self {
             ViewportVerb::Focus { span, .. } => *span,
@@ -1002,6 +981,7 @@ impl ViewportVerb {
     }
 
     /// Get the verb name for display
+    #[allow(dead_code)]
     pub(crate) fn verb_name(&self) -> &'static str {
         match self {
             ViewportVerb::Focus { .. } => "focus",
@@ -1016,6 +996,7 @@ impl ViewportVerb {
     }
 
     /// Render the verb back to DSL source
+    #[allow(dead_code)]
     pub(crate) fn to_dsl_string(&self) -> String {
         match self {
             ViewportVerb::Focus { target, .. } => {
@@ -1077,6 +1058,7 @@ pub enum FocusTarget {
 
 impl FocusTarget {
     /// Get the span of this target
+    #[allow(dead_code)]
     pub(crate) fn span(&self) -> Span {
         match self {
             FocusTarget::Cbu { span, .. } => *span,
@@ -1091,6 +1073,7 @@ impl FocusTarget {
     }
 
     /// Render the target to DSL string
+    #[allow(dead_code)]
     pub(crate) fn to_dsl_string(&self) -> String {
         match self {
             FocusTarget::Cbu { cbu_ref, .. } => format!(":cbu \"{}\"", cbu_ref),
@@ -1131,6 +1114,7 @@ pub enum EnhanceArg {
 
 impl EnhanceArg {
     /// Render the argument to DSL string
+    #[allow(dead_code)]
     pub(crate) fn to_dsl_string(&self) -> String {
         match self {
             EnhanceArg::Plus => "+".to_string(),
@@ -1157,6 +1141,7 @@ pub(crate) enum NavTarget {
 
 impl NavTarget {
     /// Get the span of this target
+    #[allow(dead_code)]
     pub(crate) fn span(&self) -> Span {
         match self {
             NavTarget::Entity { span, .. } => *span,
@@ -1166,6 +1151,7 @@ impl NavTarget {
     }
 
     /// Render the target to DSL string
+    #[allow(dead_code)]
     pub(crate) fn to_dsl_string(&self) -> String {
         match self {
             NavTarget::Entity { entity_ref, .. } => format!("\"{}\"", entity_ref),
@@ -1188,6 +1174,7 @@ pub(crate) enum NavDirection {
 
 impl NavDirection {
     /// Render the direction to DSL string
+    #[allow(dead_code)]
     pub(crate) fn to_dsl_string(&self) -> String {
         match self {
             NavDirection::Left => "left".to_string(),
@@ -1270,6 +1257,7 @@ impl ViewType {
     }
 
     /// Get all view types
+    #[allow(dead_code)]
     pub(crate) fn all() -> &'static [ViewType] {
         &[
             ViewType::Structure,
@@ -1328,6 +1316,7 @@ impl ConfidenceZone {
     }
 
     /// Get the minimum confidence score for this zone
+    #[allow(dead_code)]
     pub(crate) fn min_confidence(&self) -> f32 {
         match self {
             ConfidenceZone::Core => 0.95,
@@ -1338,6 +1327,7 @@ impl ConfidenceZone {
     }
 
     /// Determine which zone a confidence score belongs to
+    #[allow(dead_code)]
     pub(crate) fn from_score(score: f32) -> Self {
         if score >= 0.95 {
             ConfidenceZone::Core
@@ -1390,6 +1380,7 @@ impl ExportFormat {
     }
 
     /// Get the file extension for this format
+    #[allow(dead_code)]
     pub(crate) fn extension(&self) -> &'static str {
         match self {
             ExportFormat::Png => "png",
@@ -1400,6 +1391,7 @@ impl ExportFormat {
     }
 
     /// Get the MIME type for this format
+    #[allow(dead_code)]
     pub(crate) fn mime_type(&self) -> &'static str {
         match self {
             ExportFormat::Png => "image/png",

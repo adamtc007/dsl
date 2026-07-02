@@ -59,7 +59,10 @@ fn all_verb_yaml_files_parse_without_type_c_errors() {
         domain_count, total_verbs
     );
 
-    assert!(domain_count > 0, "expected at least one domain to be loaded");
+    assert!(
+        domain_count > 0,
+        "expected at least one domain to be loaded"
+    );
     assert!(total_verbs > 0, "expected at least one verb to be loaded");
 }
 

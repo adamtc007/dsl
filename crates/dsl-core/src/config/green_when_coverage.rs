@@ -4,6 +4,8 @@
 //! predicates are backfilled workspace by workspace. This module deliberately
 //! reports coverage; it does not invent predicates.
 
+#![allow(dead_code)] // Green-when coverage accounting — Phase 8
+
 use dsl_types::{Dag, SlotStateMachine, StateDef, TransitionDef};
 use serde_yaml::Value as YamlValue;
 use std::collections::{BTreeMap, BTreeSet, HashSet};
@@ -34,7 +36,6 @@ pub(crate) struct GreenWhenCoverageSummary {
     pub covered_candidate_states: usize,
     pub missing_candidate_states: usize,
 }
-
 
 pub(crate) fn green_when_coverage_for_dags(
     dags: &BTreeMap<String, Dag>,
@@ -79,7 +80,9 @@ pub(crate) fn green_when_coverage_for_dag(
     rows
 }
 
-pub(crate) fn green_when_coverage_summary(rows: &[GreenWhenCoverageRow]) -> GreenWhenCoverageSummary {
+pub(crate) fn green_when_coverage_summary(
+    rows: &[GreenWhenCoverageRow],
+) -> GreenWhenCoverageSummary {
     let total_states = rows.len();
     let candidate_states = rows.iter().filter(|row| row.candidate).count();
     let covered_candidate_states = rows

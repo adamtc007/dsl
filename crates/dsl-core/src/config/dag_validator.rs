@@ -24,9 +24,9 @@
 //! helpers are limited to reading authored YAML into those pure checks.
 
 use crate::config::dag::*;
-use dsl_types::{ConstellationMapDefBody, SeedConstellationMap, SlotDef, SlotKey, GatingStatus, SlotGatingState};
 use crate::config::predicate::{parse_green_when, EntityRef, EntitySetRef, Predicate, Validity};
 use crate::resolver::{ResolvedSlot, ResolvedTemplate};
+use dsl_types::{ConstellationMapDefBody, SeedConstellationMap, SlotDef, SlotGatingState, SlotKey};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::path::Path;
 
@@ -387,7 +387,10 @@ impl std::fmt::Display for DagError {
                     "{location}: failed to parse constellation map — {reason}"
                 )
             }
-            Self::OrphanSlotGatingKey { constellation, path } => {
+            Self::OrphanSlotGatingKey {
+                constellation,
+                path,
+            } => {
                 write!(
                     f,
                     "Gating state maps to non-existent slot path '{path}' in constellation '{constellation}'"
@@ -518,6 +521,7 @@ pub struct DagValidationReport {
 }
 
 impl DagValidationReport {
+    #[allow(dead_code)]
     pub(crate) fn is_clean(&self) -> bool {
         self.errors.is_empty()
     }
@@ -533,6 +537,7 @@ pub struct DagValidationContext {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[allow(dead_code)] // Schema coordination hardening — Phase 6 wiring
 pub(crate) enum SchemaCoordinationKnownDeferred {
     SlotFieldDrift {
         source_name: String,
@@ -552,9 +557,6 @@ pub(crate) enum SchemaCoordinationKnownDeferred {
 // ---------------------------------------------------------------------------
 // Validator entry point
 // ---------------------------------------------------------------------------
-
-
-
 
 /// Validate all loaded DAGs using optional external context.
 pub fn validate_dags_with_context(
@@ -733,7 +735,7 @@ pub(crate) fn validate_constellation_map_dir_schema_coordination(
     Ok(report)
 }
 
-
+#[allow(dead_code)] // Schema coordination hardening — Phase 6 wiring
 pub(crate) fn harden_schema_coordination_warnings(
     report: &mut DagValidationReport,
     known_deferred: &[SchemaCoordinationKnownDeferred],
@@ -752,6 +754,7 @@ pub(crate) fn harden_schema_coordination_warnings(
     report.warnings = retained_warnings;
 }
 
+#[allow(dead_code)]
 fn schema_coordination_known_deferred_key(
     warning: &DagWarning,
 ) -> Option<SchemaCoordinationKnownDeferred> {
@@ -787,6 +790,7 @@ fn schema_coordination_known_deferred_key(
     }
 }
 
+#[allow(dead_code)]
 fn schema_coordination_warning_to_error(warning: DagWarning) -> DagError {
     match warning {
         DagWarning::SchemaCoordinationSlotFieldDrift {
@@ -822,6 +826,7 @@ fn schema_coordination_warning_to_error(warning: DagWarning) -> DagError {
     }
 }
 
+#[allow(dead_code)]
 fn schema_coordination_source_name(location: &DagLocation) -> String {
     location
         .path
@@ -1177,7 +1182,9 @@ fn validate_green_when_predicates(
         for binding in &machine.predicate_bindings {
             if let Some(scope) = &binding.scope {
                 if scope.contains("constellation-exposed ") {
-                    let ref_str = scope[scope.find("constellation-exposed ").unwrap() + "constellation-exposed ".len()..].trim();
+                    let ref_str = scope[scope.find("constellation-exposed ").unwrap()
+                        + "constellation-exposed ".len()..]
+                        .trim();
                     if !ref_str.contains('.') {
                         report.warnings.push(DagWarning::MalformedBindingScope {
                             location: DagLocation {
@@ -1259,15 +1266,7 @@ fn validate_green_when_predicates(
             }
 
             // Verify that all states referenced in the green_when AST exist in the target slot state machine.
-            validate_predicate_states(
-                &location,
-                &slot.id,
-                machine,
-                &ast,
-                workspace,
-                index,
-                report,
-            );
+            validate_predicate_states(&location, &slot.id, machine, &ast, workspace, index, report);
         }
     }
 }
@@ -1285,9 +1284,11 @@ fn resolve_binding_workspace_and_slot(
             }
         }
     }
-    
+
     // Default to current workspace and source_entity (or entity) as slot ID
-    let slot_id = binding.source_entity.clone()
+    let slot_id = binding
+        .source_entity
+        .clone()
         .unwrap_or_else(|| binding.entity.clone());
     (current_workspace.to_string(), slot_id)
 }
@@ -1304,22 +1305,70 @@ fn validate_predicate_states(
     match predicate {
         Predicate::And(items) => {
             for item in items {
-                validate_predicate_states(location, slot_id, machine, item, current_workspace, index, report);
+                validate_predicate_states(
+                    location,
+                    slot_id,
+                    machine,
+                    item,
+                    current_workspace,
+                    index,
+                    report,
+                );
             }
         }
         Predicate::StateIn { entity, state_set } => {
-            validate_state_set(location, slot_id, machine, entity, state_set, current_workspace, index, report);
+            validate_state_set(
+                location,
+                slot_id,
+                machine,
+                entity,
+                state_set,
+                current_workspace,
+                index,
+                report,
+            );
         }
         Predicate::Every { condition, .. }
         | Predicate::NoneExists { condition, .. }
         | Predicate::AtLeastOne { condition, .. } => {
-            validate_predicate_states(location, slot_id, machine, condition, current_workspace, index, report);
+            validate_predicate_states(
+                location,
+                slot_id,
+                machine,
+                condition,
+                current_workspace,
+                index,
+                report,
+            );
         }
-        Predicate::Count { condition: Some(condition), .. } => {
-            validate_predicate_states(location, slot_id, machine, condition, current_workspace, index, report);
+        Predicate::Count {
+            condition: Some(condition),
+            ..
+        } => {
+            validate_predicate_states(
+                location,
+                slot_id,
+                machine,
+                condition,
+                current_workspace,
+                index,
+                report,
+            );
         }
-        Predicate::Obtained { entity, validity: Validity::StateIn(state_set) } => {
-            validate_state_set(location, slot_id, machine, entity, state_set, current_workspace, index, report);
+        Predicate::Obtained {
+            entity,
+            validity: Validity::StateIn(state_set),
+        } => {
+            validate_state_set(
+                location,
+                slot_id,
+                machine,
+                entity,
+                state_set,
+                current_workspace,
+                index,
+                report,
+            );
         }
         _ => {}
     }
@@ -1355,12 +1404,19 @@ fn validate_state_set(
                     location: location.clone(),
                     slot_id: slot_id.to_string(),
                     state_id: state.clone(),
-                    reason: format!("referenced state '{state}' does not exist on slot '{slot_id}'"),
+                    reason: format!(
+                        "referenced state '{state}' does not exist on slot '{slot_id}'"
+                    ),
                 });
             }
         }
-    } else if let Some(binding) = machine.predicate_bindings.iter().find(|b| b.entity == entity_name) {
-        let (target_ws, target_slot) = resolve_binding_workspace_and_slot(current_workspace, binding);
+    } else if let Some(binding) = machine
+        .predicate_bindings
+        .iter()
+        .find(|b| b.entity == entity_name)
+    {
+        let (target_ws, target_slot) =
+            resolve_binding_workspace_and_slot(current_workspace, binding);
         if index.slot_exists(&target_ws, &target_slot) {
             for state in unique_states {
                 if !index.state_exists(&target_ws, &target_slot, state) {
@@ -2159,7 +2215,7 @@ pub fn validate_slot_gating_states(
     gating_states: &BTreeMap<SlotKey, SlotGatingState>,
 ) -> DagValidationReport {
     let mut report = DagValidationReport::default();
-    
+
     for (key, _) in gating_states {
         // Look up constellation in loaded constellations
         let const_map = match constellations.get(&key.constellation) {
@@ -2172,12 +2228,12 @@ pub fn validate_slot_gating_states(
                 continue;
             }
         };
-        
+
         // Walk the dot-path segment-by-segment down the nested BTreeMap<String, SlotDef>
         let segments: Vec<&str> = key.path.split('.').collect();
         let mut current_slots = &const_map.slots;
         let mut resolved = true;
-        
+
         for (i, &segment) in segments.iter().enumerate() {
             match current_slots.get(segment) {
                 Some(slot_def) => {
@@ -2192,7 +2248,7 @@ pub fn validate_slot_gating_states(
                 }
             }
         }
-        
+
         if !resolved {
             report.errors.push(DagError::OrphanSlotGatingKey {
                 constellation: key.constellation.clone(),
@@ -2200,7 +2256,7 @@ pub fn validate_slot_gating_states(
             });
         }
     }
-    
+
     report
 }
 
@@ -2662,7 +2718,10 @@ slots:
         assert!(!report.is_clean());
         assert_eq!(report.errors.len(), 1);
         match &report.errors[0] {
-            DagError::OrphanSlotGatingKey { constellation, path } => {
+            DagError::OrphanSlotGatingKey {
+                constellation,
+                path,
+            } => {
                 assert_eq!(constellation, "my_constellation");
                 assert_eq!(path, "parent_slot.does_not_exist");
             }
@@ -2681,13 +2740,21 @@ slots:
             },
         );
         let report = validate_slot_gating_states(&constellations, &gating_states);
-        assert!(report.is_clean(), "Expected clean report, got: {:?}", report.errors);
+        assert!(
+            report.is_clean(),
+            "Expected clean report, got: {:?}",
+            report.errors
+        );
 
         // 3. Sparse absence (topology slot with no gating entry) -> Pass
         let gating_states = BTreeMap::new(); // Empty, meaning both parent_slot and parent_slot.child_slot are absent in gating
         let report = validate_slot_gating_states(&constellations, &gating_states);
-        assert!(report.is_clean(), "Expected clean report, got: {:?}", report.errors);
-        
+        assert!(
+            report.is_clean(),
+            "Expected clean report, got: {:?}",
+            report.errors
+        );
+
         // 4. Unknown constellation -> Fail
         let mut gating_states = BTreeMap::new();
         gating_states.insert(
@@ -2703,7 +2770,10 @@ slots:
         assert!(!report.is_clean());
         assert_eq!(report.errors.len(), 1);
         match &report.errors[0] {
-            DagError::OrphanSlotGatingKey { constellation, path } => {
+            DagError::OrphanSlotGatingKey {
+                constellation,
+                path,
+            } => {
                 assert_eq!(constellation, "unknown_constellation");
                 assert_eq!(path, "parent_slot");
             }

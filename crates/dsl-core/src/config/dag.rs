@@ -16,24 +16,15 @@ use std::path::{Path, PathBuf};
 // Re-export all relocated types from dsl_types::dag module
 // Re-exports reached by external crates (facade/config re-exports)
 pub use dsl_types::{
-    Dag, Phase, DerivationCondition, StateSelector, Slot, SlotStateMachine,
-    PredicateBinding, Severity, CrossWorkspaceConstraint, DerivedCrossWorkspaceState,
-    CascadeRule, EntryVia, LoadedDag,
+    CascadeRule, CrossWorkspaceConstraint, Dag, DerivationCondition, DerivedCrossWorkspaceState,
+    EntryVia, LoadedDag, Phase, PredicateBinding, Severity, Slot, SlotStateMachine, StateSelector,
 };
 
 // Re-exports reached only inside dsl-core
-pub(crate) use dsl_types::{
-    StateMachine, StateDef, TransitionDef, ParentSlot, ParentJoin, StateDependency,
-    PeriodicReviewCadence, RiskTierOverride, ReviewScope, EvidenceType, CategoryGated,
-    ProductModuleGates, ConditionalGate, PruneCascadeRule, PruneCascadeTarget,
-    PrunePreValidation, ExpectedLifetime, PredicateBindingSourceKind, DualLifecycle,
-};
+pub(crate) use dsl_types::{ExpectedLifetime, PredicateBindingSourceKind, StateMachine};
 
 // Re-exports of level-0 types reached only inside dsl-core
-pub(crate) use dsl_types::{
-    AuditClass, ClosureType, CompletenessAssertionConfig, EligibilityConstraint, RoleGuard,
-};
-
+pub(crate) use dsl_types::{ClosureType, EligibilityConstraint};
 
 /// Load every `*.yaml` file in the DAG taxonomies directory. Returns a
 /// map keyed by `workspace` name. Malformed files surface an error —
