@@ -1,7 +1,8 @@
-use crate::config::{
+use crate::config::green_when_coverage::{
     green_when_coverage_for_dag, green_when_coverage_for_dags, green_when_coverage_summary,
-    load_dags_from_dir, ConfigLoader, Dag, GreenWhenExclusionReason, VerbFlavour, VerbsConfig,
+    GreenWhenExclusionReason,
 };
+use crate::config::{load_dags_from_dir, ConfigLoader, Dag, VerbFlavour, VerbsConfig};
 use std::collections::{BTreeMap, HashSet};
 use std::path::PathBuf;
 

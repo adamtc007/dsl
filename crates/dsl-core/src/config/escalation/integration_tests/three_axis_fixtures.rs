@@ -13,10 +13,11 @@
 //!    and an ad-hoc REPL runbook built from the same step sequence
 //!    (P12 invariant).
 
+use crate::config::escalation::{compute_effective_tier, EvaluationContext};
+use crate::config::runbook_composition::{compute_runbook_tier, AggregationRule, CrossScopeRule, RunbookStep};
 use crate::config::{
-    compute_effective_tier, compute_runbook_tier, validate_verbs_config, AggregationRule,
-    ConsequenceTier, CrossScopeRule, EvaluationContext, ExternalEffect, RunbookStep, StateEffect,
-    ValidationContext, VerbsConfig,
+    validate_verbs_config, ConsequenceTier, ExternalEffect, StateEffect, ValidationContext,
+    VerbsConfig,
 };
 use serde_json::json;
 use std::fs;

@@ -18,7 +18,10 @@ fn every_catalogue_verb_has_phase7_flavour() {
         .count();
 
     assert!(
-        total >= 1288,
+        // Baseline lowered 2026-07-10: 58 legacy determination verbs + cbu.decide
+        // removed as dead code (ob-poc dsl.kyc V&S program, CBU-KYC decoupling).
+        // Live count at time of this change: 1277.
+        total >= 1270,
         "real verb catalogue count regressed below baseline"
     );
     assert_eq!(annotated, total, "all verbs must carry flavour");
@@ -71,7 +74,9 @@ fn discretionary_verbs_have_authority_and_audit_metadata() {
     }
 
     assert!(
-        checked >= 166,
+        // Baseline lowered 2026-07-10 alongside the total-count baseline above;
+        // live count at time of this change: 159.
+        checked >= 150,
         "discretionary count regressed below baseline"
     );
 }

@@ -14,7 +14,8 @@
 
 use crate::{
     execution_dag::{BindingSlotId, DagEdge, JoinBarrierMode, NodeId, PopulatedExecutionDag},
-    EffectClass, TransactionPolicy,
+    executable_plan::TransactionPolicy,
+    EffectClass,
 };
 
 // =============================================================================

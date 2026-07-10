@@ -1572,13 +1572,17 @@ mod tests {
                 arguments: vec![
                     Argument {
                         key: "cbu-id".to_string(),
-                        value: AstNode::resolved_entity_ref(
-                            "cbu",
-                            "name",
-                            "Apex Fund",
-                            "11111111-1111-1111-1111-111111111111",
-                            Span::default(),
-                        ),
+                        value: AstNode::EntityRef {
+                            entity_type: "cbu".to_string(),
+                            search_column: "name".to_string(),
+                            value: "Apex Fund".to_string(),
+                            resolved_key: Some(
+                                "11111111-1111-1111-1111-111111111111".to_string(),
+                            ),
+                            span: Span::default(),
+                            ref_id: None,
+                            explain: None,
+                        },
                         span: Span::default(),
                     },
                     Argument {
@@ -1588,13 +1592,15 @@ mod tests {
                     },
                     Argument {
                         key: "role".to_string(),
-                        value: AstNode::resolved_entity_ref(
-                            "role",
-                            "name",
-                            "DIRECTOR",
-                            "DIRECTOR",
-                            Span::default(),
-                        ),
+                        value: AstNode::EntityRef {
+                            entity_type: "role".to_string(),
+                            search_column: "name".to_string(),
+                            value: "DIRECTOR".to_string(),
+                            resolved_key: Some("DIRECTOR".to_string()),
+                            span: Span::default(),
+                            ref_id: None,
+                            explain: None,
+                        },
                         span: Span::default(),
                     },
                 ],

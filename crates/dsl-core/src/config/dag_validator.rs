@@ -2267,6 +2267,7 @@ pub fn validate_slot_gating_states(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use dsl_types::GatingStatus;
 
     fn ws_dag(yaml: &str) -> LoadedDag {
         let dag: Dag = serde_yaml::from_str(yaml).unwrap();

@@ -2,9 +2,9 @@
 // config/sem_os_seeds/ which doesn't exist in the dsl satellite repo.
 // Tests depending on them are covered by ob-poc's own test suite.
 
+use crate::config::dag_validator::validate_constellation_map_schema_coordination;
 use crate::config::{
-    validate_constellation_map_schema_coordination, validate_dags_with_context, Dag, DagError,
-    DagValidationContext, DagWarning, LoadedDag,
+    validate_dags_with_context, Dag, DagError, DagValidationContext, DagWarning, LoadedDag,
 };
 use std::collections::{BTreeMap, HashSet};
 use std::path::PathBuf;

@@ -1,6 +1,7 @@
 use crate::config::{
     dag::{ClosureType, EligibilityConstraint},
-    validate_constellation_map_schema_coordination, Dag, LoadedDag,
+    dag_validator::validate_constellation_map_schema_coordination,
+    Dag, LoadedDag,
 };
 use std::{
     collections::{BTreeMap, HashMap},
