@@ -49,6 +49,78 @@ pub struct Dag {
 
     #[serde(default)]
     pub prune_pre_validation: Option<PrunePreValidation>,
+
+    /// Declares verb families governed by an append-only event stream +
+    /// fold/lexicon preconditions rather than DAG lifecycle slots
+    /// (`governance.dag_slots: intentionally_absent`). Consumed by the
+    /// control-plane G4 (DAG proof) / G6 (evidence) gates to route these
+    /// verb families to stream-governance checks instead of DAG-slot
+    /// transition checks — see EOP-PLAN-CONTROLPLANE-001 (ob-poc).
+    #[serde(default)]
+    pub stream_governed: Option<StreamGoverned>,
+}
+
+// =============================================================================
+// STREAM GOVERNANCE (control-plane v0.1)
+// =============================================================================
+
+/// A verb family whose current-state derivation and preconditions come
+/// from an event stream's folds/projections, not from this DAG's slots.
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct StreamGoverned {
+    pub id: String,
+    #[serde(default)]
+    pub description: Option<String>,
+    #[serde(default)]
+    pub verb_families: Vec<String>,
+    #[serde(default)]
+    pub stream_tables: Vec<String>,
+    #[serde(default)]
+    pub governance: Option<StreamGovernance>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct StreamGovernance {
+    /// Whether DAG lifecycle slots exist for this verb family. Free-text
+    /// today (only `"intentionally_absent"` is used) rather than a closed
+    /// enum, since the DAG-slot/stream-governance split is still settling
+    /// during the control-plane rollout.
+    pub dag_slots: String,
+    #[serde(default)]
+    pub declaration: Option<String>,
+    #[serde(default)]
+    pub content_addressed_lexicon_manifest: Option<LexiconManifestRef>,
+    #[serde(default)]
+    pub fold_preconditions: Option<FoldPreconditionsRef>,
+    #[serde(default)]
+    pub approval_gate: Option<ApprovalGateRef>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct LexiconManifestRef {
+    pub table: String,
+    #[serde(default)]
+    pub enforcement_refs: Vec<String>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct FoldPreconditionsRef {
+    #[serde(default)]
+    pub keys: Vec<String>,
+    #[serde(default)]
+    pub enforcement_refs: Vec<String>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct ApprovalGateRef {
+    pub key: String,
+    #[serde(default)]
+    pub enforcement_refs: Vec<String>,
 }
 
 // =============================================================================

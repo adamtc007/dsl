@@ -39,4 +39,5 @@ pub use dag::{
     StateDependency, DualLifecycle, PeriodicReviewCadence, RiskTierOverride, ReviewScope,
     EvidenceType, CategoryGated, ProductModuleGates, ConditionalGate, PruneCascadeRule,
     PruneCascadeTarget, PrunePreValidation, ExpectedLifetime, PredicateBindingSourceKind,
+    StreamGoverned, StreamGovernance, LexiconManifestRef, FoldPreconditionsRef, ApprovalGateRef,
 };

@@ -16,8 +16,10 @@ use std::path::{Path, PathBuf};
 // Re-export all relocated types from dsl_types::dag module
 // Re-exports reached by external crates (facade/config re-exports)
 pub use dsl_types::{
-    CascadeRule, CrossWorkspaceConstraint, Dag, DerivationCondition, DerivedCrossWorkspaceState,
-    EntryVia, LoadedDag, Phase, PredicateBinding, Severity, Slot, SlotStateMachine, StateSelector,
+    ApprovalGateRef, CascadeRule, CrossWorkspaceConstraint, Dag, DerivationCondition,
+    DerivedCrossWorkspaceState, EntryVia, FoldPreconditionsRef, LexiconManifestRef, LoadedDag,
+    Phase, PredicateBinding, Severity, Slot, SlotStateMachine, StateSelector, StreamGoverned,
+    StreamGovernance,
 };
 
 // Re-exports reached only inside dsl-core

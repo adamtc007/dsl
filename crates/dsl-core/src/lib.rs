@@ -63,9 +63,10 @@ pub use config::{
 
 // Re-export from config::dag
 pub use config::dag::{
-    CascadeRule, CrossWorkspaceConstraint, DerivationCondition, DerivedCrossWorkspaceState,
-    EntryVia, Phase, PredicateBinding, Severity as DagSeverity, Slot as DagSlot, SlotStateMachine,
-    StateSelector,
+    ApprovalGateRef, CascadeRule, CrossWorkspaceConstraint, DerivationCondition,
+    DerivedCrossWorkspaceState, EntryVia, FoldPreconditionsRef, LexiconManifestRef, Phase,
+    PredicateBinding, Severity as DagSeverity, Slot as DagSlot, SlotStateMachine, StateSelector,
+    StreamGoverned, StreamGovernance,
 };
 
 // Re-export from config::predicate
