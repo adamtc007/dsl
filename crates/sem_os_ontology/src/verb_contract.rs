@@ -145,6 +145,13 @@ pub struct VerbCrudMapping {
     /// Join column.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub join_col: Option<String>,
+    /// Literal column values to SET on UPDATE, declared directly in the
+    /// verb YAML rather than derived from a caller-supplied arg (e.g.
+    /// status transitions: `status: VALIDATION_PENDING`). Distinct from
+    /// `args[].maps_to`, which maps a *caller-supplied* value onto a
+    /// column — `set_values` entries have no corresponding arg at all.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub set_values: Option<std::collections::HashMap<String, serde_json::Value>>,
 }
 
 /// Definition of a verb argument.
