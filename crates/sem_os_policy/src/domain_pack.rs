@@ -707,10 +707,10 @@ pub fn validate_domain_pack(manifest: &DomainPackManifest) -> DomainPackValidati
         ));
     }
 
-    if manifest.allowed_transitions.is_empty() {
+    if !manifest.owned_state_machines.is_empty() && manifest.allowed_transitions.is_empty() {
         diagnostics.push(diagnostic(
             "domain_pack.no_allowed_transitions",
-            "domain pack must declare at least one allowed transition",
+            "domain pack owning state machines must declare at least one allowed transition",
         ));
     }
 
@@ -1380,6 +1380,30 @@ mod tests {
         let report = valid_manifest().validate();
         assert!(report.valid, "{:?}", report.diagnostics);
         assert!(report.diagnostics.is_empty());
+    }
+
+    #[test]
+    fn stateless_pack_does_not_invent_a_transition() {
+        let mut manifest = valid_manifest();
+        manifest.owned_state_machines.clear();
+        manifest.allowed_transitions.clear();
+
+        let report = manifest.validate();
+
+        assert!(report.valid, "{:?}", report.diagnostics);
+    }
+
+    #[test]
+    fn stateful_pack_requires_a_transition() {
+        let mut manifest = valid_manifest();
+        manifest.allowed_transitions.clear();
+
+        let report = manifest.validate();
+
+        assert!(report
+            .diagnostics
+            .iter()
+            .any(|diagnostic| diagnostic.code == "domain_pack.no_allowed_transitions"));
     }
 
     #[test]

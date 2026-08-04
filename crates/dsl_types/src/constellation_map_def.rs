@@ -151,6 +151,8 @@ pub struct SlotDef {
 #[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum SlotType {
+    /// Stateless workspace/menu root with no backing subject row.
+    Workspace,
     Cbu,
     Entity,
     EntityGraph,
@@ -284,4 +286,3 @@ pub enum GatingStatus {
 pub struct SlotGatingState {
     pub status: GatingStatus,
 }
-

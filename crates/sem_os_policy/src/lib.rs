@@ -52,6 +52,7 @@ pub mod affinity;
 pub mod authoring;
 pub mod context_policy;
 pub mod context_resolution;
+pub mod decision_board;
 #[allow(dead_code)]
 pub(crate) mod derivation; // internal derivation logic — not in external import surface
 pub mod diagram;
