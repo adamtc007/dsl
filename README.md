@@ -9,10 +9,10 @@ built-in application profile.
 ## Dependency direction
 
 ```text
-dsl_types      sem_os_types    semantic-decision-contracts
-     |           /     \               /          \
-     v          v       v             v            v
-  dsl-core  sem_os_core  sem_os_ontology      sem_os_policy
+dsl_types      sem_os_types    semantic-decision-contracts   semantic-embedder
+     |           /     \               /          \                 |
+     v          v       v             v            v                v
+  dsl-core  sem_os_core  sem_os_ontology      sem_os_policy    optional model runtime
                   \             /                 ^
                    \___________/_________________/
 ```
@@ -20,6 +20,10 @@ dsl_types      sem_os_types    semantic-decision-contracts
 `dsl-integration-tests` is a non-published external-consumer test crate. Host
 applications depend inward on these crates. Shared crates must not depend on an
 application, its database schema, or its server runtime.
+
+`semantic-embedder` has an empty default feature set. Applications explicitly
+select local Candle inference and, separately, Hugging Face model resolution;
+database and host persistence remain application adapters.
 
 ## Build and test
 

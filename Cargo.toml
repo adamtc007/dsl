@@ -7,6 +7,7 @@ members = [
     "crates/sem_os_ontology",
     "crates/sem_os_policy",
     "crates/semantic-decision-contracts",
+    "crates/semantic-embedder",
     "crates/dsl-integration-tests",
 ]
 resolver = "2"
@@ -26,6 +27,7 @@ sem_os_core     = { version = "0.2.0", path = "crates/sem_os_core" }
 sem_os_ontology = { version = "0.2.0", path = "crates/sem_os_ontology" }
 sem_os_policy   = { version = "0.2.0", path = "crates/sem_os_policy" }
 semantic-decision-contracts = { version = "0.2.0", path = "crates/semantic-decision-contracts" }
+semantic-embedder = { version = "0.2.0", path = "crates/semantic-embedder" }
 dsl-integration-tests = { version = "0.2.0", path = "crates/dsl-integration-tests" }
 
 [workspace.lints.rust]

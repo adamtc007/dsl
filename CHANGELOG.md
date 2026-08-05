@@ -11,6 +11,9 @@ The workspace follows Semantic Versioning subject to the pre-1.0 rules in
 - Extracted stable decision-board, evidence, disposition, and proposal
   workbook contracts into the host-neutral `semantic-decision-contracts`
   leaf crate. Existing SemOS import paths remain compatibility re-exports.
+- Extracted typed embedding contracts, a deterministic fake, and optional
+  Candle inference into the host-neutral `semantic-embedder` leaf crate. Its
+  default feature set is empty and remote model resolution is explicit.
 
 ### Planned for 0.2.0
 

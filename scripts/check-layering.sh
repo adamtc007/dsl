@@ -18,6 +18,7 @@ SHARED_SRC=(
   "crates/sem_os_policy/src"
   "crates/sem_os_types/src"
   "crates/semantic-decision-contracts/src"
+  "crates/semantic-embedder/src"
 )
 
 echo "== dsl layering guard =="

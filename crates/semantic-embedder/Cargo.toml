@@ -1,0 +1,40 @@
+[package]
+name = "semantic-embedder"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "Host-neutral semantic embedding contracts and optional Candle inference"
+readme = "README.md"
+
+[features]
+default = []
+candle = [
+    "dep:candle-core",
+    "dep:candle-nn",
+    "dep:candle-transformers",
+    "dep:serde_json",
+    "dep:tokenizers",
+    "dep:tracing",
+]
+huggingface-download = ["candle", "dep:hf-hub"]
+metal = [
+    "candle",
+    "candle-core/metal",
+    "candle-nn/metal",
+    "candle-transformers/metal",
+]
+
+[dependencies]
+thiserror = "1"
+candle-core = { version = "0.8", optional = true }
+candle-nn = { version = "0.8", optional = true }
+candle-transformers = { version = "0.8", optional = true }
+hf-hub = { version = "0.4", default-features = false, features = ["ureq"], optional = true }
+serde_json = { version = "1", optional = true }
+tokenizers = { version = "0.20", optional = true }
+tracing = { version = "0.1", optional = true }
+
+[lints]
+workspace = true
