@@ -64,6 +64,7 @@ pub mod enforce;
 pub(crate) mod gates; // internal publish-gate evaluation — not in external import surface
 pub mod grounding;
 pub mod observatory;
+pub mod pack_policy;
 pub(crate) mod security; // internal ABAC rule checking — not in external import surface
 pub mod service;
 pub mod state_simulation;

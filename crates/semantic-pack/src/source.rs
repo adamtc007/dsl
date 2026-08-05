@@ -2,10 +2,12 @@ use std::collections::BTreeMap;
 
 use semantic_decision_contracts::{ActionClass, ArgumentKind, HarmClass, PhraseRole};
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 use crate::{
-    AdapterBindingId, CapabilityId, DomainIdentity, DomainTypeId, FocusKind, GraphNodeId,
-    IdentityNamespace, PackId, PackSourceError, PackVersion, RoleId, SlotKind,
+    AdapterBindingId, CapabilityId, CapabilityPrefix, DomainIdentity, DomainTypeId, FocusKind,
+    GraphNodeId, IdentityNamespace, PackId, PackSourceError, PackVersion, PolicyAttributeId,
+    PolicyContextId, PrivilegeId, RoleFragment, RoleId, SlotKind,
 };
 
 /// Host-supplied request for exact pack bytes.
@@ -82,6 +84,9 @@ pub struct PackMetadataSource {
     pub version: PackVersion,
     pub domain: DomainIdentity,
     pub identity_namespace: IdentityNamespace,
+    /// Optional persistent UUID namespace owned by the pack.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub identity_namespace_uuid: Option<Uuid>,
     pub canonicalization_version: u32,
     #[serde(default)]
     pub dependencies: Vec<DependencySource>,
@@ -259,6 +264,12 @@ pub struct PackPolicySource {
     pub abstention: AbstentionSource,
     #[serde(default)]
     pub roles: Vec<RoleGrantSource>,
+    /// Context-specific capability eligibility.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub eligibility: Vec<EligibilityPolicySource>,
+    /// Role selectors that confer named privileges.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub privileges: Vec<PrivilegeGrantSource>,
 }
 
 impl Default for PackPolicySource {
@@ -267,6 +278,8 @@ impl Default for PackPolicySource {
             phrase_ambiguity: PhraseAmbiguityPolicy::Reject,
             abstention: AbstentionSource::default(),
             roles: Vec::new(),
+            eligibility: Vec::new(),
+            privileges: Vec::new(),
         }
     }
 }
@@ -295,6 +308,86 @@ impl Default for AbstentionSource {
 pub struct RoleGrantSource {
     pub role: RoleId,
     pub capabilities: Vec<CapabilityId>,
+}
+
+/// Default outcome when no capability selector matches.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum EligibilityDefault {
+    Allow,
+    #[default]
+    Deny,
+}
+
+/// Typed capability selector used by generic eligibility policy.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    content = "value",
+    rename_all = "snake_case",
+    deny_unknown_fields
+)]
+pub enum CapabilitySelectorSource {
+    Exact(CapabilityId),
+    Prefix(CapabilityPrefix),
+}
+
+impl CapabilitySelectorSource {
+    /// Return whether this selector matches an admitted capability identifier.
+    #[must_use]
+    pub fn matches(&self, capability: &CapabilityId) -> bool {
+        match self {
+            Self::Exact(expected) => expected == capability,
+            Self::Prefix(prefix) => capability.as_str().starts_with(prefix.as_str()),
+        }
+    }
+}
+
+/// One named context's deterministic allow/deny selector policy.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct EligibilityPolicySource {
+    pub context: PolicyContextId,
+    #[serde(default)]
+    pub default: EligibilityDefault,
+    #[serde(default)]
+    pub allow: Vec<CapabilitySelectorSource>,
+    #[serde(default)]
+    pub deny: Vec<CapabilitySelectorSource>,
+    #[serde(default)]
+    pub attributes: Vec<PolicyAttributeId>,
+}
+
+/// Typed role selector used by generic privilege policy.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(
+    tag = "kind",
+    content = "value",
+    rename_all = "snake_case",
+    deny_unknown_fields
+)]
+pub enum RoleSelectorSource {
+    Exact(RoleId),
+    Contains(RoleFragment),
+}
+
+impl RoleSelectorSource {
+    /// Match an ASCII-lowercase normalized actor role.
+    #[must_use]
+    pub fn matches_normalized(&self, role: &str) -> bool {
+        match self {
+            Self::Exact(expected) => expected.as_str() == role,
+            Self::Contains(fragment) => role.contains(fragment.as_str()),
+        }
+    }
+}
+
+/// Named privilege conferred by one or more declarative role selectors.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PrivilegeGrantSource {
+    pub privilege: PrivilegeId,
+    pub roles: Vec<RoleSelectorSource>,
 }
 
 /// Bounded typed configuration value for namespaced extensions and defaults.

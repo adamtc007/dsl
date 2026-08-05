@@ -53,6 +53,7 @@ use sem_os_ontology::{
     view_def::ViewDefBody,
 };
 use sem_os_types::{ChangeSetStatus, *};
+use semantic_pack::SemanticSnapshot;
 
 pub type Result<T> = std::result::Result<T, SemOsError>;
 
@@ -225,6 +226,8 @@ pub trait CoreService: Send + Sync {
 /// Constructed at startup in `ob-poc-web/src/main.rs` (in-process mode) or
 /// in `sem_os_server/src/main.rs` (standalone server mode).
 pub struct CoreServiceImpl {
+    /// Admitted semantic configuration used by generic policy and identity rules.
+    pub semantic_snapshot: SemanticSnapshot,
     pub snapshots: Arc<dyn SnapshotStore>,
     pub objects: Arc<dyn ObjectStore>,
     pub changesets: Arc<dyn ChangesetStore>,
@@ -242,6 +245,7 @@ pub struct CoreServiceImpl {
 
 impl CoreServiceImpl {
     pub fn new(
+        semantic_snapshot: SemanticSnapshot,
         snapshots: Arc<dyn SnapshotStore>,
         objects: Arc<dyn ObjectStore>,
         changesets: Arc<dyn ChangesetStore>,
@@ -251,6 +255,7 @@ impl CoreServiceImpl {
         projections: Arc<dyn ProjectionWriter>,
     ) -> Self {
         Self {
+            semantic_snapshot,
             snapshots,
             objects,
             changesets,
@@ -264,6 +269,11 @@ impl CoreServiceImpl {
             bootstrap_audit: None,
             affinity_graph: Arc::new(RwLock::new(None)),
         }
+    }
+
+    fn identity_namespace(&self) -> Result<Uuid> {
+        crate::pack_policy::identity_namespace_uuid(&self.semantic_snapshot)
+            .map_err(|error| SemOsError::InvalidInput(error.to_string()))
     }
 
     /// Set the authoring store (builder pattern).
@@ -875,6 +885,7 @@ enum SeedBootstrapPlan {
 }
 
 fn plan_seed_bootstrap_item(
+    identity_namespace: Uuid,
     principal: &Principal,
     bundle_hash: &str,
     object_type: ObjectType,
@@ -915,7 +926,7 @@ fn plan_seed_bootstrap_item(
             ))
         }
         None => {
-            let object_id = sem_os_core::ids::object_id_for(object_type, fqn);
+            let object_id = sem_os_core::ids::object_id_for(identity_namespace, object_type, fqn);
             Ok(SeedBootstrapPlan::Publish(
                 Box::new(SnapshotMeta::new_operational(
                     object_type,
@@ -1267,6 +1278,7 @@ impl CoreService for CoreServiceImpl {
             )
             .collect();
 
+        let identity_namespace = self.identity_namespace()?;
         for (object_type, fqn, payload) in &all_seeds {
             let fqn_obj = Fqn::new(*fqn);
             let current = match self.snapshots.resolve(&fqn_obj, None).await {
@@ -1276,6 +1288,7 @@ impl CoreService for CoreServiceImpl {
             };
 
             match plan_seed_bootstrap_item(
+                identity_namespace,
                 principal,
                 &bundle.bundle_hash,
                 *object_type,
@@ -1387,7 +1400,11 @@ impl CoreService for CoreServiceImpl {
         }
 
         // 2b. Stewardship guardrails: role constraints + proof chain.
-        crate::stewardship::validate_role_constraints(principal, &entries)?;
+        crate::stewardship::validate_role_constraints(
+            &self.semantic_snapshot,
+            principal,
+            &entries,
+        )?;
         crate::stewardship::check_proof_chain_compatibility(&entries, self.snapshots.as_ref())
             .await?;
 
@@ -1438,11 +1455,13 @@ impl CoreService for CoreServiceImpl {
         let correlation_id = Uuid::new_v4();
 
         // 5. Build batch of snapshots for atomic publish (v3.3: one outbox event).
+        let identity_namespace = self.identity_namespace()?;
         let mut items: Vec<(SnapshotMeta, serde_json::Value)> = Vec::with_capacity(entries.len());
         for entry in &entries {
             let object_type = entry.object_type;
 
-            let object_id = sem_os_core::ids::object_id_for(object_type, &entry.object_fqn);
+            let object_id =
+                sem_os_core::ids::object_id_for(identity_namespace, object_type, &entry.object_fqn);
 
             let change_type = match entry.change_kind {
                 ChangeKind::Add => ChangeType::Created,
@@ -1680,10 +1699,12 @@ impl CoreService for CoreServiceImpl {
             }
         }
 
+        let identity_namespace = self.identity_namespace()?;
         for entry in &entries {
             let object_type = entry.object_type;
 
-            let object_id = sem_os_core::ids::object_id_for(object_type, &entry.object_fqn);
+            let object_id =
+                sem_os_core::ids::object_id_for(identity_namespace, object_type, &entry.object_fqn);
 
             // Build SnapshotMeta from the draft entry
             let meta = SnapshotMeta {
@@ -1981,6 +2002,10 @@ mod tests {
     use serde_json::json;
     use std::collections::HashMap;
 
+    fn test_identity_namespace() -> Uuid {
+        Uuid::new_v5(&Uuid::NAMESPACE_URL, b"example:semantic-registry")
+    }
+
     #[test]
     fn test_parse_uuid_valid() {
         let id = Uuid::new_v4();
@@ -2049,7 +2074,7 @@ slots:
             snapshot_id: Uuid::new_v4(),
             snapshot_set_id: None,
             object_type,
-            object_id: sem_os_core::ids::object_id_for(object_type, fqn),
+            object_id: sem_os_core::ids::object_id_for(test_identity_namespace(), object_type, fqn),
             version_major: 1,
             version_minor: 0,
             status: SnapshotStatus::Active,
@@ -2075,6 +2100,7 @@ slots:
         let current = snapshot_row(ObjectType::DomainPack, payload.clone(), "ob-poc.cbu");
 
         let plan = plan_seed_bootstrap_item(
+            test_identity_namespace(),
             &principal,
             "v1:test",
             ObjectType::DomainPack,
@@ -2098,6 +2124,7 @@ slots:
         let payload = json!({"pack_id": "ob-poc.cbu", "version": "2"});
 
         let plan = plan_seed_bootstrap_item(
+            test_identity_namespace(),
             &principal,
             "v1:test",
             ObjectType::DomainPack,
@@ -2130,6 +2157,7 @@ slots:
         );
 
         let err = plan_seed_bootstrap_item(
+            test_identity_namespace(),
             &principal,
             "v1:test",
             ObjectType::DomainPack,

@@ -31,6 +31,7 @@ sem_os_ontology.workspace = true
 sem_os_types.workspace = true
 dsl_types.workspace = true
 semantic-decision-contracts.workspace = true
+semantic-pack.workspace = true
 
 # Phase 9 third-party deps inherited from the moved modules:
 # authoring/* uses ob-poc-types + sqlparser + tokio; service.rs uses

@@ -90,6 +90,26 @@ fn normalize(document: &mut PackDocument) -> Result<(), PackCompileError> {
         role.capabilities.sort();
         role.capabilities.dedup();
     }
+    document
+        .policy
+        .eligibility
+        .sort_by(|left, right| left.context.cmp(&right.context));
+    for policy in &mut document.policy.eligibility {
+        policy.allow.sort();
+        policy.allow.dedup();
+        policy.deny.sort();
+        policy.deny.dedup();
+        policy.attributes.sort();
+        policy.attributes.dedup();
+    }
+    document
+        .policy
+        .privileges
+        .sort_by(|left, right| left.privilege.cmp(&right.privilege));
+    for privilege in &mut document.policy.privileges {
+        privilege.roles.sort();
+        privilege.roles.dedup();
+    }
     if let Some(graph) = &mut document.graph {
         graph.entry_nodes.sort();
         graph.entry_nodes.dedup();

@@ -7,6 +7,7 @@ use serde_json::json;
 
 use crate::abac::{
     evaluate_abac, evaluate_abac_with_evidence_grade, AccessDecision, AccessPurpose, ActorContext,
+    EvidencePrivilege,
 };
 use sem_os_ontology::attribute_def::AttributeDefBody;
 use sem_os_types::{ObjectType, SecurityLabel, SnapshotRow};
@@ -127,6 +128,7 @@ pub fn enforce_attribute_read(actor: &ActorContext, row: &SnapshotRow) -> Enforc
         &label,
         AccessPurpose::Operations,
         body.evidence_grade,
+        EvidencePrivilege::Standard,
     ) {
         AccessDecision::Allow => EnforceResult::Allow,
         AccessDecision::AllowWithMasking { masked_fields } => {

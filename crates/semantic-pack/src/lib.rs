@@ -25,15 +25,18 @@ pub use diagnostic::{
 };
 pub use dsl_types::{CapabilityId, DomainTypeId, FocusKind, SlotKind};
 pub use identity::{
-    AdapterBindingId, DomainIdentity, GraphNodeId, IdentityError, IdentityNamespace, PackId,
-    PackIdentity, PackVersion, RoleId,
+    AdapterBindingId, CapabilityPrefix, DomainIdentity, GraphNodeId, IdentityError,
+    IdentityNamespace, PackId, PackIdentity, PackVersion, PolicyAttributeId, PolicyContextId,
+    PrivilegeId, RoleFragment, RoleId,
 };
 pub use registry::{InMemoryPackRegistry, PackRegistry};
 pub use source::{
-    AbstentionSource, ArgumentConstraint, ArgumentSource, CapabilitySource, ConfigValue,
-    DeclarationSource, DependencySource, DeprecationSource, GraphEdgeSource, GraphNodeSource,
-    GraphSource, PackBytes, PackDocument, PackMetadataSource, PackPolicySource, PackRequest,
-    PackSource, PhraseAmbiguityPolicy, ProvenanceSource, RoleGrantSource, TerminalDisposition,
+    AbstentionSource, ArgumentConstraint, ArgumentSource, CapabilitySelectorSource,
+    CapabilitySource, ConfigValue, DeclarationSource, DependencySource, DeprecationSource,
+    EligibilityDefault, EligibilityPolicySource, GraphEdgeSource, GraphNodeSource, GraphSource,
+    PackBytes, PackDocument, PackMetadataSource, PackPolicySource, PackRequest, PackSource,
+    PhraseAmbiguityPolicy, PrivilegeGrantSource, ProvenanceSource, RoleGrantSource,
+    RoleSelectorSource, TerminalDisposition,
 };
 pub use validate::{parse_pack, validate_pack, ValidatedPack};
 

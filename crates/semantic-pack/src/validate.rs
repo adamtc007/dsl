@@ -472,6 +472,92 @@ fn validate_policy(validator: &mut Validator<'_>) {
             }
         }
     }
+
+    duplicates(
+        validator,
+        "$.policy.eligibility",
+        validator
+            .document
+            .policy
+            .eligibility
+            .iter()
+            .map(|policy| policy.context.to_string()),
+    );
+    if validator.document.policy.eligibility.len() > MAX_ARTIFACT_ITEMS {
+        validator.push(
+            DiagnosticCode::ResourceLimit,
+            "$.policy.eligibility",
+            "eligibility context count exceeds 4096",
+        );
+    }
+    for (index, policy) in validator.document.policy.eligibility.iter().enumerate() {
+        let base = format!("$.policy.eligibility[{index}]");
+        let allow = policy
+            .allow
+            .iter()
+            .map(selector_key)
+            .collect::<BTreeSet<_>>();
+        let deny = policy
+            .deny
+            .iter()
+            .map(selector_key)
+            .collect::<BTreeSet<_>>();
+        duplicates(
+            validator,
+            &format!("{base}.allow"),
+            policy.allow.iter().map(selector_key),
+        );
+        duplicates(
+            validator,
+            &format!("{base}.deny"),
+            policy.deny.iter().map(selector_key),
+        );
+        duplicates(
+            validator,
+            &format!("{base}.attributes"),
+            policy.attributes.iter().map(ToString::to_string),
+        );
+        if let Some(selector) = allow.intersection(&deny).next() {
+            validator.push(
+                DiagnosticCode::InvalidPolicy,
+                base,
+                format!("selector `{selector}` appears in both allow and deny lists"),
+            );
+        }
+    }
+
+    duplicates(
+        validator,
+        "$.policy.privileges",
+        validator
+            .document
+            .policy
+            .privileges
+            .iter()
+            .map(|grant| grant.privilege.to_string()),
+    );
+    for (index, grant) in validator.document.policy.privileges.iter().enumerate() {
+        duplicates(
+            validator,
+            &format!("$.policy.privileges[{index}].roles"),
+            grant.roles.iter().map(role_selector_key),
+        );
+        if grant.roles.is_empty() {
+            validator.push(
+                DiagnosticCode::MissingReference,
+                format!("$.policy.privileges[{index}].roles"),
+                "privilege must declare at least one role selector",
+            );
+        }
+    }
+}
+
+fn selector_key(selector: &crate::CapabilitySelectorSource) -> String {
+    serde_json::to_string(selector).expect("typed capability selector serializes")
+}
+
+fn role_selector_key(selector: &crate::RoleSelectorSource) -> String {
+    serde_json::to_string(selector).expect("typed role selector serializes")
 }
 
 fn validate_graph(validator: &mut Validator<'_>) {

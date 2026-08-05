@@ -2439,6 +2439,7 @@ dependencies = [
  "sem_os_ontology",
  "sem_os_types",
  "semantic-decision-contracts",
+ "semantic-pack",
  "serde",
  "serde_json",
  "serde_yaml",
@@ -2501,6 +2502,7 @@ dependencies = [
  "serde_yaml",
  "sha2",
  "thiserror 1.0.69",
+ "uuid",
 ]
 
 [[package]]

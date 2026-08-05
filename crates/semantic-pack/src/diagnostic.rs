@@ -9,6 +9,7 @@ pub enum DiagnosticCode {
     MissingReference,
     InvalidGraph,
     InvalidArgument,
+    InvalidPolicy,
     AmbiguousEvidence,
     MissingBinding,
     InvalidProvenance,

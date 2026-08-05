@@ -142,6 +142,12 @@ impl CompiledPack {
         &self.document.pack.identity_namespace
     }
 
+    /// Optional persistent UUID namespace declared by the pack.
+    #[must_use]
+    pub fn identity_namespace_uuid(&self) -> Option<uuid::Uuid> {
+        self.document.pack.identity_namespace_uuid
+    }
+
     /// Exact provenance declaration.
     #[must_use]
     pub fn provenance(&self) -> &ProvenanceSource {
