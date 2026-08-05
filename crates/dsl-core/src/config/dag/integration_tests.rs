@@ -1,1 +1,1 @@
-mod lux_sicav_pilot;
+// Application constellation qualification belongs in each consumer repository.

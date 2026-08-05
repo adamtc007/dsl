@@ -4,14 +4,12 @@
 //! predicates are backfilled workspace by workspace. This module deliberately
 //! reports coverage; it does not invent predicates.
 
-#![allow(dead_code)] // Green-when coverage accounting — Phase 8
-
 use dsl_types::{Dag, SlotStateMachine, StateDef, TransitionDef};
 use serde_yaml::Value as YamlValue;
 use std::collections::{BTreeMap, BTreeSet, HashSet};
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) struct GreenWhenCoverageRow {
+pub struct GreenWhenCoverageRow {
     pub workspace: String,
     pub dag_id: String,
     pub slot_id: String,
@@ -23,21 +21,21 @@ pub(crate) struct GreenWhenCoverageRow {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) enum GreenWhenExclusionReason {
+pub enum GreenWhenExclusionReason {
     EntryState,
     SourceOnlyState,
     DiscretionaryDestination,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub(crate) struct GreenWhenCoverageSummary {
+pub struct GreenWhenCoverageSummary {
     pub total_states: usize,
     pub candidate_states: usize,
     pub covered_candidate_states: usize,
     pub missing_candidate_states: usize,
 }
 
-pub(crate) fn green_when_coverage_for_dags(
+pub fn green_when_coverage_for_dags(
     dags: &BTreeMap<String, Dag>,
     discretionary_verbs: &HashSet<String>,
 ) -> Vec<GreenWhenCoverageRow> {
@@ -52,7 +50,7 @@ pub(crate) fn green_when_coverage_for_dags(
     rows
 }
 
-pub(crate) fn green_when_coverage_for_dag(
+pub fn green_when_coverage_for_dag(
     workspace: &str,
     dag: &Dag,
     discretionary_verbs: &HashSet<String>,
@@ -80,9 +78,7 @@ pub(crate) fn green_when_coverage_for_dag(
     rows
 }
 
-pub(crate) fn green_when_coverage_summary(
-    rows: &[GreenWhenCoverageRow],
-) -> GreenWhenCoverageSummary {
+pub fn green_when_coverage_summary(rows: &[GreenWhenCoverageRow]) -> GreenWhenCoverageSummary {
     let total_states = rows.len();
     let candidate_states = rows.iter().filter(|row| row.candidate).count();
     let covered_candidate_states = rows

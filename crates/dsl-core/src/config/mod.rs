@@ -44,6 +44,10 @@ pub use dag_validator::{
     DagValidationContext, DagValidationReport,
 };
 
+pub use green_when_coverage::{
+    green_when_coverage_for_dag, green_when_coverage_for_dags, green_when_coverage_summary,
+    GreenWhenCoverageRow, GreenWhenCoverageSummary, GreenWhenExclusionReason,
+};
 pub use loader::ConfigLoader;
 
 pub use types::{
