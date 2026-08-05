@@ -14,7 +14,9 @@
 //!    (P12 invariant).
 
 use crate::config::escalation::{compute_effective_tier, EvaluationContext};
-use crate::config::runbook_composition::{compute_runbook_tier, AggregationRule, CrossScopeRule, RunbookStep};
+use crate::config::runbook_composition::{
+    compute_runbook_tier, AggregationRule, CrossScopeRule, RunbookStep,
+};
 use crate::config::{
     validate_verbs_config, ConsequenceTier, ExternalEffect, StateEffect, ValidationContext,
     VerbsConfig,
@@ -289,7 +291,7 @@ fn cross_workspace_runbook_escalates_via_component_c() {
         step_for(&cfg, "read-cbu", "instrument_matrix", None, &ctx),
         step_for(&cfg, "read-cbu", "kyc_workspace", None, &ctx),
     ];
-    let cross_scope = vec![CrossScopeRule::MultiWorkspace {
+    let cross_scope = vec![CrossScopeRule::Workspace {
         name: "cross_ws".into(),
         min_workspaces: 2,
         tier: ConsequenceTier::RequiresConfirmation,

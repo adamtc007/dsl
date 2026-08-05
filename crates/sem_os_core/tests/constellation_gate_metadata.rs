@@ -255,4 +255,3 @@ slots:
     assert_eq!(slot.audit_class, None);
     assert!(slot.completeness_assertion.is_none());
 }
-

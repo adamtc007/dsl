@@ -13,8 +13,8 @@
 //! No DB required — all tests run in pure Rust.
 
 use crate::{
-    execution_dag::{BindingSlotId, DagEdge, JoinBarrierMode, NodeId, PopulatedExecutionDag},
     executable_plan::TransactionPolicy,
+    execution_dag::{BindingSlotId, DagEdge, JoinBarrierMode, NodeId, PopulatedExecutionDag},
     EffectClass,
 };
 

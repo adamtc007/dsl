@@ -1,16 +1,22 @@
 [package]
 name = "dsl-integration-tests"
-version = "0.1.0"
-edition = "2021"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+readme = "README.md"
 publish = false
 
 [dependencies]
 
 [dev-dependencies]
-dsl-core = { path = "../dsl-core" }
-sem_os_core = { path = "../sem_os_core" }
-dsl_types = { path = "../dsl_types" }
-sem_os_types = { path = "../sem_os_types" }
+dsl-core.workspace = true
+sem_os_core.workspace = true
+sem_os_ontology.workspace = true
+sem_os_policy.workspace = true
+dsl_types.workspace = true
+sem_os_types.workspace = true
 pretty_assertions = "1"
 tempfile = "3"
 serde = { version = "1", features = ["derive"] }
@@ -19,3 +25,6 @@ serde_yaml = "0.9"
 anyhow = "1"
 uuid = { version = "1", features = ["v4", "serde"] }
 chrono = { version = "0.4", features = ["serde"] }
+
+[lints]
+workspace = true

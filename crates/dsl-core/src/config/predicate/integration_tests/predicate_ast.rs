@@ -1,6 +1,8 @@
 use crate::config::dag::load_dags_from_dir;
 use crate::config::predicate::ast::{EntityQualifier, RelationScope};
-use crate::config::predicate::{parse_green_when, CmpOp, EntityRef, EntitySetRef, Predicate, Validity};
+use crate::config::predicate::{
+    parse_green_when, CmpOp, EntityRef, EntitySetRef, Predicate, Validity,
+};
 use dsl_types::SlotStateMachine;
 use std::collections::BTreeSet;
 use std::path::PathBuf;

@@ -1,15 +1,19 @@
 [package]
 name = "sem_os_core"
-version = "0.1.0"
-edition = "2021"
-description = "Semantic OS core — pure domain types, port traits, gate logic. Zero sqlx."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+readme = "README.md"
+description = "Host-neutral SemOS orchestration primitives and storage ports"
 
 [dependencies]
 # sem_os_core-split v1 Phase 2.5 (2026-05-14): types.rs extracted to
 # sem_os_types crate. sem_os_core/src/types.rs is now a compat shim
 # (`pub use sem_os_types::*;`). This dep stays after migration —
 # sem_os_types is the bottom tier every SemOS-touching crate needs.
-sem_os_types = { path = "../sem_os_types" }
+sem_os_types.workspace = true
 dsl-core.workspace = true
 dsl_types.workspace = true
 # Phase 9-prep (2026-05-14): the transitional sem_os_ontology and
@@ -36,19 +40,11 @@ chrono = { version = "0.4", features = ["serde"] }
 
 [dev-dependencies]
 tokio = { version = "1", features = ["macros", "rt"] }
-# discovery_pipeline test exercises affinity + verb_contract — both
-# relocated in Phase 9 (affinity → sem_os_policy, verb_contract →
-# sem_os_ontology). Dev-only path-deps don't violate the "no upward
-# Cargo edge" invariant — they're only linked into the test binary.
-sem_os_ontology = { path = "../sem_os_ontology" }
-# sem_os_policy was extracted into this sem-os workspace at v0.1.2
-# (commit 0de07aa), so the discovery_pipeline test can wire it as a
-# normal sibling dev-dep — no cross-repo override needed.
-sem_os_policy = { path = "../sem_os_policy" }
+sem_os_ontology.workspace = true
 tempfile = "3"
 
 [build-dependencies]
 prost-build = "0.13"
 
-[lints.rust]
-unreachable_pub = "deny"
+[lints]
+workspace = true

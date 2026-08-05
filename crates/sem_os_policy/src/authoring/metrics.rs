@@ -107,7 +107,11 @@ pub(crate) fn emit_diff(base_id: Uuid, target_id: Uuid, diff: &DiffSummary) {
 }
 
 /// Emit a structured tracing event for status transitions.
-pub(crate) fn emit_status_transition(change_set_id: Uuid, from: ChangeSetStatus, to: ChangeSetStatus) {
+pub(crate) fn emit_status_transition(
+    change_set_id: Uuid,
+    from: ChangeSetStatus,
+    to: ChangeSetStatus,
+) {
     tracing::info!(
         target: "authoring.status_transition",
         %change_set_id,

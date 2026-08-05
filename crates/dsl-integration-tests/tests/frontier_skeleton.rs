@@ -1,13 +1,12 @@
 use std::collections::BTreeMap;
 
 use dsl_core::{
-    ClosureType, PredicateBinding,
-    EntityRef, FrontierFact, GreenWhenStatus, HydrateFrontierError, CompletenessAssertionStatus,
-    ResolvedSlot, ResolvedSource, ResolvedTemplate, ResolvedTransition, ResolverProvenance,
-    SlotProvenance, VersionHash,
+    ClosureType, CompletenessAssertionStatus, EntityRef, FrontierFact, GreenWhenStatus,
+    HydrateFrontierError, PredicateBinding, ResolvedSlot, ResolvedSource, ResolvedTemplate,
+    ResolvedTransition, ResolverProvenance, SlotProvenance, VersionHash,
 };
-use sem_os_core::hydrate_frontier;
 use dsl_types::CompletenessAssertionConfig;
+use sem_os_core::hydrate_frontier;
 
 fn template() -> ResolvedTemplate {
     ResolvedTemplate {

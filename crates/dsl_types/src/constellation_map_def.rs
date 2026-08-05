@@ -227,8 +227,6 @@ impl VerbPaletteEntry {
     }
 }
 
-
-
 /// Availability expression for a gated verb.
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
 #[serde(untagged)]

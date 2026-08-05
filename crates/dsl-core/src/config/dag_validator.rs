@@ -2216,7 +2216,7 @@ pub fn validate_slot_gating_states(
 ) -> DagValidationReport {
     let mut report = DagValidationReport::default();
 
-    for (key, _) in gating_states {
+    for key in gating_states.keys() {
         // Look up constellation in loaded constellations
         let const_map = match constellations.get(&key.constellation) {
             Some(map) => map,

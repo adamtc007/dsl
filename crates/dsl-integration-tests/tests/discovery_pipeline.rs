@@ -1,3 +1,5 @@
+// Cross-layer tests belong in the non-publishable integration-test crate so
+// release packages retain an acyclic dependency order.
 use std::collections::{HashMap, HashSet};
 
 use sem_os_ontology::verb_contract::{

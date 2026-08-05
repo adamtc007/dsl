@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 //! sem_os_ontology — the SemOS `*_def` vocabulary.
 //!
 //! ## Capability claim

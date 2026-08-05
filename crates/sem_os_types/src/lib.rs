@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 //! Core domain types for Semantic OS.
 //! These are pure value types — no sqlx, no DB dependencies.
 //! Migrated from sem_reg/types.rs with sqlx derives stripped.

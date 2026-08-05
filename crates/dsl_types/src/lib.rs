@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 //! `dsl_types` — Level 0 substrate types.
 //!
 //! Pure data with serde. No DB, no SemOS, no app coupling.
@@ -21,23 +23,22 @@
 //!   types without depending on the SemOS layer.
 
 pub(crate) mod constellation_map_def;
-pub(crate) mod resolver_facts;
 pub(crate) mod dag;
+pub(crate) mod resolver_facts;
 
 pub use constellation_map_def::{
     AuditClass, Cardinality, ClosureType, CompletenessAssertionConfig, ConstellationMapDefBody,
-    DependencyEntry, EligibilityConstraint, JoinDef, RoleGuard, SlotDef, SlotType,
-    VerbPaletteEntry, VerbAvailability, SeedConstellationMap,
-    SlotKey, GatingStatus, SlotGatingState,
+    DependencyEntry, EligibilityConstraint, GatingStatus, JoinDef, RoleGuard, SeedConstellationMap,
+    SlotDef, SlotGatingState, SlotKey, SlotType, VerbAvailability, VerbPaletteEntry,
 };
 pub use resolver_facts::StructuralFacts;
 
 pub use dag::{
-    Dag, LoadedDag, Slot, SlotStateMachine, StateMachine, StateDef, TransitionDef, Severity,
-    CrossWorkspaceConstraint, DerivedCrossWorkspaceState, CascadeRule, EntryVia, Phase,
-    StateSelector, PredicateBinding, DerivationCondition, ParentSlot, ParentJoin,
-    StateDependency, DualLifecycle, PeriodicReviewCadence, RiskTierOverride, ReviewScope,
-    EvidenceType, CategoryGated, ProductModuleGates, ConditionalGate, PruneCascadeRule,
-    PruneCascadeTarget, PrunePreValidation, ExpectedLifetime, PredicateBindingSourceKind,
-    StreamGoverned, StreamGovernance, LexiconManifestRef, FoldPreconditionsRef, ApprovalGateRef,
+    ApprovalGateRef, CascadeRule, CategoryGated, ConditionalGate, CrossWorkspaceConstraint, Dag,
+    DerivationCondition, DerivedCrossWorkspaceState, DualLifecycle, EntryVia, EvidenceType,
+    ExpectedLifetime, FoldPreconditionsRef, LexiconManifestRef, LoadedDag, ParentJoin, ParentSlot,
+    PeriodicReviewCadence, Phase, PredicateBinding, PredicateBindingSourceKind, ProductModuleGates,
+    PruneCascadeRule, PruneCascadeTarget, PrunePreValidation, ReviewScope, RiskTierOverride,
+    Severity, Slot, SlotStateMachine, StateDef, StateDependency, StateMachine, StateSelector,
+    StreamGovernance, StreamGoverned, TransitionDef,
 };

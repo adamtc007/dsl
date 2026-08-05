@@ -1,4 +1,6 @@
-//! dsl-core: Core DSL parser, AST, and types for OB-POC
+#![forbid(unsafe_code)]
+
+//! dsl-core: host-neutral DSL parser, AST, validation, and compilation.
 //!
 //! This crate contains the pure DSL logic with NO database dependencies:
 //! - AST types (Program, Statement, VerbCall, AstNode, etc.)
@@ -9,8 +11,7 @@
 //! - YAML configuration types and loader
 //!
 //! The Op enum and DAG builder were removed in Phase 3 CR A4.
-//! The execution layer (generic_executor, custom_ops) remains in ob-poc
-//! as it requires database access.
+//! Concrete execution and persistence remain in host application adapters.
 
 // Keep submodules private to the crate
 pub(crate) mod ast;
@@ -66,7 +67,7 @@ pub use config::dag::{
     ApprovalGateRef, CascadeRule, CrossWorkspaceConstraint, DerivationCondition,
     DerivedCrossWorkspaceState, EntryVia, FoldPreconditionsRef, LexiconManifestRef, Phase,
     PredicateBinding, Severity as DagSeverity, Slot as DagSlot, SlotStateMachine, StateSelector,
-    StreamGoverned, StreamGovernance,
+    StreamGovernance, StreamGoverned,
 };
 
 // Re-export from config::predicate

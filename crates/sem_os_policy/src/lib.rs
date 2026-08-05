@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 //! sem_os_policy — the SemOS governance + projection plane.
 //!
 //! ## Capability claim
@@ -59,10 +61,10 @@ pub mod diagram;
 pub mod domain_pack;
 pub mod enforce;
 #[allow(dead_code)]
-pub(crate) mod gates;      // internal publish-gate evaluation — not in external import surface
+pub(crate) mod gates; // internal publish-gate evaluation — not in external import surface
 pub mod grounding;
 pub mod observatory;
-pub(crate) mod security;   // internal ABAC rule checking — not in external import surface
+pub(crate) mod security; // internal ABAC rule checking — not in external import surface
 pub mod service;
 pub mod state_simulation;
 pub mod stewardship;

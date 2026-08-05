@@ -1,8 +1,12 @@
 [package]
 name = "sem_os_policy"
-version = "0.1.0"
-edition = "2021"
-description = "Semantic OS governance + projection plane. Owns ABAC primitives, gate logic, policy enforcement, ACP discovery projection, affinity graph, observatory orientation/projection, stewardship + authoring lifecycle, state simulation, context policy/resolution, diagram emission. Decides *what may happen* and projects *what is shown*."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+readme = "README.md"
+description = "Host-neutral SemOS policy evaluation, governance, and projection mechanisms"
 
 # Capability discipline (see docs/todo/sem-os-core-split-v1.md §2.3):
 #   IN-SCOPE: ABAC, gates, enforcement, projection, observatory, affinity,
@@ -48,5 +52,5 @@ strum = { version = "0.26", features = ["derive"] }
 thiserror = "1.0"
 uuid = { version = "1", features = ["v4", "v5", "serde"] }
 
-[lints.rust]
-unreachable_pub = "deny"
+[lints]
+workspace = true

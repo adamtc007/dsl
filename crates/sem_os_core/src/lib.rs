@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 //! sem_os_core — engine + foundation primitives.
 //!
 //! After sem_os_core-split v1 (docs/todo/sem-os-core-split-v1.md), this
@@ -16,7 +18,7 @@
 
 pub mod error;
 pub(crate) mod execution; // empty placeholder pending removal — not in external import surface
-pub(crate) mod frontier;  // implementation module — hydrate_frontier re-exported at crate root below
+pub(crate) mod frontier; // implementation module — hydrate_frontier re-exported at crate root below
 pub mod ids;
 pub mod ports;
 pub mod principal;

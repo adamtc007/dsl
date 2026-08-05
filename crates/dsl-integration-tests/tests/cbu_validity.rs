@@ -1,9 +1,8 @@
 use std::collections::BTreeMap;
 
 use dsl_core::{
-    PredicateBinding, EntityRef, FrontierFact, GreenWhenStatus, InvalidFactDetail,
-    ResolvedSlot, ResolvedTemplate, ResolvedTransition, ResolverProvenance, SlotProvenance,
-    VersionHash,
+    EntityRef, FrontierFact, GreenWhenStatus, InvalidFactDetail, PredicateBinding, ResolvedSlot,
+    ResolvedTemplate, ResolvedTransition, ResolverProvenance, SlotProvenance, VersionHash,
 };
 use sem_os_core::hydrate_frontier;
 

@@ -1,9 +1,9 @@
 use dsl_core::{
     parse_green_when, parse_single_verb, AttrValue, ClosureType, CmpOp,
-    CompletenessAssertionStatus, DiscretionaryReason, EntityRef, EntitySetRef,
-    FrontierFact, FrontierFacts, GreenWhenStatus, HydrateFrontierError,
-    InstanceFrontier, InvalidFact, InvalidFactDetail, MissingFact, Predicate,
-    PredicateEntityRef, ReachableDestination, ResolvedSlot, ResolvedTemplate, Validity,
+    CompletenessAssertionStatus, DiscretionaryReason, EntityRef, EntitySetRef, FrontierFact,
+    FrontierFacts, GreenWhenStatus, HydrateFrontierError, InstanceFrontier, InvalidFact,
+    InvalidFactDetail, MissingFact, Predicate, PredicateEntityRef, ReachableDestination,
+    ResolvedSlot, ResolvedTemplate, Validity,
 };
 use dsl_types::Cardinality;
 

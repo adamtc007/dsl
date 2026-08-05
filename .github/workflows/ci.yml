@@ -1,0 +1,67 @@
+name: Standalone shared workspace
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install 1.95 --profile minimal --component rustfmt
+      - run: cargo +1.95 fmt --all -- --check
+
+  check-test-clippy-doc:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install 1.95 --profile minimal --component clippy
+      - run: cargo +1.95 check --workspace --all-targets --all-features --locked
+      - run: cargo +1.95 test --workspace --all-targets --all-features --locked
+      - run: cargo +1.95 clippy --workspace --all-targets --all-features --locked -- -D warnings
+      - run: cargo +1.95 doc --workspace --no-deps --all-features --locked
+        env:
+          RUSTDOCFLAGS: -D warnings
+
+  feature-matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install 1.95 --profile minimal
+      - run: cargo +1.95 check -p dsl-core --no-default-features --locked
+      - run: cargo +1.95 check -p dsl-core --all-features --locked
+      - run: cargo +1.95 check -p dsl_types --locked
+      - run: cargo +1.95 check -p sem_os_types --locked
+
+  boundaries:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install 1.95 --profile minimal
+      - run: bash scripts/check-layering.sh
+      - run: bash scripts/check-dependencies.sh
+      - run: bash scripts/check-domain-neutral.sh
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install 1.95 --profile minimal
+      - run: bash scripts/check-packages.sh
+
+  dependency-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: EmbarkStudios/cargo-deny-action@v1
+        with:
+          command: check

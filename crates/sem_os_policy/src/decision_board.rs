@@ -1935,7 +1935,8 @@ mod tests {
 
         // Per-candidate fields: apply one mutation at a time to a clone of
         // the rich candidate and rebuild the board.
-        let mutations: Vec<(&str, Box<dyn Fn(&mut CandidateSemanticSlice)>)> = vec![
+        type CandidateMutation = (&'static str, Box<dyn Fn(&mut CandidateSemanticSlice)>);
+        let mutations: Vec<CandidateMutation> = vec![
             (
                 "candidate schema_version",
                 Box::new(|c| c.schema_version += 1),
@@ -2068,13 +2069,13 @@ mod tests {
 
     #[test]
     fn identity_constructors_reject_empty_and_control_characters() {
-        for empty in [""] {
-            assert!(CanonicalCandidateId::new(empty).is_err());
-            assert!(DomainIdentity::new(empty).is_err());
-            assert!(SnapshotIdentity::new(empty).is_err());
-            assert!(GraphRevision::new(empty).is_err());
-            assert!(WorkbookId::new(empty).is_err());
-        }
+        let empty = "";
+        assert!(CanonicalCandidateId::new(empty).is_err());
+        assert!(DomainIdentity::new(empty).is_err());
+        assert!(SnapshotIdentity::new(empty).is_err());
+        assert!(GraphRevision::new(empty).is_err());
+        assert!(WorkbookId::new(empty).is_err());
+
         for control in ["a\nb", "a\tb", "a\0b", "a\x1bb"] {
             assert!(
                 CanonicalCandidateId::new(control).is_err(),

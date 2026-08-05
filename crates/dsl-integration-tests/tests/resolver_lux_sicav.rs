@@ -1,6 +1,4 @@
-use dsl_core::{
-    ClosureType, EligibilityConstraint, ResolvedSource,
-};
+use dsl_core::{ClosureType, EligibilityConstraint, ResolvedSource};
 use sem_os_core::resolver::{resolve_template, ResolverInputs};
 mod core_map {
     pub(crate) use dsl_types::ClosureType;

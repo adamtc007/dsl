@@ -5,8 +5,8 @@
 //! diagram models and Mermaid syntax output.
 
 pub(crate) mod enrichment; // implementation — consumers use re-exported build_diagram_model
-pub(crate) mod mermaid;    // implementation — consumers use re-exported render_* fns
-pub mod model;             // accessed directly by ob-poc at diagram::model::{ColumnInput, ...}
+pub(crate) mod mermaid; // implementation — consumers use re-exported render_* fns
+pub mod model; // accessed directly by ob-poc at diagram::model::{ColumnInput, ...}
 
 pub use enrichment::build_diagram_model;
 pub use mermaid::{

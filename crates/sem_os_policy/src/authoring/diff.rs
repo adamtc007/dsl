@@ -7,7 +7,10 @@ use std::collections::HashMap;
 use super::types::*;
 
 /// Compute a structural diff between two sets of artifacts.
-pub(crate) fn diff_changesets(base: &[ChangeSetArtifact], target: &[ChangeSetArtifact]) -> DiffSummary {
+pub(crate) fn diff_changesets(
+    base: &[ChangeSetArtifact],
+    target: &[ChangeSetArtifact],
+) -> DiffSummary {
     let base_map = build_artifact_index(base);
     let target_map = build_artifact_index(target);
 

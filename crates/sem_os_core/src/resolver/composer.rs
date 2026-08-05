@@ -1,12 +1,12 @@
+use crate::resolver::shape_rule::{
+    load_shape_rules_from_dir, LoadedShapeRule, SlotGateMetadataRefinement, StructuralFacts,
+};
+use anyhow::{Context, Result};
 use dsl_core::{
     compute_version_hash, load_domain_pack_owned_dags, Dag, DagSlot, LoadedDag, PredicateBinding,
     ResolvedSlot, ResolvedSource, ResolvedTemplate, ResolvedTransition, ResolverProvenance,
     ShapeRef, SlotProvenance, SlotStateMachine, WorkspaceId,
 };
-use crate::resolver::shape_rule::{
-    load_shape_rules_from_dir, LoadedShapeRule, SlotGateMetadataRefinement, StructuralFacts,
-};
-use anyhow::{Context, Result};
 mod core_map {
     pub(crate) use dsl_types::{ConstellationMapDefBody, SlotDef};
 }
@@ -129,8 +129,6 @@ fn load_yaml_paths_from_dir(dir: &Path) -> Result<Vec<PathBuf>> {
     out.sort();
     Ok(out)
 }
-
-
 
 pub fn load_constellation_maps_from_dir(
     dir: &Path,
@@ -1049,8 +1047,6 @@ fn gate_vec(
     }
     Vec::new()
 }
-
-
 
 fn push_if_present(
     stack: &mut Vec<core_map::ConstellationMapDefBody>,

@@ -1,7 +1,7 @@
-use dsl_core::{ClosureType, EligibilityConstraint, PredicateBinding, RoleGuard};
 use anyhow::{Context, Result};
-use dsl_types::{AuditClass, CompletenessAssertionConfig};
+use dsl_core::{ClosureType, EligibilityConstraint, PredicateBinding, RoleGuard};
 pub use dsl_types::StructuralFacts;
+use dsl_types::{AuditClass, CompletenessAssertionConfig};
 use serde::{Deserialize, Serialize};
 use serde_yaml::Value as YamlValue;
 use std::{

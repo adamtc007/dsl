@@ -10,14 +10,25 @@ members = [
 ]
 resolver = "2"
 
+[workspace.package]
+version = "0.2.0"
+edition = "2021"
+rust-version = "1.95"
+license = "MIT"
+repository = "https://github.com/adamtc007/dsl"
+
 [workspace.dependencies]
-dsl_types       = { path = "crates/dsl_types" }
-dsl-core        = { path = "crates/dsl-core" }
-sem_os_types    = { path = "crates/sem_os_types" }
-sem_os_core     = { path = "crates/sem_os_core" }
-sem_os_ontology = { path = "crates/sem_os_ontology" }
-sem_os_policy   = { path = "crates/sem_os_policy" }
-dsl-integration-tests = { path = "crates/dsl-integration-tests" }
+dsl_types       = { version = "0.2.0", path = "crates/dsl_types" }
+dsl-core        = { version = "0.2.0", path = "crates/dsl-core" }
+sem_os_types    = { version = "0.2.0", path = "crates/sem_os_types" }
+sem_os_core     = { version = "0.2.0", path = "crates/sem_os_core" }
+sem_os_ontology = { version = "0.2.0", path = "crates/sem_os_ontology" }
+sem_os_policy   = { version = "0.2.0", path = "crates/sem_os_policy" }
+dsl-integration-tests = { version = "0.2.0", path = "crates/dsl-integration-tests" }
 
 [workspace.lints.rust]
+unsafe_code = "forbid"
 unreachable_pub = "deny"
+
+[workspace.lints.clippy]
+all = { level = "warn", priority = -1 }

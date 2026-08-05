@@ -40,7 +40,5 @@ fn test_tranche_d_facade_evidence() {
     let _ = dsl_core::ConfigLoader::new("dir");
 
     // 14. ResolvedTemplate::slot
-    fn check_resolved_template_slot(template: &dsl_core::ResolvedTemplate) {
-        let _ = template.slot("id");
-    }
+    let _ = dsl_core::ResolvedTemplate::slot;
 }

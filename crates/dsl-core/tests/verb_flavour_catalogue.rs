@@ -7,6 +7,7 @@ fn load_real_catalogue() -> VerbsConfig {
 }
 
 #[test]
+#[ignore = "requires the ob-poc verb catalogue; consumer qualification moves in Phase 2"]
 fn every_catalogue_verb_has_phase7_flavour() {
     let cfg = load_real_catalogue();
     let total: usize = cfg.domains.values().map(|domain| domain.verbs.len()).sum();
@@ -28,6 +29,7 @@ fn every_catalogue_verb_has_phase7_flavour() {
 }
 
 #[test]
+#[ignore = "requires the ob-poc verb catalogue; consumer qualification moves in Phase 2"]
 fn phase7_flavour_lints_are_clean_for_real_catalogue() {
     let cfg = load_real_catalogue();
     let report = validate_verbs_config(
@@ -46,6 +48,7 @@ fn phase7_flavour_lints_are_clean_for_real_catalogue() {
 }
 
 #[test]
+#[ignore = "requires the ob-poc verb catalogue; consumer qualification moves in Phase 2"]
 fn discretionary_verbs_have_authority_and_audit_metadata() {
     let cfg = load_real_catalogue();
     let mut checked = 0;
@@ -82,6 +85,7 @@ fn discretionary_verbs_have_authority_and_audit_metadata() {
 }
 
 #[test]
+#[ignore = "requires the ob-poc verb catalogue; consumer qualification moves in Phase 2"]
 fn tollgate_flavour_is_empty_body_only() {
     let cfg = load_real_catalogue();
     for (domain_name, domain) in &cfg.domains {

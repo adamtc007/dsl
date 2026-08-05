@@ -33,9 +33,9 @@ dependencies = [
 
 [[package]]
 name = "anyhow"
-version = "1.0.102"
+version = "1.0.103"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7f202df86484c868dbad7eaa557ef785d5c66295e41b460ef922eca0723b842c"
+checksum = "2a4385e2e34eb35d6b3efe798b9eb88096925d87726c0798709bf56d9ed84af3"
 
 [[package]]
 name = "arrayvec"
@@ -241,7 +241,7 @@ dependencies = [
 
 [[package]]
 name = "dsl-core"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -265,7 +265,7 @@ dependencies = [
 
 [[package]]
 name = "dsl-integration-tests"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -273,6 +273,8 @@ dependencies = [
  "dsl_types",
  "pretty_assertions",
  "sem_os_core",
+ "sem_os_ontology",
+ "sem_os_policy",
  "sem_os_types",
  "serde",
  "serde_json",
@@ -283,7 +285,7 @@ dependencies = [
 
 [[package]]
 name = "dsl_types"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -905,7 +907,7 @@ checksum = "1c107b6f4780854c8b126e228ea8869f4d7b71260f962fefb57b996b8959ba6b"
 
 [[package]]
 name = "sem_os_core"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -916,7 +918,6 @@ dependencies = [
  "prost",
  "prost-build",
  "sem_os_ontology",
- "sem_os_policy",
  "sem_os_types",
  "serde",
  "serde_json",
@@ -933,7 +934,7 @@ dependencies = [
 
 [[package]]
 name = "sem_os_ontology"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -950,7 +951,7 @@ dependencies = [
 
 [[package]]
 name = "sem_os_policy"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -973,7 +974,7 @@ dependencies = [
 
 [[package]]
 name = "sem_os_types"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "chrono",
  "serde",
@@ -1632,51 +1633,3 @@ name = "zmij"
 version = "1.0.21"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b8848ee67ecc8aedbaf3e4122217aff892639231befc6a1b58d29fff4c2cabaa"
-
-[[patch.unused]]
-name = "bpmn-lite-engine"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "bpmn-lite-ffi-grpc"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "bpmn-lite-ffi-http"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "bpmn-lite-server"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "bpmn-lite-store"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "dmn-lite-bridge"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "dsl-bus-client"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "dsl-bus-protocol"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "dsl-bus-server"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "dsl-bus-storage"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "dsl-manifest"
-version = "0.1.0"
-
-[[patch.unused]]
-name = "ffi-catalogue"
-version = "0.1.0"

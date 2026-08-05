@@ -140,19 +140,19 @@ impl AggregationRule {
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum CrossScopeRule {
     /// Runbook touches at least `min_workspaces` distinct workspaces.
-    MultiWorkspace {
+    Workspace {
         name: String,
         min_workspaces: usize,
         tier: ConsequenceTier,
     },
     /// Runbook transitions at least `min_dags` distinct DAGs.
-    MultiDag {
+    Dag {
         name: String,
         min_dags: usize,
         tier: ConsequenceTier,
     },
     /// Runbook touches at least `min_kinds` distinct entity kinds.
-    MultiEntityKind {
+    EntityKind {
         name: String,
         min_kinds: usize,
         tier: ConsequenceTier,
@@ -162,32 +162,32 @@ pub(crate) enum CrossScopeRule {
 impl CrossScopeRule {
     pub(crate) fn name(&self) -> &str {
         match self {
-            Self::MultiWorkspace { name, .. }
-            | Self::MultiDag { name, .. }
-            | Self::MultiEntityKind { name, .. } => name,
+            Self::Workspace { name, .. }
+            | Self::Dag { name, .. }
+            | Self::EntityKind { name, .. } => name,
         }
     }
 
     pub(crate) fn tier(&self) -> ConsequenceTier {
         match self {
-            Self::MultiWorkspace { tier, .. }
-            | Self::MultiDag { tier, .. }
-            | Self::MultiEntityKind { tier, .. } => *tier,
+            Self::Workspace { tier, .. }
+            | Self::Dag { tier, .. }
+            | Self::EntityKind { tier, .. } => *tier,
         }
     }
 
     pub(crate) fn matches(&self, steps: &[RunbookStep]) -> bool {
         match self {
-            Self::MultiWorkspace { min_workspaces, .. } => {
+            Self::Workspace { min_workspaces, .. } => {
                 let distinct: HashSet<&str> = steps.iter().map(|s| s.workspace.as_str()).collect();
                 distinct.len() >= *min_workspaces
             }
-            Self::MultiDag { min_dags, .. } => {
+            Self::Dag { min_dags, .. } => {
                 let distinct: HashSet<&str> =
                     steps.iter().filter_map(|s| s.dag.as_deref()).collect();
                 distinct.len() >= *min_dags
             }
-            Self::MultiEntityKind { min_kinds, .. } => {
+            Self::EntityKind { min_kinds, .. } => {
                 let distinct: HashSet<&str> = steps
                     .iter()
                     .filter_map(|s| s.entity_kind.as_deref())
@@ -410,7 +410,7 @@ mod tests {
 
     #[test]
     fn component_c_multi_workspace_fires() {
-        let rule = CrossScopeRule::MultiWorkspace {
+        let rule = CrossScopeRule::Workspace {
             name: "cross_ws".into(),
             min_workspaces: 2,
             tier: ConsequenceTier::RequiresConfirmation,
@@ -435,7 +435,7 @@ mod tests {
 
     #[test]
     fn component_c_multi_dag_ignores_stateless_steps() {
-        let rule = CrossScopeRule::MultiDag {
+        let rule = CrossScopeRule::Dag {
             name: "cross_dag".into(),
             min_dags: 2,
             tier: ConsequenceTier::Reviewable,
@@ -462,7 +462,7 @@ mod tests {
 
     #[test]
     fn component_c_multi_entity_kind() {
-        let rule = CrossScopeRule::MultiEntityKind {
+        let rule = CrossScopeRule::EntityKind {
             name: "cross_kind".into(),
             min_kinds: 2,
             tier: ConsequenceTier::Reviewable,
@@ -494,7 +494,7 @@ mod tests {
             threshold: 1,
             tier: ConsequenceTier::RequiresConfirmation,
         }];
-        let xs = vec![CrossScopeRule::MultiWorkspace {
+        let xs = vec![CrossScopeRule::Workspace {
             name: "x".into(),
             min_workspaces: 1,
             tier: ConsequenceTier::RequiresExplicitAuthorisation,

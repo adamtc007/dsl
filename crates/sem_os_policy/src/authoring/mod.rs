@@ -21,9 +21,9 @@ pub use sem_os_types::agent_mode;
 #[allow(dead_code)]
 pub(crate) mod canonical_hash; // content-addressed hashing — internal pipeline detail
 #[allow(dead_code)]
-pub(crate) mod diff;           // structural diff — internal pipeline detail
+pub(crate) mod diff; // structural diff — internal pipeline detail
 #[allow(dead_code)]
-pub(crate) mod errors;         // structured error codes — internal, exposed via SemOsError at boundary
+pub(crate) mod errors; // structured error codes — internal, exposed via SemOsError at boundary
 pub mod ports;
 pub mod types;
 #[allow(dead_code)]
@@ -35,4 +35,4 @@ pub mod bundle;
 pub mod cleanup;
 pub mod governance_verbs;
 #[allow(dead_code)]
-pub(crate) mod metrics;         // internal instrumentation
+pub(crate) mod metrics; // internal instrumentation

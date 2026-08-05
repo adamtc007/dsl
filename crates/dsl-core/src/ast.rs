@@ -733,30 +733,6 @@ pub(crate) trait AstVisitor {
     fn visit_entity_ref(&mut self, _node: &AstNode) {}
 }
 
-/// Collect all unresolved entity refs in the AST
-#[allow(dead_code)]
-pub(crate) fn find_unresolved_refs(program: &Program) -> Vec<&AstNode> {
-    struct Collector<'a> {
-        refs: Vec<&'a AstNode>,
-    }
-
-    impl<'a> AstVisitor for Collector<'a> {
-        fn visit_entity_ref(&mut self, node: &AstNode) {
-            if node.is_unresolved_entity_ref() {
-                // Safety: we're collecting references to nodes in the program
-                // This is a bit awkward but avoids cloning
-                self.refs.push(unsafe { &*(node as *const AstNode) });
-            }
-        }
-    }
-
-    let mut collector = Collector { refs: Vec::new() };
-    for stmt in &program.statements {
-        collector.visit_statement(stmt);
-    }
-    collector.refs
-}
-
 /// Location of an unresolved EntityRef in the AST
 #[derive(Debug, Clone)]
 pub struct UnresolvedRefLocation {
@@ -1115,7 +1091,7 @@ pub enum EnhanceArg {
 impl EnhanceArg {
     /// Render the argument to DSL string
     #[allow(dead_code)]
-    pub(crate) fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(self) -> String {
         match self {
             EnhanceArg::Plus => "+".to_string(),
             EnhanceArg::Minus => "-".to_string(),
@@ -1175,7 +1151,7 @@ pub(crate) enum NavDirection {
 impl NavDirection {
     /// Render the direction to DSL string
     #[allow(dead_code)]
-    pub(crate) fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(self) -> String {
         match self {
             NavDirection::Left => "left".to_string(),
             NavDirection::Right => "right".to_string(),
@@ -1230,7 +1206,7 @@ pub(crate) enum ViewType {
 
 impl ViewType {
     /// Render the view type to DSL string
-    pub(crate) fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(self) -> String {
         match self {
             ViewType::Structure => "structure".to_string(),
             ViewType::Ownership => "ownership".to_string(),
@@ -1295,7 +1271,7 @@ pub enum ConfidenceZone {
 
 impl ConfidenceZone {
     /// Render the zone to DSL string
-    pub(crate) fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(self) -> String {
         match self {
             ConfidenceZone::Core => "core".to_string(),
             ConfidenceZone::Shell => "shell".to_string(),
@@ -1359,7 +1335,7 @@ pub(crate) enum ExportFormat {
 
 impl ExportFormat {
     /// Render the format to DSL string
-    pub(crate) fn to_dsl_string(&self) -> String {
+    pub(crate) fn to_dsl_string(self) -> String {
         match self {
             ExportFormat::Png => "png".to_string(),
             ExportFormat::Svg => "svg".to_string(),
@@ -1474,7 +1450,7 @@ mod tests {
     }
 
     #[test]
-    fn test_find_unresolved() {
+    fn test_find_unresolved_locations() {
         let program = Program {
             statements: vec![Statement::VerbCall(VerbCall {
                 domain: "cbu".to_string(),
@@ -1497,9 +1473,12 @@ mod tests {
             })],
         };
 
-        let unresolved = find_unresolved_refs(&program);
+        let unresolved = find_unresolved_ref_locations(&program);
         assert_eq!(unresolved.len(), 1);
-        assert!(unresolved[0].is_unresolved_entity_ref());
+        assert_eq!(unresolved[0].statement_index, 0);
+        assert_eq!(unresolved[0].arg_key, "jurisdiction");
+        assert_eq!(unresolved[0].entity_type, "jurisdiction");
+        assert_eq!(unresolved[0].search_text, "LU");
     }
 
     #[test]
@@ -1576,9 +1555,7 @@ mod tests {
                             entity_type: "cbu".to_string(),
                             search_column: "name".to_string(),
                             value: "Apex Fund".to_string(),
-                            resolved_key: Some(
-                                "11111111-1111-1111-1111-111111111111".to_string(),
-                            ),
+                            resolved_key: Some("11111111-1111-1111-1111-111111111111".to_string()),
                             span: Span::default(),
                             ref_id: None,
                             explain: None,

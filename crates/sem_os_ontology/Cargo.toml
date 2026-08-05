@@ -1,8 +1,12 @@
 [package]
 name = "sem_os_ontology"
-version = "0.1.0"
-edition = "2021"
-description = "Semantic OS ontology vocabulary — the *_def family. Definition bodies for everything SemOS catalogues: attributes, entity types, document types, relationship types, state graphs, taxonomies, verbs, views, requirement profiles, evidence strategies, observations, etc. Pure data-with-validation; no ABAC, no projection, no enforcement."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+readme = "README.md"
+description = "Host-neutral SemOS ontology definitions and validation vocabulary"
 
 # Capability discipline (see docs/todo/sem-os-core-split-v1.md §2.2):
 #   IN-SCOPE: the *_def family. Definitions of *what exists in the world*.
@@ -28,7 +32,7 @@ serde_json = "1.0"
 # import the AttributeVisibility/EvidenceGrade enums from sem_os_types.
 # Other Phase 3 modules need chrono, uuid, anyhow, hex, sha2, strum
 # inline (caught at slice time).
-sem_os_types = { path = "../sem_os_types" }
+sem_os_types.workspace = true
 anyhow = "1.0"
 chrono = { version = "0.4", features = ["serde"] }
 hex = "0.4"
@@ -37,5 +41,5 @@ sha2 = "0.10"
 strum = { version = "0.26", features = ["derive"] }
 uuid = { version = "1", features = ["v4", "v5", "serde"] }
 
-[lints.rust]
-unreachable_pub = "deny"
+[lints]
+workspace = true

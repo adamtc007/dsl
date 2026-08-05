@@ -18,8 +18,8 @@ use std::path::{Path, PathBuf};
 pub use dsl_types::{
     ApprovalGateRef, CascadeRule, CrossWorkspaceConstraint, Dag, DerivationCondition,
     DerivedCrossWorkspaceState, EntryVia, FoldPreconditionsRef, LexiconManifestRef, LoadedDag,
-    Phase, PredicateBinding, Severity, Slot, SlotStateMachine, StateSelector, StreamGoverned,
-    StreamGovernance,
+    Phase, PredicateBinding, Severity, Slot, SlotStateMachine, StateSelector, StreamGovernance,
+    StreamGoverned,
 };
 
 // Re-exports reached only inside dsl-core
