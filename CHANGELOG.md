@@ -6,6 +6,13 @@ The workspace follows Semantic Versioning subject to the pre-1.0 rules in
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-08-05
+
+### Fixed
+
+- Document the intentional eight-port dependency-injection constructor so the
+  release graph passes the repository's warnings-as-errors Clippy gate.
+
 ## [0.2.0] - 2026-08-05
 
 ### Added

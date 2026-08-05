@@ -244,6 +244,9 @@ pub struct CoreServiceImpl {
 }
 
 impl CoreServiceImpl {
+    // The service deliberately exposes each persistence port independently so
+    // hosts can compose adapters without a shared infrastructure container.
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         semantic_snapshot: SemanticSnapshot,
         snapshots: Arc<dyn SnapshotStore>,
