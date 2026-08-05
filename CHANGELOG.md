@@ -6,6 +6,22 @@ The workspace follows Semantic Versioning subject to the pre-1.0 rules in
 
 ## [Unreleased]
 
+## [0.2.2] - 2026-08-05
+
+### Changed
+
+- Upgrade the optional Candle inference stack from 0.8.4 to 0.9.2, replacing
+  the future-incompatible Apple `block 0.1.6` dependency with the maintained
+  `objc2` bindings. Public embedding contracts, model identity, dimension,
+  tokenizer, weights, and query/target semantics are unchanged. Pinned-model
+  parity probes observed at most `1.50e-7` absolute per-component numerical
+  drift, so vectors are semantically equivalent but not byte-identical across
+  the implementation upgrade.
+- Repair the dependency-policy gate by explicitly admitting the permissive
+  transitive licenses in the locked graph and documenting two unavoidable,
+  unmaintained-only upstream advisory exceptions without relaxing vulnerability
+  or yanked-crate enforcement.
+
 ## [0.2.1] - 2026-08-05
 
 ### Fixed

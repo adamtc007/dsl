@@ -4,7 +4,10 @@ all-features = true
 [advisories]
 version = 2
 yanked = "deny"
-ignore = []
+ignore = [
+    { id = "RUSTSEC-2024-0436", reason = "paste is an unmaintained transitive dependency of tokenizers and Candle's gemm backend; no vulnerability is reported and no upstream replacement is available yet" },
+    { id = "RUSTSEC-2025-0119", reason = "number_prefix is an unmaintained transitive dependency of indicatif via hf-hub/tokenizers; no vulnerability is reported and no upstream replacement is available yet" },
+]
 
 [licenses]
 version = 2
@@ -12,10 +15,15 @@ confidence-threshold = 0.8
 allow = [
     "Apache-2.0",
     "BSD-3-Clause",
+    "CDLA-Permissive-2.0",
+    "ISC",
     "MIT",
     "Unicode-3.0",
+    "Zlib",
 ]
-exceptions = []
+exceptions = [
+    { allow = ["MPL-2.0"], crate = "option-ext@0.2.0" },
+]
 
 [bans]
 multiple-versions = "warn"
