@@ -4,17 +4,14 @@ crates/dsl-core/src/ast.rs
 crates/dsl-core/src/binding_context.rs
 crates/dsl-core/src/compiler.rs
 crates/dsl-core/src/config/dag.rs
-crates/dsl-core/src/config/dag/integration_tests/lux_sicav_pilot.rs
 crates/dsl-core/src/config/dag_validator.rs
 crates/dsl-core/src/config/dag_validator/integration_tests/dag_validator_gate.rs
 crates/dsl-core/src/config/escalation.rs
 crates/dsl-core/src/config/escalation/integration_tests/three_axis_fixtures.rs
-crates/dsl-core/src/config/green_when_coverage/integration_tests/green_when_coverage.rs
 crates/dsl-core/src/config/loader.rs
 crates/dsl-core/src/config/manifest.rs
 crates/dsl-core/src/config/mod.rs
 crates/dsl-core/src/config/phrase_gen.rs
-crates/dsl-core/src/config/predicate/integration_tests/predicate_ast.rs
 crates/dsl-core/src/config/resource_dependency.rs
 crates/dsl-core/src/config/runbook_composition.rs
 crates/dsl-core/src/config/types.rs
@@ -73,5 +70,4 @@ crates/sem_os_policy/src/service.rs
 crates/sem_os_policy/src/state_simulation.rs
 crates/sem_os_policy/src/stewardship/mod.rs
 crates/sem_os_policy/src/stewardship/types.rs
-crates/sem_os_types/src/agent_mode.rs
 crates/sem_os_types/src/lib.rs

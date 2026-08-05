@@ -66,7 +66,7 @@ assert_allowed_workspace_dependencies semantic-embedder
 assert_allowed_workspace_dependencies dsl-core dsl_types
 assert_allowed_workspace_dependencies sem_os_core dsl-core dsl_types sem_os_types
 assert_allowed_workspace_dependencies sem_os_ontology dsl_types sem_os_types semantic-decision-contracts
-assert_allowed_workspace_dependencies sem_os_policy dsl_types sem_os_core sem_os_ontology sem_os_types semantic-decision-contracts
+assert_allowed_workspace_dependencies sem_os_policy dsl_types sem_os_core sem_os_ontology sem_os_types semantic-decision-contracts semantic-pack
 assert_no_host_sources
 
 if [ "$fail" -ne 0 ]; then
