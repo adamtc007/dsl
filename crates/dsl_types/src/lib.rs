@@ -25,6 +25,7 @@
 pub(crate) mod constellation_map_def;
 pub(crate) mod dag;
 pub(crate) mod resolver_facts;
+mod semantic_id;
 
 pub use constellation_map_def::{
     AuditClass, Cardinality, ClosureType, CompletenessAssertionConfig, ConstellationMapDefBody,
@@ -32,6 +33,7 @@ pub use constellation_map_def::{
     SlotDef, SlotGatingState, SlotKey, SlotType, VerbAvailability, VerbPaletteEntry,
 };
 pub use resolver_facts::StructuralFacts;
+pub use semantic_id::{CapabilityId, DomainTypeId, FocusKind, SemanticIdError, SlotKind};
 
 pub use dag::{
     ApprovalGateRef, CascadeRule, CategoryGated, ConditionalGate, CrossWorkspaceConstraint, Dag,

@@ -34,6 +34,7 @@
 //!                   Executor
 //! ```
 
+use dsl_types::FocusKind;
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
@@ -1002,32 +1003,15 @@ impl ViewportVerb {
     }
 }
 
-/// Focus target for viewport verbs
-///
-/// Supports hierarchical focus: CBU → Entity → Matrix → Type → Config
+/// Pack-declared focus target for viewport verbs.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub enum FocusTarget {
-    /// Focus a CBU container: cbu:ref
-    Cbu { cbu_ref: String, span: Span },
-
-    /// Focus an entity within CBU context: entity:ref
-    Entity { entity_ref: String, span: Span },
-
-    /// Focus a member relationship: member:ref
-    Member { member_ref: String, span: Span },
-
-    /// Focus an edge/relationship: edge:ref
-    Edge { edge_ref: String, span: Span },
-
-    /// Focus the instrument matrix: matrix
-    Matrix { span: Span },
-
-    /// Focus an instrument type node: type:InstrumentType
-    InstrumentType { instrument_type: String, span: Span },
-
-    /// Focus a config node (MIC, BIC, Pricing): config:node
-    Config { config_node: String, span: Span },
-
+    /// Explicit pack-declared kind and optional reference.
+    Declared {
+        kind: FocusKind,
+        reference: Option<String>,
+        span: Span,
+    },
     /// Focus a symbol reference: @symbol
     Symbol { name: String, span: Span },
 }
@@ -1037,13 +1021,7 @@ impl FocusTarget {
     #[allow(dead_code)]
     pub(crate) fn span(&self) -> Span {
         match self {
-            FocusTarget::Cbu { span, .. } => *span,
-            FocusTarget::Entity { span, .. } => *span,
-            FocusTarget::Member { span, .. } => *span,
-            FocusTarget::Edge { span, .. } => *span,
-            FocusTarget::Matrix { span } => *span,
-            FocusTarget::InstrumentType { span, .. } => *span,
-            FocusTarget::Config { span, .. } => *span,
+            FocusTarget::Declared { span, .. } => *span,
             FocusTarget::Symbol { span, .. } => *span,
         }
     }
@@ -1052,15 +1030,16 @@ impl FocusTarget {
     #[allow(dead_code)]
     pub(crate) fn to_dsl_string(&self) -> String {
         match self {
-            FocusTarget::Cbu { cbu_ref, .. } => format!(":cbu \"{}\"", cbu_ref),
-            FocusTarget::Entity { entity_ref, .. } => format!(":entity \"{}\"", entity_ref),
-            FocusTarget::Member { member_ref, .. } => format!(":member \"{}\"", member_ref),
-            FocusTarget::Edge { edge_ref, .. } => format!(":edge \"{}\"", edge_ref),
-            FocusTarget::Matrix { .. } => ":matrix".to_string(),
-            FocusTarget::InstrumentType {
-                instrument_type, ..
-            } => format!(":type \"{}\"", instrument_type),
-            FocusTarget::Config { config_node, .. } => format!(":config \"{}\"", config_node),
+            FocusTarget::Declared {
+                kind,
+                reference: Some(reference),
+                ..
+            } => format!(":{} \"{}\"", kind, reference),
+            FocusTarget::Declared {
+                kind,
+                reference: None,
+                ..
+            } => format!(":{kind}"),
             FocusTarget::Symbol { name, .. } => format!("@{}", name),
         }
     }
@@ -1665,13 +1644,17 @@ mod tests {
 
         // Focus verb
         let focus = ViewportVerb::Focus {
-            target: FocusTarget::Cbu {
-                cbu_ref: "Apex Fund".to_string(),
+            target: FocusTarget::Declared {
+                kind: FocusKind::new("container").unwrap(),
+                reference: Some("Apex Fund".to_string()),
                 span,
             },
             span,
         };
-        assert_eq!(focus.to_dsl_string(), "(viewport.focus :cbu \"Apex Fund\")");
+        assert_eq!(
+            focus.to_dsl_string(),
+            "(viewport.focus :container \"Apex Fund\")"
+        );
         assert_eq!(focus.verb_name(), "focus");
 
         // Enhance verb
@@ -1697,7 +1680,11 @@ mod tests {
 
         // Descend verb
         let descend = ViewportVerb::Descend {
-            target: FocusTarget::Matrix { span },
+            target: FocusTarget::Declared {
+                kind: FocusKind::new("matrix").unwrap(),
+                reference: None,
+                span,
+            },
             span,
         };
         assert_eq!(descend.to_dsl_string(), "(viewport.descend :matrix)");
@@ -1733,24 +1720,34 @@ mod tests {
         let span = Span::default();
 
         assert_eq!(
-            FocusTarget::Cbu {
-                cbu_ref: "Test".to_string(),
+            FocusTarget::Declared {
+                kind: FocusKind::new("container").unwrap(),
+                reference: Some("Test".to_string()),
                 span
             }
             .to_dsl_string(),
-            ":cbu \"Test\""
+            ":container \"Test\""
         );
 
         assert_eq!(
-            FocusTarget::Entity {
-                entity_ref: "John".to_string(),
+            FocusTarget::Declared {
+                kind: FocusKind::new("record").unwrap(),
+                reference: Some("John".to_string()),
                 span
             }
             .to_dsl_string(),
-            ":entity \"John\""
+            ":record \"John\""
         );
 
-        assert_eq!(FocusTarget::Matrix { span }.to_dsl_string(), ":matrix");
+        assert_eq!(
+            FocusTarget::Declared {
+                kind: FocusKind::new("matrix").unwrap(),
+                reference: None,
+                span
+            }
+            .to_dsl_string(),
+            ":matrix"
+        );
 
         assert_eq!(
             FocusTarget::Symbol {
@@ -1867,7 +1864,11 @@ mod tests {
         let span = Span::new(10, 50);
 
         let focus = ViewportVerb::Focus {
-            target: FocusTarget::Matrix { span },
+            target: FocusTarget::Declared {
+                kind: FocusKind::new("matrix").unwrap(),
+                reference: None,
+                span,
+            },
             span,
         };
         assert_eq!(focus.span(), span);

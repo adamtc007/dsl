@@ -103,11 +103,7 @@ macro_rules! semantic_id {
 }
 
 semantic_id!(PackId, "pack id");
-semantic_id!(CapabilityId, "capability id");
 semantic_id!(DomainIdentity, "domain identity");
-semantic_id!(DomainTypeId, "domain type id");
-semantic_id!(SlotKind, "slot kind");
-semantic_id!(FocusKind, "focus kind");
 semantic_id!(AdapterBindingId, "adapter binding id");
 semantic_id!(RoleId, "role id");
 semantic_id!(GraphNodeId, "graph node id");
@@ -187,13 +183,13 @@ mod tests {
 
     #[test]
     fn identifiers_are_strict_and_round_trip() {
-        let id = CapabilityId::new("process.start_v2").unwrap();
+        let id = PackId::new("process.start_v2").unwrap();
         assert_eq!(serde_json::to_string(&id).unwrap(), "\"process.start_v2\"");
         assert_eq!(
-            serde_json::from_str::<CapabilityId>("\"process.start_v2\"").unwrap(),
+            serde_json::from_str::<PackId>("\"process.start_v2\"").unwrap(),
             id
         );
-        assert!(CapabilityId::new("Process::Start").is_err());
-        assert!(CapabilityId::new("a..b").is_err());
+        assert!(PackId::new("Process::Start").is_err());
+        assert!(PackId::new("a..b").is_err());
     }
 }

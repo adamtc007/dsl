@@ -147,19 +147,11 @@ pub struct SlotDef {
     pub completeness_assertion: Option<CompletenessAssertionConfig>,
 }
 
-/// Supported slot classes.
-#[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq)]
-#[serde(rename_all = "snake_case")]
-pub enum SlotType {
-    /// Stateless workspace/menu root with no backing subject row.
-    Workspace,
-    Cbu,
-    Entity,
-    EntityGraph,
-    Case,
-    Tollgate,
-    Mandate,
-}
+/// Pack-declared slot kind.
+///
+/// Kept as a source-compatible type name for existing map consumers while the
+/// closed application enum is replaced by a validated identifier.
+pub type SlotType = crate::SlotKind;
 
 /// Supported slot cardinality semantics.
 #[derive(Debug, Clone, Copy, Deserialize, Serialize, PartialEq, Eq)]

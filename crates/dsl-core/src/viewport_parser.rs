@@ -293,7 +293,7 @@ fn extract_string_value(node: &AstNode, arg_name: &str) -> ViewportParseResult<S
 // Target and Argument Parsers
 // ============================================================================
 
-/// Parse a focus target string like "cbu:Acme" or "entity:John Smith"
+/// Parse an explicit pack-declared focus target such as `kind:reference`.
 fn parse_focus_target(target: &str, span: Span) -> ViewportParseResult<FocusTarget> {
     // Handle symbol references
     if let Some(stripped) = target.strip_prefix('@') {
@@ -303,47 +303,36 @@ fn parse_focus_target(target: &str, span: Span) -> ViewportParseResult<FocusTarg
         });
     }
 
-    // Parse prefixed targets: "type:value"
-    if let Some((prefix, value)) = target.split_once(':') {
-        let prefix_lower = prefix.to_lowercase();
-        match prefix_lower.as_str() {
-            "cbu" => Ok(FocusTarget::Cbu {
-                cbu_ref: value.to_string(),
-                span,
-            }),
-            "entity" => Ok(FocusTarget::Entity {
-                entity_ref: value.to_string(),
-                span,
-            }),
-            "member" => Ok(FocusTarget::Member {
-                member_ref: value.to_string(),
-                span,
-            }),
-            "edge" => Ok(FocusTarget::Edge {
-                edge_ref: value.to_string(),
-                span,
-            }),
-            "type" => Ok(FocusTarget::InstrumentType {
-                instrument_type: value.to_string(),
-                span,
-            }),
-            "config" => Ok(FocusTarget::Config {
-                config_node: value.to_string(),
-                span,
-            }),
-            _ => Err(ViewportParseError::new(format!(
-                "Unknown focus target type: '{}'. Expected one of: cbu, entity, member, edge, type, config",
-                prefix
-            )).with_span(span)),
-        }
-    } else if target.eq_ignore_ascii_case("matrix") {
-        Ok(FocusTarget::Matrix { span })
-    } else {
-        // Bare string - assume it's a CBU name for convenience
-        Ok(FocusTarget::Cbu {
-            cbu_ref: target.to_string(),
+    if let Some(kind) = target.strip_prefix(':') {
+        let kind = dsl_types::FocusKind::new(kind.to_lowercase()).map_err(|error| {
+            ViewportParseError::new(format!("Invalid focus target kind: {error}")).with_span(span)
+        })?;
+        Ok(FocusTarget::Declared {
+            kind,
+            reference: None,
             span,
         })
+    // Parse prefixed targets: "type:value"
+    } else if let Some((prefix, value)) = target.split_once(':') {
+        let prefix_lower = prefix.to_lowercase();
+        let kind = dsl_types::FocusKind::new(prefix_lower).map_err(|error| {
+            ViewportParseError::new(format!("Invalid focus target kind: {error}")).with_span(span)
+        })?;
+        if value.trim().is_empty() {
+            return Err(
+                ViewportParseError::new("Focus target reference must not be empty").with_span(span),
+            );
+        }
+        Ok(FocusTarget::Declared {
+            kind,
+            reference: Some(value.to_string()),
+            span,
+        })
+    } else {
+        Err(ViewportParseError::new(
+            "Ambiguous focus target: use an explicit `kind:reference`, `:kind`, or `@symbol`",
+        )
+        .with_span(span))
     }
 }
 
@@ -410,25 +399,36 @@ mod tests {
     }
 
     #[test]
-    fn test_parse_focus_cbu() {
-        let verb = parse_single_viewport(r#"(viewport.focus :target "cbu:Acme Corp")"#).unwrap();
+    fn test_parse_declared_focus() {
+        let verb =
+            parse_single_viewport(r#"(viewport.focus :target "container:Acme Corp")"#).unwrap();
         match verb {
             ViewportVerb::Focus { target, .. } => match target {
-                FocusTarget::Cbu { cbu_ref, .. } => assert_eq!(cbu_ref, "Acme Corp"),
-                _ => panic!("Expected FocusTarget::Cbu"),
+                FocusTarget::Declared {
+                    kind, reference, ..
+                } => {
+                    assert_eq!(kind.as_str(), "container");
+                    assert_eq!(reference.as_deref(), Some("Acme Corp"));
+                }
+                _ => panic!("Expected declared focus target"),
             },
             _ => panic!("Expected Focus verb"),
         }
     }
 
     #[test]
-    fn test_parse_focus_entity() {
+    fn test_parse_another_declared_focus_kind() {
         let verb =
-            parse_single_viewport(r#"(viewport.focus :target "entity:John Smith")"#).unwrap();
+            parse_single_viewport(r#"(viewport.focus :target "record:John Smith")"#).unwrap();
         match verb {
             ViewportVerb::Focus { target, .. } => match target {
-                FocusTarget::Entity { entity_ref, .. } => assert_eq!(entity_ref, "John Smith"),
-                _ => panic!("Expected FocusTarget::Entity"),
+                FocusTarget::Declared {
+                    kind, reference, ..
+                } => {
+                    assert_eq!(kind.as_str(), "record");
+                    assert_eq!(reference.as_deref(), Some("John Smith"));
+                }
+                _ => panic!("Expected declared focus target"),
             },
             _ => panic!("Expected Focus verb"),
         }
@@ -436,26 +436,25 @@ mod tests {
 
     #[test]
     fn test_parse_focus_matrix() {
-        let verb = parse_single_viewport(r#"(viewport.focus :target "matrix")"#).unwrap();
+        let verb = parse_single_viewport(r#"(viewport.focus :target ":matrix")"#).unwrap();
         match verb {
             ViewportVerb::Focus { target, .. } => {
-                assert!(matches!(target, FocusTarget::Matrix { .. }));
+                assert!(matches!(
+                    target,
+                    FocusTarget::Declared {
+                        reference: None,
+                        ..
+                    }
+                ));
             }
             _ => panic!("Expected Focus verb"),
         }
     }
 
     #[test]
-    fn test_parse_focus_bare_string() {
-        // Bare string without prefix assumes CBU
-        let verb = parse_single_viewport(r#"(viewport.focus :target "Acme")"#).unwrap();
-        match verb {
-            ViewportVerb::Focus { target, .. } => match target {
-                FocusTarget::Cbu { cbu_ref, .. } => assert_eq!(cbu_ref, "Acme"),
-                _ => panic!("Expected FocusTarget::Cbu"),
-            },
-            _ => panic!("Expected Focus verb"),
-        }
+    fn test_parse_focus_bare_string_is_ambiguous() {
+        let error = parse_single_viewport(r#"(viewport.focus :target "Acme")"#).unwrap_err();
+        assert!(error.message.contains("Ambiguous focus target"));
     }
 
     #[test]
@@ -550,11 +549,16 @@ mod tests {
 
     #[test]
     fn test_parse_descend() {
-        let verb = parse_single_viewport(r#"(viewport.descend :target "entity:Child")"#).unwrap();
+        let verb = parse_single_viewport(r#"(viewport.descend :target "record:Child")"#).unwrap();
         match verb {
             ViewportVerb::Descend { target, .. } => match target {
-                FocusTarget::Entity { entity_ref, .. } => assert_eq!(entity_ref, "Child"),
-                _ => panic!("Expected FocusTarget::Entity"),
+                FocusTarget::Declared {
+                    kind, reference, ..
+                } => {
+                    assert_eq!(kind.as_str(), "record");
+                    assert_eq!(reference.as_deref(), Some("Child"));
+                }
+                _ => panic!("Expected declared focus target"),
             },
             _ => panic!("Expected Descend verb"),
         }

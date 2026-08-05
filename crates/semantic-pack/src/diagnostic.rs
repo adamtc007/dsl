@@ -62,14 +62,13 @@ pub enum PackSourceError {
 
 /// YAML syntax/schema parse failure with source location.
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
-#[error("failed to parse semantic pack {source_name}{location} at {yaml_path}: {message}")]
+#[error("failed to parse semantic pack {source_name} at {yaml_path}: {message}")]
 pub struct PackParseError {
     pub source_name: String,
     pub yaml_path: String,
     pub line: Option<usize>,
     pub column: Option<usize>,
     pub message: String,
-    location: String,
 }
 
 impl PackParseError {
@@ -80,17 +79,12 @@ impl PackParseError {
         column: Option<usize>,
         message: String,
     ) -> Self {
-        let location = match (line, column) {
-            (Some(line), Some(column)) => format!(" at {line}:{column}"),
-            _ => String::new(),
-        };
         Self {
             source_name,
             yaml_path,
             line,
             column,
             message,
-            location,
         }
     }
 }

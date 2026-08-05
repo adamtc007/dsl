@@ -23,9 +23,10 @@ pub use diagnostic::{
     Diagnostic, DiagnosticCode, PackAdmissionError, PackCompileError, PackParseError,
     PackSourceError, PackValidationErrors, RegistryError,
 };
+pub use dsl_types::{CapabilityId, DomainTypeId, FocusKind, SlotKind};
 pub use identity::{
-    AdapterBindingId, CapabilityId, DomainIdentity, DomainTypeId, FocusKind, GraphNodeId,
-    IdentityError, IdentityNamespace, PackId, PackIdentity, PackVersion, RoleId, SlotKind,
+    AdapterBindingId, DomainIdentity, GraphNodeId, IdentityError, IdentityNamespace, PackId,
+    PackIdentity, PackVersion, RoleId,
 };
 pub use registry::{InMemoryPackRegistry, PackRegistry};
 pub use source::{

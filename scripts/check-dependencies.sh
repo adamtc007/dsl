@@ -61,12 +61,12 @@ echo "== metadata dependency guard =="
 assert_allowed_workspace_dependencies dsl_types
 assert_allowed_workspace_dependencies sem_os_types
 assert_allowed_workspace_dependencies semantic-decision-contracts
-assert_allowed_workspace_dependencies semantic-pack semantic-decision-contracts
+assert_allowed_workspace_dependencies semantic-pack dsl_types semantic-decision-contracts
 assert_allowed_workspace_dependencies semantic-embedder
 assert_allowed_workspace_dependencies dsl-core dsl_types
 assert_allowed_workspace_dependencies sem_os_core dsl-core dsl_types sem_os_types
 assert_allowed_workspace_dependencies sem_os_ontology dsl_types sem_os_types semantic-decision-contracts
-assert_allowed_workspace_dependencies sem_os_policy sem_os_core sem_os_ontology sem_os_types semantic-decision-contracts
+assert_allowed_workspace_dependencies sem_os_policy dsl_types sem_os_core sem_os_ontology sem_os_types semantic-decision-contracts
 assert_no_host_sources
 
 if [ "$fail" -ne 0 ]; then

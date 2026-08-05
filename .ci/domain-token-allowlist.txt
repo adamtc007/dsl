@@ -26,7 +26,6 @@ crates/dsl-core/src/executable_plan/integration_tests/plan_golden.rs
 crates/dsl-core/src/execution_dag.rs
 crates/dsl-core/src/parser.rs
 crates/dsl-core/src/viewport_parser.rs
-crates/dsl_types/src/constellation_map_def.rs
 crates/dsl_types/src/dag.rs
 crates/dsl_types/src/lib.rs
 crates/sem_os_core/src/ids.rs

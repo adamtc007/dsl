@@ -128,25 +128,17 @@ pub fn compute_delta(prev: &OrientationContract, curr: &OrientationContract) -> 
 fn focus_kind_from_focus(focus: &FocusState) -> FocusKind {
     if let Some(ref tax) = focus.taxonomy_focus {
         if tax.node_id.is_some() {
-            return FocusKind::TaxonomyNode;
+            return FocusKind::new("taxonomy_node").expect("static focus kind is valid");
         }
     }
     if let Some(first) = focus.object_refs.first() {
-        return match first.object_type.as_str() {
-            "entity_type_def" | "entity" => FocusKind::Entity,
-            "cbu" => FocusKind::Cbu,
-            "document_type_def" | "document" => FocusKind::Document,
-            "changeset" => FocusKind::ChangeSet,
-            "guardrail" => FocusKind::Guardrail,
-            "constellation_map" => FocusKind::Constellation,
-            "view_def" => FocusKind::View,
-            other => FocusKind::Other(other.to_string()),
-        };
+        return FocusKind::new(first.object_type.to_ascii_lowercase())
+            .unwrap_or_else(|_| FocusKind::new("unknown").expect("static focus kind is valid"));
     }
     if focus.changeset_id.is_some() {
-        return FocusKind::ChangeSet;
+        return FocusKind::new("change_set").expect("static focus kind is valid");
     }
-    FocusKind::Constellation
+    FocusKind::new("constellation").expect("static focus kind is valid")
 }
 
 fn focus_identity_from_focus(focus: &FocusState, business_label: Option<&str>) -> FocusIdentity {

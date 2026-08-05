@@ -3,6 +3,7 @@
 //! These structs map directly to the YAML configuration files.
 
 use crate::executable_plan::EffectClass;
+use dsl_types::{FocusKind, SlotKind};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
 
@@ -836,15 +837,8 @@ pub enum SourceOfTruth {
     Config,
 }
 
-/// Scope of a verb
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
-#[serde(rename_all = "snake_case")]
-pub enum VerbScope {
-    /// Operates on global reference data
-    Global,
-    /// Operates within CBU context
-    Cbu,
-}
+/// Pack-declared scope kind for a verb.
+pub type VerbScope = FocusKind;
 
 /// Verb lifecycle status
 ///
@@ -1169,7 +1163,7 @@ pub struct ArgConfig {
     ///   preferred_roles: [governance_controller, ultimate_parent]
     /// ```
     #[serde(default)]
-    pub slot_type: Option<SlotType>,
+    pub slot_type: Option<SlotKind>,
     /// Preferred roles for filtering scoped search
     ///
     /// When resolving entity references within a client group scope,
@@ -1185,44 +1179,11 @@ pub struct ArgConfig {
 // SLOT TYPES (Intent Pipeline Resolution)
 // =============================================================================
 
-/// Slot type for intent pipeline - determines resolution semantics
+/// Pack-declared slot kind used by the intent pipeline.
 ///
-/// Each slot type has specific resolution rules that the resolver follows:
-/// - **Scope setting**: ClientGroupRef sets session scope
-/// - **Scoped search**: EntityRef/CbuRef search within current scope
-/// - **Role filtering**: Uses preferred_roles to narrow search
-/// - **Allianz rule**: Same name resolves differently based on slot type
-///
-/// ## The "Allianz Rule"
-///
-/// When mention text exactly matches the client group name:
-///
-/// | Slot Type | Resolution |
-/// |-----------|------------|
-/// | ClientGroupRef | Sets scope to this group |
-/// | CbuSetRef | All CBUs in this group |
-/// | EntityRef | The group's anchor entity |
-/// | EntitySetRef | All entities in this group |
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
-#[serde(rename_all = "snake_case")]
-pub enum SlotType {
-    /// Single client group reference - sets session scope
-    ClientGroupRef,
-    /// Single entity reference - resolves within scope
-    EntityRef,
-    /// Multiple entities - resolves to set within scope
-    EntitySetRef,
-    /// Single CBU reference - resolves within scope
-    CbuRef,
-    /// Multiple CBUs - resolves to set within scope
-    CbuSetRef,
-    /// Product reference - global catalog lookup
-    ProductRef,
-    /// Role reference - global roles table lookup
-    RoleRef,
-    /// Jurisdiction code - global reference lookup
-    JurisdictionRef,
-}
+/// The compatibility name is retained while applications move their former
+/// closed variants into admitted YAML declarations.
+pub type SlotType = SlotKind;
 
 /// Configuration for fuzzy match checking on upsert args
 #[derive(Debug, Clone, Deserialize, Serialize)]

@@ -89,25 +89,8 @@ impl ViewLevel {
 
 // ── FocusKind ────────────────────────────────────────────────
 
-/// What kind of object is in focus.
-/// Projects from `SubjectRef` variants + `ObjectRef.object_type`.
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum FocusKind {
-    Cbu,
-    Entity,
-    Document,
-    Case,
-    Task,
-    TaxonomyNode,
-    ChangeSet,
-    Guardrail,
-    MaintenanceSession,
-    Constellation,
-    View,
-    /// Catch-all for registry object types not yet enumerated.
-    Other(String),
-}
+/// Pack-declared kind of object in focus.
+pub type FocusKind = dsl_types::FocusKind;
 
 // ── FocusIdentity ────────────────────────────────────────────
 
@@ -319,7 +302,7 @@ mod tests {
         let contract = OrientationContract {
             session_mode: AgentMode::Governed,
             view_level: ViewLevel::System,
-            focus_kind: FocusKind::Cbu,
+            focus_kind: FocusKind::new("container").unwrap(),
             focus_identity: FocusIdentity {
                 canonical_id: "cbu-001".into(),
                 business_label: "Manco LU-001 — Allianz SICAV".into(),
@@ -352,7 +335,7 @@ mod tests {
 
         let back: OrientationContract = serde_json::from_str(&json).unwrap();
         assert_eq!(back.view_level, ViewLevel::System);
-        assert_eq!(back.focus_kind, FocusKind::Cbu);
+        assert_eq!(back.focus_kind, FocusKind::new("container").unwrap());
     }
 
     #[test]
