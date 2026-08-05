@@ -276,6 +276,7 @@ dependencies = [
  "sem_os_ontology",
  "sem_os_policy",
  "sem_os_types",
+ "semantic-decision-contracts",
  "serde",
  "serde_json",
  "serde_yaml",
@@ -941,6 +942,7 @@ dependencies = [
  "dsl_types",
  "hex",
  "sem_os_types",
+ "semantic-decision-contracts",
  "serde",
  "serde_json",
  "serde_yaml",
@@ -960,6 +962,7 @@ dependencies = [
  "sem_os_core",
  "sem_os_ontology",
  "sem_os_types",
+ "semantic-decision-contracts",
  "serde",
  "serde_json",
  "serde_yaml",
@@ -981,6 +984,17 @@ dependencies = [
  "serde_json",
  "strum",
  "uuid",
+]
+
+[[package]]
+name = "semantic-decision-contracts"
+version = "0.2.0"
+dependencies = [
+ "hex",
+ "serde",
+ "serde_json",
+ "sha2",
+ "thiserror",
 ]
 
 [[package]]

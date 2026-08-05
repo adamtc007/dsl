@@ -41,6 +41,7 @@ jobs:
       - run: cargo +1.95 check -p dsl-core --all-features --locked
       - run: cargo +1.95 check -p dsl_types --locked
       - run: cargo +1.95 check -p sem_os_types --locked
+      - run: cargo +1.95 check -p semantic-decision-contracts --locked
 
   boundaries:
     runs-on: ubuntu-latest

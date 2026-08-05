@@ -33,6 +33,7 @@ serde_json = "1.0"
 # Other Phase 3 modules need chrono, uuid, anyhow, hex, sha2, strum
 # inline (caught at slice time).
 sem_os_types.workspace = true
+semantic-decision-contracts.workspace = true
 anyhow = "1.0"
 chrono = { version = "0.4", features = ["serde"] }
 hex = "0.4"

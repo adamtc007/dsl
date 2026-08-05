@@ -2,6 +2,8 @@
 
 use serde::{Deserialize, Serialize};
 
+pub use semantic_decision_contracts::{ActionClass, HarmClass};
+
 fn default_true() -> bool {
     true
 }
@@ -63,37 +65,6 @@ pub struct VerbContractBody {
     /// When non-empty, successful execution triggers shared fact version recording.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub produces_shared_facts: Vec<String>,
-}
-
-/// Safety tier for routing and confirmation policy.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum HarmClass {
-    ReadOnly,
-    Reversible,
-    Irreversible,
-    Destructive,
-}
-
-/// Normalized action family for deterministic intent routing.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum ActionClass {
-    List,
-    Read,
-    Search,
-    Describe,
-    Create,
-    Update,
-    Delete,
-    Assign,
-    Remove,
-    Import,
-    Compute,
-    Review,
-    Approve,
-    Reject,
-    Execute,
 }
 
 /// CRUD table/operation mapping captured from verb YAML.

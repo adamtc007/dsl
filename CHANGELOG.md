@@ -6,6 +6,12 @@ The workspace follows Semantic Versioning subject to the pre-1.0 rules in
 
 ## [Unreleased]
 
+### Added
+
+- Extracted stable decision-board, evidence, disposition, and proposal
+  workbook contracts into the host-neutral `semantic-decision-contracts`
+  leaf crate. Existing SemOS import paths remain compatibility re-exports.
+
 ### Planned for 0.2.0
 
 - Establish MIT licensing, Rust 1.95 MSRV, and standalone package metadata.

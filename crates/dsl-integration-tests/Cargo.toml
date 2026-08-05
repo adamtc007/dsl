@@ -15,6 +15,7 @@ dsl-core.workspace = true
 sem_os_core.workspace = true
 sem_os_ontology.workspace = true
 sem_os_policy.workspace = true
+semantic-decision-contracts.workspace = true
 dsl_types.workspace = true
 sem_os_types.workspace = true
 pretty_assertions = "1"

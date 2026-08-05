@@ -9,13 +9,12 @@ built-in application profile.
 ## Dependency direction
 
 ```text
-dsl_types      sem_os_types
-     |           /     \
-     v          v       v
-  dsl-core  sem_os_core  sem_os_ontology
-                  \       /
-                   v     v
-                 sem_os_policy
+dsl_types      sem_os_types    semantic-decision-contracts
+     |           /     \               /          \
+     v          v       v             v            v
+  dsl-core  sem_os_core  sem_os_ontology      sem_os_policy
+                  \             /                 ^
+                   \___________/_________________/
 ```
 
 `dsl-integration-tests` is a non-published external-consumer test crate. Host

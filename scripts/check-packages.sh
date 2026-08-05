@@ -5,7 +5,7 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
 
-leaf_packages=(dsl_types sem_os_types)
+leaf_packages=(dsl_types sem_os_types semantic-decision-contracts)
 dirty=()
 if [ -n "$(git status --porcelain)" ]; then
   dirty=(--allow-dirty)
