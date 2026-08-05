@@ -773,6 +773,45 @@ impl<'de> Deserialize<'de> for InferenceEvidence {
         }
 
         let wire = WireEvidence::deserialize(deserializer)?;
+        // `::new()` enforces two structural invariants before it ever
+        // hashes: no candidate carries a duplicate evidence lane, and
+        // `ranked` is sorted by descending final score (ties broken by
+        // ascending candidate id). The hash-equality check below only
+        // proves the wire bytes are self-consistent with *whatever* lane
+        // set and order they happen to carry -- a duplicate-lane or
+        // out-of-order payload can still compute a hash over itself that
+        // matches its own `evidence_record_hash` field. Re-run both checks
+        // here so a deserialized record carries the same guarantees as one
+        // built through `::new()`, not just a self-consistent hash.
+        for candidate in &wire.ranked {
+            let mut lanes = candidate
+                .lane_scores
+                .iter()
+                .map(|score| score.lane)
+                .collect::<Vec<_>>();
+            lanes.sort();
+            if lanes.windows(2).any(|pair| pair[0] == pair[1]) {
+                return Err(serde::de::Error::custom(format!(
+                    "candidate '{}' has duplicate evidence lanes",
+                    candidate.candidate_id.as_str()
+                )));
+            }
+        }
+        let is_canonically_ordered = wire.ranked.windows(2).all(|pair| {
+            let [left, right] = pair else {
+                unreachable!("windows(2) always yields two-element slices")
+            };
+            match right.final_score.partial_cmp(&left.final_score) {
+                Some(std::cmp::Ordering::Less) => true,
+                Some(std::cmp::Ordering::Equal) => left.candidate_id <= right.candidate_id,
+                _ => false,
+            }
+        });
+        if !is_canonically_ordered {
+            return Err(serde::de::Error::custom(
+                "inference evidence is not canonically ordered (descending final score, ties by ascending candidate id)",
+            ));
+        }
         let expected = hash_evidence(
             &wire.board_hash,
             &wire.turn_context_hash,
@@ -1705,5 +1744,504 @@ mod tests {
         let mut tampered = encoded;
         tampered["candidate_threshold"] = serde_json::json!(0.6);
         assert!(serde_json::from_value::<DispositionPolicy>(tampered).is_err());
+    }
+
+    /// A candidate with every model-visible list populated (one argument,
+    /// one phrase, one positive example, one negative contrast) so the
+    /// per-field hash-sensitivity test below can mutate each field
+    /// independently.
+    fn rich_candidate() -> CandidateSemanticSlice {
+        CandidateSemanticSlice {
+            canonical_id: CanonicalCandidateId::new("op.append_node").unwrap(),
+            schema_version: 1,
+            title: "Append task".into(),
+            intent_summary: "Append one task".into(),
+            action_class: ActionClass::Create,
+            applicability: "At a sequence end".into(),
+            effect: "Adds one task".into(),
+            arguments: vec![ArgumentSpec {
+                name: "task_name".into(),
+                kind: ArgumentKind::Identifier,
+                required: true,
+                clarification_prompt: "What should the task be called?".into(),
+            }],
+            phrases: vec![PhraseEvidence {
+                text: "add a task".into(),
+                locale: "en".into(),
+                role: PhraseRole::Canonical,
+                provenance: "authored".into(),
+            }],
+            positive_examples: vec!["Add a task at the end".into()],
+            negative_contrasts: vec![NegativeContrast {
+                candidate_id: CanonicalCandidateId::new("op.insert_after").unwrap(),
+                distinction: "append always targets the sequence end".into(),
+            }],
+            risk: HarmClass::Reversible,
+            adapter_payload_hash: "adapter-v1".into(),
+        }
+    }
+
+    fn board_with(candidates: Vec<CandidateSemanticSlice>) -> SemanticDecisionBoard {
+        SemanticDecisionBoard::new(
+            1,
+            DomainIdentity::new("bpmn-authoring").unwrap(),
+            SnapshotIdentity::new("pack-v1").unwrap(),
+            GraphRevision::new("rev-1").unwrap(),
+            ResolvedPosition {
+                anchor: Some("task-1".into()),
+                context_hash: "context-1".into(),
+            },
+            candidates,
+            "policy-v1".into(),
+        )
+        .unwrap()
+    }
+
+    fn rich_board() -> SemanticDecisionBoard {
+        board_with(vec![rich_candidate()])
+    }
+
+    #[test]
+    fn board_hash_moves_for_every_model_visible_field() {
+        let baseline = rich_board();
+
+        // Board-level fields (everything but candidates/schema_version,
+        // exercised separately below).
+        let domain_changed = SemanticDecisionBoard::new(
+            baseline.schema_version,
+            DomainIdentity::new("other-domain").unwrap(),
+            baseline.semantic_snapshot.clone(),
+            baseline.graph_revision.clone(),
+            baseline.position.clone(),
+            vec![rich_candidate()],
+            baseline.policy_fingerprint.clone(),
+        )
+        .unwrap();
+        assert_ne!(baseline.board_hash, domain_changed.board_hash, "domain");
+
+        let snapshot_changed = SemanticDecisionBoard::new(
+            baseline.schema_version,
+            baseline.domain.clone(),
+            SnapshotIdentity::new("other-snapshot").unwrap(),
+            baseline.graph_revision.clone(),
+            baseline.position.clone(),
+            vec![rich_candidate()],
+            baseline.policy_fingerprint.clone(),
+        )
+        .unwrap();
+        assert_ne!(
+            baseline.board_hash, snapshot_changed.board_hash,
+            "semantic_snapshot"
+        );
+
+        let revision_changed = SemanticDecisionBoard::new(
+            baseline.schema_version,
+            baseline.domain.clone(),
+            baseline.semantic_snapshot.clone(),
+            GraphRevision::new("other-rev").unwrap(),
+            baseline.position.clone(),
+            vec![rich_candidate()],
+            baseline.policy_fingerprint.clone(),
+        )
+        .unwrap();
+        assert_ne!(
+            baseline.board_hash, revision_changed.board_hash,
+            "graph_revision"
+        );
+
+        let schema_version_changed = SemanticDecisionBoard::new(
+            baseline.schema_version + 1,
+            baseline.domain.clone(),
+            baseline.semantic_snapshot.clone(),
+            baseline.graph_revision.clone(),
+            baseline.position.clone(),
+            vec![rich_candidate()],
+            baseline.policy_fingerprint.clone(),
+        )
+        .unwrap();
+        assert_ne!(
+            baseline.board_hash, schema_version_changed.board_hash,
+            "board schema_version"
+        );
+
+        let anchor_none = SemanticDecisionBoard::new(
+            baseline.schema_version,
+            baseline.domain.clone(),
+            baseline.semantic_snapshot.clone(),
+            baseline.graph_revision.clone(),
+            ResolvedPosition {
+                anchor: None,
+                context_hash: baseline.position.context_hash.clone(),
+            },
+            vec![rich_candidate()],
+            baseline.policy_fingerprint.clone(),
+        )
+        .unwrap();
+        assert_ne!(
+            baseline.board_hash, anchor_none.board_hash,
+            "position.anchor Some(_) vs None"
+        );
+
+        let another_anchor = SemanticDecisionBoard::new(
+            baseline.schema_version,
+            baseline.domain.clone(),
+            baseline.semantic_snapshot.clone(),
+            baseline.graph_revision.clone(),
+            ResolvedPosition {
+                anchor: Some("task-2".into()),
+                context_hash: baseline.position.context_hash.clone(),
+            },
+            vec![rich_candidate()],
+            baseline.policy_fingerprint.clone(),
+        )
+        .unwrap();
+        assert_ne!(
+            baseline.board_hash, another_anchor.board_hash,
+            "position.anchor value"
+        );
+
+        let context_hash_changed = SemanticDecisionBoard::new(
+            baseline.schema_version,
+            baseline.domain.clone(),
+            baseline.semantic_snapshot.clone(),
+            baseline.graph_revision.clone(),
+            ResolvedPosition {
+                anchor: baseline.position.anchor.clone(),
+                context_hash: "other-context".into(),
+            },
+            vec![rich_candidate()],
+            baseline.policy_fingerprint.clone(),
+        )
+        .unwrap();
+        assert_ne!(
+            baseline.board_hash, context_hash_changed.board_hash,
+            "position.context_hash"
+        );
+
+        let policy_changed = SemanticDecisionBoard::new(
+            baseline.schema_version,
+            baseline.domain.clone(),
+            baseline.semantic_snapshot.clone(),
+            baseline.graph_revision.clone(),
+            baseline.position.clone(),
+            vec![rich_candidate()],
+            "other-policy".into(),
+        )
+        .unwrap();
+        assert_ne!(
+            baseline.board_hash, policy_changed.board_hash,
+            "policy_fingerprint"
+        );
+
+        // Per-candidate fields: apply one mutation at a time to a clone of
+        // the rich candidate and rebuild the board.
+        let mutations: Vec<(&str, Box<dyn Fn(&mut CandidateSemanticSlice)>)> = vec![
+            (
+                "candidate schema_version",
+                Box::new(|c| c.schema_version += 1),
+            ),
+            ("title", Box::new(|c| c.title = "Other title".into())),
+            (
+                "intent_summary",
+                Box::new(|c| c.intent_summary = "Other intent".into()),
+            ),
+            (
+                "action_class",
+                Box::new(|c| c.action_class = ActionClass::Delete),
+            ),
+            (
+                "applicability",
+                Box::new(|c| c.applicability = "Elsewhere".into()),
+            ),
+            ("risk", Box::new(|c| c.risk = HarmClass::Destructive)),
+            (
+                "adapter_payload_hash",
+                Box::new(|c| c.adapter_payload_hash = "adapter-v2".into()),
+            ),
+            (
+                "argument name",
+                Box::new(|c| c.arguments[0].name = "other_name".into()),
+            ),
+            (
+                "argument kind",
+                Box::new(|c| c.arguments[0].kind = ArgumentKind::Count),
+            ),
+            (
+                "argument requirement",
+                Box::new(|c| c.arguments[0].required = false),
+            ),
+            (
+                "argument clarification_prompt",
+                Box::new(|c| c.arguments[0].clarification_prompt = "Other prompt?".into()),
+            ),
+            (
+                "phrase text",
+                Box::new(|c| c.phrases[0].text = "other phrase".into()),
+            ),
+            (
+                "phrase locale",
+                Box::new(|c| c.phrases[0].locale = "fr".into()),
+            ),
+            (
+                "phrase role",
+                Box::new(|c| c.phrases[0].role = PhraseRole::Paraphrase),
+            ),
+            (
+                "phrase provenance",
+                Box::new(|c| c.phrases[0].provenance = "other-provenance".into()),
+            ),
+            (
+                "positive_examples",
+                Box::new(|c| c.positive_examples[0] = "Other example".into()),
+            ),
+            (
+                "negative_contrasts candidate_id",
+                Box::new(|c| {
+                    c.negative_contrasts[0].candidate_id =
+                        CanonicalCandidateId::new("op.replace_node").unwrap()
+                }),
+            ),
+            (
+                "negative_contrasts distinction",
+                Box::new(|c| c.negative_contrasts[0].distinction = "other distinction".into()),
+            ),
+        ];
+        for (label, mutate) in mutations {
+            let mut mutated = rich_candidate();
+            mutate(&mut mutated);
+            let moved = board_with(vec![mutated]);
+            assert_ne!(
+                baseline.board_hash, moved.board_hash,
+                "expected board hash to move when {label} changes"
+            );
+        }
+    }
+
+    #[test]
+    fn board_hash_is_deterministic_and_input_order_independent() {
+        let a = candidate("op.append_node");
+        let b = candidate("op.insert_after");
+        let forward = board_with(vec![a.clone(), b.clone()]);
+        let reversed = board_with(vec![b, a]);
+        assert_eq!(
+            forward.board_hash, reversed.board_hash,
+            "candidate input order must not affect the board hash (constructor sorts by canonical_id)"
+        );
+
+        let again = board_with(vec![
+            candidate("op.append_node"),
+            candidate("op.insert_after"),
+        ]);
+        assert_eq!(
+            forward.board_hash, again.board_hash,
+            "identical inputs must reproduce the identical hash"
+        );
+    }
+
+    #[test]
+    fn length_prefix_framing_prevents_field_boundary_collisions() {
+        // Directly exercise `field()`: without a length prefix,
+        // ("ab", "c") and ("a", "bc") hash identically once concatenated.
+        // The length-prefixed encoder must distinguish them.
+        let mut left = Sha256::new();
+        field(&mut left, "ab", "c");
+        let mut right = Sha256::new();
+        field(&mut right, "a", "bc");
+        assert_ne!(left.finalize(), right.finalize());
+
+        // Same collision shape at the board level: a candidate whose
+        // title/intent_summary boundary shifts by one character must move
+        // the hash even though the naive concatenation of the two fields
+        // is identical.
+        let mut shifted = rich_candidate();
+        shifted.title = "Append tas".into();
+        shifted.intent_summary = "kAppend one task".into();
+        assert_eq!(
+            format!("{}{}", rich_candidate().title, rich_candidate().intent_summary),
+            format!("{}{}", shifted.title, shifted.intent_summary),
+            "fixture must actually collide under naive concatenation for this test to be meaningful"
+        );
+        let baseline = rich_board();
+        let moved = board_with(vec![shifted]);
+        assert_ne!(baseline.board_hash, moved.board_hash);
+    }
+
+    #[test]
+    fn identity_constructors_reject_empty_and_control_characters() {
+        for empty in [""] {
+            assert!(CanonicalCandidateId::new(empty).is_err());
+            assert!(DomainIdentity::new(empty).is_err());
+            assert!(SnapshotIdentity::new(empty).is_err());
+            assert!(GraphRevision::new(empty).is_err());
+            assert!(WorkbookId::new(empty).is_err());
+        }
+        for control in ["a\nb", "a\tb", "a\0b", "a\x1bb"] {
+            assert!(
+                CanonicalCandidateId::new(control).is_err(),
+                "{control:?} must be rejected"
+            );
+            assert!(DomainIdentity::new(control).is_err());
+            assert!(SnapshotIdentity::new(control).is_err());
+            assert!(GraphRevision::new(control).is_err());
+            assert!(WorkbookId::new(control).is_err());
+        }
+        assert!(CanonicalCandidateId::new("op.append_node").is_ok());
+        assert!(DomainIdentity::new("bpmn").is_ok());
+    }
+
+    #[test]
+    fn hash_wrappers_reject_malformed_hex() {
+        let valid = "a".repeat(64);
+        assert!(BoardHash::new(valid.clone()).is_ok());
+        assert!(EvidenceRecordHash::new(valid.clone()).is_ok());
+
+        for malformed in [
+            String::new(),                  // empty
+            "a".repeat(63),                 // too short
+            "a".repeat(65),                 // too long
+            "A".repeat(64),                 // uppercase hex
+            format!("{}g", "a".repeat(63)), // non-hex character
+        ] {
+            assert!(
+                BoardHash::new(malformed.clone()).is_err(),
+                "{malformed:?} must be rejected as a board hash"
+            );
+            assert!(
+                EvidenceRecordHash::new(malformed.clone()).is_err(),
+                "{malformed:?} must be rejected as an evidence record hash"
+            );
+        }
+    }
+
+    #[test]
+    fn finite_score_rejects_non_finite_via_serde() {
+        use serde::de::value::Error as ValueError;
+        use serde::de::IntoDeserializer;
+
+        for bad in [f64::NAN, f64::INFINITY, f64::NEG_INFINITY] {
+            let deserializer: serde::de::value::F64Deserializer<ValueError> =
+                bad.into_deserializer();
+            assert!(
+                FiniteScore::deserialize(deserializer).is_err(),
+                "{bad} must be rejected by FiniteScore's Deserialize impl, not just its constructor"
+            );
+        }
+
+        let deserializer: serde::de::value::F64Deserializer<ValueError> =
+            0.5_f64.into_deserializer();
+        assert!(FiniteScore::deserialize(deserializer).is_ok());
+    }
+
+    #[test]
+    fn evidence_tie_break_is_canonical_not_insertion_order() {
+        let board = board_with(vec![
+            candidate("op.insert_after"),
+            candidate("op.append_node"),
+        ]);
+        // Both candidates tie on final_score. Supply them in descending
+        // canonical-id order so a stable-but-insertion-order-dependent
+        // sort would leave "op.insert_after" first; the canonical rule
+        // (descending score, ties by ASCENDING candidate id) must place
+        // "op.append_node" first regardless of input order.
+        // `InferenceEvidence::new` requires ranked to cover every board id
+        // exactly once (including the framework abstention appended by
+        // `board_with`), so score the two named candidates tied and give
+        // abstention a losing score rather than omitting it.
+        let tied = vec![
+            CandidateEvidence {
+                candidate_id: CanonicalCandidateId::new("op.insert_after").unwrap(),
+                lane_scores: vec![LaneScore {
+                    lane: EvidenceLane::Lexical,
+                    score: FiniteScore::new(0.5).unwrap(),
+                }],
+                final_score: FiniteScore::new(0.5).unwrap(),
+            },
+            CandidateEvidence {
+                candidate_id: CanonicalCandidateId::new("op.append_node").unwrap(),
+                lane_scores: vec![LaneScore {
+                    lane: EvidenceLane::Lexical,
+                    score: FiniteScore::new(0.5).unwrap(),
+                }],
+                final_score: FiniteScore::new(0.5).unwrap(),
+            },
+            CandidateEvidence {
+                candidate_id: CanonicalCandidateId::new(ABSTENTION_CANDIDATE_ID).unwrap(),
+                lane_scores: vec![LaneScore {
+                    lane: EvidenceLane::Lexical,
+                    score: FiniteScore::new(0.0).unwrap(),
+                }],
+                final_score: FiniteScore::new(0.0).unwrap(),
+            },
+        ];
+        let evidence =
+            InferenceEvidence::new(&board, "turn", "serializer", "producer", tied).unwrap();
+        assert_eq!(
+            evidence.ranked[0].candidate_id.as_str(),
+            "op.append_node",
+            "tied scores must break by ascending candidate id, not input order"
+        );
+        assert_eq!(evidence.ranked[1].candidate_id.as_str(), "op.insert_after");
+
+        // Determinism: rebuilding from the already-canonical order
+        // reproduces the identical hash.
+        let rebuilt = InferenceEvidence::new(
+            &board,
+            "turn",
+            "serializer",
+            "producer",
+            evidence.ranked.clone(),
+        )
+        .unwrap();
+        assert_eq!(evidence.evidence_record_hash, rebuilt.evidence_record_hash);
+    }
+
+    #[test]
+    fn deserialize_rejects_duplicate_lanes_and_out_of_order_ranking() {
+        let board = rich_board();
+        let evidence = complete_evidence(&board);
+        let mut encoded = serde_json::to_value(&evidence).unwrap();
+
+        // Duplicate lane within one candidate's lane_scores, hand-adjusted
+        // so the record hash still matches the tampered bytes -- proving
+        // the reject comes from the structural check added to
+        // `Deserialize`, not merely from the hash-equality check.
+        let mut duplicate_lane_ranked = evidence.ranked.clone();
+        let extra_lane = duplicate_lane_ranked[0].lane_scores[0].clone();
+        duplicate_lane_ranked[0].lane_scores.push(extra_lane);
+        let duplicate_hash = hash_evidence(
+            &evidence.board_hash,
+            &evidence.turn_context_hash,
+            &evidence.candidate_serializer_hash,
+            &evidence.producer_bundle_hash,
+            &duplicate_lane_ranked,
+        )
+        .unwrap();
+        encoded["ranked"] = serde_json::to_value(&duplicate_lane_ranked).unwrap();
+        encoded["evidence_record_hash"] = serde_json::json!(duplicate_hash.as_str());
+        assert!(
+            serde_json::from_value::<InferenceEvidence>(encoded).is_err(),
+            "a self-consistent hash over duplicate-lane evidence must still be refused"
+        );
+
+        // Out-of-order ranking (ascending score instead of descending),
+        // again with a hash recomputed over that same wrong order so only
+        // the order check -- not the hash check -- can catch it.
+        let mut encoded = serde_json::to_value(&evidence).unwrap();
+        let mut reversed_ranked = evidence.ranked.clone();
+        reversed_ranked.reverse();
+        let reversed_hash = hash_evidence(
+            &evidence.board_hash,
+            &evidence.turn_context_hash,
+            &evidence.candidate_serializer_hash,
+            &evidence.producer_bundle_hash,
+            &reversed_ranked,
+        )
+        .unwrap();
+        encoded["ranked"] = serde_json::to_value(&reversed_ranked).unwrap();
+        encoded["evidence_record_hash"] = serde_json::json!(reversed_hash.as_str());
+        assert!(
+            serde_json::from_value::<InferenceEvidence>(encoded).is_err(),
+            "a self-consistent hash over non-canonically-ordered ranking must still be refused"
+        );
     }
 }
