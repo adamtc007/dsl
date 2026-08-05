@@ -711,8 +711,8 @@ fn looks_executable(value: &str) -> bool {
         || value.contains("```rust")
         || normalized.starts_with("fn ")
         || normalized.starts_with("bash -c")
-        || normalized.starts_with("select ")
-        || normalized.starts_with("insert ")
-        || normalized.starts_with("update ")
+        || (normalized.starts_with("select ") && normalized.contains(" from "))
+        || normalized.starts_with("insert into ")
+        || (normalized.starts_with("update ") && normalized.contains(" set "))
         || normalized.starts_with("delete from ")
 }

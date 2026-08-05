@@ -268,6 +268,27 @@ fn cycle_and_executable_extension_material_are_rejected() {
     }));
 }
 
+#[test]
+fn natural_language_insert_and_update_are_not_mistaken_for_sql() {
+    let natural = PACK_A
+        .replace("Start a process", "Insert before the process")
+        .replace(
+            "Create a new process instance.",
+            "Update the selected process.",
+        );
+    compile("natural-language.yaml", &natural);
+
+    let sql = PACK_A.replace(
+        "extensions: {}\n",
+        "extensions: { example.query: \"select secret from host_table\" }\n",
+    );
+    let document = parse_pack(PackBytes::new("sql.yaml", sql)).unwrap();
+    let errors = validate_pack(document).unwrap_err();
+    assert!(errors.diagnostics().iter().any(|diagnostic| {
+        diagnostic.code == semantic_pack::DiagnosticCode::ExecutableMaterial
+    }));
+}
+
 struct EmbeddedSource {
     values: BTreeMap<String, &'static str>,
 }
