@@ -42,6 +42,7 @@ jobs:
       - run: cargo +1.95 check -p dsl_types --locked
       - run: cargo +1.95 check -p sem_os_types --locked
       - run: cargo +1.95 check -p semantic-decision-contracts --locked
+      - run: cargo +1.95 check -p semantic-pack --locked
       - run: cargo +1.95 check -p semantic-embedder --no-default-features --locked
       - run: cargo +1.95 check -p semantic-embedder --features candle --locked
       - run: cargo +1.95 check -p semantic-embedder --features huggingface-download --locked

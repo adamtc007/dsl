@@ -1,0 +1,25 @@
+[package]
+name = "semantic-pack"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+readme = "README.md"
+description = "Deterministic host-neutral semantic pack compiler and immutable registry"
+
+[dependencies]
+hex = "0.4"
+semantic-decision-contracts.workspace = true
+serde = { version = "1.0", features = ["derive", "rc"] }
+serde_json = "1.0"
+serde_path_to_error = "0.1"
+serde_yaml = "0.9"
+sha2 = "0.10"
+thiserror = "1.0"
+
+[dev-dependencies]
+proptest = "1.6"
+
+[lints]
+workspace = true

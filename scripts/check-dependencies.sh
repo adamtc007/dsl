@@ -61,6 +61,7 @@ echo "== metadata dependency guard =="
 assert_allowed_workspace_dependencies dsl_types
 assert_allowed_workspace_dependencies sem_os_types
 assert_allowed_workspace_dependencies semantic-decision-contracts
+assert_allowed_workspace_dependencies semantic-pack semantic-decision-contracts
 assert_allowed_workspace_dependencies semantic-embedder
 assert_allowed_workspace_dependencies dsl-core dsl_types
 assert_allowed_workspace_dependencies sem_os_core dsl-core dsl_types sem_os_types
