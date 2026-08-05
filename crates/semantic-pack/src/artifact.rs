@@ -1,10 +1,14 @@
-use std::{collections::BTreeSet, sync::Arc};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    sync::Arc,
+};
 
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    CapabilityId, CapabilitySource, DependencySource, DomainIdentity, GraphNodeId, GraphNodeSource,
-    GraphSource, IdentityNamespace, PackDocument, PackIdentity, PackPolicySource, ProvenanceSource,
+    CapabilityId, CapabilitySource, ConfigValue, DeclarationSource, DependencySource,
+    DomainIdentity, GraphNodeId, GraphNodeSource, GraphSource, IdentityNamespace, PackDocument,
+    PackIdentity, PackPolicySource, ProvenanceSource,
 };
 
 /// SHA-256 of exact input bytes.
@@ -144,10 +148,22 @@ impl CompiledPack {
         &self.document.pack.provenance
     }
 
+    /// Generic semantic kinds declared by the pack.
+    #[must_use]
+    pub fn declarations(&self) -> &DeclarationSource {
+        &self.document.declarations
+    }
+
     /// Declarative policy.
     #[must_use]
     pub fn policy(&self) -> &PackPolicySource {
         &self.document.policy
+    }
+
+    /// Bounded, namespaced pack-level configuration.
+    #[must_use]
+    pub fn extensions(&self) -> &BTreeMap<String, ConfigValue> {
+        &self.document.extensions
     }
 
     /// Canonically ordered capabilities.

@@ -179,6 +179,8 @@ fn public_pipeline_inspects_capabilities_graph_bindings_and_provenance() {
     assert_eq!(pack.identity().id.as_str(), "example.workflow");
     assert_eq!(pack.domain().as_str(), "example");
     assert_eq!(pack.provenance().revision, "test-v1");
+    assert_eq!(pack.declarations().domain_types.len(), 1);
+    assert!(pack.extensions().is_empty());
     assert_eq!(pack.capabilities().len(), 2);
     let signal = CapabilityId::new("process.signal").unwrap();
     assert_eq!(
