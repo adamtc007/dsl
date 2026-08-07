@@ -1556,6 +1556,10 @@ impl ProposalWorkbook {
                 | (ProposalStatus::DryRunRefused, ProposalStatus::Expired)
                 | (
                     ProposalStatus::ReadyForRatification,
+                    ProposalStatus::DryRunRefused
+                )
+                | (
+                    ProposalStatus::ReadyForRatification,
                     ProposalStatus::Ratified
                 )
                 | (
@@ -1854,6 +1858,10 @@ mod tests {
                         | (ProposalStatus::ReadyForDryRun, ProposalStatus::Expired)
                         | (ProposalStatus::DryRunRefused, ProposalStatus::Rejected)
                         | (ProposalStatus::DryRunRefused, ProposalStatus::Expired)
+                        | (
+                            ProposalStatus::ReadyForRatification,
+                            ProposalStatus::DryRunRefused
+                        )
                         | (
                             ProposalStatus::ReadyForRatification,
                             ProposalStatus::Ratified
