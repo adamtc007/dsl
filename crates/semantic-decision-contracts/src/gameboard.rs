@@ -193,6 +193,8 @@ macro_rules! hash_identity {
 text_identity!(GameDomainId, "game domain identity");
 text_identity!(MoveAttemptId, "move attempt identity");
 text_identity!(DesignTurnId, "design turn identity");
+text_identity!(GameSessionId, "game session identity");
+text_identity!(SemanticFamilyId, "semantic family identity");
 text_identity!(GraphElementRef, "graph element reference");
 text_identity!(RuleCode, "rule code");
 text_identity!(MessageKey, "message key");
@@ -209,6 +211,8 @@ hash_identity!(HistoryHash, "history hash");
 hash_identity!(RuleExplanationId, "rule explanation identity");
 hash_identity!(BeliefHash, "belief hash");
 hash_identity!(DesignTurnHash, "design turn hash");
+hash_identity!(GameTurnRecordHash, "game turn record hash");
+hash_identity!(GameTurnAdjudicationHash, "game turn adjudication hash");
 
 fn hash_fields(domain: &str, fields: impl IntoIterator<Item = (String, String)>) -> String {
     let mut hasher = Sha256::new();
@@ -3275,6 +3279,1434 @@ impl<'de> Deserialize<'de> for DesignBelief {
     }
 }
 
+/// Why no user answer was observed for a recorded game interaction.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum GameTurnAnswerAbsenceReason {
+    NotRequested,
+    NoResponse,
+    Abandoned,
+    SystemInterrupted,
+}
+
+/// Closed shape of an answer captured at the semantic-game boundary.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum GameTurnAnswerKind {
+    NotObserved,
+    Clarification,
+    MoveArguments,
+    Feedback,
+    Unstructured,
+}
+
+/// Typed user answer bound to the board on which it was observed.
+///
+/// Raw/private content remains in the charter-governed capture sink. This stable
+/// contract carries its content identity and the semantic facts needed for replay.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct GameTurnAnswer {
+    kind: GameTurnAnswerKind,
+    answer_hash: Option<GraphContentHash>,
+    absence_reason: Option<GameTurnAnswerAbsenceReason>,
+    clarification_dimension: Option<GameClarificationDimension>,
+    selected_moves: Vec<LegalMoveId>,
+    focus: Option<DesignFocus>,
+    move_id: Option<LegalMoveId>,
+    arguments: Vec<MoveArgument>,
+    feedback_kind: Option<FeedbackOptionKind>,
+}
+
+impl GameTurnAnswer {
+    #[allow(clippy::too_many_arguments)]
+    fn admit(
+        kind: GameTurnAnswerKind,
+        answer_hash: Option<GraphContentHash>,
+        absence_reason: Option<GameTurnAnswerAbsenceReason>,
+        clarification_dimension: Option<GameClarificationDimension>,
+        mut selected_moves: Vec<LegalMoveId>,
+        focus: Option<DesignFocus>,
+        move_id: Option<LegalMoveId>,
+        mut arguments: Vec<MoveArgument>,
+        feedback_kind: Option<FeedbackOptionKind>,
+    ) -> Result<Self, GameboardContractError> {
+        selected_moves.sort();
+        if selected_moves.windows(2).any(|pair| pair[0] == pair[1]) {
+            return Err(GameboardContractError::InvalidContract {
+                contract: "game turn answer",
+                reason: "selected moves must be unique".to_string(),
+            });
+        }
+        arguments.sort_by(|left, right| left.name.cmp(&right.name));
+        if arguments
+            .windows(2)
+            .any(|pair| pair[0].name == pair[1].name)
+        {
+            return Err(GameboardContractError::InvalidContract {
+                contract: "game turn answer",
+                reason: "answered arguments must have unique names".to_string(),
+            });
+        }
+        let invalid = |reason: &str| GameboardContractError::InvalidContract {
+            contract: "game turn answer",
+            reason: reason.to_string(),
+        };
+        match kind {
+            GameTurnAnswerKind::NotObserved
+                if answer_hash.is_some()
+                    || absence_reason.is_none()
+                    || clarification_dimension.is_some()
+                    || !selected_moves.is_empty()
+                    || focus.is_some()
+                    || move_id.is_some()
+                    || !arguments.is_empty()
+                    || feedback_kind.is_some() =>
+            {
+                return Err(invalid(
+                    "an absent answer may carry only its absence reason",
+                ));
+            }
+            GameTurnAnswerKind::Clarification
+                if answer_hash.is_none()
+                    || absence_reason.is_some()
+                    || clarification_dimension.is_none()
+                    || (selected_moves.is_empty() && focus.is_none())
+                    || move_id.is_some()
+                    || !arguments.is_empty()
+                    || feedback_kind.is_some() =>
+            {
+                return Err(invalid(
+                    "a clarification answer requires content, one dimension and a move or focus",
+                ));
+            }
+            GameTurnAnswerKind::MoveArguments
+                if answer_hash.is_none()
+                    || absence_reason.is_some()
+                    || clarification_dimension.is_some()
+                    || !selected_moves.is_empty()
+                    || focus.is_some()
+                    || move_id.is_none()
+                    || arguments.is_empty()
+                    || feedback_kind.is_some() =>
+            {
+                return Err(invalid(
+                    "a move-argument answer requires content, one move and typed arguments",
+                ));
+            }
+            GameTurnAnswerKind::Feedback
+                if answer_hash.is_none()
+                    || absence_reason.is_some()
+                    || clarification_dimension.is_some()
+                    || !selected_moves.is_empty()
+                    || focus.is_some()
+                    || !arguments.is_empty()
+                    || feedback_kind.is_none() =>
+            {
+                return Err(invalid(
+                    "a feedback answer requires content and a typed feedback option",
+                ));
+            }
+            GameTurnAnswerKind::Unstructured
+                if answer_hash.is_none()
+                    || absence_reason.is_some()
+                    || clarification_dimension.is_some()
+                    || !selected_moves.is_empty()
+                    || focus.is_some()
+                    || move_id.is_some()
+                    || !arguments.is_empty()
+                    || feedback_kind.is_some() =>
+            {
+                return Err(invalid(
+                    "an unstructured answer may carry only its content identity",
+                ));
+            }
+            _ => {}
+        }
+        Ok(Self {
+            kind,
+            answer_hash,
+            absence_reason,
+            clarification_dimension,
+            selected_moves,
+            focus,
+            move_id,
+            arguments,
+            feedback_kind,
+        })
+    }
+
+    pub fn not_observed(reason: GameTurnAnswerAbsenceReason) -> Self {
+        Self::admit(
+            GameTurnAnswerKind::NotObserved,
+            None,
+            Some(reason),
+            None,
+            Vec::new(),
+            None,
+            None,
+            Vec::new(),
+            None,
+        )
+        .expect("the fixed not-observed answer shape is valid")
+    }
+
+    pub fn clarification(
+        answer_hash: GraphContentHash,
+        dimension: GameClarificationDimension,
+        selected_moves: Vec<LegalMoveId>,
+        focus: Option<DesignFocus>,
+    ) -> Result<Self, GameboardContractError> {
+        Self::admit(
+            GameTurnAnswerKind::Clarification,
+            Some(answer_hash),
+            None,
+            Some(dimension),
+            selected_moves,
+            focus,
+            None,
+            Vec::new(),
+            None,
+        )
+    }
+
+    pub fn move_arguments(
+        answer_hash: GraphContentHash,
+        move_id: LegalMoveId,
+        arguments: Vec<MoveArgument>,
+    ) -> Result<Self, GameboardContractError> {
+        Self::admit(
+            GameTurnAnswerKind::MoveArguments,
+            Some(answer_hash),
+            None,
+            None,
+            Vec::new(),
+            None,
+            Some(move_id),
+            arguments,
+            None,
+        )
+    }
+
+    pub fn feedback(
+        answer_hash: GraphContentHash,
+        kind: FeedbackOptionKind,
+        move_id: Option<LegalMoveId>,
+    ) -> Result<Self, GameboardContractError> {
+        Self::admit(
+            GameTurnAnswerKind::Feedback,
+            Some(answer_hash),
+            None,
+            None,
+            Vec::new(),
+            None,
+            move_id,
+            Vec::new(),
+            Some(kind),
+        )
+    }
+
+    pub fn unstructured(answer_hash: GraphContentHash) -> Self {
+        Self::admit(
+            GameTurnAnswerKind::Unstructured,
+            Some(answer_hash),
+            None,
+            None,
+            Vec::new(),
+            None,
+            None,
+            Vec::new(),
+            None,
+        )
+        .expect("the fixed unstructured answer shape is valid")
+    }
+
+    fn validate_for_position(
+        &self,
+        position: &DesignPosition,
+    ) -> Result<(), GameboardContractError> {
+        let on_board = |move_id: &LegalMoveId| {
+            position
+                .legal_moves()
+                .iter()
+                .find(|legal_move| legal_move.move_id() == move_id)
+        };
+        for move_id in self.selected_moves.iter().chain(self.move_id.iter()) {
+            if on_board(move_id).is_none() {
+                return Err(GameboardContractError::InvalidContract {
+                    contract: "game turn answer",
+                    reason: format!(
+                        "move '{}' is absent from the recorded position",
+                        move_id.as_str()
+                    ),
+                });
+            }
+        }
+        if self.kind == GameTurnAnswerKind::MoveArguments {
+            let legal_move = on_board(self.move_id.as_ref().expect("shape validated"))
+                .expect("board membership checked above");
+            for answer in &self.arguments {
+                let Some(declared) = legal_move
+                    .arguments()
+                    .iter()
+                    .find(|argument| argument.name() == answer.name())
+                else {
+                    return Err(GameboardContractError::InvalidContract {
+                        contract: "game turn answer",
+                        reason: format!(
+                            "argument '{}' is absent from the selected move",
+                            answer.name()
+                        ),
+                    });
+                };
+                if declared.kind() != answer.kind() {
+                    return Err(GameboardContractError::InvalidContract {
+                        contract: "game turn answer",
+                        reason: format!("argument '{}' has the wrong value kind", answer.name()),
+                    });
+                }
+            }
+        }
+        Ok(())
+    }
+
+    fn canonical_hash(&self) -> String {
+        let fields = [
+            ("kind".to_string(), format!("{:?}", self.kind)),
+            (
+                "answer_hash".to_string(),
+                self.answer_hash
+                    .as_ref()
+                    .map_or_else(String::new, |value| value.as_str().to_string()),
+            ),
+            (
+                "absence_reason".to_string(),
+                self.absence_reason
+                    .map_or_else(String::new, |value| format!("{value:?}")),
+            ),
+            (
+                "clarification_dimension".to_string(),
+                self.clarification_dimension
+                    .map_or_else(String::new, |value| format!("{value:?}")),
+            ),
+            (
+                "focus".to_string(),
+                self.focus.as_ref().map_or_else(String::new, hash_focus),
+            ),
+            (
+                "move_id".to_string(),
+                self.move_id
+                    .as_ref()
+                    .map_or_else(String::new, |value| value.as_str().to_string()),
+            ),
+            (
+                "feedback_kind".to_string(),
+                self.feedback_kind
+                    .map_or_else(String::new, |value| format!("{value:?}")),
+            ),
+        ]
+        .into_iter()
+        .chain(
+            self.selected_moves
+                .iter()
+                .enumerate()
+                .map(|(index, value)| (format!("selected.{index}"), value.as_str().to_string())),
+        )
+        .chain(
+            self.arguments
+                .iter()
+                .enumerate()
+                .flat_map(|(index, value)| {
+                    [
+                        (format!("argument.{index}.name"), value.name().to_string()),
+                        (
+                            format!("argument.{index}.kind"),
+                            format!("{:?}", value.kind()),
+                        ),
+                        (
+                            format!("argument.{index}.value"),
+                            value.value().map_or_else(String::new, canonical_slot_value),
+                        ),
+                        (
+                            format!("argument.{index}.provenance"),
+                            value.provenance().unwrap_or_default().to_string(),
+                        ),
+                    ]
+                }),
+        );
+        hash_fields("semantic-gameboard-turn-answer-v1", fields)
+    }
+
+    pub fn kind(&self) -> GameTurnAnswerKind {
+        self.kind
+    }
+    pub fn answer_hash(&self) -> Option<&GraphContentHash> {
+        self.answer_hash.as_ref()
+    }
+    pub fn absence_reason(&self) -> Option<GameTurnAnswerAbsenceReason> {
+        self.absence_reason
+    }
+    pub fn clarification_dimension(&self) -> Option<GameClarificationDimension> {
+        self.clarification_dimension
+    }
+    pub fn selected_moves(&self) -> &[LegalMoveId] {
+        &self.selected_moves
+    }
+    pub fn focus(&self) -> Option<&DesignFocus> {
+        self.focus.as_ref()
+    }
+    pub fn move_id(&self) -> Option<&LegalMoveId> {
+        self.move_id.as_ref()
+    }
+    pub fn arguments(&self) -> &[MoveArgument] {
+        &self.arguments
+    }
+    pub fn feedback_kind(&self) -> Option<FeedbackOptionKind> {
+        self.feedback_kind
+    }
+}
+
+impl<'de> Deserialize<'de> for GameTurnAnswer {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        struct Wire {
+            kind: GameTurnAnswerKind,
+            answer_hash: Option<GraphContentHash>,
+            absence_reason: Option<GameTurnAnswerAbsenceReason>,
+            clarification_dimension: Option<GameClarificationDimension>,
+            selected_moves: Vec<LegalMoveId>,
+            focus: Option<DesignFocus>,
+            move_id: Option<LegalMoveId>,
+            arguments: Vec<MoveArgument>,
+            feedback_kind: Option<FeedbackOptionKind>,
+        }
+        let wire = Wire::deserialize(deserializer)?;
+        Self::admit(
+            wire.kind,
+            wire.answer_hash,
+            wire.absence_reason,
+            wire.clarification_dimension,
+            wire.selected_moves,
+            wire.focus,
+            wire.move_id,
+            wire.arguments,
+            wire.feedback_kind,
+        )
+        .map_err(serde::de::Error::custom)
+    }
+}
+
+/// Typed compiler result recorded without granting the model transition authority.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum GameTurnCompilerResultKind {
+    NotRequested,
+    Admitted,
+    Refused,
+    SystemFailure,
+}
+
+/// Validated compiler result for one game turn.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct GameTurnCompilerResult {
+    kind: GameTurnCompilerResultKind,
+    delta_hash: Option<GraphDeltaHash>,
+    result_graph_hash: Option<GraphContentHash>,
+    receipt_hash: Option<GraphContentHash>,
+    diagnostic_hash: Option<GraphContentHash>,
+}
+
+impl GameTurnCompilerResult {
+    fn admit(
+        kind: GameTurnCompilerResultKind,
+        delta_hash: Option<GraphDeltaHash>,
+        result_graph_hash: Option<GraphContentHash>,
+        receipt_hash: Option<GraphContentHash>,
+        diagnostic_hash: Option<GraphContentHash>,
+    ) -> Result<Self, GameboardContractError> {
+        let invalid = |reason: &str| GameboardContractError::InvalidContract {
+            contract: "game turn compiler result",
+            reason: reason.to_string(),
+        };
+        match kind {
+            GameTurnCompilerResultKind::NotRequested
+                if delta_hash.is_some()
+                    || result_graph_hash.is_some()
+                    || receipt_hash.is_some()
+                    || diagnostic_hash.is_some() =>
+            {
+                return Err(invalid("not-requested may not carry compiler output"));
+            }
+            GameTurnCompilerResultKind::Admitted
+                if delta_hash.is_none()
+                    || result_graph_hash.is_none()
+                    || receipt_hash.is_none()
+                    || diagnostic_hash.is_some() =>
+            {
+                return Err(invalid(
+                    "admission requires delta, resulting graph and compiler receipt identities",
+                ));
+            }
+            GameTurnCompilerResultKind::Refused | GameTurnCompilerResultKind::SystemFailure
+                if delta_hash.is_some()
+                    || result_graph_hash.is_some()
+                    || receipt_hash.is_some()
+                    || diagnostic_hash.is_none() =>
+            {
+                return Err(invalid(
+                    "refusal/failure requires one diagnostic identity and no admitted result",
+                ));
+            }
+            _ => {}
+        }
+        Ok(Self {
+            kind,
+            delta_hash,
+            result_graph_hash,
+            receipt_hash,
+            diagnostic_hash,
+        })
+    }
+
+    pub fn not_requested() -> Self {
+        Self::admit(
+            GameTurnCompilerResultKind::NotRequested,
+            None,
+            None,
+            None,
+            None,
+        )
+        .expect("the fixed not-requested compiler result is valid")
+    }
+
+    pub fn admitted(
+        delta_hash: GraphDeltaHash,
+        result_graph_hash: GraphContentHash,
+        receipt_hash: GraphContentHash,
+    ) -> Result<Self, GameboardContractError> {
+        Self::admit(
+            GameTurnCompilerResultKind::Admitted,
+            Some(delta_hash),
+            Some(result_graph_hash),
+            Some(receipt_hash),
+            None,
+        )
+    }
+
+    pub fn refused(diagnostic_hash: GraphContentHash) -> Self {
+        Self::admit(
+            GameTurnCompilerResultKind::Refused,
+            None,
+            None,
+            None,
+            Some(diagnostic_hash),
+        )
+        .expect("the fixed refused compiler result is valid")
+    }
+
+    pub fn system_failure(failure_hash: GraphContentHash) -> Self {
+        Self::admit(
+            GameTurnCompilerResultKind::SystemFailure,
+            None,
+            None,
+            None,
+            Some(failure_hash),
+        )
+        .expect("the fixed failed compiler result is valid")
+    }
+
+    fn canonical_hash(&self) -> String {
+        hash_fields(
+            "semantic-gameboard-compiler-result-v1",
+            [
+                ("kind".to_string(), format!("{:?}", self.kind)),
+                (
+                    "delta".to_string(),
+                    self.delta_hash
+                        .as_ref()
+                        .map_or_else(String::new, |value| value.as_str().to_string()),
+                ),
+                (
+                    "result_graph".to_string(),
+                    self.result_graph_hash
+                        .as_ref()
+                        .map_or_else(String::new, |value| value.as_str().to_string()),
+                ),
+                (
+                    "receipt".to_string(),
+                    self.receipt_hash
+                        .as_ref()
+                        .map_or_else(String::new, |value| value.as_str().to_string()),
+                ),
+                (
+                    "diagnostic".to_string(),
+                    self.diagnostic_hash
+                        .as_ref()
+                        .map_or_else(String::new, |value| value.as_str().to_string()),
+                ),
+            ],
+        )
+    }
+
+    pub fn kind(&self) -> GameTurnCompilerResultKind {
+        self.kind
+    }
+    pub fn delta_hash(&self) -> Option<&GraphDeltaHash> {
+        self.delta_hash.as_ref()
+    }
+    pub fn result_graph_hash(&self) -> Option<&GraphContentHash> {
+        self.result_graph_hash.as_ref()
+    }
+    pub fn receipt_hash(&self) -> Option<&GraphContentHash> {
+        self.receipt_hash.as_ref()
+    }
+    pub fn diagnostic_hash(&self) -> Option<&GraphContentHash> {
+        self.diagnostic_hash.as_ref()
+    }
+}
+
+impl<'de> Deserialize<'de> for GameTurnCompilerResult {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        struct Wire {
+            kind: GameTurnCompilerResultKind,
+            delta_hash: Option<GraphDeltaHash>,
+            result_graph_hash: Option<GraphContentHash>,
+            receipt_hash: Option<GraphContentHash>,
+            diagnostic_hash: Option<GraphContentHash>,
+        }
+        let wire = Wire::deserialize(deserializer)?;
+        Self::admit(
+            wire.kind,
+            wire.delta_hash,
+            wire.result_graph_hash,
+            wire.receipt_hash,
+            wire.diagnostic_hash,
+        )
+        .map_err(serde::de::Error::custom)
+    }
+}
+
+/// Complete, consented game-level record for one attempted interaction.
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub struct GameTurnRecord {
+    schema_version: u32,
+    session_id: GameSessionId,
+    turn_id: DesignTurnId,
+    sequence: u64,
+    observed_at_epoch_ms: u64,
+    semantic_family: SemanticFamilyId,
+    risk_class: super::HarmClass,
+    input_hash: GraphContentHash,
+    position: DesignPosition,
+    evidence: Vec<MoveEvidence>,
+    belief: DesignBelief,
+    disposition: GameDisposition,
+    answer: GameTurnAnswer,
+    chosen_move: Option<LegalMoveId>,
+    delta: Option<GraphDeltaPreview>,
+    attempt: MoveAttemptReceipt,
+    compiler_result: GameTurnCompilerResult,
+    corrections: Vec<MoveAttemptReceipt>,
+    record_hash: GameTurnRecordHash,
+}
+
+impl GameTurnRecord {
+    #[allow(clippy::too_many_arguments)]
+    pub fn new(
+        schema_version: u32,
+        session_id: GameSessionId,
+        turn_id: DesignTurnId,
+        sequence: u64,
+        observed_at_epoch_ms: u64,
+        semantic_family: SemanticFamilyId,
+        risk_class: super::HarmClass,
+        input_hash: GraphContentHash,
+        position: DesignPosition,
+        mut evidence: Vec<MoveEvidence>,
+        belief: DesignBelief,
+        disposition: GameDisposition,
+        answer: GameTurnAnswer,
+        chosen_move: Option<LegalMoveId>,
+        delta: Option<GraphDeltaPreview>,
+        attempt: MoveAttemptReceipt,
+        compiler_result: GameTurnCompilerResult,
+        mut corrections: Vec<MoveAttemptReceipt>,
+    ) -> Result<Self, GameboardContractError> {
+        validate_schema(schema_version)?;
+        evidence.sort_by(|left, right| left.move_id.cmp(&right.move_id));
+        let evidence_moves = evidence
+            .iter()
+            .map(|value| value.move_id().clone())
+            .collect::<Vec<_>>();
+        let position_moves = position
+            .legal_moves()
+            .iter()
+            .map(|value| value.move_id().clone())
+            .collect::<Vec<_>>();
+        if evidence_moves != position_moves {
+            return Err(GameboardContractError::InvalidContract {
+                contract: "game turn record",
+                reason: "evidence must cover every legal move exactly once".to_string(),
+            });
+        }
+        if belief.position_id() != position.state_id()
+            || belief
+                .likely_moves()
+                .iter()
+                .any(|value| !position_moves.contains(value.move_id()))
+        {
+            return Err(GameboardContractError::InvalidContract {
+                contract: "game turn record",
+                reason: "belief is stale or names a move absent from the position".to_string(),
+            });
+        }
+        disposition.validate_for_position(&position)?;
+        answer.validate_for_position(&position)?;
+        let chosen_legal = chosen_move
+            .as_ref()
+            .map(|move_id| {
+                position
+                    .legal_moves()
+                    .iter()
+                    .find(|legal_move| legal_move.move_id() == move_id)
+                    .ok_or_else(|| GameboardContractError::InvalidContract {
+                        contract: "game turn record",
+                        reason: format!(
+                            "chosen move '{}' is absent from the position",
+                            move_id.as_str()
+                        ),
+                    })
+            })
+            .transpose()?;
+        if attempt.position_id() != position.state_id() {
+            return Err(GameboardContractError::InvalidContract {
+                contract: "game turn record",
+                reason: "attempt receipt belongs to a different position".to_string(),
+            });
+        }
+        if let (Some(attempted), Some(chosen)) = (attempt.attempted_move(), chosen_move.as_ref()) {
+            if attempted != chosen {
+                return Err(GameboardContractError::InvalidContract {
+                    contract: "game turn record",
+                    reason: "chosen move and attempted move disagree".to_string(),
+                });
+            }
+        }
+        if let Some(disposition_attempt) = disposition.attempt_receipt() {
+            if disposition_attempt.receipt_hash() != attempt.receipt_hash() {
+                return Err(GameboardContractError::InvalidContract {
+                    contract: "game turn record",
+                    reason: "disposition and turn name different terminal attempts".to_string(),
+                });
+            }
+        }
+        if let Some(delta) = &delta {
+            if delta.from_graph() != position.graph_hash() {
+                return Err(GameboardContractError::InvalidContract {
+                    contract: "game turn record",
+                    reason: "delta preview starts from a different graph".to_string(),
+                });
+            }
+            let Some(chosen_legal) = chosen_legal else {
+                return Err(GameboardContractError::InvalidContract {
+                    contract: "game turn record",
+                    reason: "a delta preview requires a chosen legal move".to_string(),
+                });
+            };
+            if chosen_legal.preview().map(GraphDeltaPreview::delta_hash) != Some(delta.delta_hash())
+            {
+                return Err(GameboardContractError::InvalidContract {
+                    contract: "game turn record",
+                    reason: "captured delta differs from the legal move preview".to_string(),
+                });
+            }
+        }
+        match compiler_result.kind() {
+            GameTurnCompilerResultKind::Admitted => {
+                let Some(delta) = &delta else {
+                    return Err(GameboardContractError::InvalidContract {
+                        contract: "game turn record",
+                        reason: "compiler admission requires the exact previewed delta".to_string(),
+                    });
+                };
+                if compiler_result.delta_hash() != Some(delta.delta_hash())
+                    || compiler_result.result_graph_hash() == Some(position.graph_hash())
+                    || attempt.outcome() != MoveAttemptOutcome::Applied
+                {
+                    return Err(GameboardContractError::InvalidContract {
+                        contract: "game turn record",
+                        reason: "compiler admission, graph transition and attempt outcome disagree"
+                            .to_string(),
+                    });
+                }
+            }
+            GameTurnCompilerResultKind::Refused
+                if attempt.outcome() != MoveAttemptOutcome::CompilerRefused =>
+            {
+                return Err(GameboardContractError::InvalidContract {
+                    contract: "game turn record",
+                    reason: "compiler refusal requires a compiler-refused attempt".to_string(),
+                });
+            }
+            GameTurnCompilerResultKind::SystemFailure
+                if attempt.outcome() != MoveAttemptOutcome::SystemFailure =>
+            {
+                return Err(GameboardContractError::InvalidContract {
+                    contract: "game turn record",
+                    reason: "compiler failure requires a system-failure attempt".to_string(),
+                });
+            }
+            GameTurnCompilerResultKind::NotRequested
+                if matches!(
+                    attempt.outcome(),
+                    MoveAttemptOutcome::Applied
+                        | MoveAttemptOutcome::CompilerRefused
+                        | MoveAttemptOutcome::SystemFailure
+                ) =>
+            {
+                return Err(GameboardContractError::InvalidContract {
+                    contract: "game turn record",
+                    reason: "terminal compiler outcome cannot be recorded as not requested"
+                        .to_string(),
+                });
+            }
+            _ => {}
+        }
+        corrections.sort_by(|left, right| left.attempt_id.cmp(&right.attempt_id));
+        if corrections
+            .windows(2)
+            .any(|pair| pair[0].attempt_id() == pair[1].attempt_id())
+            || corrections
+                .iter()
+                .any(|receipt| receipt.attempt_id() == attempt.attempt_id())
+        {
+            return Err(GameboardContractError::InvalidContract {
+                contract: "game turn record",
+                reason: "later correction attempts must have unique identities".to_string(),
+            });
+        }
+        if corrections
+            .iter()
+            .any(|receipt| receipt.correction_of().is_none())
+        {
+            return Err(GameboardContractError::InvalidContract {
+                contract: "game turn record",
+                reason: "a later correction/undo must link a retained earlier attempt".to_string(),
+            });
+        }
+        let history = std::iter::once(attempt.clone())
+            .chain(corrections.iter().cloned())
+            .collect::<Vec<_>>();
+        validate_attempt_history(&history)?;
+
+        let mut record = Self {
+            schema_version,
+            session_id,
+            turn_id,
+            sequence,
+            observed_at_epoch_ms,
+            semantic_family,
+            risk_class,
+            input_hash,
+            position,
+            evidence,
+            belief,
+            disposition,
+            answer,
+            chosen_move,
+            delta,
+            attempt,
+            compiler_result,
+            corrections,
+            record_hash: GameTurnRecordHash::new("0".repeat(64))?,
+        };
+        record.record_hash = record.canonical_hash()?;
+        Ok(record)
+    }
+
+    fn canonical_hash(&self) -> Result<GameTurnRecordHash, GameboardContractError> {
+        let fields = [
+            (
+                "schema_version".to_string(),
+                self.schema_version.to_string(),
+            ),
+            ("session".to_string(), self.session_id.as_str().to_string()),
+            ("turn".to_string(), self.turn_id.as_str().to_string()),
+            ("sequence".to_string(), self.sequence.to_string()),
+            (
+                "observed_at_epoch_ms".to_string(),
+                self.observed_at_epoch_ms.to_string(),
+            ),
+            (
+                "semantic_family".to_string(),
+                self.semantic_family.as_str().to_string(),
+            ),
+            ("risk_class".to_string(), format!("{:?}", self.risk_class)),
+            ("input".to_string(), self.input_hash.as_str().to_string()),
+            (
+                "position".to_string(),
+                self.position.state_id().as_str().to_string(),
+            ),
+            (
+                "belief".to_string(),
+                self.belief.belief_hash().as_str().to_string(),
+            ),
+            (
+                "disposition".to_string(),
+                self.disposition.disposition_hash().as_str().to_string(),
+            ),
+            ("answer".to_string(), self.answer.canonical_hash()),
+            (
+                "chosen_move".to_string(),
+                self.chosen_move
+                    .as_ref()
+                    .map_or_else(String::new, |value| value.as_str().to_string()),
+            ),
+            (
+                "delta".to_string(),
+                self.delta
+                    .as_ref()
+                    .map_or_else(String::new, |value| value.delta_hash().as_str().to_string()),
+            ),
+            (
+                "attempt".to_string(),
+                self.attempt.receipt_hash().as_str().to_string(),
+            ),
+            (
+                "compiler".to_string(),
+                self.compiler_result.canonical_hash(),
+            ),
+        ]
+        .into_iter()
+        .chain(self.evidence.iter().enumerate().map(|(index, value)| {
+            (
+                format!("evidence.{index}"),
+                value.evidence_hash().as_str().to_string(),
+            )
+        }))
+        .chain(self.corrections.iter().enumerate().map(|(index, value)| {
+            (
+                format!("correction.{index}"),
+                value.receipt_hash().as_str().to_string(),
+            )
+        }));
+        GameTurnRecordHash::new(hash_fields("semantic-gameboard-turn-record-v1", fields))
+    }
+
+    pub fn schema_version(&self) -> u32 {
+        self.schema_version
+    }
+    pub fn session_id(&self) -> &GameSessionId {
+        &self.session_id
+    }
+    pub fn turn_id(&self) -> &DesignTurnId {
+        &self.turn_id
+    }
+    pub fn sequence(&self) -> u64 {
+        self.sequence
+    }
+    pub fn observed_at_epoch_ms(&self) -> u64 {
+        self.observed_at_epoch_ms
+    }
+    pub fn semantic_family(&self) -> &SemanticFamilyId {
+        &self.semantic_family
+    }
+    pub fn risk_class(&self) -> super::HarmClass {
+        self.risk_class
+    }
+    pub fn input_hash(&self) -> &GraphContentHash {
+        &self.input_hash
+    }
+    pub fn position(&self) -> &DesignPosition {
+        &self.position
+    }
+    pub fn evidence(&self) -> &[MoveEvidence] {
+        &self.evidence
+    }
+    pub fn belief(&self) -> &DesignBelief {
+        &self.belief
+    }
+    pub fn disposition(&self) -> &GameDisposition {
+        &self.disposition
+    }
+    pub fn answer(&self) -> &GameTurnAnswer {
+        &self.answer
+    }
+    pub fn chosen_move(&self) -> Option<&LegalMoveId> {
+        self.chosen_move.as_ref()
+    }
+    pub fn delta(&self) -> Option<&GraphDeltaPreview> {
+        self.delta.as_ref()
+    }
+    pub fn attempt(&self) -> &MoveAttemptReceipt {
+        &self.attempt
+    }
+    pub fn compiler_result(&self) -> &GameTurnCompilerResult {
+        &self.compiler_result
+    }
+    pub fn corrections(&self) -> &[MoveAttemptReceipt] {
+        &self.corrections
+    }
+    pub fn record_hash(&self) -> &GameTurnRecordHash {
+        &self.record_hash
+    }
+}
+
+impl<'de> Deserialize<'de> for GameTurnRecord {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        struct Wire {
+            schema_version: u32,
+            session_id: GameSessionId,
+            turn_id: DesignTurnId,
+            sequence: u64,
+            observed_at_epoch_ms: u64,
+            semantic_family: SemanticFamilyId,
+            risk_class: super::HarmClass,
+            input_hash: GraphContentHash,
+            position: DesignPosition,
+            evidence: Vec<MoveEvidence>,
+            belief: DesignBelief,
+            disposition: GameDisposition,
+            answer: GameTurnAnswer,
+            chosen_move: Option<LegalMoveId>,
+            delta: Option<GraphDeltaPreview>,
+            attempt: MoveAttemptReceipt,
+            compiler_result: GameTurnCompilerResult,
+            corrections: Vec<MoveAttemptReceipt>,
+            record_hash: GameTurnRecordHash,
+        }
+        let wire = Wire::deserialize(deserializer)?;
+        let record_hash = wire.record_hash;
+        let admitted = Self::new(
+            wire.schema_version,
+            wire.session_id,
+            wire.turn_id,
+            wire.sequence,
+            wire.observed_at_epoch_ms,
+            wire.semantic_family,
+            wire.risk_class,
+            wire.input_hash,
+            wire.position,
+            wire.evidence,
+            wire.belief,
+            wire.disposition,
+            wire.answer,
+            wire.chosen_move,
+            wire.delta,
+            wire.attempt,
+            wire.compiler_result,
+            wire.corrections,
+        )
+        .map_err(serde::de::Error::custom)?;
+        if admitted.record_hash != record_hash {
+            return Err(serde::de::Error::custom(
+                "game turn record hash does not match canonical content",
+            ));
+        }
+        Ok(admitted)
+    }
+}
+
+/// Human judgement of the role an observed interaction played.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum GameTurnJudgement {
+    ExploratoryHumanAttempt,
+    AcceptedMove,
+    AccidentalMove,
+    SystemMisinterpretation,
+}
+
+/// Structured intended move, including explicitly unrepresentable intent.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum IntendedMove {
+    None,
+    OnBoard { move_id: LegalMoveId },
+    OffBoard { semantic_code: MessageKey },
+}
+
+/// Separate, append-only operator judgement linked to a captured game turn.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct GameTurnAdjudication {
+    schema_version: u32,
+    record_hash: GameTurnRecordHash,
+    adjudicator: ContractText,
+    adjudicated_at_epoch_ms: u64,
+    judgement: GameTurnJudgement,
+    intended_move: IntendedMove,
+    intended_anchor: Option<GraphElementRef>,
+    intended_arguments: Vec<MoveArgument>,
+    intended_motif: Option<ContractText>,
+    acceptable_clarifications: Vec<GameClarificationDimension>,
+    acceptable_feedback: Vec<FeedbackOptionKind>,
+    note_hash: Option<GraphContentHash>,
+    adjudication_hash: GameTurnAdjudicationHash,
+}
+
+impl GameTurnAdjudication {
+    #[allow(clippy::too_many_arguments)]
+    pub fn new(
+        record: &GameTurnRecord,
+        adjudicator: impl Into<String>,
+        adjudicated_at_epoch_ms: u64,
+        judgement: GameTurnJudgement,
+        intended_move: IntendedMove,
+        intended_anchor: Option<GraphElementRef>,
+        intended_arguments: Vec<MoveArgument>,
+        intended_motif: Option<String>,
+        acceptable_clarifications: Vec<GameClarificationDimension>,
+        acceptable_feedback: Vec<FeedbackOptionKind>,
+        note_hash: Option<GraphContentHash>,
+    ) -> Result<Self, GameboardContractError> {
+        let admitted = Self::admit(
+            GAMEBOARD_SCHEMA_VERSION,
+            record.record_hash().clone(),
+            adjudicator.into(),
+            adjudicated_at_epoch_ms,
+            judgement,
+            intended_move,
+            intended_anchor,
+            intended_arguments,
+            intended_motif,
+            acceptable_clarifications,
+            acceptable_feedback,
+            note_hash,
+        )?;
+        admitted.validate_for_record(record)?;
+        Ok(admitted)
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn admit(
+        schema_version: u32,
+        record_hash: GameTurnRecordHash,
+        adjudicator: String,
+        adjudicated_at_epoch_ms: u64,
+        judgement: GameTurnJudgement,
+        intended_move: IntendedMove,
+        intended_anchor: Option<GraphElementRef>,
+        mut intended_arguments: Vec<MoveArgument>,
+        intended_motif: Option<String>,
+        mut acceptable_clarifications: Vec<GameClarificationDimension>,
+        mut acceptable_feedback: Vec<FeedbackOptionKind>,
+        note_hash: Option<GraphContentHash>,
+    ) -> Result<Self, GameboardContractError> {
+        validate_schema(schema_version)?;
+        intended_arguments.sort_by(|left, right| left.name.cmp(&right.name));
+        if intended_arguments
+            .windows(2)
+            .any(|pair| pair[0].name == pair[1].name)
+        {
+            return Err(GameboardContractError::InvalidContract {
+                contract: "game turn adjudication",
+                reason: "intended arguments must have unique names".to_string(),
+            });
+        }
+        acceptable_clarifications.sort();
+        acceptable_clarifications.dedup();
+        acceptable_feedback.sort();
+        acceptable_feedback.dedup();
+        if judgement == GameTurnJudgement::AcceptedMove
+            && !matches!(intended_move, IntendedMove::OnBoard { .. })
+        {
+            return Err(GameboardContractError::InvalidContract {
+                contract: "game turn adjudication",
+                reason: "an accepted move requires an explicit on-board intended move".to_string(),
+            });
+        }
+        if judgement == GameTurnJudgement::SystemMisinterpretation
+            && matches!(intended_move, IntendedMove::None)
+            && intended_anchor.is_none()
+            && intended_arguments.is_empty()
+            && intended_motif.is_none()
+        {
+            return Err(GameboardContractError::InvalidContract {
+                contract: "game turn adjudication",
+                reason: "a system misinterpretation must state the corrected intent".to_string(),
+            });
+        }
+        let mut admitted = Self {
+            schema_version,
+            record_hash,
+            adjudicator: ContractText::new("game turn adjudicator", adjudicator)?,
+            adjudicated_at_epoch_ms,
+            judgement,
+            intended_move,
+            intended_anchor,
+            intended_arguments,
+            intended_motif: intended_motif
+                .map(|value| ContractText::new("intended motif", value))
+                .transpose()?,
+            acceptable_clarifications,
+            acceptable_feedback,
+            note_hash,
+            adjudication_hash: GameTurnAdjudicationHash::new("0".repeat(64))?,
+        };
+        admitted.adjudication_hash = admitted.canonical_hash()?;
+        Ok(admitted)
+    }
+
+    pub fn validate_for_record(
+        &self,
+        record: &GameTurnRecord,
+    ) -> Result<(), GameboardContractError> {
+        if self.record_hash != *record.record_hash() {
+            return Err(GameboardContractError::InvalidContract {
+                contract: "game turn adjudication",
+                reason: "adjudication belongs to a different captured turn".to_string(),
+            });
+        }
+        let intended_legal = match &self.intended_move {
+            IntendedMove::OnBoard { move_id } => Some(
+                record
+                    .position()
+                    .legal_moves()
+                    .iter()
+                    .find(|legal_move| legal_move.move_id() == move_id)
+                    .ok_or_else(|| GameboardContractError::InvalidContract {
+                        contract: "game turn adjudication",
+                        reason: format!(
+                            "intended move '{}' was not on the recorded board",
+                            move_id.as_str()
+                        ),
+                    })?,
+            ),
+            IntendedMove::None | IntendedMove::OffBoard { .. } => None,
+        };
+        if self.judgement == GameTurnJudgement::AcceptedMove
+            && intended_legal.map(LegalMove::move_id) != record.chosen_move()
+        {
+            return Err(GameboardContractError::InvalidContract {
+                contract: "game turn adjudication",
+                reason: "accepted judgement does not match the chosen move".to_string(),
+            });
+        }
+        if let Some(legal_move) = intended_legal {
+            for answer in &self.intended_arguments {
+                let Some(declared) = legal_move
+                    .arguments()
+                    .iter()
+                    .find(|argument| argument.name() == answer.name())
+                else {
+                    return Err(GameboardContractError::InvalidContract {
+                        contract: "game turn adjudication",
+                        reason: format!(
+                            "intended argument '{}' is absent from the intended move",
+                            answer.name()
+                        ),
+                    });
+                };
+                if declared.kind() != answer.kind() {
+                    return Err(GameboardContractError::InvalidContract {
+                        contract: "game turn adjudication",
+                        reason: format!(
+                            "intended argument '{}' has the wrong value kind",
+                            answer.name()
+                        ),
+                    });
+                }
+            }
+        }
+        Ok(())
+    }
+
+    fn canonical_hash(&self) -> Result<GameTurnAdjudicationHash, GameboardContractError> {
+        let intended_move = match &self.intended_move {
+            IntendedMove::None => "none".to_string(),
+            IntendedMove::OnBoard { move_id } => format!("on_board:{}", move_id.as_str()),
+            IntendedMove::OffBoard { semantic_code } => {
+                format!("off_board:{}", semantic_code.as_str())
+            }
+        };
+        let fields = [
+            (
+                "schema_version".to_string(),
+                self.schema_version.to_string(),
+            ),
+            ("record".to_string(), self.record_hash.as_str().to_string()),
+            (
+                "adjudicator".to_string(),
+                self.adjudicator.as_str().to_string(),
+            ),
+            (
+                "adjudicated_at_epoch_ms".to_string(),
+                self.adjudicated_at_epoch_ms.to_string(),
+            ),
+            ("judgement".to_string(), format!("{:?}", self.judgement)),
+            ("intended_move".to_string(), intended_move),
+            (
+                "intended_anchor".to_string(),
+                self.intended_anchor
+                    .as_ref()
+                    .map_or_else(String::new, |value| value.as_str().to_string()),
+            ),
+            (
+                "intended_motif".to_string(),
+                self.intended_motif
+                    .as_ref()
+                    .map_or_else(String::new, |value| value.as_str().to_string()),
+            ),
+            (
+                "note".to_string(),
+                self.note_hash
+                    .as_ref()
+                    .map_or_else(String::new, |value| value.as_str().to_string()),
+            ),
+        ]
+        .into_iter()
+        .chain(
+            self.intended_arguments
+                .iter()
+                .enumerate()
+                .flat_map(|(index, value)| {
+                    [
+                        (format!("argument.{index}.name"), value.name().to_string()),
+                        (
+                            format!("argument.{index}.kind"),
+                            format!("{:?}", value.kind()),
+                        ),
+                        (
+                            format!("argument.{index}.value"),
+                            value.value().map_or_else(String::new, canonical_slot_value),
+                        ),
+                        (
+                            format!("argument.{index}.provenance"),
+                            value.provenance().unwrap_or_default().to_string(),
+                        ),
+                    ]
+                }),
+        )
+        .chain(
+            self.acceptable_clarifications
+                .iter()
+                .enumerate()
+                .map(|(index, value)| (format!("clarification.{index}"), format!("{value:?}"))),
+        )
+        .chain(
+            self.acceptable_feedback
+                .iter()
+                .enumerate()
+                .map(|(index, value)| (format!("feedback.{index}"), format!("{value:?}"))),
+        );
+        GameTurnAdjudicationHash::new(hash_fields(
+            "semantic-gameboard-turn-adjudication-v1",
+            fields,
+        ))
+    }
+
+    pub fn schema_version(&self) -> u32 {
+        self.schema_version
+    }
+    pub fn record_hash(&self) -> &GameTurnRecordHash {
+        &self.record_hash
+    }
+    pub fn adjudicator(&self) -> &str {
+        self.adjudicator.as_str()
+    }
+    pub fn adjudicated_at_epoch_ms(&self) -> u64 {
+        self.adjudicated_at_epoch_ms
+    }
+    pub fn judgement(&self) -> GameTurnJudgement {
+        self.judgement
+    }
+    pub fn intended_move(&self) -> &IntendedMove {
+        &self.intended_move
+    }
+    pub fn intended_anchor(&self) -> Option<&GraphElementRef> {
+        self.intended_anchor.as_ref()
+    }
+    pub fn intended_arguments(&self) -> &[MoveArgument] {
+        &self.intended_arguments
+    }
+    pub fn intended_motif(&self) -> Option<&str> {
+        self.intended_motif.as_ref().map(ContractText::as_str)
+    }
+    pub fn acceptable_clarifications(&self) -> &[GameClarificationDimension] {
+        &self.acceptable_clarifications
+    }
+    pub fn acceptable_feedback(&self) -> &[FeedbackOptionKind] {
+        &self.acceptable_feedback
+    }
+    pub fn note_hash(&self) -> Option<&GraphContentHash> {
+        self.note_hash.as_ref()
+    }
+    pub fn adjudication_hash(&self) -> &GameTurnAdjudicationHash {
+        &self.adjudication_hash
+    }
+
+    /// Return a positive structured-choice label only when the operator explicitly
+    /// adjudicated one. Exploratory and accidental interactions can never label training.
+    pub fn positive_label(&self) -> Option<&LegalMoveId> {
+        if matches!(
+            self.judgement,
+            GameTurnJudgement::AcceptedMove | GameTurnJudgement::SystemMisinterpretation
+        ) {
+            if let IntendedMove::OnBoard { move_id } = &self.intended_move {
+                return Some(move_id);
+            }
+        }
+        None
+    }
+}
+
+impl<'de> Deserialize<'de> for GameTurnAdjudication {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        struct Wire {
+            schema_version: u32,
+            record_hash: GameTurnRecordHash,
+            adjudicator: String,
+            adjudicated_at_epoch_ms: u64,
+            judgement: GameTurnJudgement,
+            intended_move: IntendedMove,
+            intended_anchor: Option<GraphElementRef>,
+            intended_arguments: Vec<MoveArgument>,
+            intended_motif: Option<String>,
+            acceptable_clarifications: Vec<GameClarificationDimension>,
+            acceptable_feedback: Vec<FeedbackOptionKind>,
+            note_hash: Option<GraphContentHash>,
+            adjudication_hash: GameTurnAdjudicationHash,
+        }
+        let wire = Wire::deserialize(deserializer)?;
+        let adjudication_hash = wire.adjudication_hash;
+        let admitted = Self::admit(
+            wire.schema_version,
+            wire.record_hash,
+            wire.adjudicator,
+            wire.adjudicated_at_epoch_ms,
+            wire.judgement,
+            wire.intended_move,
+            wire.intended_anchor,
+            wire.intended_arguments,
+            wire.intended_motif,
+            wire.acceptable_clarifications,
+            wire.acceptable_feedback,
+            wire.note_hash,
+        )
+        .map_err(serde::de::Error::custom)?;
+        if admitted.adjudication_hash != adjudication_hash {
+            return Err(serde::de::Error::custom(
+                "game turn adjudication hash does not match canonical content",
+            ));
+        }
+        Ok(admitted)
+    }
+}
+
 /// Append-only session event covering observations, decisions and corrections.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "event", rename_all = "snake_case")]
@@ -3820,6 +5252,72 @@ mod tests {
         )
     }
 
+    fn incomplete_game_turn() -> GameTurnRecord {
+        let position = position();
+        let move_id = position.legal_moves()[0].move_id().clone();
+        let evidence = MoveEvidence::new(
+            GAMEBOARD_SCHEMA_VERSION,
+            move_id.clone(),
+            Vec::new(),
+            FiniteScore::new(0.75).unwrap(),
+            FiniteScore::new(1.0).unwrap(),
+            vec![RuleCode::new("evidence.complete-board").unwrap()],
+            ProducerIdentity::new("deterministic-fusion-v1").unwrap(),
+        )
+        .unwrap();
+        let belief = DesignBelief::new(
+            GAMEBOARD_SCHEMA_VERSION,
+            position.state_id().clone(),
+            vec![MoveProbability::new(move_id.clone(), FiniteScore::new(1.0).unwrap()).unwrap()],
+            Vec::new(),
+            Vec::new(),
+            ProducerIdentity::new("belief-policy-v1").unwrap(),
+        )
+        .unwrap();
+        let attempt = MoveAttemptReceipt::new(
+            GAMEBOARD_SCHEMA_VERSION,
+            MoveAttemptId::new("attempt-incomplete").unwrap(),
+            position.state_id().clone(),
+            Some(move_id.clone()),
+            graph_hash('c'),
+            MoveAttemptOutcome::Incomplete,
+            vec![RuleExplanationId::new(digest('d')).unwrap()],
+            Vec::new(),
+            None,
+            None,
+        )
+        .unwrap();
+        let disposition = GameDisposition::request_move_arguments(
+            &position,
+            move_id.clone(),
+            vec!["name".to_string()],
+            "prompt.argument.name",
+            attempt.clone(),
+        )
+        .unwrap();
+        GameTurnRecord::new(
+            GAMEBOARD_SCHEMA_VERSION,
+            GameSessionId::new("session-1").unwrap(),
+            DesignTurnId::new("turn-1").unwrap(),
+            7,
+            1_786_128_000_000,
+            SemanticFamilyId::new("family.example").unwrap(),
+            HarmClass::Reversible,
+            graph_hash('c'),
+            position,
+            vec![evidence],
+            belief,
+            disposition,
+            GameTurnAnswer::not_observed(GameTurnAnswerAbsenceReason::NotRequested),
+            Some(move_id),
+            None,
+            attempt,
+            GameTurnCompilerResult::not_requested(),
+            Vec::new(),
+        )
+        .unwrap()
+    }
+
     #[test]
     fn position_round_trip_is_canonical_and_has_golden_bytes() {
         let position = position();
@@ -3839,6 +5337,180 @@ mod tests {
             position.move_set_hash().as_str(),
             "f365d137d095160b5a56c45f28e7320ab43ebf965467866c307951bb645e8d83"
         );
+    }
+
+    #[test]
+    fn complete_game_turn_is_content_addressed_and_round_trips() {
+        let record = incomplete_game_turn();
+        assert_eq!(
+            record.evidence().len(),
+            record.position().legal_moves().len()
+        );
+        assert_eq!(record.attempt().outcome(), MoveAttemptOutcome::Incomplete);
+        assert_eq!(
+            record.compiler_result().kind(),
+            GameTurnCompilerResultKind::NotRequested
+        );
+        let encoded = serde_json::to_vec(&record).unwrap();
+        let decoded: GameTurnRecord = serde_json::from_slice(&encoded).unwrap();
+        assert_eq!(decoded, record);
+
+        let mut tampered: serde_json::Value = serde_json::from_slice(&encoded).unwrap();
+        tampered["sequence"] = serde_json::json!(8);
+        assert!(serde_json::from_value::<GameTurnRecord>(tampered).is_err());
+    }
+
+    #[test]
+    fn game_turn_refuses_incomplete_evidence_and_off_board_answers() {
+        let record = incomplete_game_turn();
+        assert!(GameTurnRecord::new(
+            record.schema_version(),
+            record.session_id().clone(),
+            record.turn_id().clone(),
+            record.sequence(),
+            record.observed_at_epoch_ms(),
+            record.semantic_family().clone(),
+            record.risk_class(),
+            record.input_hash().clone(),
+            record.position().clone(),
+            Vec::new(),
+            record.belief().clone(),
+            record.disposition().clone(),
+            record.answer().clone(),
+            record.chosen_move().cloned(),
+            record.delta().cloned(),
+            record.attempt().clone(),
+            record.compiler_result().clone(),
+            record.corrections().to_vec(),
+        )
+        .is_err());
+
+        let off_board = GameTurnAnswer::feedback(
+            graph_hash('e'),
+            FeedbackOptionKind::SelectAlternative,
+            Some(LegalMoveId::new(digest('f')).unwrap()),
+        )
+        .unwrap();
+        assert!(GameTurnRecord::new(
+            record.schema_version(),
+            record.session_id().clone(),
+            record.turn_id().clone(),
+            record.sequence(),
+            record.observed_at_epoch_ms(),
+            record.semantic_family().clone(),
+            record.risk_class(),
+            record.input_hash().clone(),
+            record.position().clone(),
+            record.evidence().to_vec(),
+            record.belief().clone(),
+            record.disposition().clone(),
+            off_board,
+            record.chosen_move().cloned(),
+            record.delta().cloned(),
+            record.attempt().clone(),
+            record.compiler_result().clone(),
+            record.corrections().to_vec(),
+        )
+        .is_err());
+    }
+
+    #[test]
+    fn adjudication_separates_exploration_accidents_and_explicit_labels() {
+        let record = incomplete_game_turn();
+        let intended = IntendedMove::OnBoard {
+            move_id: record.chosen_move().unwrap().clone(),
+        };
+        let exploratory = GameTurnAdjudication::new(
+            &record,
+            "operator-1",
+            1_786_128_001_000,
+            GameTurnJudgement::ExploratoryHumanAttempt,
+            intended.clone(),
+            None,
+            Vec::new(),
+            None,
+            vec![GameClarificationDimension::Move],
+            vec![FeedbackOptionKind::SelectAlternative],
+            None,
+        )
+        .unwrap();
+        assert_eq!(exploratory.positive_label(), None);
+
+        let accidental = GameTurnAdjudication::new(
+            &record,
+            "operator-1",
+            1_786_128_002_000,
+            GameTurnJudgement::AccidentalMove,
+            IntendedMove::None,
+            None,
+            Vec::new(),
+            None,
+            Vec::new(),
+            Vec::new(),
+            None,
+        )
+        .unwrap();
+        assert_eq!(accidental.positive_label(), None);
+
+        let corrected = GameTurnAdjudication::new(
+            &record,
+            "operator-1",
+            1_786_128_003_000,
+            GameTurnJudgement::SystemMisinterpretation,
+            intended,
+            None,
+            Vec::new(),
+            Some("motif.example".to_string()),
+            vec![GameClarificationDimension::Argument],
+            vec![FeedbackOptionKind::Replace],
+            Some(graph_hash('f')),
+        )
+        .unwrap();
+        assert_eq!(corrected.positive_label(), record.chosen_move());
+        corrected.validate_for_record(&record).unwrap();
+        let encoded = serde_json::to_vec(&corrected).unwrap();
+        let decoded: GameTurnAdjudication = serde_json::from_slice(&encoded).unwrap();
+        assert_eq!(decoded, corrected);
+        decoded.validate_for_record(&record).unwrap();
+    }
+
+    #[test]
+    fn adjudication_refuses_off_board_move_as_an_on_board_label() {
+        let record = incomplete_game_turn();
+        let result = GameTurnAdjudication::new(
+            &record,
+            "operator-1",
+            1_786_128_004_000,
+            GameTurnJudgement::SystemMisinterpretation,
+            IntendedMove::OnBoard {
+                move_id: LegalMoveId::new(digest('f')).unwrap(),
+            },
+            None,
+            Vec::new(),
+            None,
+            Vec::new(),
+            Vec::new(),
+            None,
+        );
+        assert!(result.is_err());
+
+        let unrepresentable = GameTurnAdjudication::new(
+            &record,
+            "operator-1",
+            1_786_128_005_000,
+            GameTurnJudgement::SystemMisinterpretation,
+            IntendedMove::OffBoard {
+                semantic_code: MessageKey::new("intent.not-represented").unwrap(),
+            },
+            None,
+            Vec::new(),
+            None,
+            Vec::new(),
+            Vec::new(),
+            None,
+        )
+        .unwrap();
+        assert_eq!(unrepresentable.positive_label(), None);
     }
 
     #[test]
