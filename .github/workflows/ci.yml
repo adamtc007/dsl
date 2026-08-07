@@ -72,6 +72,7 @@ jobs:
           - feedback_option_contract
           - legal_move_contract
           - rule_explanation_contract
+          - semantic_pack_admission
     steps:
       - uses: actions/checkout@v4
       - run: rustup toolchain install nightly --profile minimal

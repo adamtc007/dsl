@@ -11,6 +11,7 @@ cargo-fuzz = true
 arbitrary = { version = "1.4", features = ["derive"] }
 libfuzzer-sys = "0.4"
 semantic-decision-contracts = { path = ".." }
+semantic-pack = { path = "../../semantic-pack" }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 
@@ -55,6 +56,13 @@ bench = false
 [[bin]]
 name = "design_belief_contract"
 path = "fuzz_targets/design_belief_contract.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "semantic_pack_admission"
+path = "fuzz_targets/semantic_pack_admission.rs"
 test = false
 doc = false
 bench = false

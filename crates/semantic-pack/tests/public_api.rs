@@ -170,6 +170,36 @@ fn compile(name: &str, yaml: &str) -> semantic_pack::CompiledPack {
     admit_pack(PackBytes::new(name, yaml.as_bytes())).unwrap()
 }
 
+fn governed_pack() -> String {
+    PACK_A.replace(
+        "extensions: {}\n",
+        r#"evidence:
+  version: 1
+  features:
+    - { lane: governed_exact, weight_millis: 4000 }
+    - { lane: typed_argument, weight_millis: 2500 }
+  deterministic_gates:
+    - { candidate_id: process.start, lane: governed_exact, effect: require }
+rule_explanations:
+  - rule_code: rule.process.available
+    message_key: process.available
+    message: A process definition must be available before it can be started.
+    disclosure: public
+    feedback_options: [recovery.select_process]
+feedback_options:
+  - id: recovery.select_process
+    rule_code: rule.process.available
+    kind: select_alternative
+    prompt_key: process.select
+    prompt: Select an available process definition.
+    candidate_id: process.start
+    disclosure: public
+    next_options: []
+extensions: {}
+"#,
+    )
+}
+
 #[test]
 fn public_pipeline_inspects_capabilities_graph_bindings_and_provenance() {
     let parsed = parse_pack(PackBytes::new("example.yaml", PACK_A)).unwrap();
@@ -210,6 +240,52 @@ fn canonical_hash_golden_vector() {
         pack.receipt().artifact_hash.as_str(),
         "1576ce316374a0f97ba3ff4368aa71eb4a1974e27aa06cfa7d3933a0195993e7"
     );
+}
+
+#[test]
+fn governed_evidence_rules_and_recovery_are_admitted_and_resolved() {
+    let pack = compile("governed.yaml", &governed_pack());
+    assert_eq!(pack.evidence().version, 1);
+    assert_eq!(pack.evidence().features.len(), 2);
+    let rule = semantic_decision_contracts::RuleCode::new("rule.process.available").unwrap();
+    assert_eq!(
+        pack.rule_explanation(&rule).unwrap().message_key.as_str(),
+        "process.available"
+    );
+    let option = semantic_decision_contracts::MessageKey::new("recovery.select_process").unwrap();
+    assert_eq!(
+        pack.feedback_option(&option)
+            .unwrap()
+            .candidate_id
+            .as_ref()
+            .unwrap()
+            .as_str(),
+        "process.start"
+    );
+}
+
+#[test]
+fn evidence_policy_refuses_unknown_invalid_dangling_and_contradictory_data() {
+    let cases = [
+        governed_pack().replace("weight_millis: 4000", "weight_millis: 0"),
+        governed_pack().replace("candidate_id: process.start", "candidate_id: process.missing"),
+        governed_pack().replace(
+            "- { candidate_id: process.start, lane: governed_exact, effect: require }",
+            "- { candidate_id: process.start, lane: governed_exact, effect: require }\n    - { candidate_id: process.start, lane: governed_exact, effect: forbid }",
+        ),
+        governed_pack().replace("next_options: []", "next_options: [recovery.select_process]"),
+        governed_pack().replace(
+            "feedback_options: [recovery.select_process]",
+            "feedback_options: [recovery.missing]",
+        ),
+    ];
+    for invalid in cases {
+        assert!(admit_pack(PackBytes::new("invalid-governance.yaml", invalid)).is_err());
+    }
+
+    let unknown = governed_pack().replace("governed_exact", "host_private_feature");
+    let error = parse_pack(PackBytes::new("unknown-feature.yaml", unknown)).unwrap_err();
+    assert!(error.message.contains("unknown variant"));
 }
 
 #[test]

@@ -7,8 +7,9 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     CapabilityId, CapabilitySource, ConfigValue, DeclarationSource, DependencySource,
-    DomainIdentity, GraphNodeId, GraphNodeSource, GraphSource, IdentityNamespace, PackDocument,
-    PackIdentity, PackPolicySource, ProvenanceSource,
+    DomainIdentity, EvidencePolicySource, FeedbackOptionSource, GraphNodeId, GraphNodeSource,
+    GraphSource, IdentityNamespace, PackDocument, PackIdentity, PackPolicySource, ProvenanceSource,
+    RuleExplanationSource,
 };
 
 /// SHA-256 of exact input bytes.
@@ -164,6 +165,48 @@ impl CompiledPack {
     #[must_use]
     pub fn policy(&self) -> &PackPolicySource {
         &self.document.policy
+    }
+
+    /// Versioned, canonically ordered evidence and fusion policy.
+    #[must_use]
+    pub fn evidence(&self) -> &EvidencePolicySource {
+        &self.document.evidence
+    }
+
+    /// Canonically ordered governed rule explanations.
+    #[must_use]
+    pub fn rule_explanations(&self) -> &[RuleExplanationSource] {
+        &self.document.rule_explanations
+    }
+
+    /// Resolve one governed rule explanation by stable rule code.
+    #[must_use]
+    pub fn rule_explanation(
+        &self,
+        code: &semantic_decision_contracts::RuleCode,
+    ) -> Option<&RuleExplanationSource> {
+        self.document
+            .rule_explanations
+            .iter()
+            .find(|explanation| &explanation.rule_code == code)
+    }
+
+    /// Canonically ordered governed feedback options.
+    #[must_use]
+    pub fn feedback_options(&self) -> &[FeedbackOptionSource] {
+        &self.document.feedback_options
+    }
+
+    /// Resolve one governed feedback option by stable identity.
+    #[must_use]
+    pub fn feedback_option(
+        &self,
+        id: &semantic_decision_contracts::MessageKey,
+    ) -> Option<&FeedbackOptionSource> {
+        self.document
+            .feedback_options
+            .iter()
+            .find(|option| &option.id == id)
     }
 
     /// Bounded, namespaced pack-level configuration.

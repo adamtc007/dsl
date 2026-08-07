@@ -723,6 +723,29 @@ pub enum EvidenceLane {
     Lexical,
     Embedding,
     CandleCrossEncoder,
+    TypedArgument,
+    GraphLocality,
+    StructuralCompletion,
+    History,
+    Correction,
+    Abstention,
+}
+
+impl EvidenceLane {
+    /// Closed host-neutral evidence vocabulary in canonical order.
+    pub const ALL: [Self; 11] = [
+        Self::GovernedExact,
+        Self::DeterministicGrammar,
+        Self::Lexical,
+        Self::Embedding,
+        Self::CandleCrossEncoder,
+        Self::TypedArgument,
+        Self::GraphLocality,
+        Self::StructuralCompletion,
+        Self::History,
+        Self::Correction,
+        Self::Abstention,
+    ];
 }
 
 /// Finite score wrapper.

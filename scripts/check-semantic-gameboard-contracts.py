@@ -27,9 +27,9 @@ def run(command, *, cwd=ROOT, check=True):
     )
 
 
-def api_surface(extra):
+def api_surface(package, extra):
     output = run(
-        ["cargo", "public-api", "-p", "semantic-decision-contracts", "-sss", *extra]
+        ["cargo", "public-api", "-p", package, "-sss", *extra]
     ).stdout.encode()
     return {"items": len(output.splitlines()), "sha256": hashlib.sha256(output).hexdigest()}
 
@@ -37,8 +37,8 @@ def api_surface(extra):
 def check_public_api():
     baseline = json.loads(BASELINE.read_text())
     observed = {
-        "default": api_surface([]),
-        "all_features": api_surface(["--all-features"]),
+        "default": api_surface("semantic-decision-contracts", []),
+        "all_features": api_surface("semantic-decision-contracts", ["--all-features"]),
     }
     if observed != baseline["surfaces"]:
         raise SystemExit(
@@ -48,7 +48,19 @@ def check_public_api():
         )
     if observed["default"] != observed["all_features"]:
         raise SystemExit("test/tooling features changed the production public surface")
-    return observed
+    pack_observed = {
+        "default": api_surface("semantic-pack", []),
+        "all_features": api_surface("semantic-pack", ["--all-features"]),
+    }
+    if pack_observed != baseline["semantic_pack_surfaces"]:
+        raise SystemExit(
+            "semantic-pack public API drift; name the real consumer, facade, stability "
+            f"contract and reason before updating the snapshot:\nexpected={baseline['semantic_pack_surfaces']}\n"
+            f"observed={pack_observed}"
+        )
+    if pack_observed["default"] != pack_observed["all_features"]:
+        raise SystemExit("semantic-pack tooling features changed its production public surface")
+    return {"semantic_decision_contracts": observed, "semantic_pack": pack_observed}
 
 
 def check_facade_shape():

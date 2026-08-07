@@ -76,12 +76,53 @@ fn normalize(document: &mut PackDocument) -> Result<(), PackCompileError> {
         capability.positive_examples.dedup();
         capability.negative_contrasts.sort();
         capability.negative_contrasts.dedup();
+        capability
+            .evidence_cues
+            .sort_by_key(|cue| (cue.lane, cue.score_millis));
+        for cue in &mut capability.evidence_cues {
+            cue.cues.sort();
+            cue.cues.dedup();
+        }
+        capability.feedback_options.sort();
+        capability.feedback_options.dedup();
+        for argument in &mut capability.arguments {
+            argument.feedback_options.sort();
+            argument.feedback_options.dedup();
+        }
         capability.aliases.sort();
         capability.aliases.dedup();
     }
     document
         .capabilities
         .sort_by(|left, right| left.id.cmp(&right.id));
+    document
+        .evidence
+        .features
+        .sort_by_key(|feature| feature.lane);
+    document
+        .evidence
+        .deterministic_gates
+        .sort_by(|left, right| {
+            (&left.candidate_id, left.lane, left.effect).cmp(&(
+                &right.candidate_id,
+                right.lane,
+                right.effect,
+            ))
+        });
+    document
+        .rule_explanations
+        .sort_by(|left, right| left.rule_code.cmp(&right.rule_code));
+    for explanation in &mut document.rule_explanations {
+        explanation.feedback_options.sort();
+        explanation.feedback_options.dedup();
+    }
+    document
+        .feedback_options
+        .sort_by(|left, right| left.id.cmp(&right.id));
+    for option in &mut document.feedback_options {
+        option.next_options.sort();
+        option.next_options.dedup();
+    }
     document
         .policy
         .roles

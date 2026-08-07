@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use semantic_decision_contracts::PhraseRole;
+use semantic_decision_contracts::{EvidenceLane, MessageKey, PhraseRole, RuleCode};
 use sha2::{Digest, Sha256};
 
 use crate::{
@@ -149,6 +149,7 @@ pub fn validate_pack(document: PackDocument) -> Result<ValidatedPack, PackValida
     validate_declarations(&mut validator);
     validate_capabilities(&mut validator);
     validate_policy(&mut validator);
+    validate_evidence_and_governed_resources(&mut validator);
     validate_graph(&mut validator);
     validate_extensions(&mut validator);
     if validator.diagnostics.is_empty() {
@@ -278,6 +279,25 @@ fn validate_capabilities(validator: &mut Validator<'_>) {
         .iter()
         .cloned()
         .collect();
+    let declared_lanes = validator
+        .document
+        .evidence
+        .features
+        .iter()
+        .map(|feature| feature.lane)
+        .collect::<BTreeSet<_>>();
+    let rule_codes = validator
+        .document
+        .rule_explanations
+        .iter()
+        .map(|explanation| explanation.rule_code.clone())
+        .collect::<BTreeSet<_>>();
+    let feedback_ids = validator
+        .document
+        .feedback_options
+        .iter()
+        .map(|option| option.id.clone())
+        .collect::<BTreeSet<_>>();
     let mut aliases: BTreeMap<String, String> = BTreeMap::new();
     let mut phrases: BTreeMap<String, String> = BTreeMap::new();
     for (index, capability) in validator.document.capabilities.iter().enumerate() {
@@ -355,7 +375,59 @@ fn validate_capabilities(validator: &mut Validator<'_>) {
                     _ => {}
                 }
             }
+            validate_governed_requirement(
+                validator,
+                &path,
+                argument.requirement_rule.as_ref(),
+                &argument.feedback_options,
+                &rule_codes,
+                &feedback_ids,
+            );
         }
+        duplicates(
+            validator,
+            &format!("{base}.evidence_cues"),
+            capability
+                .evidence_cues
+                .iter()
+                .map(|cue| format!("{:?}", cue.lane)),
+        );
+        for (cue_index, cue) in capability.evidence_cues.iter().enumerate() {
+            let path = format!("{base}.evidence_cues[{cue_index}]");
+            if !declared_lanes.contains(&cue.lane) {
+                validator.push(
+                    DiagnosticCode::MissingReference,
+                    format!("{path}.lane"),
+                    "cue references an undeclared evidence feature",
+                );
+            }
+            if cue.score_millis == 0 || !(-1000..=1000).contains(&cue.score_millis) {
+                validator.push(
+                    DiagnosticCode::InvalidEvidence,
+                    format!("{path}.score_millis"),
+                    "cue score must be non-zero and within [-1000, 1000]",
+                );
+            }
+            if cue.cues.is_empty() {
+                validator.push(
+                    DiagnosticCode::InvalidEvidence,
+                    format!("{path}.cues"),
+                    "evidence cue set must not be empty",
+                );
+            }
+            duplicates(validator, &format!("{path}.cues"), cue.cues.iter().cloned());
+            for (text_index, text) in cue.cues.iter().enumerate() {
+                validator.text(&format!("{path}.cues[{text_index}]"), text);
+            }
+        }
+        validate_governed_requirement(
+            validator,
+            &base,
+            capability.applicability_rule.as_ref(),
+            &capability.feedback_options,
+            &rule_codes,
+            &feedback_ids,
+        );
         for (alias_index, alias) in capability.aliases.iter().enumerate() {
             if ids.contains(alias) {
                 validator.push(
@@ -437,6 +509,254 @@ fn validate_capabilities(validator: &mut Validator<'_>) {
             &capability.extensions,
         );
     }
+}
+
+fn validate_governed_requirement(
+    validator: &mut Validator<'_>,
+    base: &str,
+    rule: Option<&RuleCode>,
+    feedback: &[MessageKey],
+    rule_codes: &BTreeSet<RuleCode>,
+    feedback_ids: &BTreeSet<MessageKey>,
+) {
+    if rule.is_some() == feedback.is_empty() {
+        validator.push(
+            DiagnosticCode::InvalidRecovery,
+            base,
+            "a governed requirement must declare both a rule and at least one feedback option",
+        );
+    }
+    if rule.is_some_and(|code| !rule_codes.contains(code)) {
+        validator.push(
+            DiagnosticCode::MissingReference,
+            base,
+            "governed requirement references an unknown rule",
+        );
+    }
+    for option in feedback {
+        if !feedback_ids.contains(option) {
+            validator.push(
+                DiagnosticCode::MissingReference,
+                base,
+                format!(
+                    "governed requirement references unknown feedback option `{}`",
+                    option.as_str()
+                ),
+            );
+        }
+    }
+}
+
+fn validate_evidence_and_governed_resources(validator: &mut Validator<'_>) {
+    let evidence = &validator.document.evidence;
+    if !evidence.is_empty() && evidence.version != 1 {
+        validator.push(
+            DiagnosticCode::UnsupportedVersion,
+            "$.evidence.version",
+            "unsupported evidence policy version; expected 1",
+        );
+    }
+    if evidence.features.len() > EvidenceLane::ALL.len() {
+        validator.push(
+            DiagnosticCode::ResourceLimit,
+            "$.evidence.features",
+            "evidence feature count exceeds the closed lane vocabulary",
+        );
+    }
+    duplicates(
+        validator,
+        "$.evidence.features",
+        evidence
+            .features
+            .iter()
+            .map(|feature| format!("{:?}", feature.lane)),
+    );
+    let lanes = evidence
+        .features
+        .iter()
+        .map(|feature| feature.lane)
+        .collect::<BTreeSet<_>>();
+    for (index, feature) in evidence.features.iter().enumerate() {
+        if !(1..=100_000).contains(&feature.weight_millis) {
+            validator.push(
+                DiagnosticCode::InvalidEvidence,
+                format!("$.evidence.features[{index}].weight_millis"),
+                "fusion weight must be within [1, 100000]",
+            );
+        }
+    }
+
+    let capability_ids = validator
+        .document
+        .capabilities
+        .iter()
+        .map(|capability| capability.id.clone())
+        .collect::<BTreeSet<_>>();
+    let mut gates = BTreeMap::new();
+    for (index, gate) in evidence.deterministic_gates.iter().enumerate() {
+        let path = format!("$.evidence.deterministic_gates[{index}]");
+        if !capability_ids.contains(&gate.candidate_id) {
+            validator.push(
+                DiagnosticCode::MissingReference,
+                format!("{path}.candidate_id"),
+                "deterministic gate references an unknown capability",
+            );
+        }
+        if !lanes.contains(&gate.lane) {
+            validator.push(
+                DiagnosticCode::MissingReference,
+                format!("{path}.lane"),
+                "deterministic gate references an undeclared evidence feature",
+            );
+        }
+        let key = (gate.candidate_id.clone(), gate.lane);
+        if let Some(previous) = gates.insert(key, gate.effect) {
+            let message = if previous == gate.effect {
+                "duplicate deterministic gate"
+            } else {
+                "contradictory deterministic gates"
+            };
+            validator.push(DiagnosticCode::InvalidEvidence, path, message);
+        }
+    }
+
+    duplicates(
+        validator,
+        "$.rule_explanations",
+        validator
+            .document
+            .rule_explanations
+            .iter()
+            .map(|explanation| explanation.rule_code.as_str().to_owned()),
+    );
+    let rule_codes = validator
+        .document
+        .rule_explanations
+        .iter()
+        .map(|explanation| explanation.rule_code.clone())
+        .collect::<BTreeSet<_>>();
+    let feedback_ids = validator
+        .document
+        .feedback_options
+        .iter()
+        .map(|option| option.id.clone())
+        .collect::<BTreeSet<_>>();
+    for (index, explanation) in validator.document.rule_explanations.iter().enumerate() {
+        let base = format!("$.rule_explanations[{index}]");
+        validator.text(&format!("{base}.message"), &explanation.message);
+        duplicates(
+            validator,
+            &format!("{base}.feedback_options"),
+            explanation
+                .feedback_options
+                .iter()
+                .map(|option| option.as_str().to_owned()),
+        );
+        for option in &explanation.feedback_options {
+            if !feedback_ids.contains(option) {
+                validator.push(
+                    DiagnosticCode::MissingReference,
+                    format!("{base}.feedback_options"),
+                    format!(
+                        "rule references unknown feedback option `{}`",
+                        option.as_str()
+                    ),
+                );
+            }
+        }
+    }
+
+    duplicates(
+        validator,
+        "$.feedback_options",
+        validator
+            .document
+            .feedback_options
+            .iter()
+            .map(|option| option.id.as_str().to_owned()),
+    );
+    let mut adjacency = BTreeMap::<MessageKey, Vec<MessageKey>>::new();
+    for (index, option) in validator.document.feedback_options.iter().enumerate() {
+        let base = format!("$.feedback_options[{index}]");
+        validator.text(&format!("{base}.prompt"), &option.prompt);
+        if !rule_codes.contains(&option.rule_code) {
+            validator.push(
+                DiagnosticCode::MissingReference,
+                format!("{base}.rule_code"),
+                "feedback option references an unknown rule",
+            );
+        }
+        if option
+            .candidate_id
+            .as_ref()
+            .is_some_and(|candidate| !capability_ids.contains(candidate))
+        {
+            validator.push(
+                DiagnosticCode::MissingReference,
+                format!("{base}.candidate_id"),
+                "feedback option references an unknown capability",
+            );
+        }
+        duplicates(
+            validator,
+            &format!("{base}.next_options"),
+            option
+                .next_options
+                .iter()
+                .map(|next| next.as_str().to_owned()),
+        );
+        for next in &option.next_options {
+            if !feedback_ids.contains(next) {
+                validator.push(
+                    DiagnosticCode::MissingReference,
+                    format!("{base}.next_options"),
+                    format!(
+                        "feedback option references unknown successor `{}`",
+                        next.as_str()
+                    ),
+                );
+            }
+        }
+        adjacency.insert(option.id.clone(), option.next_options.clone());
+    }
+    if contains_feedback_cycle(&adjacency) {
+        validator.push(
+            DiagnosticCode::InvalidRecovery,
+            "$.feedback_options",
+            "feedback option links must be acyclic",
+        );
+    }
+}
+
+fn contains_feedback_cycle(adjacency: &BTreeMap<MessageKey, Vec<MessageKey>>) -> bool {
+    fn visit<'a>(
+        node: &'a MessageKey,
+        adjacency: &'a BTreeMap<MessageKey, Vec<MessageKey>>,
+        visiting: &mut BTreeSet<&'a MessageKey>,
+        complete: &mut BTreeSet<&'a MessageKey>,
+    ) -> bool {
+        if complete.contains(node) {
+            return false;
+        }
+        if !visiting.insert(node) {
+            return true;
+        }
+        if adjacency.get(node).is_some_and(|next| {
+            next.iter()
+                .any(|child| visit(child, adjacency, visiting, complete))
+        }) {
+            return true;
+        }
+        visiting.remove(node);
+        complete.insert(node);
+        false
+    }
+
+    let mut visiting = BTreeSet::new();
+    let mut complete = BTreeSet::new();
+    adjacency
+        .keys()
+        .any(|node| visit(node, adjacency, &mut visiting, &mut complete))
 }
 
 fn validate_policy(validator: &mut Validator<'_>) {

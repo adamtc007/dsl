@@ -1,6 +1,9 @@
 use std::collections::BTreeMap;
 
-use semantic_decision_contracts::{ActionClass, ArgumentKind, HarmClass, PhraseRole};
+use semantic_decision_contracts::{
+    ActionClass, ArgumentKind, DisclosureClass, EvidenceLane, FeedbackOptionKind, HarmClass,
+    MessageKey, PhraseRole, RuleCode,
+};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
@@ -65,6 +68,15 @@ pub struct PackDocument {
     /// Declarative ambiguity, abstention and role policy.
     #[serde(default)]
     pub policy: PackPolicySource,
+    /// Versioned evidence lanes, fusion weights and deterministic gates.
+    #[serde(default, skip_serializing_if = "EvidencePolicySource::is_empty")]
+    pub evidence: EvidencePolicySource,
+    /// Governed rule explanations addressable by stable rule code.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub rule_explanations: Vec<RuleExplanationSource>,
+    /// Governed recovery actions linked from rules and capability requirements.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub feedback_options: Vec<FeedbackOptionSource>,
     /// Bounded namespaced data not yet promoted to the core schema.
     #[serde(default)]
     pub extensions: BTreeMap<String, ConfigValue>,
@@ -141,6 +153,15 @@ pub struct CapabilitySource {
     pub positive_examples: Vec<String>,
     #[serde(default)]
     pub negative_contrasts: Vec<NegativeContrastSource>,
+    /// Pack-owned operation cues contributing bounded evidence.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub evidence_cues: Vec<EvidenceCueSource>,
+    /// Governed rule used when this capability is inapplicable.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub applicability_rule: Option<RuleCode>,
+    /// Governed recoveries permitted after an applicability refusal.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub feedback_options: Vec<MessageKey>,
     pub risk: HarmClass,
     #[serde(default)]
     pub aliases: Vec<CapabilityId>,
@@ -162,6 +183,105 @@ pub struct ArgumentSource {
     pub default: Option<ConfigValue>,
     #[serde(default)]
     pub constraints: Vec<ArgumentConstraint>,
+    /// Governed rule used when a required argument is absent or invalid.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub requirement_rule: Option<RuleCode>,
+    /// Governed recoveries permitted for this argument requirement.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub feedback_options: Vec<MessageKey>,
+}
+
+/// One bounded pack-owned cue for a capability and evidence lane.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct EvidenceCueSource {
+    pub lane: EvidenceLane,
+    /// Signed support in thousandths, constrained to `[-1000, 1000]`.
+    pub score_millis: i32,
+    pub cues: Vec<String>,
+}
+
+/// Versioned evidence fusion declaration.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct EvidencePolicySource {
+    pub version: u32,
+    #[serde(default)]
+    pub features: Vec<EvidenceFeatureSource>,
+    #[serde(default)]
+    pub deterministic_gates: Vec<EvidenceGateSource>,
+}
+
+impl EvidencePolicySource {
+    pub(crate) fn is_empty(&self) -> bool {
+        self.features.is_empty() && self.deterministic_gates.is_empty()
+    }
+}
+
+impl Default for EvidencePolicySource {
+    fn default() -> Self {
+        Self {
+            version: 1,
+            features: Vec::new(),
+            deterministic_gates: Vec::new(),
+        }
+    }
+}
+
+/// One declared evidence feature and hand-ratified fusion weight.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct EvidenceFeatureSource {
+    pub lane: EvidenceLane,
+    /// Non-zero fusion weight in thousandths, bounded by admission.
+    pub weight_millis: i32,
+}
+
+/// Closed deterministic gate effect. Gates constrain evidence disposition only;
+/// compiler legality remains outside this contract.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum EvidenceGateEffect {
+    Require,
+    Forbid,
+}
+
+/// Candidate-scoped deterministic evidence gate.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct EvidenceGateSource {
+    pub candidate_id: CapabilityId,
+    pub lane: EvidenceLane,
+    pub effect: EvidenceGateEffect,
+}
+
+/// Governed rule wording and its permitted recovery links.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct RuleExplanationSource {
+    pub rule_code: RuleCode,
+    pub message_key: MessageKey,
+    pub message: String,
+    pub disclosure: DisclosureClass,
+    #[serde(default)]
+    pub feedback_options: Vec<MessageKey>,
+}
+
+/// Governed feedback/recovery declaration. Dynamic legal move identities are
+/// resolved by the application from the optional capability reference.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct FeedbackOptionSource {
+    pub id: MessageKey,
+    pub rule_code: RuleCode,
+    pub kind: FeedbackOptionKind,
+    pub prompt_key: MessageKey,
+    pub prompt: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub candidate_id: Option<CapabilityId>,
+    pub disclosure: DisclosureClass,
+    #[serde(default)]
+    pub next_options: Vec<MessageKey>,
 }
 
 /// Closed declarative argument validation constraint.

@@ -33,10 +33,12 @@ pub use registry::{InMemoryPackRegistry, PackRegistry};
 pub use source::{
     AbstentionSource, ArgumentConstraint, ArgumentSource, CapabilitySelectorSource,
     CapabilitySource, ConfigValue, DeclarationSource, DependencySource, DeprecationSource,
-    EligibilityDefault, EligibilityPolicySource, GraphEdgeSource, GraphNodeSource, GraphSource,
-    PackBytes, PackDocument, PackMetadataSource, PackPolicySource, PackRequest, PackSource,
-    PhraseAmbiguityPolicy, PrivilegeGrantSource, ProvenanceSource, RoleGrantSource,
-    RoleSelectorSource, TerminalDisposition,
+    EligibilityDefault, EligibilityPolicySource, EvidenceCueSource, EvidenceFeatureSource,
+    EvidenceGateEffect, EvidenceGateSource, EvidencePolicySource, FeedbackOptionSource,
+    GraphEdgeSource, GraphNodeSource, GraphSource, PackBytes, PackDocument, PackMetadataSource,
+    PackPolicySource, PackRequest, PackSource, PhraseAmbiguityPolicy, PrivilegeGrantSource,
+    ProvenanceSource, RoleGrantSource, RoleSelectorSource, RuleExplanationSource,
+    TerminalDisposition,
 };
 pub use validate::{parse_pack, validate_pack, ValidatedPack};
 

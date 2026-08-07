@@ -1,13 +1,23 @@
 {
   "schema_version": 1,
-  "surfaces": {
+  "semantic_pack_surfaces": {
     "all_features": {
-      "items": 751,
-      "sha256": "a651180d2fe3b7386228b1f31715a750b311e5cf8324b68c4f7eb6744c236e81"
+      "items": 492,
+      "sha256": "d2ba343936842f2a045b50d72b0e00ff7b023c1e8b4a93600d5c09cf3e340a6d"
     },
     "default": {
-      "items": 751,
-      "sha256": "a651180d2fe3b7386228b1f31715a750b311e5cf8324b68c4f7eb6744c236e81"
+      "items": 492,
+      "sha256": "d2ba343936842f2a045b50d72b0e00ff7b023c1e8b4a93600d5c09cf3e340a6d"
+    }
+  },
+  "surfaces": {
+    "all_features": {
+      "items": 759,
+      "sha256": "a686e0f1a49a78c87c801374af770c58b2ea749c8b193e34991268c2c851e100"
+    },
+    "default": {
+      "items": 759,
+      "sha256": "a686e0f1a49a78c87c801374af770c58b2ea749c8b193e34991268c2c851e100"
     }
   }
 }
