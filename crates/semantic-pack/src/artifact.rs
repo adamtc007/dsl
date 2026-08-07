@@ -8,8 +8,8 @@ use serde::{Deserialize, Serialize};
 use crate::{
     CapabilityId, CapabilitySource, ConfigValue, DeclarationSource, DependencySource,
     DomainIdentity, EvidencePolicySource, FeedbackOptionSource, GraphNodeId, GraphNodeSource,
-    GraphSource, IdentityNamespace, PackDocument, PackIdentity, PackPolicySource, ProvenanceSource,
-    RuleExplanationSource,
+    GraphSource, IdentityNamespace, MotifSource, PackDocument, PackIdentity, PackPolicySource,
+    ProvenanceSource, RuleExplanationSource,
 };
 
 /// SHA-256 of exact input bytes.
@@ -171,6 +171,12 @@ impl CompiledPack {
     #[must_use]
     pub fn evidence(&self) -> &EvidencePolicySource {
         &self.document.evidence
+    }
+
+    /// Canonically ordered governed design motifs.
+    #[must_use]
+    pub fn motifs(&self) -> &[MotifSource] {
+        &self.document.motifs
     }
 
     /// Canonically ordered governed rule explanations.

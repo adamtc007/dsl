@@ -48,6 +48,15 @@ evidence:
     - { lane: typed_argument, weight_millis: 2500 }
   deterministic_gates:
     - { candidate_id: item.select, lane: governed_exact, effect: require }
+motifs:
+  - id: motif.item.select
+    version: 1
+    preconditions: [{ fact: graph.item.available, expected: true }]
+    completion_facts: [graph.item.selected]
+    likely_next_candidates: [item.select]
+    discriminating_contrasts: []
+    completion_conditions: [{ fact: graph.item.selected, expected: true }]
+    abandonment_conditions: [{ fact: graph.item.available, expected: false }]
 rule_explanations:
   - rule_code: rule.item.available
     message_key: item.available
@@ -96,6 +105,15 @@ fn assert_closed_references(pack: &semantic_pack::CompiledPack) {
         assert!(lanes.contains(&gate.lane));
         assert!(pack.capability(&gate.candidate_id).is_some());
     }
+    for motif in pack.motifs() {
+        for candidate in motif
+            .likely_next_candidates
+            .iter()
+            .chain(&motif.discriminating_contrasts)
+        {
+            assert!(pack.capability(candidate).is_some());
+        }
+    }
     for rule in pack.rule_explanations() {
         for option in &rule.feedback_options {
             assert!(pack.feedback_option(option).is_some());
@@ -127,7 +145,7 @@ fuzz_target!(|data: &[u8]| {
         observe(1, "hostile_refused");
     }
 
-    let selector = data.first().copied().unwrap_or_default() % 7;
+    let selector = data.first().copied().unwrap_or_default() % 10;
     let generated = match selector {
         0 => VALID.to_owned(),
         1 => VALID.replace("weight_millis: 4000", "weight_millis: 0"),
@@ -138,7 +156,13 @@ fuzz_target!(|data: &[u8]| {
             "- { candidate_id: item.select, lane: governed_exact, effect: require }",
             "- { candidate_id: item.select, lane: governed_exact, effect: require }\n    - { candidate_id: item.select, lane: governed_exact, effect: forbid }",
         ),
-        _ => VALID.replace("recovery.select_item]", "recovery.missing]"),
+        6 => VALID.replace("recovery.select_item]", "recovery.missing]"),
+        7 => VALID.replace("likely_next_candidates: [item.select]", "likely_next_candidates: [item.missing]"),
+        8 => VALID.replace("version: 1\n    preconditions", "version: 0\n    preconditions"),
+        _ => VALID.replace(
+            "{ fact: graph.item.available, expected: false }",
+            "{ fact: graph.item.selected, expected: true }",
+        ),
     };
     let admitted = admit_pack(PackBytes::new("generated.yaml", generated));
     if selector == 0 {

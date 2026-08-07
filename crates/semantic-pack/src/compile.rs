@@ -96,6 +96,23 @@ fn normalize(document: &mut PackDocument) -> Result<(), PackCompileError> {
         .capabilities
         .sort_by(|left, right| left.id.cmp(&right.id));
     document
+        .motifs
+        .sort_by(|left, right| left.id.cmp(&right.id));
+    for motif in &mut document.motifs {
+        motif.preconditions.sort();
+        motif.preconditions.dedup();
+        motif.completion_facts.sort();
+        motif.completion_facts.dedup();
+        motif.likely_next_candidates.sort();
+        motif.likely_next_candidates.dedup();
+        motif.discriminating_contrasts.sort();
+        motif.discriminating_contrasts.dedup();
+        motif.completion_conditions.sort();
+        motif.completion_conditions.dedup();
+        motif.abandonment_conditions.sort();
+        motif.abandonment_conditions.dedup();
+    }
+    document
         .evidence
         .features
         .sort_by_key(|feature| feature.lane);

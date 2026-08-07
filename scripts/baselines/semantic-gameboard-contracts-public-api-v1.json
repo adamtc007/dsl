@@ -2,12 +2,12 @@
   "schema_version": 1,
   "semantic_pack_surfaces": {
     "all_features": {
-      "items": 492,
-      "sha256": "d2ba343936842f2a045b50d72b0e00ff7b023c1e8b4a93600d5c09cf3e340a6d"
+      "items": 506,
+      "sha256": "076a80afaaca487acd687954b5b3535acdea1b52a2d4a5fc67d8f74494042a88"
     },
     "default": {
-      "items": 492,
-      "sha256": "d2ba343936842f2a045b50d72b0e00ff7b023c1e8b4a93600d5c09cf3e340a6d"
+      "items": 506,
+      "sha256": "076a80afaaca487acd687954b5b3535acdea1b52a2d4a5fc67d8f74494042a88"
     }
   },
   "surfaces": {

@@ -35,10 +35,10 @@ pub use source::{
     CapabilitySource, ConfigValue, DeclarationSource, DependencySource, DeprecationSource,
     EligibilityDefault, EligibilityPolicySource, EvidenceCueSource, EvidenceFeatureSource,
     EvidenceGateEffect, EvidenceGateSource, EvidencePolicySource, FeedbackOptionSource,
-    GraphEdgeSource, GraphNodeSource, GraphSource, PackBytes, PackDocument, PackMetadataSource,
-    PackPolicySource, PackRequest, PackSource, PhraseAmbiguityPolicy, PrivilegeGrantSource,
-    ProvenanceSource, RoleGrantSource, RoleSelectorSource, RuleExplanationSource,
-    TerminalDisposition,
+    GraphEdgeSource, GraphNodeSource, GraphSource, MotifFactPatternSource, MotifSource, PackBytes,
+    PackDocument, PackMetadataSource, PackPolicySource, PackRequest, PackSource,
+    PhraseAmbiguityPolicy, PrivilegeGrantSource, ProvenanceSource, RoleGrantSource,
+    RoleSelectorSource, RuleExplanationSource, TerminalDisposition,
 };
 pub use validate::{parse_pack, validate_pack, ValidatedPack};
 

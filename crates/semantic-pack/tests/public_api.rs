@@ -265,6 +265,38 @@ fn governed_evidence_rules_and_recovery_are_admitted_and_resolved() {
 }
 
 #[test]
+fn governed_motifs_are_canonical_and_reject_dangling_or_contradictory_shapes() {
+    let with_motif = governed_pack().replace(
+        "rule_explanations:\n",
+        r#"motifs:
+  - id: motif.process.start
+    version: 1
+    preconditions: [{ fact: graph.process.available, expected: true }]
+    completion_facts: [graph.process.started]
+    likely_next_candidates: [process.start]
+    discriminating_contrasts: [process.signal]
+    completion_conditions: [{ fact: graph.process.started, expected: true }]
+    abandonment_conditions: [{ fact: graph.process.available, expected: false }]
+rule_explanations:
+"#,
+    );
+    let pack = compile("motif.yaml", &with_motif);
+    assert_eq!(pack.motifs().len(), 1);
+    assert_eq!(pack.motifs()[0].id.as_str(), "motif.process.start");
+
+    for invalid in [
+        with_motif.replace("process.signal]", "process.missing]"),
+        with_motif.replace("version: 1", "version: 0"),
+        with_motif.replace(
+            "{ fact: graph.process.available, expected: false }",
+            "{ fact: graph.process.started, expected: true }",
+        ),
+    ] {
+        assert!(admit_pack(PackBytes::new("invalid-motif.yaml", invalid)).is_err());
+    }
+}
+
+#[test]
 fn evidence_policy_refuses_unknown_invalid_dangling_and_contradictory_data() {
     let cases = [
         governed_pack().replace("weight_millis: 4000", "weight_millis: 0"),

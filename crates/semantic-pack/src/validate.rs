@@ -148,6 +148,7 @@ pub fn validate_pack(document: PackDocument) -> Result<ValidatedPack, PackValida
     validate_metadata(&mut validator);
     validate_declarations(&mut validator);
     validate_capabilities(&mut validator);
+    validate_motifs(&mut validator);
     validate_policy(&mut validator);
     validate_evidence_and_governed_resources(&mut validator);
     validate_graph(&mut validator);
@@ -156,6 +157,92 @@ pub fn validate_pack(document: PackDocument) -> Result<ValidatedPack, PackValida
         Ok(ValidatedPack(document))
     } else {
         Err(PackValidationErrors::new(validator.diagnostics))
+    }
+}
+
+fn validate_motifs(validator: &mut Validator<'_>) {
+    const MAX_MOTIFS: usize = 128;
+    const MAX_MOTIF_ITEMS: usize = 64;
+    if validator.document.motifs.len() > MAX_MOTIFS {
+        validator.push(
+            DiagnosticCode::ResourceLimit,
+            "$.motifs",
+            "motif count exceeds 128",
+        );
+    }
+    let capability_ids = validator
+        .document
+        .capabilities
+        .iter()
+        .map(|capability| capability.id.clone())
+        .collect::<BTreeSet<_>>();
+    let mut ids = BTreeSet::new();
+    for (index, motif) in validator.document.motifs.iter().enumerate() {
+        let path = format!("$.motifs[{index}]");
+        if !ids.insert(motif.id.clone()) {
+            validator.push(
+                DiagnosticCode::InvalidEvidence,
+                format!("{path}.id"),
+                "duplicate motif identity",
+            );
+        }
+        if motif.version == 0 {
+            validator.push(
+                DiagnosticCode::UnsupportedVersion,
+                format!("{path}.version"),
+                "motif version must be positive",
+            );
+        }
+        if motif.preconditions.is_empty() || motif.likely_next_candidates.is_empty() {
+            validator.push(
+                DiagnosticCode::InvalidEvidence,
+                path.clone(),
+                "motif requires a precondition and likely next candidate",
+            );
+        }
+        for (name, count) in [
+            ("preconditions", motif.preconditions.len()),
+            ("completion_facts", motif.completion_facts.len()),
+            ("likely_next_candidates", motif.likely_next_candidates.len()),
+            (
+                "discriminating_contrasts",
+                motif.discriminating_contrasts.len(),
+            ),
+            ("completion_conditions", motif.completion_conditions.len()),
+            ("abandonment_conditions", motif.abandonment_conditions.len()),
+        ] {
+            if count > MAX_MOTIF_ITEMS {
+                validator.push(
+                    DiagnosticCode::ResourceLimit,
+                    format!("{path}.{name}"),
+                    "motif field exceeds 64 items",
+                );
+            }
+        }
+        for (name, candidates) in [
+            ("likely_next_candidates", &motif.likely_next_candidates),
+            ("discriminating_contrasts", &motif.discriminating_contrasts),
+        ] {
+            for candidate in candidates {
+                if !capability_ids.contains(candidate) {
+                    validator.push(
+                        DiagnosticCode::MissingReference,
+                        format!("{path}.{name}"),
+                        "motif references an unknown capability",
+                    );
+                }
+            }
+        }
+        let completion = motif.completion_conditions.iter().collect::<BTreeSet<_>>();
+        for abandonment in &motif.abandonment_conditions {
+            if completion.contains(abandonment) {
+                validator.push(
+                    DiagnosticCode::InvalidEvidence,
+                    format!("{path}.abandonment_conditions"),
+                    "completion and abandonment conditions contradict",
+                );
+            }
+        }
     }
 }
 

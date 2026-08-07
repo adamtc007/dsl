@@ -71,6 +71,9 @@ pub struct PackDocument {
     /// Versioned evidence lanes, fusion weights and deterministic gates.
     #[serde(default, skip_serializing_if = "EvidencePolicySource::is_empty")]
     pub evidence: EvidencePolicySource,
+    /// Governed, non-authoritative design motifs interpreted by application adapters.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub motifs: Vec<MotifSource>,
     /// Governed rule explanations addressable by stable rule code.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub rule_explanations: Vec<RuleExplanationSource>,
@@ -253,6 +256,34 @@ pub struct EvidenceGateSource {
     pub candidate_id: CapabilityId,
     pub lane: EvidenceLane,
     pub effect: EvidenceGateEffect,
+}
+
+/// One domain-neutral fact requirement supplied by an application graph adapter.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct MotifFactPatternSource {
+    pub fact: MessageKey,
+    pub expected: bool,
+}
+
+/// One governed, non-authoritative multi-move design hypothesis.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct MotifSource {
+    pub id: MessageKey,
+    pub version: u32,
+    #[serde(default)]
+    pub preconditions: Vec<MotifFactPatternSource>,
+    #[serde(default)]
+    pub completion_facts: Vec<MessageKey>,
+    #[serde(default)]
+    pub likely_next_candidates: Vec<CapabilityId>,
+    #[serde(default)]
+    pub discriminating_contrasts: Vec<CapabilityId>,
+    #[serde(default)]
+    pub completion_conditions: Vec<MotifFactPatternSource>,
+    #[serde(default)]
+    pub abandonment_conditions: Vec<MotifFactPatternSource>,
 }
 
 /// Governed rule wording and its permitted recovery links.

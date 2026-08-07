@@ -16,3 +16,15 @@ Date: 2026-08-07
 - Public API snapshots: `semantic-decision-contracts` is 759 items in default and
   all-features builds; `semantic-pack` is now permanently snapshotted at 492 items in
   both builds.
+
+## Phase 4 motif extension
+
+The reviewed Phase 4 consumer is BPMN-Lite's `utterance-engine` capability facade.
+`semantic-pack` now admits a bounded, domain-neutral `MotifSource` made from fact
+identities, boolean expectations and capability references. Its stability contract is
+canonical normalization, closed candidate references, positive versions, explicit
+completion/abandonment conditions and product-level resource limits. Application
+adapters own fact derivation and all domain vocabulary; motifs remain evidence and
+carry no legality or transition authority. The `semantic-pack` surface grows from 492
+to 506 items under both default and all-feature builds; the decision-contract surface
+is unchanged.
