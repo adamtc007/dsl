@@ -78,11 +78,35 @@ jobs:
       - run: cargo install cargo-fuzz --locked
       - name: Isolated bounded smoke
         working-directory: crates/semantic-decision-contracts/fuzz
+        shell: bash
         run: |
+          set +e
+          set -o pipefail
+          started="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           smoke_corpus="$(mktemp -d)/corpus"
           cp -R "corpus/${{ matrix.target }}" "$smoke_corpus"
+          log="smoke-log-${{ matrix.target }}.txt"
           cargo +nightly fuzz run "${{ matrix.target }}" "$smoke_corpus" -- \
-            -runs=256 -max_len=2048 -timeout=5
+            -runs=256 -max_len=2048 -timeout=5 2>&1 | tee "$log"
+          result=${PIPESTATUS[0]}
+          finished="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          python3 ../../../scripts/write-gameboard-fuzz-receipt.py \
+            --target "${{ matrix.target }}" --log "$log" \
+            --output "smoke-receipt-${{ matrix.target }}.json" \
+            --exit-code "$result" --runs-budget 256 --seconds-budget 0 \
+            --max-len 2048 --started-at "$started" --finished-at "$finished"
+          receipt_result=$?
+          if [ "$result" -ne 0 ]; then exit "$result"; fi
+          exit "$receipt_result"
+      - name: Upload smoke receipt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gameboard-contract-smoke-${{ matrix.target }}-${{ github.run_id }}
+          if-no-files-found: error
+          path: |
+            crates/semantic-decision-contracts/fuzz/smoke-receipt-${{ matrix.target }}.json
+            crates/semantic-decision-contracts/fuzz/smoke-log-${{ matrix.target }}.txt
 
   package:
     runs-on: ubuntu-latest

@@ -19,4 +19,7 @@ The gameboard kernel is deterministic over explicit inputs. It has no server, st
 network, clock, random identity or mutable-global dependency. Its six standalone fuzz
 targets decode hostile wire bytes, exercise structured operation tapes, canonicalize
 every admitted value and compare attempt outcomes with a compact independent reference
-model. Permanent findings and replay metadata live under `fuzz/regressions`.
+model. Attempt-outcome and disclosure-class observations are emitted as named semantic
+counters; PR and nightly jobs fail closed unless the seeded required counter sets are
+complete, and every independently budgeted target uploads its log and JSON receipt.
+Permanent findings and replay metadata live under `fuzz/regressions`.

@@ -1,5 +1,7 @@
 #![allow(dead_code)]
 
+use std::sync::atomic::{AtomicU16, Ordering};
+
 use arbitrary::Arbitrary;
 use semantic_decision_contracts::{
     ApplicabilityFact, ApplicabilityState, ArgumentKind, BoardPath, CanonicalCandidateId,
@@ -11,6 +13,43 @@ use semantic_decision_contracts::{
     RuleExplanationId, SnapshotIdentity, UnresolvedDimension, GAMEBOARD_SCHEMA_VERSION,
 };
 use serde::{de::DeserializeOwned, Serialize};
+
+static ATTEMPT_OUTCOME_COUNTERS: AtomicU16 = AtomicU16::new(0);
+static DISCLOSURE_CLASS_COUNTERS: AtomicU16 = AtomicU16::new(0);
+
+fn emit_once(counters: &AtomicU16, index: u8, category: &str, label: &str) {
+    let bit = 1_u16 << index;
+    if counters.fetch_or(bit, Ordering::Relaxed) & bit == 0 {
+        eprintln!("semantic-counter {category}={label}");
+    }
+}
+
+pub fn observe_attempt_outcome(receipt: &MoveAttemptReceipt) {
+    let (index, label) = match receipt.outcome() {
+        MoveAttemptOutcome::Applied => (0, "applied"),
+        MoveAttemptOutcome::Incomplete => (1, "incomplete"),
+        MoveAttemptOutcome::Ambiguous => (2, "ambiguous"),
+        MoveAttemptOutcome::Inapplicable => (3, "inapplicable"),
+        MoveAttemptOutcome::DisclosureSafeRefusal => (4, "disclosure_safe_refusal"),
+        MoveAttemptOutcome::Stale => (5, "stale"),
+        MoveAttemptOutcome::CompilerRefused => (6, "compiler_refused"),
+        MoveAttemptOutcome::RejectedByUser => (7, "rejected_by_user"),
+        MoveAttemptOutcome::Corrected => (8, "corrected"),
+        MoveAttemptOutcome::SystemFailure => (9, "system_failure"),
+    };
+    emit_once(&ATTEMPT_OUTCOME_COUNTERS, index, "attempt_outcome", label);
+}
+
+pub fn observe_disclosure_class(disclosure: DisclosureClass) {
+    let (index, label) = match disclosure {
+        DisclosureClass::Public => (0, "public"),
+        DisclosureClass::Authenticated => (1, "authenticated"),
+        DisclosureClass::Restricted => (2, "restricted"),
+        DisclosureClass::PolicyHidden => (3, "policy_hidden"),
+        DisclosureClass::Technical => (4, "technical"),
+    };
+    emit_once(&DISCLOSURE_CLASS_COUNTERS, index, "disclosure_class", label);
+}
 
 #[derive(Debug)]
 pub struct ContractTape<'a> {
@@ -62,7 +101,11 @@ fn text(tape: &ContractTape<'_>, fallback: &str) -> String {
         .filter(|character| !character.is_control())
         .take(32)
         .collect::<String>();
-    if value.is_empty() { fallback.to_string() } else { value }
+    if value.is_empty() {
+        fallback.to_string()
+    } else {
+        value
+    }
 }
 
 fn digest(seed: u8) -> String {
@@ -75,9 +118,9 @@ pub fn graph_hash(seed: u8) -> GraphContentHash {
 
 pub fn legal_move(tape: &ContractTape<'_>) -> LegalMove {
     let required = tape.flags & 1 != 0;
-    let value = (!required).then_some(semantic_decision_contracts::SlotValue::Identifier(
-        text(tape, "value"),
-    ));
+    let value = (!required).then_some(semantic_decision_contracts::SlotValue::Identifier(text(
+        tape, "value",
+    )));
     let provenance = value.as_ref().map(|_| "fuzz.explicit".to_string());
     let argument = MoveArgument::new(
         "argument",
