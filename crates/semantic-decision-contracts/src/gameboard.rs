@@ -1735,7 +1735,9 @@ impl GameDisposition {
             }
         }
         if let Some(receipt) = &attempt_receipt {
-            if receipt.position_id() != position.state_id() {
+            if kind != GameDispositionKind::OfferCorrection
+                && receipt.position_id() != position.state_id()
+            {
                 return Err(GameboardContractError::InvalidContract {
                     contract: "game disposition",
                     reason: "attempt receipt belongs to a different position".to_string(),
@@ -4313,6 +4315,25 @@ mod tests {
 
         let off_board = LegalMoveId::new(digest('f')).unwrap();
         assert!(GameDisposition::propose_move(&position, off_board).is_err());
+        let retained_attempt = MoveAttemptReceipt::new(
+            GAMEBOARD_SCHEMA_VERSION,
+            MoveAttemptId::new("retained-prior-attempt").unwrap(),
+            DesignStateId::new(digest('e')).unwrap(),
+            None,
+            graph_hash('f'),
+            MoveAttemptOutcome::RejectedByUser,
+            Vec::new(),
+            Vec::new(),
+            None,
+            None,
+        )
+        .unwrap();
+        assert!(GameDisposition::offer_correction(
+            &position,
+            moves[..2].to_vec(),
+            retained_attempt,
+        )
+        .is_ok());
         let stale = position_with(
             "domain.example",
             vec!["root".to_string()],
