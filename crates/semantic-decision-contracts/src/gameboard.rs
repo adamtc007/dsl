@@ -3979,7 +3979,7 @@ pub struct GameTurnRecord {
     delta: Option<GraphDeltaPreview>,
     attempt: GameTurnAttempt,
     compiler_result: GameTurnCompilerResult,
-    corrections: Vec<MoveAttemptReceipt>,
+    related_attempts: Vec<MoveAttemptReceipt>,
     record_hash: GameTurnRecordHash,
 }
 
@@ -4003,7 +4003,7 @@ impl GameTurnRecord {
         delta: Option<GraphDeltaPreview>,
         attempt: GameTurnAttempt,
         compiler_result: GameTurnCompilerResult,
-        mut corrections: Vec<MoveAttemptReceipt>,
+        mut related_attempts: Vec<MoveAttemptReceipt>,
     ) -> Result<Self, GameboardContractError> {
         validate_schema(schema_version)?;
         evidence.sort_by(|left, right| left.move_id.cmp(&right.move_id));
@@ -4161,11 +4161,11 @@ impl GameTurnRecord {
             }
             _ => {}
         }
-        corrections.sort_by(|left, right| left.attempt_id.cmp(&right.attempt_id));
-        if corrections
+        related_attempts.sort_by(|left, right| left.attempt_id.cmp(&right.attempt_id));
+        if related_attempts
             .windows(2)
             .any(|pair| pair[0].attempt_id() == pair[1].attempt_id())
-            || corrections.iter().any(|receipt| {
+            || related_attempts.iter().any(|receipt| {
                 attempt
                     .receipt()
                     .is_some_and(|attempt| receipt.attempt_id() == attempt.attempt_id())
@@ -4173,30 +4173,20 @@ impl GameTurnRecord {
         {
             return Err(GameboardContractError::InvalidContract {
                 contract: "game turn record",
-                reason: "later correction attempts must have unique identities".to_string(),
+                reason: "related attempts must have unique identities".to_string(),
             });
         }
-        if corrections
-            .iter()
-            .any(|receipt| receipt.correction_of().is_none())
-        {
+        if !related_attempts.is_empty() && attempt.receipt().is_none() {
             return Err(GameboardContractError::InvalidContract {
                 contract: "game turn record",
-                reason: "a later correction/undo must link a retained earlier attempt".to_string(),
-            });
-        }
-        if !corrections.is_empty() && attempt.receipt().is_none() {
-            return Err(GameboardContractError::InvalidContract {
-                contract: "game turn record",
-                reason: "a turn without a terminal attempt cannot carry later corrections"
+                reason: "a turn without a terminal attempt cannot carry related attempt history"
                     .to_string(),
             });
         }
-        let history = attempt
-            .receipt()
+        let history = related_attempts
+            .iter()
             .cloned()
-            .into_iter()
-            .chain(corrections.iter().cloned())
+            .chain(attempt.receipt().cloned())
             .collect::<Vec<_>>();
         validate_attempt_history(&history)?;
 
@@ -4218,7 +4208,7 @@ impl GameTurnRecord {
             delta,
             attempt,
             compiler_result,
-            corrections,
+            related_attempts,
             record_hash: GameTurnRecordHash::new("0".repeat(64))?,
         };
         record.record_hash = record.canonical_hash()?;
@@ -4291,12 +4281,17 @@ impl GameTurnRecord {
                 value.evidence_hash().as_str().to_string(),
             )
         }))
-        .chain(self.corrections.iter().enumerate().map(|(index, value)| {
-            (
-                format!("correction.{index}"),
-                value.receipt_hash().as_str().to_string(),
-            )
-        }));
+        .chain(
+            self.related_attempts
+                .iter()
+                .enumerate()
+                .map(|(index, value)| {
+                    (
+                        format!("related_attempt.{index}"),
+                        value.receipt_hash().as_str().to_string(),
+                    )
+                }),
+        );
         GameTurnRecordHash::new(hash_fields("semantic-gameboard-turn-record-v1", fields))
     }
 
@@ -4351,8 +4346,9 @@ impl GameTurnRecord {
     pub fn compiler_result(&self) -> &GameTurnCompilerResult {
         &self.compiler_result
     }
-    pub fn corrections(&self) -> &[MoveAttemptReceipt] {
-        &self.corrections
+    /// Bounded retained history needed to validate correction links for this turn.
+    pub fn related_attempts(&self) -> &[MoveAttemptReceipt] {
+        &self.related_attempts
     }
     pub fn record_hash(&self) -> &GameTurnRecordHash {
         &self.record_hash
@@ -4383,7 +4379,7 @@ impl<'de> Deserialize<'de> for GameTurnRecord {
             delta: Option<GraphDeltaPreview>,
             attempt: GameTurnAttempt,
             compiler_result: GameTurnCompilerResult,
-            corrections: Vec<MoveAttemptReceipt>,
+            related_attempts: Vec<MoveAttemptReceipt>,
             record_hash: GameTurnRecordHash,
         }
         let wire = Wire::deserialize(deserializer)?;
@@ -4406,7 +4402,7 @@ impl<'de> Deserialize<'de> for GameTurnRecord {
             wire.delta,
             wire.attempt,
             wire.compiler_result,
-            wire.corrections,
+            wire.related_attempts,
         )
         .map_err(serde::de::Error::custom)?;
         if admitted.record_hash != record_hash {
@@ -5491,12 +5487,53 @@ mod tests {
         .unwrap();
         assert_eq!(proposal.attempt().kind(), GameTurnAttemptKind::NotAttempted);
         assert_eq!(proposal.attempt().receipt(), None);
-        assert!(proposal.corrections().is_empty());
+        assert!(proposal.related_attempts().is_empty());
         let encoded = serde_json::to_vec(&proposal).unwrap();
         assert_eq!(
             serde_json::from_slice::<GameTurnRecord>(&encoded).unwrap(),
             proposal
         );
+    }
+
+    #[test]
+    fn correction_turn_retains_the_prior_attempt_needed_by_its_link() {
+        let prior_turn = incomplete_game_turn();
+        let prior = prior_turn.attempt().receipt().unwrap().clone();
+        let current = MoveAttemptReceipt::new(
+            GAMEBOARD_SCHEMA_VERSION,
+            MoveAttemptId::new("attempt-correction").unwrap(),
+            prior_turn.position().state_id().clone(),
+            prior_turn.chosen_move().cloned(),
+            graph_hash('f'),
+            MoveAttemptOutcome::Corrected,
+            Vec::new(),
+            Vec::new(),
+            Some(prior.attempt_id().clone()),
+            Some(CorrectionKind::Replacement),
+        )
+        .unwrap();
+        let record = GameTurnRecord::new(
+            prior_turn.schema_version(),
+            prior_turn.session_id().clone(),
+            DesignTurnId::new("turn-correction").unwrap(),
+            prior_turn.sequence() + 1,
+            prior_turn.observed_at_epoch_ms() + 1,
+            prior_turn.semantic_family().clone(),
+            prior_turn.risk_class(),
+            graph_hash('e'),
+            prior_turn.position().clone(),
+            prior_turn.evidence().to_vec(),
+            prior_turn.belief().clone(),
+            GameDisposition::explain_attempt(prior_turn.position(), current.clone()).unwrap(),
+            GameTurnAnswer::not_observed(GameTurnAnswerAbsenceReason::NotRequested),
+            prior_turn.chosen_move().cloned(),
+            None,
+            GameTurnAttempt::terminal(current),
+            GameTurnCompilerResult::not_requested(),
+            vec![prior.clone()],
+        )
+        .unwrap();
+        assert_eq!(record.related_attempts(), &[prior]);
     }
 
     #[test]
@@ -5520,7 +5557,7 @@ mod tests {
             record.delta().cloned(),
             record.attempt().clone(),
             record.compiler_result().clone(),
-            record.corrections().to_vec(),
+            record.related_attempts().to_vec(),
         )
         .is_err());
 
@@ -5548,7 +5585,7 @@ mod tests {
             record.delta().cloned(),
             record.attempt().clone(),
             record.compiler_result().clone(),
-            record.corrections().to_vec(),
+            record.related_attempts().to_vec(),
         )
         .is_err());
     }
