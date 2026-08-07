@@ -6,7 +6,8 @@ use arbitrary::Arbitrary;
 use semantic_decision_contracts::{
     ApplicabilityFact, ApplicabilityState, ArgumentKind, BoardPath, CanonicalCandidateId,
     CorrectionKind, DesignBelief, DesignFocus, DesignPosition, DesignStateId, DisclosureClass,
-    FeedbackOption, FeedbackOptionKind, FiniteScore, FocusAbsenceReason, GameDomainId,
+    FeedbackOption, FeedbackOptionKind, FiniteScore, FocusAbsenceReason,
+    GameClarificationDimension, GameDisposition, GameDispositionKind, GameDomainId,
     GraphContentHash, GraphElementRef, GraphRevision, HistoryHash, LegalMove, LegalMoveId,
     MessageKey, MotifHypothesis, MoveArgument, MoveAttemptId, MoveAttemptOutcome,
     MoveAttemptReceipt, MoveProbability, ProducerIdentity, RuleCode, RuleExplanation,
@@ -16,6 +17,7 @@ use serde::{de::DeserializeOwned, Serialize};
 
 static ATTEMPT_OUTCOME_COUNTERS: AtomicU16 = AtomicU16::new(0);
 static DISCLOSURE_CLASS_COUNTERS: AtomicU16 = AtomicU16::new(0);
+static DISPOSITION_COUNTERS: AtomicU16 = AtomicU16::new(0);
 
 fn emit_once(counters: &AtomicU16, index: u8, category: &str, label: &str) {
     let bit = 1_u16 << index;
@@ -49,6 +51,22 @@ pub fn observe_disclosure_class(disclosure: DisclosureClass) {
         DisclosureClass::Technical => (4, "technical"),
     };
     emit_once(&DISCLOSURE_CLASS_COUNTERS, index, "disclosure_class", label);
+}
+
+pub fn observe_disposition(disposition: &GameDisposition) {
+    let (index, label) = match disposition.kind() {
+        GameDispositionKind::ProposeMove => (0, "propose_move"),
+        GameDispositionKind::ClarifyMoves => (1, "clarify_moves"),
+        GameDispositionKind::RequestMoveArguments => (2, "request_move_arguments"),
+        GameDispositionKind::ExplainAttempt => (3, "explain_attempt"),
+        GameDispositionKind::OfferRecoveryMoves => (4, "offer_recovery_moves"),
+        GameDispositionKind::OfferCorrection => (5, "offer_correction"),
+        GameDispositionKind::OutOfScope => (6, "out_of_scope"),
+        GameDispositionKind::ChangeFocusOrContext => (7, "change_focus_or_context"),
+        GameDispositionKind::Escalate => (8, "escalate"),
+        GameDispositionKind::CompoundPlan => (9, "compound_plan"),
+    };
+    emit_once(&DISPOSITION_COUNTERS, index, "game_disposition", label);
 }
 
 #[derive(Debug)]
@@ -175,6 +193,148 @@ pub fn position(tape: &ContractTape<'_>) -> DesignPosition {
         vec![legal_move(tape)],
     )
     .unwrap()
+}
+
+fn disposition_position(tape: &ContractTape<'_>) -> DesignPosition {
+    let mut moves = Vec::new();
+    for index in 0..3_u8 {
+        let argument = MoveArgument::new(
+            format!("argument-{index}"),
+            ArgumentKind::Identifier,
+            true,
+            None,
+            None,
+        )
+        .unwrap();
+        moves.push(
+            LegalMove::new(
+                GAMEBOARD_SCHEMA_VERSION,
+                CanonicalCandidateId::new(format!("candidate.{index}")).unwrap(),
+                GraphRevision::new("revision-fuzz").unwrap(),
+                false,
+                None,
+                vec![argument],
+                vec![ApplicabilityFact::new(
+                    RuleCode::new("rule.fuzz").unwrap(),
+                    ApplicabilityState::Applicable,
+                    None,
+                    "pack@fuzz",
+                )
+                .unwrap()],
+                None,
+            )
+            .unwrap(),
+        );
+    }
+    DesignPosition::new(
+        GAMEBOARD_SCHEMA_VERSION,
+        GameDomainId::new("domain.fuzz").unwrap(),
+        BoardPath::new(vec!["root".into(), "disposition".into()]).unwrap(),
+        SnapshotIdentity::new("snapshot-fuzz").unwrap(),
+        GraphRevision::new("revision-fuzz").unwrap(),
+        graph_hash(tape.flags),
+        "compiler-fuzz",
+        "policy-fuzz",
+        None,
+        DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+        HistoryHash::new(digest(tape.selector)).unwrap(),
+        moves,
+    )
+    .unwrap()
+}
+
+fn position_attempt(
+    position: &DesignPosition,
+    outcome: MoveAttemptOutcome,
+) -> MoveAttemptReceipt {
+    MoveAttemptReceipt::new(
+        GAMEBOARD_SCHEMA_VERSION,
+        MoveAttemptId::new(format!("disposition-{outcome:?}")).unwrap(),
+        position.state_id().clone(),
+        None,
+        graph_hash(21),
+        outcome,
+        Vec::new(),
+        Vec::new(),
+        None,
+        None,
+    )
+    .unwrap()
+}
+
+pub fn disposition(tape: &ContractTape<'_>) -> GameDisposition {
+    let position = disposition_position(tape);
+    let moves = position
+        .legal_moves()
+        .iter()
+        .map(|legal_move| legal_move.move_id().clone())
+        .collect::<Vec<_>>();
+    match tape.selector % 10 {
+        0 => GameDisposition::propose_move(&position, moves[0].clone()).unwrap(),
+        1 => GameDisposition::clarify_moves(
+            &position,
+            moves.clone(),
+            GameClarificationDimension::Move,
+            "governed clarification",
+            position_attempt(&position, MoveAttemptOutcome::Ambiguous),
+        )
+        .unwrap(),
+        2 => GameDisposition::request_move_arguments(
+            &position,
+            moves[0].clone(),
+            vec!["argument-0".into()],
+            "governed argument prompt",
+            position_attempt(&position, MoveAttemptOutcome::Incomplete),
+        )
+        .unwrap(),
+        3 => GameDisposition::explain_attempt(
+            &position,
+            position_attempt(&position, MoveAttemptOutcome::CompilerRefused),
+        )
+        .unwrap(),
+        4 => GameDisposition::offer_recovery_moves(
+            &position,
+            moves[..2].to_vec(),
+            position_attempt(&position, MoveAttemptOutcome::Inapplicable),
+        )
+        .unwrap(),
+        5 => GameDisposition::offer_correction(
+            &position,
+            moves[..2].to_vec(),
+            position_attempt(&position, MoveAttemptOutcome::RejectedByUser),
+        )
+        .unwrap(),
+        6 => GameDisposition::out_of_scope(
+            &position,
+            position_attempt(&position, MoveAttemptOutcome::Inapplicable),
+        )
+        .unwrap(),
+        7 => GameDisposition::change_focus_or_context(
+            &position,
+            position_attempt(&position, MoveAttemptOutcome::Inapplicable),
+            vec![FeedbackOption::new(
+                FeedbackOptionKind::ChangeFocus,
+                None,
+                MessageKey::new("feedback.change-focus").unwrap(),
+                None,
+                DisclosureClass::Public,
+            )],
+        )
+        .unwrap(),
+        8 => GameDisposition::escalate(
+            &position,
+            "governed escalation",
+            Some(position_attempt(&position, MoveAttemptOutcome::Ambiguous)),
+            Vec::new(),
+        )
+        .unwrap(),
+        _ => GameDisposition::compound_plan(
+            &position,
+            moves,
+            "governed non-authoritative plan",
+        )
+        .unwrap(),
+    }
 }
 
 pub fn outcome(selector: u8) -> MoveAttemptOutcome {

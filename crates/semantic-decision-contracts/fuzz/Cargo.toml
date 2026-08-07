@@ -66,3 +66,10 @@ path = "fuzz_targets/semantic_pack_admission.rs"
 test = false
 doc = false
 bench = false
+
+[[bin]]
+name = "game_disposition_contract"
+path = "fuzz_targets/game_disposition_contract.rs"
+test = false
+doc = false
+bench = false

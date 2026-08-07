@@ -19,7 +19,8 @@ pub use gameboard::{
     BeliefHash, BoardDescription, BoardPath, CorrectionKind, DesignBelief, DesignFocus,
     DesignPosition, DesignStateId, DesignTurn, DesignTurnEvent, DesignTurnHash, DesignTurnId,
     DisclosureClass, ExplanationParameter, FeedbackOption, FeedbackOptionKind, FocusAbsenceReason,
-    GameDomainId, GameboardContractError, GraphContentHash, GraphDeltaHash, GraphDeltaOperation,
+    GameClarificationDimension, GameDisposition, GameDispositionKind, GameDomainId,
+    GameboardContractError, GraphContentHash, GraphDeltaHash, GraphDeltaOperation,
     GraphDeltaPreview, GraphElementRef, HistoryHash, LegalMove, LegalMoveId, MessageKey,
     MotifHypothesis, MoveApplicabilityExplanation, MoveArgument, MoveArgumentName, MoveAttempt,
     MoveAttemptId, MoveAttemptOutcome, MoveAttemptReceipt, MoveBindingState, MoveEvidence,
@@ -1320,9 +1321,36 @@ pub struct ProposalWorkbook {
     pub board_hash: BoardHash,
     pub graph_revision: GraphRevision,
     pub candidate_id: CanonicalCandidateId,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    position_binding: Option<WorkbookPositionBinding>,
     slots: Vec<WorkbookSlot>,
     status: ProposalStatus,
     pub evidence_record_hash: EvidenceRecordHash,
+}
+
+/// Validated continuity binding between a workbook and one legal move.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct WorkbookPositionBinding {
+    move_id: LegalMoveId,
+    position_id: DesignStateId,
+    move_set_hash: MoveSetHash,
+}
+
+impl WorkbookPositionBinding {
+    /// Selected legal move identity.
+    pub fn move_id(&self) -> &LegalMoveId {
+        &self.move_id
+    }
+
+    /// Position identity observed when the workbook was created.
+    pub fn position_id(&self) -> &DesignStateId {
+        &self.position_id
+    }
+
+    /// Complete move-set identity observed when the workbook was created.
+    pub fn move_set_hash(&self) -> &MoveSetHash {
+        &self.move_set_hash
+    }
 }
 
 impl ProposalWorkbook {
@@ -1379,6 +1407,7 @@ impl ProposalWorkbook {
             board_hash,
             graph_revision,
             candidate_id,
+            position_binding: None,
             slots,
             status: if complete {
                 ProposalStatus::ReadyForDryRun
@@ -1387,6 +1416,88 @@ impl ProposalWorkbook {
             },
             evidence_record_hash,
         })
+    }
+
+    /// Construct a workbook bound to exactly one current legal move and position.
+    #[allow(clippy::too_many_arguments)]
+    pub fn new_position_bound(
+        schema_version: u32,
+        workbook_id: WorkbookId,
+        source_utterance_seq: u64,
+        board_hash: BoardHash,
+        position: &DesignPosition,
+        move_id: LegalMoveId,
+        slots: Vec<WorkbookSlot>,
+        evidence_record_hash: EvidenceRecordHash,
+    ) -> Result<Self, DecisionBoardError> {
+        let legal_move = position
+            .legal_moves()
+            .iter()
+            .find(|legal_move| legal_move.move_id() == &move_id)
+            .ok_or_else(|| {
+                DecisionBoardError::InvalidSlotAnswer(format!(
+                    "workbook move '{}' is absent from the position",
+                    move_id.as_str()
+                ))
+            })?;
+        if legal_move.graph_revision() != position.graph_revision() {
+            return Err(DecisionBoardError::InvalidSlotAnswer(
+                "workbook move and position graph revisions differ".to_string(),
+            ));
+        }
+        let mut workbook = Self::new(
+            schema_version,
+            workbook_id,
+            source_utterance_seq,
+            board_hash,
+            position.graph_revision().clone(),
+            legal_move.candidate_id().clone(),
+            slots,
+            evidence_record_hash,
+        )?;
+        workbook.position_binding = Some(WorkbookPositionBinding {
+            move_id,
+            position_id: position.state_id().clone(),
+            move_set_hash: position.move_set_hash().clone(),
+        });
+        Ok(workbook)
+    }
+
+    /// Validate that this workbook is still bound to the supplied position and move.
+    pub fn validate_position(&self, position: &DesignPosition) -> Result<(), DecisionBoardError> {
+        let binding = self.position_binding.as_ref().ok_or_else(|| {
+            DecisionBoardError::InvalidSlotAnswer(
+                "legacy workbook has no position-bound legal move".to_string(),
+            )
+        })?;
+        if binding.position_id != *position.state_id()
+            || binding.move_set_hash != *position.move_set_hash()
+            || self.graph_revision != *position.graph_revision()
+        {
+            return Err(DecisionBoardError::InvalidSlotAnswer(
+                "workbook position, graph revision or move set is stale".to_string(),
+            ));
+        }
+        let legal_move = position
+            .legal_moves()
+            .iter()
+            .find(|legal_move| legal_move.move_id() == &binding.move_id)
+            .ok_or_else(|| {
+                DecisionBoardError::InvalidSlotAnswer(
+                    "workbook move is absent from the current position".to_string(),
+                )
+            })?;
+        if legal_move.candidate_id() != &self.candidate_id {
+            return Err(DecisionBoardError::InvalidSlotAnswer(
+                "workbook candidate differs from its legal move".to_string(),
+            ));
+        }
+        Ok(())
+    }
+
+    /// Position binding, absent only for explicitly retained legacy workbooks.
+    pub fn position_binding(&self) -> Option<&WorkbookPositionBinding> {
+        self.position_binding.as_ref()
     }
 
     /// Return the current closed workbook state.

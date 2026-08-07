@@ -1637,6 +1637,605 @@ impl FeedbackOption {
     }
 }
 
+/// Closed set of deterministic interactions a semantic gameboard may offer.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum GameDispositionKind {
+    ProposeMove,
+    ClarifyMoves,
+    RequestMoveArguments,
+    ExplainAttempt,
+    OfferRecoveryMoves,
+    OfferCorrection,
+    OutOfScope,
+    ChangeFocusOrContext,
+    Escalate,
+    CompoundPlan,
+}
+
+/// Semantic dimension resolved by one governed clarification.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum GameClarificationDimension {
+    Move,
+    Focus,
+    Argument,
+}
+
+/// Position-bound deterministic interaction packet.
+///
+/// Its representation is private so applications cannot manufacture a proposal,
+/// clarification or recovery action without passing the position-membership checks.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct GameDisposition {
+    schema_version: u32,
+    kind: GameDispositionKind,
+    position_id: DesignStateId,
+    move_set_hash: MoveSetHash,
+    selected_moves: Vec<LegalMoveId>,
+    clarification_dimension: Option<GameClarificationDimension>,
+    governed_prompt: Option<ContractText>,
+    missing_arguments: Vec<ContractText>,
+    attempt_receipt: Option<MoveAttemptReceipt>,
+    feedback_options: Vec<FeedbackOption>,
+    disposition_hash: GraphContentHash,
+}
+
+impl GameDisposition {
+    #[allow(clippy::too_many_arguments)]
+    fn admit(
+        position: &DesignPosition,
+        kind: GameDispositionKind,
+        mut selected_moves: Vec<LegalMoveId>,
+        clarification_dimension: Option<GameClarificationDimension>,
+        governed_prompt: Option<String>,
+        missing_arguments: Vec<String>,
+        attempt_receipt: Option<MoveAttemptReceipt>,
+        mut feedback_options: Vec<FeedbackOption>,
+    ) -> Result<Self, GameboardContractError> {
+        selected_moves.sort();
+        if selected_moves.windows(2).any(|pair| pair[0] == pair[1]) {
+            return Err(GameboardContractError::InvalidContract {
+                contract: "game disposition",
+                reason: "selected moves must be unique".to_string(),
+            });
+        }
+        for move_id in &selected_moves {
+            if !position
+                .legal_moves()
+                .iter()
+                .any(|legal_move| legal_move.move_id() == move_id)
+            {
+                return Err(GameboardContractError::InvalidContract {
+                    contract: "game disposition",
+                    reason: format!(
+                        "selected move '{}' is absent from the position",
+                        move_id.as_str()
+                    ),
+                });
+            }
+        }
+        feedback_options.sort();
+        feedback_options.dedup();
+        for option in &feedback_options {
+            if let Some(move_id) = option.move_id() {
+                if !position
+                    .legal_moves()
+                    .iter()
+                    .any(|legal_move| legal_move.move_id() == move_id)
+                {
+                    return Err(GameboardContractError::InvalidContract {
+                        contract: "game disposition",
+                        reason: format!(
+                            "feedback move '{}' is absent from the position",
+                            move_id.as_str()
+                        ),
+                    });
+                }
+            }
+        }
+        if let Some(receipt) = &attempt_receipt {
+            if receipt.position_id() != position.state_id() {
+                return Err(GameboardContractError::InvalidContract {
+                    contract: "game disposition",
+                    reason: "attempt receipt belongs to a different position".to_string(),
+                });
+            }
+        }
+        let governed_prompt = governed_prompt
+            .map(|prompt| ContractText::new("game disposition prompt", prompt))
+            .transpose()?;
+        let mut missing_arguments = missing_arguments
+            .into_iter()
+            .map(|argument| ContractText::new("missing move argument", argument))
+            .collect::<Result<Vec<_>, _>>()?;
+        missing_arguments.sort();
+        missing_arguments.dedup();
+
+        let invalid = |reason: &str| GameboardContractError::InvalidContract {
+            contract: "game disposition",
+            reason: reason.to_string(),
+        };
+        match kind {
+            GameDispositionKind::ProposeMove
+                if selected_moves.len() != 1
+                    || clarification_dimension.is_some()
+                    || governed_prompt.is_some()
+                    || !missing_arguments.is_empty()
+                    || attempt_receipt.is_some() =>
+            {
+                return Err(invalid(
+                    "a proposal must name exactly one move and no terminal attempt",
+                ));
+            }
+            GameDispositionKind::ClarifyMoves
+                if !(2..=3).contains(&selected_moves.len())
+                    || clarification_dimension.is_none()
+                    || governed_prompt.is_none()
+                    || attempt_receipt.is_none() =>
+            {
+                return Err(invalid(
+                    "a clarification requires two or three moves, one dimension, governed prompt and attempt",
+                ));
+            }
+            GameDispositionKind::RequestMoveArguments
+                if selected_moves.len() != 1
+                    || missing_arguments.is_empty()
+                    || governed_prompt.is_none()
+                    || attempt_receipt.is_none() =>
+            {
+                return Err(invalid(
+                    "an argument request requires one move, missing arguments, governed prompt and attempt",
+                ));
+            }
+            GameDispositionKind::ExplainAttempt
+                if !selected_moves.is_empty() || attempt_receipt.is_none() =>
+            {
+                return Err(invalid(
+                    "an explanation requires one terminal attempt and no selected move",
+                ));
+            }
+            GameDispositionKind::OfferRecoveryMoves
+                if selected_moves.is_empty()
+                    || selected_moves.len() > 3
+                    || attempt_receipt.is_none() =>
+            {
+                return Err(invalid(
+                    "recovery requires one to three current legal moves and a terminal attempt",
+                ));
+            }
+            GameDispositionKind::OfferCorrection
+                if selected_moves.is_empty()
+                    || selected_moves.len() > 3
+                    || attempt_receipt.is_none() =>
+            {
+                return Err(invalid(
+                    "correction requires one to three current legal moves and the retained attempt",
+                ));
+            }
+            GameDispositionKind::OutOfScope
+                if !selected_moves.is_empty() || attempt_receipt.is_none() =>
+            {
+                return Err(invalid(
+                    "out-of-scope requires a terminal attempt and no selected move",
+                ));
+            }
+            GameDispositionKind::ChangeFocusOrContext
+                if !selected_moves.is_empty()
+                    || attempt_receipt.is_none()
+                    || feedback_options.is_empty() =>
+            {
+                return Err(invalid(
+                    "focus/context change requires a terminal attempt and governed feedback",
+                ));
+            }
+            GameDispositionKind::Escalate
+                if !selected_moves.is_empty() || governed_prompt.is_none() =>
+            {
+                return Err(invalid(
+                    "escalation requires a governed prompt and no selected move",
+                ));
+            }
+            GameDispositionKind::CompoundPlan
+                if selected_moves.is_empty()
+                    || selected_moves.len() > 8
+                    || governed_prompt.is_none() =>
+            {
+                return Err(invalid(
+                    "a compound plan requires one to eight non-authoritative legal steps and a governed prompt",
+                ));
+            }
+            _ => {}
+        }
+
+        let mut disposition = Self {
+            schema_version: GAMEBOARD_SCHEMA_VERSION,
+            kind,
+            position_id: position.state_id().clone(),
+            move_set_hash: position.move_set_hash().clone(),
+            selected_moves,
+            clarification_dimension,
+            governed_prompt,
+            missing_arguments,
+            attempt_receipt,
+            feedback_options,
+            disposition_hash: GraphContentHash::new("0".repeat(64))?,
+        };
+        disposition.disposition_hash = disposition.canonical_hash()?;
+        Ok(disposition)
+    }
+
+    fn canonical_hash(&self) -> Result<GraphContentHash, GameboardContractError> {
+        let fields = [
+            (
+                "schema_version".to_string(),
+                self.schema_version.to_string(),
+            ),
+            ("kind".to_string(), format!("{:?}", self.kind)),
+            (
+                "position_id".to_string(),
+                self.position_id.as_str().to_string(),
+            ),
+            (
+                "move_set_hash".to_string(),
+                self.move_set_hash.as_str().to_string(),
+            ),
+            (
+                "clarification_dimension".to_string(),
+                self.clarification_dimension
+                    .map_or_else(String::new, |dimension| format!("{dimension:?}")),
+            ),
+            (
+                "governed_prompt".to_string(),
+                self.governed_prompt
+                    .as_ref()
+                    .map_or_else(String::new, |prompt| prompt.as_str().to_string()),
+            ),
+            (
+                "attempt_receipt".to_string(),
+                self.attempt_receipt
+                    .as_ref()
+                    .map_or_else(String::new, |receipt| {
+                        receipt.receipt_hash().as_str().to_string()
+                    }),
+            ),
+        ]
+        .into_iter()
+        .chain(
+            self.selected_moves
+                .iter()
+                .enumerate()
+                .map(|(index, move_id)| (format!("move.{index}"), move_id.as_str().to_string())),
+        )
+        .chain(
+            self.missing_arguments
+                .iter()
+                .enumerate()
+                .map(|(index, argument)| {
+                    (format!("argument.{index}"), argument.as_str().to_string())
+                }),
+        )
+        .chain(
+            self.feedback_options
+                .iter()
+                .enumerate()
+                .flat_map(|(index, option)| {
+                    [
+                        (
+                            format!("feedback.{index}.kind"),
+                            format!("{:?}", option.kind()),
+                        ),
+                        (
+                            format!("feedback.{index}.move"),
+                            option
+                                .move_id()
+                                .map_or_else(String::new, |move_id| move_id.as_str().to_string()),
+                        ),
+                        (
+                            format!("feedback.{index}.prompt"),
+                            option.prompt_key().as_str().to_string(),
+                        ),
+                    ]
+                }),
+        );
+        GraphContentHash::new(hash_fields("semantic-gameboard-disposition-v1", fields))
+    }
+
+    /// Construct a single-move proposal.
+    pub fn propose_move(
+        position: &DesignPosition,
+        move_id: LegalMoveId,
+    ) -> Result<Self, GameboardContractError> {
+        Self::admit(
+            position,
+            GameDispositionKind::ProposeMove,
+            vec![move_id],
+            None,
+            None,
+            Vec::new(),
+            None,
+            Vec::new(),
+        )
+    }
+
+    /// Construct a governed clarification over two or three current legal moves.
+    pub fn clarify_moves(
+        position: &DesignPosition,
+        moves: Vec<LegalMoveId>,
+        dimension: GameClarificationDimension,
+        governed_prompt: impl Into<String>,
+        attempt: MoveAttemptReceipt,
+    ) -> Result<Self, GameboardContractError> {
+        Self::admit(
+            position,
+            GameDispositionKind::ClarifyMoves,
+            moves,
+            Some(dimension),
+            Some(governed_prompt.into()),
+            Vec::new(),
+            Some(attempt),
+            Vec::new(),
+        )
+    }
+
+    /// Construct a typed request for unresolved arguments of one legal move.
+    pub fn request_move_arguments(
+        position: &DesignPosition,
+        move_id: LegalMoveId,
+        missing_arguments: Vec<String>,
+        governed_prompt: impl Into<String>,
+        attempt: MoveAttemptReceipt,
+    ) -> Result<Self, GameboardContractError> {
+        Self::admit(
+            position,
+            GameDispositionKind::RequestMoveArguments,
+            vec![move_id],
+            None,
+            Some(governed_prompt.into()),
+            missing_arguments,
+            Some(attempt),
+            Vec::new(),
+        )
+    }
+
+    /// Construct a terminal attempt explanation without inventing a legal move.
+    pub fn explain_attempt(
+        position: &DesignPosition,
+        attempt: MoveAttemptReceipt,
+    ) -> Result<Self, GameboardContractError> {
+        Self::admit(
+            position,
+            GameDispositionKind::ExplainAttempt,
+            Vec::new(),
+            None,
+            None,
+            Vec::new(),
+            Some(attempt.clone()),
+            attempt.feedback_options().to_vec(),
+        )
+    }
+
+    /// Construct a bounded set of legal recovery moves for an unsuccessful attempt.
+    pub fn offer_recovery_moves(
+        position: &DesignPosition,
+        moves: Vec<LegalMoveId>,
+        attempt: MoveAttemptReceipt,
+    ) -> Result<Self, GameboardContractError> {
+        Self::admit(
+            position,
+            GameDispositionKind::OfferRecoveryMoves,
+            moves,
+            None,
+            None,
+            Vec::new(),
+            Some(attempt.clone()),
+            attempt.feedback_options().to_vec(),
+        )
+    }
+
+    /// Construct a bounded set of legal correction moves linked to a retained attempt.
+    pub fn offer_correction(
+        position: &DesignPosition,
+        moves: Vec<LegalMoveId>,
+        attempt: MoveAttemptReceipt,
+    ) -> Result<Self, GameboardContractError> {
+        Self::admit(
+            position,
+            GameDispositionKind::OfferCorrection,
+            moves,
+            None,
+            None,
+            Vec::new(),
+            Some(attempt.clone()),
+            attempt.feedback_options().to_vec(),
+        )
+    }
+
+    /// Construct a truthful out-of-scope response.
+    pub fn out_of_scope(
+        position: &DesignPosition,
+        attempt: MoveAttemptReceipt,
+    ) -> Result<Self, GameboardContractError> {
+        Self::admit(
+            position,
+            GameDispositionKind::OutOfScope,
+            Vec::new(),
+            None,
+            None,
+            Vec::new(),
+            Some(attempt.clone()),
+            attempt.feedback_options().to_vec(),
+        )
+    }
+
+    /// Construct a governed focus/context change response.
+    pub fn change_focus_or_context(
+        position: &DesignPosition,
+        attempt: MoveAttemptReceipt,
+        feedback_options: Vec<FeedbackOption>,
+    ) -> Result<Self, GameboardContractError> {
+        Self::admit(
+            position,
+            GameDispositionKind::ChangeFocusOrContext,
+            Vec::new(),
+            None,
+            None,
+            Vec::new(),
+            Some(attempt),
+            feedback_options,
+        )
+    }
+
+    /// Construct an explicit collaborative escalation.
+    pub fn escalate(
+        position: &DesignPosition,
+        governed_prompt: impl Into<String>,
+        attempt: Option<MoveAttemptReceipt>,
+        feedback_options: Vec<FeedbackOption>,
+    ) -> Result<Self, GameboardContractError> {
+        Self::admit(
+            position,
+            GameDispositionKind::Escalate,
+            Vec::new(),
+            None,
+            Some(governed_prompt.into()),
+            Vec::new(),
+            attempt,
+            feedback_options,
+        )
+    }
+
+    /// Construct a non-authoritative plan of individually ratified legal moves.
+    pub fn compound_plan(
+        position: &DesignPosition,
+        steps: Vec<LegalMoveId>,
+        governed_prompt: impl Into<String>,
+    ) -> Result<Self, GameboardContractError> {
+        Self::admit(
+            position,
+            GameDispositionKind::CompoundPlan,
+            steps,
+            None,
+            Some(governed_prompt.into()),
+            Vec::new(),
+            None,
+            Vec::new(),
+        )
+    }
+
+    /// Revalidate all move references against the current position.
+    pub fn validate_for_position(
+        &self,
+        position: &DesignPosition,
+    ) -> Result<(), GameboardContractError> {
+        if self.position_id != *position.state_id()
+            || self.move_set_hash != *position.move_set_hash()
+        {
+            return Err(GameboardContractError::InvalidContract {
+                contract: "game disposition",
+                reason: "position or move-set identity is stale".to_string(),
+            });
+        }
+        for move_id in self.selected_moves.iter().chain(
+            self.feedback_options
+                .iter()
+                .filter_map(FeedbackOption::move_id),
+        ) {
+            if !position
+                .legal_moves()
+                .iter()
+                .any(|legal_move| legal_move.move_id() == move_id)
+            {
+                return Err(GameboardContractError::InvalidContract {
+                    contract: "game disposition",
+                    reason: format!(
+                        "referenced move '{}' is not currently legal",
+                        move_id.as_str()
+                    ),
+                });
+            }
+        }
+        Ok(())
+    }
+
+    pub fn kind(&self) -> GameDispositionKind {
+        self.kind
+    }
+    pub fn position_id(&self) -> &DesignStateId {
+        &self.position_id
+    }
+    pub fn move_set_hash(&self) -> &MoveSetHash {
+        &self.move_set_hash
+    }
+    pub fn selected_moves(&self) -> &[LegalMoveId] {
+        &self.selected_moves
+    }
+    pub fn clarification_dimension(&self) -> Option<GameClarificationDimension> {
+        self.clarification_dimension
+    }
+    pub fn governed_prompt(&self) -> Option<&str> {
+        self.governed_prompt.as_ref().map(ContractText::as_str)
+    }
+    pub fn missing_arguments(&self) -> impl Iterator<Item = &str> {
+        self.missing_arguments.iter().map(ContractText::as_str)
+    }
+    pub fn attempt_receipt(&self) -> Option<&MoveAttemptReceipt> {
+        self.attempt_receipt.as_ref()
+    }
+    pub fn feedback_options(&self) -> &[FeedbackOption] {
+        &self.feedback_options
+    }
+    pub fn disposition_hash(&self) -> &GraphContentHash {
+        &self.disposition_hash
+    }
+}
+
+impl<'de> Deserialize<'de> for GameDisposition {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        struct Wire {
+            schema_version: u32,
+            kind: GameDispositionKind,
+            position_id: DesignStateId,
+            move_set_hash: MoveSetHash,
+            selected_moves: Vec<LegalMoveId>,
+            clarification_dimension: Option<GameClarificationDimension>,
+            governed_prompt: Option<ContractText>,
+            missing_arguments: Vec<ContractText>,
+            attempt_receipt: Option<MoveAttemptReceipt>,
+            feedback_options: Vec<FeedbackOption>,
+            disposition_hash: GraphContentHash,
+        }
+        let wire = Wire::deserialize(deserializer)?;
+        validate_schema(wire.schema_version).map_err(serde::de::Error::custom)?;
+        let admitted = Self {
+            schema_version: wire.schema_version,
+            kind: wire.kind,
+            position_id: wire.position_id,
+            move_set_hash: wire.move_set_hash,
+            selected_moves: wire.selected_moves,
+            clarification_dimension: wire.clarification_dimension,
+            governed_prompt: wire.governed_prompt,
+            missing_arguments: wire.missing_arguments,
+            attempt_receipt: wire.attempt_receipt,
+            feedback_options: wire.feedback_options,
+            disposition_hash: wire.disposition_hash,
+        };
+        let canonical = admitted
+            .canonical_hash()
+            .map_err(serde::de::Error::custom)?;
+        if canonical != admitted.disposition_hash {
+            return Err(serde::de::Error::custom(
+                "game disposition identity does not match canonical content",
+            ));
+        }
+        Ok(admitted)
+    }
+}
+
 /// Every typed terminal result of one attempted interaction.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -3658,6 +4257,113 @@ mod tests {
         )
         .unwrap();
         assert_ne!(baseline.receipt_hash(), with_response.receipt_hash());
+    }
+
+    #[test]
+    fn game_dispositions_are_position_bound_and_off_board_moves_fail_closed() {
+        let position = position_with(
+            "domain.example",
+            vec!["root".to_string()],
+            "snapshot-v1",
+            "revision-1",
+            'a',
+            "compiler-profile-v1",
+            "policy-v1",
+            None,
+            DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+            'b',
+            vec![
+                legal_move("op.alpha", "revision-1"),
+                legal_move("op.beta", "revision-1"),
+                legal_move("op.gamma", "revision-1"),
+            ],
+        );
+        let moves = position
+            .legal_moves()
+            .iter()
+            .map(|legal_move| legal_move.move_id().clone())
+            .collect::<Vec<_>>();
+        let attempt = MoveAttemptReceipt::new(
+            GAMEBOARD_SCHEMA_VERSION,
+            MoveAttemptId::new("attempt-clarify").unwrap(),
+            position.state_id().clone(),
+            None,
+            graph_hash('c'),
+            MoveAttemptOutcome::Ambiguous,
+            Vec::new(),
+            Vec::new(),
+            None,
+            None,
+        )
+        .unwrap();
+        let clarify = GameDisposition::clarify_moves(
+            &position,
+            moves.clone(),
+            GameClarificationDimension::Move,
+            "governed clarification",
+            attempt,
+        )
+        .unwrap();
+        assert_eq!(clarify.kind(), GameDispositionKind::ClarifyMoves);
+        assert_eq!(clarify.selected_moves().len(), 3);
+        clarify.validate_for_position(&position).unwrap();
+        let encoded = serde_json::to_vec(&clarify).unwrap();
+        let decoded: GameDisposition = serde_json::from_slice(&encoded).unwrap();
+        assert_eq!(decoded, clarify);
+
+        let off_board = LegalMoveId::new(digest('f')).unwrap();
+        assert!(GameDisposition::propose_move(&position, off_board).is_err());
+        let stale = position_with(
+            "domain.example",
+            vec!["root".to_string()],
+            "snapshot-v1",
+            "revision-2",
+            'd',
+            "compiler-profile-v1",
+            "policy-v1",
+            None,
+            DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+            'b',
+            vec![legal_move("op.alpha", "revision-2")],
+        );
+        assert!(clarify.validate_for_position(&stale).is_err());
+    }
+
+    #[test]
+    fn proposal_workbook_preserves_legal_move_position_and_move_set() {
+        let position = position();
+        let selected = position.legal_moves()[0].move_id().clone();
+        let workbook = crate::ProposalWorkbook::new_position_bound(
+            GAMEBOARD_SCHEMA_VERSION,
+            crate::WorkbookId::new("position-bound-workbook").unwrap(),
+            1,
+            crate::BoardHash::new(digest('c')).unwrap(),
+            &position,
+            selected.clone(),
+            Vec::new(),
+            crate::EvidenceRecordHash::new(digest('d')).unwrap(),
+        )
+        .unwrap();
+        let binding = workbook.position_binding().unwrap();
+        assert_eq!(binding.move_id(), &selected);
+        assert_eq!(binding.position_id(), position.state_id());
+        assert_eq!(binding.move_set_hash(), position.move_set_hash());
+        workbook.validate_position(&position).unwrap();
+
+        let stale = position_with(
+            "domain.example",
+            vec!["root".to_string(), "bounded-board".to_string()],
+            "snapshot-v1",
+            "revision-2",
+            'e',
+            "compiler-profile-v1",
+            "policy-v1",
+            None,
+            DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+            'b',
+            vec![legal_move("op.example", "revision-2")],
+        );
+        assert!(workbook.validate_position(&stale).is_err());
     }
 
     #[test]

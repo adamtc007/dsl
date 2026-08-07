@@ -1,6 +1,9 @@
 use semantic_decision_contracts::{
-    DesignFocus, FocusAbsenceReason, GameDomainId, MoveAttemptId, MoveAttemptOutcome,
+    DesignFocus, FocusAbsenceReason, GameDisposition, GameDispositionKind, GameDomainId,
+    MoveAttemptId, MoveAttemptOutcome, WorkbookPositionBinding,
 };
+
+fn position_bound_facades(_: &GameDisposition, _: &WorkbookPositionBinding) {}
 
 fn main() {
     let domain = GameDomainId::new("consumer.domain").unwrap();
@@ -10,4 +13,6 @@ fn main() {
     assert!(matches!(focus, DesignFocus::Absent { .. }));
     assert_eq!(attempt.as_str(), "attempt-1");
     let _ = MoveAttemptOutcome::CompilerRefused;
+    let _ = GameDispositionKind::ClarifyMoves;
+    let _ = position_bound_facades;
 }
