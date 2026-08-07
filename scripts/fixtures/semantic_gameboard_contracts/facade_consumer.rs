@@ -1,8 +1,8 @@
 use semantic_decision_contracts::{
     DesignFocus, FocusAbsenceReason, GameDisposition, GameDispositionKind, GameDomainId,
     GameSessionId, GameTurnAdjudication, GameTurnAnswer, GameTurnAnswerAbsenceReason,
-    GameTurnCompilerResult, GameTurnJudgement, GameTurnRecord, IntendedMove, MoveAttemptId,
-    MoveAttemptOutcome, SemanticFamilyId, WorkbookPositionBinding,
+    GameTurnAttempt, GameTurnCompilerResult, GameTurnJudgement, GameTurnRecord, IntendedMove,
+    MoveAttemptId, MoveAttemptOutcome, SemanticFamilyId, WorkbookPositionBinding,
 };
 
 fn position_bound_facades(_: &GameDisposition, _: &WorkbookPositionBinding) {}
@@ -16,6 +16,7 @@ fn main() {
     let family = SemanticFamilyId::new("family.example").unwrap();
     let answer = GameTurnAnswer::not_observed(GameTurnAnswerAbsenceReason::NotRequested);
     let compiler = GameTurnCompilerResult::not_requested();
+    let turn_attempt = GameTurnAttempt::not_attempted();
     assert_eq!(domain.as_str(), "consumer.domain");
     assert!(matches!(focus, DesignFocus::Absent { .. }));
     assert_eq!(attempt.as_str(), "attempt-1");
@@ -27,6 +28,7 @@ fn main() {
     let _ = IntendedMove::None;
     let _ = answer;
     let _ = compiler;
+    let _ = turn_attempt;
     let _ = position_bound_facades;
     let _ = evaluation_facades;
 }

@@ -21,14 +21,15 @@ pub use gameboard::{
     DisclosureClass, ExplanationParameter, FeedbackOption, FeedbackOptionKind, FocusAbsenceReason,
     GameClarificationDimension, GameDisposition, GameDispositionKind, GameDomainId, GameSessionId,
     GameTurnAdjudication, GameTurnAdjudicationHash, GameTurnAnswer, GameTurnAnswerAbsenceReason,
-    GameTurnAnswerKind, GameTurnCompilerResult, GameTurnCompilerResultKind, GameTurnJudgement,
-    GameTurnRecord, GameTurnRecordHash, GameboardContractError, GraphContentHash, GraphDeltaHash,
-    GraphDeltaOperation, GraphDeltaPreview, GraphElementRef, HistoryHash, IntendedMove, LegalMove,
-    LegalMoveId, MessageKey, MotifHypothesis, MoveApplicabilityExplanation, MoveArgument,
-    MoveArgumentName, MoveAttempt, MoveAttemptId, MoveAttemptOutcome, MoveAttemptReceipt,
-    MoveBindingState, MoveEvidence, MoveProbability, MoveSetHash, PolicyDecisionId,
-    ProducerIdentity, RuleCode, RuleExplanation, RuleExplanationId, SemanticFamilyId,
-    TransitionPreview, UnresolvedDimension, GAMEBOARD_SCHEMA_VERSION,
+    GameTurnAnswerKind, GameTurnAttempt, GameTurnAttemptKind, GameTurnCompilerResult,
+    GameTurnCompilerResultKind, GameTurnJudgement, GameTurnRecord, GameTurnRecordHash,
+    GameboardContractError, GraphContentHash, GraphDeltaHash, GraphDeltaOperation,
+    GraphDeltaPreview, GraphElementRef, HistoryHash, IntendedMove, LegalMove, LegalMoveId,
+    MessageKey, MotifHypothesis, MoveApplicabilityExplanation, MoveArgument, MoveArgumentName,
+    MoveAttempt, MoveAttemptId, MoveAttemptOutcome, MoveAttemptReceipt, MoveBindingState,
+    MoveEvidence, MoveProbability, MoveSetHash, PolicyDecisionId, ProducerIdentity, RuleCode,
+    RuleExplanation, RuleExplanationId, SemanticFamilyId, TransitionPreview, UnresolvedDimension,
+    GAMEBOARD_SCHEMA_VERSION,
 };
 
 /// Framework-owned abstention identity present exactly once on every board.

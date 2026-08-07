@@ -3708,6 +3708,73 @@ pub enum GameTurnCompilerResultKind {
     SystemFailure,
 }
 
+/// Whether this observed turn had reached a terminal move attempt.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum GameTurnAttemptKind {
+    NotAttempted,
+    Terminal,
+}
+
+/// Explicit attempt state for proposal/clarification turns and terminal attempts.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct GameTurnAttempt {
+    kind: GameTurnAttemptKind,
+    receipt: Option<MoveAttemptReceipt>,
+}
+
+impl GameTurnAttempt {
+    pub fn not_attempted() -> Self {
+        Self {
+            kind: GameTurnAttemptKind::NotAttempted,
+            receipt: None,
+        }
+    }
+
+    pub fn terminal(receipt: MoveAttemptReceipt) -> Self {
+        Self {
+            kind: GameTurnAttemptKind::Terminal,
+            receipt: Some(receipt),
+        }
+    }
+
+    fn admit(
+        kind: GameTurnAttemptKind,
+        receipt: Option<MoveAttemptReceipt>,
+    ) -> Result<Self, GameboardContractError> {
+        if (kind == GameTurnAttemptKind::Terminal) != receipt.is_some() {
+            return Err(GameboardContractError::InvalidContract {
+                contract: "game turn attempt",
+                reason: "only a terminal attempt may carry exactly one receipt".to_string(),
+            });
+        }
+        Ok(Self { kind, receipt })
+    }
+
+    pub fn kind(&self) -> GameTurnAttemptKind {
+        self.kind
+    }
+
+    pub fn receipt(&self) -> Option<&MoveAttemptReceipt> {
+        self.receipt.as_ref()
+    }
+}
+
+impl<'de> Deserialize<'de> for GameTurnAttempt {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        struct Wire {
+            kind: GameTurnAttemptKind,
+            receipt: Option<MoveAttemptReceipt>,
+        }
+        let wire = Wire::deserialize(deserializer)?;
+        Self::admit(wire.kind, wire.receipt).map_err(serde::de::Error::custom)
+    }
+}
+
 /// Validated compiler result for one game turn.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct GameTurnCompilerResult {
@@ -3910,7 +3977,7 @@ pub struct GameTurnRecord {
     answer: GameTurnAnswer,
     chosen_move: Option<LegalMoveId>,
     delta: Option<GraphDeltaPreview>,
-    attempt: MoveAttemptReceipt,
+    attempt: GameTurnAttempt,
     compiler_result: GameTurnCompilerResult,
     corrections: Vec<MoveAttemptReceipt>,
     record_hash: GameTurnRecordHash,
@@ -3934,7 +4001,7 @@ impl GameTurnRecord {
         answer: GameTurnAnswer,
         chosen_move: Option<LegalMoveId>,
         delta: Option<GraphDeltaPreview>,
-        attempt: MoveAttemptReceipt,
+        attempt: GameTurnAttempt,
         compiler_result: GameTurnCompilerResult,
         mut corrections: Vec<MoveAttemptReceipt>,
     ) -> Result<Self, GameboardContractError> {
@@ -3984,22 +4051,28 @@ impl GameTurnRecord {
                     })
             })
             .transpose()?;
-        if attempt.position_id() != position.state_id() {
-            return Err(GameboardContractError::InvalidContract {
-                contract: "game turn record",
-                reason: "attempt receipt belongs to a different position".to_string(),
-            });
-        }
-        if let (Some(attempted), Some(chosen)) = (attempt.attempted_move(), chosen_move.as_ref()) {
-            if attempted != chosen {
+        if let Some(receipt) = attempt.receipt() {
+            if receipt.position_id() != position.state_id() {
                 return Err(GameboardContractError::InvalidContract {
                     contract: "game turn record",
-                    reason: "chosen move and attempted move disagree".to_string(),
+                    reason: "attempt receipt belongs to a different position".to_string(),
                 });
+            }
+            if let (Some(attempted), Some(chosen)) =
+                (receipt.attempted_move(), chosen_move.as_ref())
+            {
+                if attempted != chosen {
+                    return Err(GameboardContractError::InvalidContract {
+                        contract: "game turn record",
+                        reason: "chosen move and attempted move disagree".to_string(),
+                    });
+                }
             }
         }
         if let Some(disposition_attempt) = disposition.attempt_receipt() {
-            if disposition_attempt.receipt_hash() != attempt.receipt_hash() {
+            if attempt.receipt().map(MoveAttemptReceipt::receipt_hash)
+                != Some(disposition_attempt.receipt_hash())
+            {
                 return Err(GameboardContractError::InvalidContract {
                     contract: "game turn record",
                     reason: "disposition and turn name different terminal attempts".to_string(),
@@ -4029,6 +4102,12 @@ impl GameTurnRecord {
         }
         match compiler_result.kind() {
             GameTurnCompilerResultKind::Admitted => {
+                let Some(attempt_receipt) = attempt.receipt() else {
+                    return Err(GameboardContractError::InvalidContract {
+                        contract: "game turn record",
+                        reason: "compiler admission requires a terminal attempt".to_string(),
+                    });
+                };
                 let Some(delta) = &delta else {
                     return Err(GameboardContractError::InvalidContract {
                         contract: "game turn record",
@@ -4037,7 +4116,7 @@ impl GameTurnRecord {
                 };
                 if compiler_result.delta_hash() != Some(delta.delta_hash())
                     || compiler_result.result_graph_hash() == Some(position.graph_hash())
-                    || attempt.outcome() != MoveAttemptOutcome::Applied
+                    || attempt_receipt.outcome() != MoveAttemptOutcome::Applied
                 {
                     return Err(GameboardContractError::InvalidContract {
                         contract: "game turn record",
@@ -4047,7 +4126,8 @@ impl GameTurnRecord {
                 }
             }
             GameTurnCompilerResultKind::Refused
-                if attempt.outcome() != MoveAttemptOutcome::CompilerRefused =>
+                if attempt.receipt().map(MoveAttemptReceipt::outcome)
+                    != Some(MoveAttemptOutcome::CompilerRefused) =>
             {
                 return Err(GameboardContractError::InvalidContract {
                     contract: "game turn record",
@@ -4055,7 +4135,8 @@ impl GameTurnRecord {
                 });
             }
             GameTurnCompilerResultKind::SystemFailure
-                if attempt.outcome() != MoveAttemptOutcome::SystemFailure =>
+                if attempt.receipt().map(MoveAttemptReceipt::outcome)
+                    != Some(MoveAttemptOutcome::SystemFailure) =>
             {
                 return Err(GameboardContractError::InvalidContract {
                     contract: "game turn record",
@@ -4063,12 +4144,14 @@ impl GameTurnRecord {
                 });
             }
             GameTurnCompilerResultKind::NotRequested
-                if matches!(
-                    attempt.outcome(),
-                    MoveAttemptOutcome::Applied
-                        | MoveAttemptOutcome::CompilerRefused
-                        | MoveAttemptOutcome::SystemFailure
-                ) =>
+                if attempt.receipt().is_some_and(|receipt| {
+                    matches!(
+                        receipt.outcome(),
+                        MoveAttemptOutcome::Applied
+                            | MoveAttemptOutcome::CompilerRefused
+                            | MoveAttemptOutcome::SystemFailure
+                    )
+                }) =>
             {
                 return Err(GameboardContractError::InvalidContract {
                     contract: "game turn record",
@@ -4082,9 +4165,11 @@ impl GameTurnRecord {
         if corrections
             .windows(2)
             .any(|pair| pair[0].attempt_id() == pair[1].attempt_id())
-            || corrections
-                .iter()
-                .any(|receipt| receipt.attempt_id() == attempt.attempt_id())
+            || corrections.iter().any(|receipt| {
+                attempt
+                    .receipt()
+                    .is_some_and(|attempt| receipt.attempt_id() == attempt.attempt_id())
+            })
         {
             return Err(GameboardContractError::InvalidContract {
                 contract: "game turn record",
@@ -4100,7 +4185,17 @@ impl GameTurnRecord {
                 reason: "a later correction/undo must link a retained earlier attempt".to_string(),
             });
         }
-        let history = std::iter::once(attempt.clone())
+        if !corrections.is_empty() && attempt.receipt().is_none() {
+            return Err(GameboardContractError::InvalidContract {
+                contract: "game turn record",
+                reason: "a turn without a terminal attempt cannot carry later corrections"
+                    .to_string(),
+            });
+        }
+        let history = attempt
+            .receipt()
+            .cloned()
+            .into_iter()
             .chain(corrections.iter().cloned())
             .collect::<Vec<_>>();
         validate_attempt_history(&history)?;
@@ -4175,8 +4270,14 @@ impl GameTurnRecord {
                     .map_or_else(String::new, |value| value.delta_hash().as_str().to_string()),
             ),
             (
-                "attempt".to_string(),
-                self.attempt.receipt_hash().as_str().to_string(),
+                "attempt_kind".to_string(),
+                format!("{:?}", self.attempt.kind()),
+            ),
+            (
+                "attempt_receipt".to_string(),
+                self.attempt.receipt().map_or_else(String::new, |value| {
+                    value.receipt_hash().as_str().to_string()
+                }),
             ),
             (
                 "compiler".to_string(),
@@ -4244,7 +4345,7 @@ impl GameTurnRecord {
     pub fn delta(&self) -> Option<&GraphDeltaPreview> {
         self.delta.as_ref()
     }
-    pub fn attempt(&self) -> &MoveAttemptReceipt {
+    pub fn attempt(&self) -> &GameTurnAttempt {
         &self.attempt
     }
     pub fn compiler_result(&self) -> &GameTurnCompilerResult {
@@ -4280,7 +4381,7 @@ impl<'de> Deserialize<'de> for GameTurnRecord {
             answer: GameTurnAnswer,
             chosen_move: Option<LegalMoveId>,
             delta: Option<GraphDeltaPreview>,
-            attempt: MoveAttemptReceipt,
+            attempt: GameTurnAttempt,
             compiler_result: GameTurnCompilerResult,
             corrections: Vec<MoveAttemptReceipt>,
             record_hash: GameTurnRecordHash,
@@ -5311,7 +5412,7 @@ mod tests {
             GameTurnAnswer::not_observed(GameTurnAnswerAbsenceReason::NotRequested),
             Some(move_id),
             None,
-            attempt,
+            GameTurnAttempt::terminal(attempt),
             GameTurnCompilerResult::not_requested(),
             Vec::new(),
         )
@@ -5346,7 +5447,10 @@ mod tests {
             record.evidence().len(),
             record.position().legal_moves().len()
         );
-        assert_eq!(record.attempt().outcome(), MoveAttemptOutcome::Incomplete);
+        assert_eq!(
+            record.attempt().receipt().unwrap().outcome(),
+            MoveAttemptOutcome::Incomplete
+        );
         assert_eq!(
             record.compiler_result().kind(),
             GameTurnCompilerResultKind::NotRequested
@@ -5358,6 +5462,41 @@ mod tests {
         let mut tampered: serde_json::Value = serde_json::from_slice(&encoded).unwrap();
         tampered["sequence"] = serde_json::json!(8);
         assert!(serde_json::from_value::<GameTurnRecord>(tampered).is_err());
+    }
+
+    #[test]
+    fn proposal_turn_records_explicitly_that_no_terminal_attempt_exists() {
+        let terminal = incomplete_game_turn();
+        let move_id = terminal.chosen_move().unwrap().clone();
+        let proposal = GameTurnRecord::new(
+            terminal.schema_version(),
+            terminal.session_id().clone(),
+            DesignTurnId::new("turn-proposal").unwrap(),
+            terminal.sequence() + 1,
+            terminal.observed_at_epoch_ms() + 1,
+            terminal.semantic_family().clone(),
+            terminal.risk_class(),
+            terminal.input_hash().clone(),
+            terminal.position().clone(),
+            terminal.evidence().to_vec(),
+            terminal.belief().clone(),
+            GameDisposition::propose_move(terminal.position(), move_id.clone()).unwrap(),
+            GameTurnAnswer::not_observed(GameTurnAnswerAbsenceReason::NotRequested),
+            Some(move_id),
+            None,
+            GameTurnAttempt::not_attempted(),
+            GameTurnCompilerResult::not_requested(),
+            Vec::new(),
+        )
+        .unwrap();
+        assert_eq!(proposal.attempt().kind(), GameTurnAttemptKind::NotAttempted);
+        assert_eq!(proposal.attempt().receipt(), None);
+        assert!(proposal.corrections().is_empty());
+        let encoded = serde_json::to_vec(&proposal).unwrap();
+        assert_eq!(
+            serde_json::from_slice::<GameTurnRecord>(&encoded).unwrap(),
+            proposal
+        );
     }
 
     #[test]
