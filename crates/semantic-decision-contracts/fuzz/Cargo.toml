@@ -1,0 +1,60 @@
+[package]
+name = "semantic-decision-contracts-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+arbitrary = { version = "1.4", features = ["derive"] }
+libfuzzer-sys = "0.4"
+semantic-decision-contracts = { path = ".." }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+[workspace]
+members = ["."]
+
+[[bin]]
+name = "design_position_contract"
+path = "fuzz_targets/design_position_contract.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "legal_move_contract"
+path = "fuzz_targets/legal_move_contract.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "attempt_receipt_contract"
+path = "fuzz_targets/attempt_receipt_contract.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "rule_explanation_contract"
+path = "fuzz_targets/rule_explanation_contract.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "feedback_option_contract"
+path = "fuzz_targets/feedback_option_contract.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "design_belief_contract"
+path = "fuzz_targets/design_belief_contract.rs"
+test = false
+doc = false
+bench = false

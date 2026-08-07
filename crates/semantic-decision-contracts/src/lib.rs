@@ -12,6 +12,21 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use sha2::{Digest, Sha256};
 use thiserror::Error;
 
+mod gameboard;
+
+pub use gameboard::{
+    filter_rule_explanations, validate_attempt_history, ApplicabilityFact, ApplicabilityState,
+    BeliefHash, BoardDescription, BoardPath, CorrectionKind, DesignBelief, DesignFocus,
+    DesignPosition, DesignStateId, DesignTurn, DesignTurnEvent, DesignTurnHash, DesignTurnId,
+    DisclosureClass, ExplanationParameter, FeedbackOption, FeedbackOptionKind, FocusAbsenceReason,
+    GameDomainId, GameboardContractError, GraphContentHash, GraphDeltaHash, GraphDeltaOperation,
+    GraphDeltaPreview, GraphElementRef, HistoryHash, LegalMove, LegalMoveId, MessageKey,
+    MotifHypothesis, MoveApplicabilityExplanation, MoveArgument, MoveArgumentName, MoveAttempt,
+    MoveAttemptId, MoveAttemptOutcome, MoveAttemptReceipt, MoveBindingState, MoveEvidence,
+    MoveProbability, MoveSetHash, PolicyDecisionId, ProducerIdentity, RuleCode, RuleExplanation,
+    RuleExplanationId, TransitionPreview, UnresolvedDimension, GAMEBOARD_SCHEMA_VERSION,
+};
+
 /// Framework-owned abstention identity present exactly once on every board.
 pub const ABSTENTION_CANDIDATE_ID: &str = "abstain.none_of_the_above";
 

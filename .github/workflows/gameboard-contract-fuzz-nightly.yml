@@ -1,0 +1,68 @@
+name: Semantic Gameboard contract fuzz nightly
+
+on:
+  schedule:
+    - cron: "23 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  fuzz-target:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target:
+          - attempt_receipt_contract
+          - design_belief_contract
+          - design_position_contract
+          - feedback_option_contract
+          - legal_move_contract
+          - rule_explanation_contract
+    steps:
+      - uses: actions/checkout@v4
+      - run: rustup toolchain install nightly --profile minimal
+      - run: cargo install cargo-fuzz --locked
+      - name: Run independently budgeted target
+        id: fuzz
+        working-directory: crates/semantic-decision-contracts/fuzz
+        shell: bash
+        run: |
+          set +e
+          started="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          corpus="$(mktemp -d)/corpus"
+          cp -R "corpus/${{ matrix.target }}" "$corpus"
+          cargo +nightly fuzz run "${{ matrix.target }}" "$corpus" -- \
+            -runs=100000 -max_total_time=900 -max_len=4096 -timeout=5
+          result=$?
+          finished="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          python3 - "$started" "$finished" "$result" <<'PY'
+          import json, os, sys
+          receipt = {
+              "schema_version": 1,
+              "target": os.environ["FUZZ_TARGET"],
+              "started_at": sys.argv[1],
+              "finished_at": sys.argv[2],
+              "runs_budget": 100000,
+              "seconds_budget": 900,
+              "max_len": 4096,
+              "exit_code": int(sys.argv[3]),
+          }
+          with open(f"nightly-receipt-{receipt['target']}.json", "w") as output:
+              json.dump(receipt, output, sort_keys=True, indent=2)
+              output.write("\n")
+          PY
+          exit "$result"
+        env:
+          FUZZ_TARGET: ${{ matrix.target }}
+      - name: Upload target receipt and artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gameboard-contract-${{ matrix.target }}-${{ github.run_id }}
+          if-no-files-found: error
+          path: |
+            crates/semantic-decision-contracts/fuzz/nightly-receipt-${{ matrix.target }}.json
+            crates/semantic-decision-contracts/fuzz/artifacts/${{ matrix.target }}/

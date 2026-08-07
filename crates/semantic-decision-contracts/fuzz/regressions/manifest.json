@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "targets": {
+    "attempt_receipt_contract": [],
+    "design_belief_contract": [
+      {
+        "file": "design_belief_contract/float-round-trip-4dbdedbde0d8c076fcf6455e0b0ea01ebd8de77b",
+        "finding": "finite probability must preserve its IEEE value across canonical JSON decode"
+      }
+    ],
+    "design_position_contract": [],
+    "feedback_option_contract": [],
+    "legal_move_contract": [],
+    "rule_explanation_contract": []
+  }
+}
