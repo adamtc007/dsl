@@ -13,6 +13,29 @@ use super::{
 /// Current canonical wire schema for the reusable gameboard contracts.
 pub const GAMEBOARD_SCHEMA_VERSION: u32 = 1;
 
+/// Maximum byte length of any single contract text field (identifiers,
+/// provenance, explanation prose). Bounds decode allocation for
+/// attacker-supplied strings; not a product-facing policy limit.
+pub const MAX_CONTRACT_TEXT_BYTES: usize = 64 * 1024;
+
+/// Maximum arguments admitted onto one legal move.
+pub const MAX_MOVE_ARGUMENTS: usize = 64;
+
+/// Maximum applicability facts admitted onto one legal move.
+pub const MAX_APPLICABILITY_FACTS: usize = 64;
+
+/// Maximum legal moves admitted onto one design position. Bounds
+/// anchor x candidate enumeration amplification at the contract boundary.
+pub const MAX_LEGAL_MOVES: usize = 512;
+
+/// Maximum effect operations admitted onto one graph delta preview.
+pub const MAX_DELTA_OPERATIONS: usize = 256;
+
+/// Maximum attempt receipts a single correction-history validation walks.
+/// A generic contract-layer safety backstop; product code may enforce a
+/// tighter policy limit of its own on top of this one.
+pub const MAX_VALIDATED_ATTEMPTS: usize = 1024;
+
 /// Refusal returned while constructing or decoding a gameboard contract.
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
 pub enum GameboardContractError {
@@ -37,6 +60,15 @@ pub enum GameboardContractError {
     /// A compatibility source could not be projected without guessing authority.
     #[error("legacy compatibility projection refused: {0}")]
     Compatibility(String),
+    /// A collection or text field exceeded its resource-safety bound. Distinct
+    /// from `InvalidContract` so callers can react to a resource refusal
+    /// (e.g. leave the session usable, do not retry) without string matching.
+    #[error("{field} exceeds the resource limit of {limit} ({actual} supplied)")]
+    ResourceLimitExceeded {
+        field: &'static str,
+        limit: usize,
+        actual: usize,
+    },
 }
 
 fn validate_schema(actual: u32) -> Result<(), GameboardContractError> {
@@ -61,6 +93,13 @@ fn validate_text(field: &'static str, value: &str) -> Result<(), GameboardContra
         return Err(GameboardContractError::InvalidText {
             field,
             reason: "must not contain control characters".to_string(),
+        });
+    }
+    if value.len() > MAX_CONTRACT_TEXT_BYTES {
+        return Err(GameboardContractError::ResourceLimitExceeded {
+            field,
+            limit: MAX_CONTRACT_TEXT_BYTES,
+            actual: value.len(),
         });
     }
     Ok(())
@@ -615,6 +654,13 @@ impl GraphDeltaPreview {
         mut operations: Vec<GraphDeltaOperation>,
     ) -> Result<Self, GameboardContractError> {
         validate_schema(schema_version)?;
+        if operations.len() > MAX_DELTA_OPERATIONS {
+            return Err(GameboardContractError::ResourceLimitExceeded {
+                field: "graph delta preview operations",
+                limit: MAX_DELTA_OPERATIONS,
+                actual: operations.len(),
+            });
+        }
         operations.sort();
         if operations.is_empty() {
             return Err(GameboardContractError::InvalidContract {
@@ -762,6 +808,20 @@ impl LegalMove {
         preview: Option<GraphDeltaPreview>,
     ) -> Result<Self, GameboardContractError> {
         validate_schema(schema_version)?;
+        if arguments.len() > MAX_MOVE_ARGUMENTS {
+            return Err(GameboardContractError::ResourceLimitExceeded {
+                field: "legal move arguments",
+                limit: MAX_MOVE_ARGUMENTS,
+                actual: arguments.len(),
+            });
+        }
+        if applicability.len() > MAX_APPLICABILITY_FACTS {
+            return Err(GameboardContractError::ResourceLimitExceeded {
+                field: "legal move applicability facts",
+                limit: MAX_APPLICABILITY_FACTS,
+                actual: applicability.len(),
+            });
+        }
         arguments.sort_by(|left, right| left.name.cmp(&right.name));
         if arguments
             .windows(2)
@@ -1035,6 +1095,13 @@ impl DesignPosition {
         mut legal_moves: Vec<LegalMove>,
     ) -> Result<Self, GameboardContractError> {
         validate_schema(schema_version)?;
+        if legal_moves.len() > MAX_LEGAL_MOVES {
+            return Err(GameboardContractError::ResourceLimitExceeded {
+                field: "design position legal moves",
+                limit: MAX_LEGAL_MOVES,
+                actual: legal_moves.len(),
+            });
+        }
         let compiler_profile = ContractText::new("compiler profile", compiler_profile)?;
         let policy_identity = ContractText::new("policy identity", policy_identity)?;
         for legal_move in &legal_moves {
@@ -2621,6 +2688,13 @@ impl<'de> Deserialize<'de> for MoveAttemptReceipt {
 pub fn validate_attempt_history(
     receipts: &[MoveAttemptReceipt],
 ) -> Result<(), GameboardContractError> {
+    if receipts.len() > MAX_VALIDATED_ATTEMPTS {
+        return Err(GameboardContractError::ResourceLimitExceeded {
+            field: "attempt history",
+            limit: MAX_VALIDATED_ATTEMPTS,
+            actual: receipts.len(),
+        });
+    }
     let by_id = receipts
         .iter()
         .map(|receipt| (receipt.attempt_id(), receipt))
@@ -5879,6 +5953,185 @@ mod tests {
             vec![operation.clone(), operation]
         )
         .is_err());
+    }
+
+    #[test]
+    fn oversized_contract_text_is_a_typed_resource_limit_refusal_not_a_generic_one() {
+        let oversized = "x".repeat(MAX_CONTRACT_TEXT_BYTES + 1);
+        let error = ContractText::new("compiler profile", oversized).unwrap_err();
+        assert_eq!(
+            error,
+            GameboardContractError::ResourceLimitExceeded {
+                field: "compiler profile",
+                limit: MAX_CONTRACT_TEXT_BYTES,
+                actual: MAX_CONTRACT_TEXT_BYTES + 1,
+            }
+        );
+        // At the limit is admitted; the session stays usable for a legitimate call.
+        let at_limit = "x".repeat(MAX_CONTRACT_TEXT_BYTES);
+        assert!(ContractText::new("compiler profile", at_limit).is_ok());
+    }
+
+    #[test]
+    fn oversized_move_argument_count_is_a_typed_resource_limit_refusal() {
+        let too_many = (0..=MAX_MOVE_ARGUMENTS)
+            .map(|index| argument(&format!("arg-{index}"), false))
+            .collect::<Vec<_>>();
+        let error = LegalMove::new(
+            GAMEBOARD_SCHEMA_VERSION,
+            CanonicalCandidateId::new("op.a").unwrap(),
+            GraphRevision::new("revision-1").unwrap(),
+            false,
+            None,
+            too_many,
+            vec![fact("rule.allowed")],
+            None,
+        )
+        .unwrap_err();
+        assert_eq!(
+            error,
+            GameboardContractError::ResourceLimitExceeded {
+                field: "legal move arguments",
+                limit: MAX_MOVE_ARGUMENTS,
+                actual: MAX_MOVE_ARGUMENTS + 1,
+            }
+        );
+        // The session stays usable: a legal move at the limit still constructs.
+        let at_limit = (0..MAX_MOVE_ARGUMENTS)
+            .map(|index| argument(&format!("arg-{index}"), false))
+            .collect::<Vec<_>>();
+        assert!(LegalMove::new(
+            GAMEBOARD_SCHEMA_VERSION,
+            CanonicalCandidateId::new("op.a").unwrap(),
+            GraphRevision::new("revision-1").unwrap(),
+            false,
+            None,
+            at_limit,
+            vec![fact("rule.allowed")],
+            None,
+        )
+        .is_ok());
+    }
+
+    #[test]
+    fn oversized_applicability_fact_count_is_a_typed_resource_limit_refusal() {
+        let too_many = (0..=MAX_APPLICABILITY_FACTS)
+            .map(|index| fact(&format!("rule.allowed-{index}")))
+            .collect::<Vec<_>>();
+        let error = LegalMove::new(
+            GAMEBOARD_SCHEMA_VERSION,
+            CanonicalCandidateId::new("op.a").unwrap(),
+            GraphRevision::new("revision-1").unwrap(),
+            false,
+            None,
+            vec![argument("name", false)],
+            too_many,
+            None,
+        )
+        .unwrap_err();
+        assert_eq!(
+            error,
+            GameboardContractError::ResourceLimitExceeded {
+                field: "legal move applicability facts",
+                limit: MAX_APPLICABILITY_FACTS,
+                actual: MAX_APPLICABILITY_FACTS + 1,
+            }
+        );
+    }
+
+    #[test]
+    fn oversized_legal_move_set_is_a_typed_resource_limit_refusal() {
+        let too_many = (0..=MAX_LEGAL_MOVES)
+            .map(|index| legal_move(&format!("op.candidate-{index}"), "revision-1"))
+            .collect::<Vec<_>>();
+        let error = DesignPosition::new(
+            GAMEBOARD_SCHEMA_VERSION,
+            GameDomainId::new("domain.example").unwrap(),
+            BoardPath::new(vec!["root".into()]).unwrap(),
+            SnapshotIdentity::new("snapshot").unwrap(),
+            GraphRevision::new("revision-1").unwrap(),
+            graph_hash('a'),
+            "compiler",
+            "policy",
+            None,
+            DesignFocus::absent(FocusAbsenceReason::NotProvided),
+            history_hash('b'),
+            too_many,
+        )
+        .unwrap_err();
+        assert_eq!(
+            error,
+            GameboardContractError::ResourceLimitExceeded {
+                field: "design position legal moves",
+                limit: MAX_LEGAL_MOVES,
+                actual: MAX_LEGAL_MOVES + 1,
+            }
+        );
+        // The session stays usable: a normal, small legal-move set still constructs.
+        assert!(DesignPosition::new(
+            GAMEBOARD_SCHEMA_VERSION,
+            GameDomainId::new("domain.example").unwrap(),
+            BoardPath::new(vec!["root".into()]).unwrap(),
+            SnapshotIdentity::new("snapshot").unwrap(),
+            GraphRevision::new("revision-1").unwrap(),
+            graph_hash('a'),
+            "compiler",
+            "policy",
+            None,
+            DesignFocus::absent(FocusAbsenceReason::NotProvided),
+            history_hash('b'),
+            vec![legal_move("op.solo", "revision-1")],
+        )
+        .is_ok());
+    }
+
+    #[test]
+    fn oversized_delta_operation_count_is_a_typed_resource_limit_refusal() {
+        let too_many = (0..=MAX_DELTA_OPERATIONS)
+            .map(|index| GraphDeltaOperation::new(format!("effect.{index}"), None, graph_hash('a')).unwrap())
+            .collect::<Vec<_>>();
+        let error =
+            GraphDeltaPreview::new(GAMEBOARD_SCHEMA_VERSION, graph_hash('b'), too_many).unwrap_err();
+        assert_eq!(
+            error,
+            GameboardContractError::ResourceLimitExceeded {
+                field: "graph delta preview operations",
+                limit: MAX_DELTA_OPERATIONS,
+                actual: MAX_DELTA_OPERATIONS + 1,
+            }
+        );
+    }
+
+    #[test]
+    fn oversized_attempt_history_is_a_typed_resource_limit_refusal() {
+        let too_many = (0..=MAX_VALIDATED_ATTEMPTS)
+            .map(|index| {
+                MoveAttemptReceipt::new(
+                    GAMEBOARD_SCHEMA_VERSION,
+                    MoveAttemptId::new(format!("attempt-{index}")).unwrap(),
+                    DesignStateId::new(digest('a')).unwrap(),
+                    None,
+                    graph_hash('b'),
+                    MoveAttemptOutcome::Applied,
+                    Vec::new(),
+                    Vec::new(),
+                    None,
+                    None,
+                )
+                .unwrap()
+            })
+            .collect::<Vec<_>>();
+        let error = validate_attempt_history(&too_many).unwrap_err();
+        assert_eq!(
+            error,
+            GameboardContractError::ResourceLimitExceeded {
+                field: "attempt history",
+                limit: MAX_VALIDATED_ATTEMPTS,
+                actual: MAX_VALIDATED_ATTEMPTS + 1,
+            }
+        );
+        // The session stays usable: a normal, bounded attempt window still validates.
+        assert!(validate_attempt_history(&too_many[..MAX_VALIDATED_ATTEMPTS]).is_ok());
     }
 
     #[test]

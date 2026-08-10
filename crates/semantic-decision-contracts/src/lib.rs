@@ -29,7 +29,8 @@ pub use gameboard::{
     MoveAttempt, MoveAttemptId, MoveAttemptOutcome, MoveAttemptReceipt, MoveBindingState,
     MoveEvidence, MoveProbability, MoveSetHash, ProducerIdentity, RuleCode,
     RuleExplanation, RuleExplanationId, SemanticFamilyId, TransitionPreview, UnresolvedDimension,
-    GAMEBOARD_SCHEMA_VERSION,
+    GAMEBOARD_SCHEMA_VERSION, MAX_APPLICABILITY_FACTS, MAX_CONTRACT_TEXT_BYTES,
+    MAX_DELTA_OPERATIONS, MAX_LEGAL_MOVES, MAX_MOVE_ARGUMENTS, MAX_VALIDATED_ATTEMPTS,
 };
 
 /// Framework-owned abstention identity present exactly once on every board.
