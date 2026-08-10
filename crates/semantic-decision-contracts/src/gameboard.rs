@@ -199,7 +199,6 @@ text_identity!(GraphElementRef, "graph element reference");
 text_identity!(RuleCode, "rule code");
 text_identity!(MessageKey, "message key");
 text_identity!(ProducerIdentity, "producer identity");
-text_identity!(PolicyDecisionId, "policy decision identity");
 text_identity!(MoveArgumentName, "move argument name");
 
 hash_identity!(DesignStateId, "design state identity");
@@ -265,15 +264,15 @@ impl<'de> Deserialize<'de> for BoardPath {
     }
 }
 
-/// Why a position deliberately carries no graph focus.
+/// Why a position deliberately carries no graph focus. `NotProvided` is the
+/// only producible reason today — no code path clears a sticky focus,
+/// downgrades an unresolved reference, records an auto-selected default, or
+/// projects a legacy (pre-gameboard) board, so those reasons were removed
+/// rather than kept as unreachable scaffolding.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum FocusAbsenceReason {
     NotProvided,
-    ClearedByUser,
-    UnknownReference,
-    PolicyDecision,
-    LegacyProjection,
 }
 
 /// Explicit current graph focus; absence is never silently inferred.
@@ -282,13 +281,9 @@ pub enum FocusAbsenceReason {
 pub enum DesignFocus {
     Absent {
         reason: FocusAbsenceReason,
-        policy_decision: Option<PolicyDecisionId>,
     },
     Element {
         element: GraphElementRef,
-    },
-    Subgraph {
-        elements: Vec<GraphElementRef>,
     },
     Unknown {
         reference: GraphElementRef,
@@ -296,46 +291,14 @@ pub enum DesignFocus {
 }
 
 impl DesignFocus {
-    /// Record an explicit absence and, when policy-selected, its decision identity.
-    pub fn absent(
-        reason: FocusAbsenceReason,
-        policy_decision: Option<String>,
-    ) -> Result<Self, GameboardContractError> {
-        if reason == FocusAbsenceReason::PolicyDecision && policy_decision.is_none() {
-            return Err(GameboardContractError::InvalidContract {
-                contract: "design focus",
-                reason: "policy-selected absence requires a policy decision identity".to_string(),
-            });
-        }
-        if reason != FocusAbsenceReason::PolicyDecision && policy_decision.is_some() {
-            return Err(GameboardContractError::InvalidContract {
-                contract: "design focus",
-                reason: "only policy-selected absence may carry a policy decision identity"
-                    .to_string(),
-            });
-        }
-        Ok(Self::Absent {
-            reason,
-            policy_decision: policy_decision.map(PolicyDecisionId::new).transpose()?,
-        })
+    /// Record an explicit absence.
+    pub fn absent(reason: FocusAbsenceReason) -> Self {
+        Self::Absent { reason }
     }
 
     /// Focus one known graph element.
     pub fn element(element: GraphElementRef) -> Self {
         Self::Element { element }
-    }
-
-    /// Focus a canonical set of known graph elements.
-    pub fn subgraph(mut elements: Vec<GraphElementRef>) -> Result<Self, GameboardContractError> {
-        elements.sort();
-        elements.dedup();
-        if elements.is_empty() {
-            return Err(GameboardContractError::InvalidContract {
-                contract: "design focus",
-                reason: "subgraph focus must contain at least one element".to_string(),
-            });
-        }
-        Ok(Self::Subgraph { elements })
     }
 
     /// Preserve an unresolved focus reference without selecting another element.
@@ -352,30 +315,15 @@ impl<'de> Deserialize<'de> for DesignFocus {
         #[derive(Deserialize)]
         #[serde(tag = "kind", rename_all = "snake_case")]
         enum Wire {
-            Absent {
-                reason: FocusAbsenceReason,
-                policy_decision: Option<String>,
-            },
-            Element {
-                element: GraphElementRef,
-            },
-            Subgraph {
-                elements: Vec<GraphElementRef>,
-            },
-            Unknown {
-                reference: GraphElementRef,
-            },
+            Absent { reason: FocusAbsenceReason },
+            Element { element: GraphElementRef },
+            Unknown { reference: GraphElementRef },
         }
-        match Wire::deserialize(deserializer)? {
-            Wire::Absent {
-                reason,
-                policy_decision,
-            } => Self::absent(reason, policy_decision),
-            Wire::Element { element } => Ok(Self::element(element)),
-            Wire::Subgraph { elements } => Self::subgraph(elements),
-            Wire::Unknown { reference } => Ok(Self::unknown(reference)),
-        }
-        .map_err(serde::de::Error::custom)
+        Ok(match Wire::deserialize(deserializer)? {
+            Wire::Absent { reason } => Self::absent(reason),
+            Wire::Element { element } => Self::element(element),
+            Wire::Unknown { reference } => Self::unknown(reference),
+        })
     }
 }
 
@@ -1331,30 +1279,14 @@ impl<'de> Deserialize<'de> for DesignPosition {
 
 fn hash_focus(focus: &DesignFocus) -> String {
     let fields = match focus {
-        DesignFocus::Absent {
-            reason,
-            policy_decision,
-        } => vec![
+        DesignFocus::Absent { reason } => vec![
             ("kind".to_string(), "absent".to_string()),
             ("reason".to_string(), format!("{reason:?}")),
-            (
-                "policy".to_string(),
-                policy_decision
-                    .as_ref()
-                    .map_or_else(String::new, |value| value.as_str().to_string()),
-            ),
         ],
         DesignFocus::Element { element } => vec![
             ("kind".to_string(), "element".to_string()),
             ("element".to_string(), element.as_str().to_string()),
         ],
-        DesignFocus::Subgraph { elements } => {
-            std::iter::once(("kind".to_string(), "subgraph".to_string()))
-                .chain(elements.iter().enumerate().map(|(index, element)| {
-                    (format!("element.{index}"), element.as_str().to_string())
-                }))
-                .collect()
-        }
         DesignFocus::Unknown { reference } => vec![
             ("kind".to_string(), "unknown".to_string()),
             ("reference".to_string(), reference.as_str().to_string()),
@@ -5343,7 +5275,7 @@ mod tests {
             "compiler-profile-v1",
             "policy-v1",
             None,
-            DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+            DesignFocus::absent(FocusAbsenceReason::NotProvided),
             'b',
             vec![legal_move("op.example", "revision-1")],
         )
@@ -5424,15 +5356,15 @@ mod tests {
         assert_eq!(serde_json::to_vec(&decoded).unwrap(), encoded);
         assert_eq!(
             hex::encode(Sha256::digest(&encoded)),
-            "45098ad514b2ee917338a5777503eb544e5c7bbc67eca9fb71085151ac28e6f9"
+            "09b4187ef408930418bcd84073e7ff69b0a53cb1502e5adf6056d47ea701d1c5"
         );
         assert_eq!(
             position.state_id().as_str(),
-            "858df72ab46461a1ec73ea73b506c97c27625a86620d7c50088c2e3ab9bd125f"
+            "35f29f806dd75245aef00c2f24196d83e1c431a4845710684cba141849804d27"
         );
         assert_eq!(
             position.move_set_hash().as_str(),
-            "f365d137d095160b5a56c45f28e7320ab43ebf965467866c307951bb645e8d83"
+            "e3f56ad4ce9be1c1615134c28e9e6d0eca1cf9d2672eb083ec36ce6454af101a"
         );
     }
 
@@ -5702,7 +5634,7 @@ mod tests {
                 "compiler-profile-v1",
                 "policy-v1",
                 None,
-                DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+                DesignFocus::absent(FocusAbsenceReason::NotProvided),
                 'b',
                 vec![legal_move("op.example", "revision-1")],
             ),
@@ -5715,7 +5647,7 @@ mod tests {
                 "compiler-profile-v1",
                 "policy-v1",
                 None,
-                DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+                DesignFocus::absent(FocusAbsenceReason::NotProvided),
                 'b',
                 vec![legal_move("op.example", "revision-1")],
             ),
@@ -5728,7 +5660,7 @@ mod tests {
                 "compiler-profile-v1",
                 "policy-v1",
                 None,
-                DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+                DesignFocus::absent(FocusAbsenceReason::NotProvided),
                 'b',
                 vec![legal_move("op.example", "revision-1")],
             ),
@@ -5741,7 +5673,7 @@ mod tests {
                 "compiler-profile-v1",
                 "policy-v1",
                 None,
-                DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+                DesignFocus::absent(FocusAbsenceReason::NotProvided),
                 'b',
                 vec![legal_move("op.example", "revision-2")],
             ),
@@ -5754,7 +5686,7 @@ mod tests {
                 "compiler-profile-v1",
                 "policy-v1",
                 None,
-                DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+                DesignFocus::absent(FocusAbsenceReason::NotProvided),
                 'b',
                 vec![legal_move("op.example", "revision-1")],
             ),
@@ -5767,7 +5699,7 @@ mod tests {
                 "compiler-profile-v2",
                 "policy-v1",
                 None,
-                DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+                DesignFocus::absent(FocusAbsenceReason::NotProvided),
                 'b',
                 vec![legal_move("op.example", "revision-1")],
             ),
@@ -5780,7 +5712,7 @@ mod tests {
                 "compiler-profile-v1",
                 "policy-v2",
                 None,
-                DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+                DesignFocus::absent(FocusAbsenceReason::NotProvided),
                 'b',
                 vec![legal_move("op.example", "revision-1")],
             ),
@@ -5793,7 +5725,7 @@ mod tests {
                 "compiler-profile-v1",
                 "policy-v1",
                 Some('d'),
-                DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+                DesignFocus::absent(FocusAbsenceReason::NotProvided),
                 'b',
                 vec![legal_move("op.example", "revision-1")],
             ),
@@ -5819,7 +5751,7 @@ mod tests {
                 "compiler-profile-v1",
                 "policy-v1",
                 None,
-                DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+                DesignFocus::absent(FocusAbsenceReason::NotProvided),
                 'c',
                 vec![legal_move("op.example", "revision-1")],
             ),
@@ -5832,7 +5764,7 @@ mod tests {
                 "compiler-profile-v1",
                 "policy-v1",
                 None,
-                DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+                DesignFocus::absent(FocusAbsenceReason::NotProvided),
                 'b',
                 vec![legal_move("op.other", "revision-1")],
             ),
@@ -5851,7 +5783,7 @@ mod tests {
                 "compiler",
                 "policy",
                 None,
-                DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+                DesignFocus::absent(FocusAbsenceReason::NotProvided),
                 history_hash('b'),
                 vec![],
             ),
@@ -5888,7 +5820,7 @@ mod tests {
             "compiler",
             "policy",
             None,
-            DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+            DesignFocus::absent(FocusAbsenceReason::NotProvided),
             'b',
             vec![move_a.clone(), move_b.clone()],
         );
@@ -5901,7 +5833,7 @@ mod tests {
             "compiler",
             "policy",
             None,
-            DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+            DesignFocus::absent(FocusAbsenceReason::NotProvided),
             'b',
             vec![move_b, move_a],
         );
@@ -5921,7 +5853,7 @@ mod tests {
             "compiler",
             "policy",
             None,
-            DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+            DesignFocus::absent(FocusAbsenceReason::NotProvided),
             history_hash('b'),
             vec![duplicate.clone(), duplicate],
         );
@@ -6120,7 +6052,7 @@ mod tests {
             "compiler-profile-v1",
             "policy-v1",
             None,
-            DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+            DesignFocus::absent(FocusAbsenceReason::NotProvided),
             'b',
             vec![
                 legal_move("op.alpha", "revision-1"),
@@ -6191,7 +6123,7 @@ mod tests {
             "compiler-profile-v1",
             "policy-v1",
             None,
-            DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+            DesignFocus::absent(FocusAbsenceReason::NotProvided),
             'b',
             vec![legal_move("op.alpha", "revision-2")],
         );
@@ -6228,7 +6160,7 @@ mod tests {
             "compiler-profile-v1",
             "policy-v1",
             None,
-            DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap(),
+            DesignFocus::absent(FocusAbsenceReason::NotProvided),
             'b',
             vec![legal_move("op.example", "revision-2")],
         );
@@ -6365,7 +6297,7 @@ mod tests {
             "compiler-profile-v1",
             "policy-v1",
             history_hash('b'),
-            DesignFocus::absent(FocusAbsenceReason::LegacyProjection, None).unwrap(),
+            DesignFocus::absent(FocusAbsenceReason::NotProvided),
             None,
         )
         .unwrap();

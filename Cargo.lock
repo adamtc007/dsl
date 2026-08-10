@@ -598,7 +598,7 @@ dependencies = [
 
 [[package]]
 name = "dsl-core"
-version = "0.2.2"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -622,7 +622,7 @@ dependencies = [
 
 [[package]]
 name = "dsl-integration-tests"
-version = "0.2.2"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -643,7 +643,7 @@ dependencies = [
 
 [[package]]
 name = "dsl_types"
-version = "0.2.2"
+version = "0.3.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -2430,7 +2430,7 @@ checksum = "1c107b6f4780854c8b126e228ea8869f4d7b71260f962fefb57b996b8959ba6b"
 
 [[package]]
 name = "sem_os_core"
-version = "0.2.2"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2457,7 +2457,7 @@ dependencies = [
 
 [[package]]
 name = "sem_os_ontology"
-version = "0.2.2"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "chrono",
@@ -2475,7 +2475,7 @@ dependencies = [
 
 [[package]]
 name = "sem_os_policy"
-version = "0.2.2"
+version = "0.3.0"
 dependencies = [
  "anyhow",
  "async-trait",
@@ -2501,7 +2501,7 @@ dependencies = [
 
 [[package]]
 name = "sem_os_types"
-version = "0.2.2"
+version = "0.3.0"
 dependencies = [
  "chrono",
  "serde",
@@ -2512,7 +2512,7 @@ dependencies = [
 
 [[package]]
 name = "semantic-decision-contracts"
-version = "0.2.2"
+version = "0.3.0"
 dependencies = [
  "hex",
  "serde",
@@ -2523,7 +2523,7 @@ dependencies = [
 
 [[package]]
 name = "semantic-embedder"
-version = "0.2.2"
+version = "0.3.0"
 dependencies = [
  "candle-core",
  "candle-nn",
@@ -2537,7 +2537,7 @@ dependencies = [
 
 [[package]]
 name = "semantic-pack"
-version = "0.2.2"
+version = "0.3.0"
 dependencies = [
  "dsl_types",
  "hex",

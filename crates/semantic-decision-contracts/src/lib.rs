@@ -27,7 +27,7 @@ pub use gameboard::{
     GraphDeltaPreview, GraphElementRef, HistoryHash, IntendedMove, LegalMove, LegalMoveId,
     MessageKey, MotifHypothesis, MoveApplicabilityExplanation, MoveArgument, MoveArgumentName,
     MoveAttempt, MoveAttemptId, MoveAttemptOutcome, MoveAttemptReceipt, MoveBindingState,
-    MoveEvidence, MoveProbability, MoveSetHash, PolicyDecisionId, ProducerIdentity, RuleCode,
+    MoveEvidence, MoveProbability, MoveSetHash, ProducerIdentity, RuleCode,
     RuleExplanation, RuleExplanationId, SemanticFamilyId, TransitionPreview, UnresolvedDimension,
     GAMEBOARD_SCHEMA_VERSION,
 };

@@ -14,23 +14,23 @@ members = [
 resolver = "2"
 
 [workspace.package]
-version = "0.2.2"
+version = "0.3.0"
 edition = "2021"
 rust-version = "1.95"
 license = "MIT"
 repository = "https://github.com/adamtc007/dsl"
 
 [workspace.dependencies]
-dsl_types       = { version = "0.2.2", path = "crates/dsl_types" }
-dsl-core        = { version = "0.2.2", path = "crates/dsl-core" }
-sem_os_types    = { version = "0.2.2", path = "crates/sem_os_types" }
-sem_os_core     = { version = "0.2.2", path = "crates/sem_os_core" }
-sem_os_ontology = { version = "0.2.2", path = "crates/sem_os_ontology" }
-sem_os_policy   = { version = "0.2.2", path = "crates/sem_os_policy" }
-semantic-decision-contracts = { version = "0.2.2", path = "crates/semantic-decision-contracts" }
-semantic-pack = { version = "0.2.2", path = "crates/semantic-pack" }
-semantic-embedder = { version = "0.2.2", path = "crates/semantic-embedder" }
-dsl-integration-tests = { version = "0.2.2", path = "crates/dsl-integration-tests" }
+dsl_types       = { version = "0.3.0", path = "crates/dsl_types" }
+dsl-core        = { version = "0.3.0", path = "crates/dsl-core" }
+sem_os_types    = { version = "0.3.0", path = "crates/sem_os_types" }
+sem_os_core     = { version = "0.3.0", path = "crates/sem_os_core" }
+sem_os_ontology = { version = "0.3.0", path = "crates/sem_os_ontology" }
+sem_os_policy   = { version = "0.3.0", path = "crates/sem_os_policy" }
+semantic-decision-contracts = { version = "0.3.0", path = "crates/semantic-decision-contracts" }
+semantic-pack = { version = "0.3.0", path = "crates/semantic-pack" }
+semantic-embedder = { version = "0.3.0", path = "crates/semantic-embedder" }
+dsl-integration-tests = { version = "0.3.0", path = "crates/dsl-integration-tests" }
 
 [workspace.lints.rust]
 unsafe_code = "forbid"

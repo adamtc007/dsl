@@ -10,7 +10,7 @@ fn evaluation_facades(_: &GameTurnRecord, _: &GameTurnAdjudication) {}
 
 fn main() {
     let domain = GameDomainId::new("consumer.domain").unwrap();
-    let focus = DesignFocus::absent(FocusAbsenceReason::NotProvided, None).unwrap();
+    let focus = DesignFocus::absent(FocusAbsenceReason::NotProvided);
     let attempt = MoveAttemptId::new("attempt-1").unwrap();
     let session = GameSessionId::new("session-1").unwrap();
     let family = SemanticFamilyId::new("family.example").unwrap();
