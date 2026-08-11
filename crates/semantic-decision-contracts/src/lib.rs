@@ -23,7 +23,7 @@ pub use gameboard::{
     GameTurnAdjudication, GameTurnAdjudicationHash, GameTurnAnswer, GameTurnAnswerAbsenceReason,
     GameTurnAnswerKind, GameTurnAttempt, GameTurnAttemptKind, GameTurnCompilerResult,
     GameTurnCompilerResultKind, GameTurnJudgement, GameTurnRecord, GameTurnRecordHash,
-    GameboardContractError, GraphContentHash, GraphDeltaHash, GraphDeltaOperation,
+    GameboardContractError, GraphContentHash, GraphDeltaHash, GraphDeltaOperation, GraphStateHash,
     GraphDeltaPreview, GraphElementRef, HistoryHash, IntendedMove, LegalMove, LegalMoveId,
     MessageKey, MotifHypothesis, MoveApplicabilityExplanation, MoveArgument, MoveArgumentName,
     MoveAttempt, MoveAttemptId, MoveAttemptOutcome, MoveAttemptReceipt, MoveBindingState,

@@ -243,7 +243,20 @@ text_identity!(MoveArgumentName, "move argument name");
 hash_identity!(DesignStateId, "design state identity");
 hash_identity!(LegalMoveId, "legal move identity");
 hash_identity!(MoveSetHash, "move-set hash");
+// NOTE (D23/I34, bpmn-lite RESEARCH-002/S2): despite its name,
+// `GraphContentHash` is ROUTE-derived by every caller in practice — it is
+// fed from a hash of the accumulated edit-log payloads, not from the
+// resulting graph structure. Two edit sequences reaching a structurally
+// identical graph produce DIFFERENT `GraphContentHash` values. It is kept
+// unchanged (its bytes are load-bearing for existing board/proposal
+// compatibility) rather than renamed.
 hash_identity!(GraphContentHash, "graph content hash");
+// `GraphStateHash` is the genuinely CONTENT-derived companion (D23):
+// callers compute it from the reconstructed graph's canonical structure
+// (e.g. `designer-graph::schema::DesignerDag::graph_state_hash`), never
+// from the edit log. Two edit sequences reaching the same structural
+// graph MUST produce the same `GraphStateHash`, unlike `GraphContentHash`.
+hash_identity!(GraphStateHash, "graph state hash");
 hash_identity!(GraphDeltaHash, "graph delta hash");
 hash_identity!(HistoryHash, "history hash");
 hash_identity!(RuleExplanationId, "rule explanation identity");
@@ -1068,6 +1081,7 @@ pub struct DesignPosition {
     semantic_snapshot: SnapshotIdentity,
     graph_revision: GraphRevision,
     graph_hash: GraphContentHash,
+    graph_state_hash: GraphStateHash,
     compiler_profile: ContractText,
     policy_identity: ContractText,
     current_proposal_hash: Option<GraphContentHash>,
@@ -1087,6 +1101,7 @@ impl DesignPosition {
         semantic_snapshot: SnapshotIdentity,
         graph_revision: GraphRevision,
         graph_hash: GraphContentHash,
+        graph_state_hash: GraphStateHash,
         compiler_profile: impl Into<String>,
         policy_identity: impl Into<String>,
         current_proposal_hash: Option<GraphContentHash>,
@@ -1167,6 +1182,10 @@ impl DesignPosition {
             ),
             ("graph_hash".to_string(), graph_hash.as_str().to_string()),
             (
+                "graph_state_hash".to_string(),
+                graph_state_hash.as_str().to_string(),
+            ),
+            (
                 "compiler_profile".to_string(),
                 compiler_profile.as_str().to_string(),
             ),
@@ -1193,6 +1212,7 @@ impl DesignPosition {
             semantic_snapshot,
             graph_revision,
             graph_hash,
+            graph_state_hash,
             compiler_profile,
             policy_identity,
             current_proposal_hash,
@@ -1201,6 +1221,12 @@ impl DesignPosition {
             legal_moves,
             move_set_hash,
         })
+    }
+
+    /// Content identity of the reconstructed graph structure (D23) —
+    /// unlike `graph_hash()`, invariant to the edit route that produced it.
+    pub fn graph_state_hash(&self) -> &GraphStateHash {
+        &self.graph_state_hash
     }
 
     /// Project a legacy semantic board into an explicitly qualified position.
@@ -1212,6 +1238,7 @@ impl DesignPosition {
         board: &SemanticDecisionBoard,
         board_path: BoardPath,
         graph_hash: GraphContentHash,
+        graph_state_hash: GraphStateHash,
         compiler_profile: impl Into<String>,
         policy_identity: impl Into<String>,
         history_hash: HistoryHash,
@@ -1230,6 +1257,7 @@ impl DesignPosition {
             board.semantic_snapshot.clone(),
             board.graph_revision.clone(),
             graph_hash,
+            graph_state_hash,
             compiler_profile,
             policy_identity,
             current_proposal_hash,
@@ -1311,6 +1339,7 @@ impl<'de> Deserialize<'de> for DesignPosition {
             semantic_snapshot: SnapshotIdentity,
             graph_revision: GraphRevision,
             graph_hash: GraphContentHash,
+            graph_state_hash: GraphStateHash,
             compiler_profile: String,
             policy_identity: String,
             current_proposal_hash: Option<GraphContentHash>,
@@ -1327,6 +1356,7 @@ impl<'de> Deserialize<'de> for DesignPosition {
             wire.semantic_snapshot,
             wire.graph_revision,
             wire.graph_hash,
+            wire.graph_state_hash,
             wire.compiler_profile,
             wire.policy_identity,
             wire.current_proposal_hash,
@@ -5276,6 +5306,10 @@ mod tests {
         GraphContentHash::new(digest(byte)).unwrap()
     }
 
+    fn graph_state_hash(byte: char) -> GraphStateHash {
+        GraphStateHash::new(digest(byte)).unwrap()
+    }
+
     fn history_hash(byte: char) -> HistoryHash {
         HistoryHash::new(digest(byte)).unwrap()
     }
@@ -5329,6 +5363,11 @@ mod tests {
             SnapshotIdentity::new(snapshot).unwrap(),
             GraphRevision::new(revision).unwrap(),
             graph_hash(graph),
+            // Test helper keeps a single `graph: char` axis for identity —
+            // state hash mirrors it 1:1 here since these fixtures never
+            // exercise route-vs-content divergence directly (D23 is
+            // asserted by dedicated tests instead).
+            graph_state_hash(graph),
             compiler,
             policy,
             proposal.map(graph_hash),
@@ -5430,11 +5469,11 @@ mod tests {
         assert_eq!(serde_json::to_vec(&decoded).unwrap(), encoded);
         assert_eq!(
             hex::encode(Sha256::digest(&encoded)),
-            "09b4187ef408930418bcd84073e7ff69b0a53cb1502e5adf6056d47ea701d1c5"
+            "d13ce6608ce3e2399b91e6d4e238c5727eb48bae29e71ef1c522d7fe806dfe82"
         );
         assert_eq!(
             position.state_id().as_str(),
-            "35f29f806dd75245aef00c2f24196d83e1c431a4845710684cba141849804d27"
+            "7a4871a105c21042961bd52f38cf3a44978fe3d0b8ed0795c3cbe70d93101ec9"
         );
         assert_eq!(
             position.move_set_hash().as_str(),
@@ -5854,6 +5893,7 @@ mod tests {
                 SnapshotIdentity::new("snapshot-v1").unwrap(),
                 GraphRevision::new("revision-1").unwrap(),
                 graph_hash('a'),
+                graph_state_hash('a'),
                 "compiler",
                 "policy",
                 None,
@@ -5924,6 +5964,7 @@ mod tests {
             SnapshotIdentity::new("snapshot").unwrap(),
             GraphRevision::new("revision-1").unwrap(),
             graph_hash('a'),
+            graph_state_hash('a'),
             "compiler",
             "policy",
             None,
@@ -6051,6 +6092,7 @@ mod tests {
             SnapshotIdentity::new("snapshot").unwrap(),
             GraphRevision::new("revision-1").unwrap(),
             graph_hash('a'),
+            graph_state_hash('a'),
             "compiler",
             "policy",
             None,
@@ -6075,6 +6117,7 @@ mod tests {
             SnapshotIdentity::new("snapshot").unwrap(),
             GraphRevision::new("revision-1").unwrap(),
             graph_hash('a'),
+            graph_state_hash('a'),
             "compiler",
             "policy",
             None,
@@ -6547,6 +6590,7 @@ mod tests {
             &board,
             BoardPath::new(vec!["root".into()]).unwrap(),
             graph_hash('a'),
+            graph_state_hash('a'),
             "compiler-profile-v1",
             "policy-v1",
             history_hash('b'),
