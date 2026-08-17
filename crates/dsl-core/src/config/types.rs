@@ -806,6 +806,7 @@ pub enum VerbTier {
 /// - Trading profile verbs → matrix (JSONB document)
 /// - Entity/ownership verbs → entity (entity_relationships table)
 /// - KYC/case verbs → workflow (case state machine)
+/// - KYC/UBO determination verbs → kyc_stream (durable append-only verb stream)
 /// - Research verbs → external (APIs like GLEIF, Companies House)
 /// - Fund/investor verbs → register (capital structure)
 /// - Reference data verbs → catalog (seeded lookup tables)
@@ -825,6 +826,11 @@ pub enum SourceOfTruth {
     Entity,
     /// Case workflow - KYC case state machine is canonical
     Workflow,
+    /// dsl.kyc verb stream - the durable append-only `kyc_intent_events`
+    /// table is canonical (control/economic edges, determination freezes,
+    /// obligation lifecycle); folds are disposable, replayable projections,
+    /// not the source itself (EOP-DD-KYCUBO-002 §2)
+    KycStream,
     /// External API - data sourced from GLEIF, Companies House, SEC, etc.
     External,
     /// Capital register - fund/investor holdings structure
