@@ -500,9 +500,21 @@ pub struct StateDef {
     /// v1.5 (EOP-PLAN-DAG-AWAITS-001): the call-out + switch move. Answers
     /// "how does the token leave this state, when leaving isn't an
     /// ordinary callable `via`" — the counterpart to `entry_via`'s "how did
-    /// the token arrive". A state with `awaits` set has no outgoing
-    /// `TransitionDef` rows in `StateMachine.transitions`; compilers that
-    /// consume this field are expected to reject a state declaring both.
+    /// the token arrive". A state with `awaits` set has no *state-specific*
+    /// outgoing `TransitionDef` rows (a row whose `from` names this state
+    /// explicitly, by id or in an explicit list) in `StateMachine.transitions`;
+    /// compilers that consume this field are expected to reject a state
+    /// declaring both.
+    ///
+    /// Exception (Phase 5, 2026-08-18, found migrating `entity_workstream`
+    /// .SCREEN): a `from: "(any non-terminal)"` wildcard row MAY still
+    /// apply to an `awaits`-bearing state. Wildcard rows model operator
+    /// interrupt/override moves (block, escalate, refer, reject) available
+    /// from *any* non-terminal state regardless of what it's otherwise
+    /// doing — a genuinely different kind of edge than the state's own
+    /// primary resolution path, which `awaits` describes exclusively. Only
+    /// a transition whose `from` explicitly names this state conflicts with
+    /// `awaits`; a wildcard-derived edge does not.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub awaits: Option<AwaitOutcome>,
 }
