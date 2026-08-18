@@ -36,9 +36,10 @@ pub use resolver_facts::StructuralFacts;
 pub use semantic_id::{CapabilityId, DomainTypeId, FocusKind, SemanticIdError, SlotKind};
 
 pub use dag::{
-    ApprovalGateRef, CascadeRule, CategoryGated, ConditionalGate, CrossWorkspaceConstraint, Dag,
-    DerivationCondition, DerivedCrossWorkspaceState, DualLifecycle, EntryVia, EvidenceType,
-    ExpectedLifetime, FoldPreconditionsRef, LexiconManifestRef, LoadedDag, ParentJoin, ParentSlot,
+    AggregateReduce, ApprovalGateRef, AwaitCase, AwaitOutcome, AwaitSource, CascadeRule,
+    CategoryGated, ConditionalGate, CrossWorkspaceConstraint, Dag, DerivationCondition,
+    DerivedCrossWorkspaceState, DualLifecycle, EntryVia, EvidenceType, ExpectedLifetime,
+    FoldPreconditionsRef, LexiconManifestRef, LoadedDag, ParentJoin, ParentSlot,
     PeriodicReviewCadence, Phase, PredicateBinding, PredicateBindingSourceKind, ProductModuleGates,
     PruneCascadeRule, PruneCascadeTarget, PrunePreValidation, ReviewScope, RiskTierOverride,
     Severity, Slot, SlotStateMachine, StateDef, StateDependency, StateMachine, StateSelector,

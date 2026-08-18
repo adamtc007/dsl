@@ -496,6 +496,85 @@ pub struct StateDef {
     /// (no entry test).
     #[serde(default)]
     pub green_when: Option<String>,
+
+    /// v1.5 (EOP-PLAN-DAG-AWAITS-001): the call-out + switch move. Answers
+    /// "how does the token leave this state, when leaving isn't an
+    /// ordinary callable `via`" — the counterpart to `entry_via`'s "how did
+    /// the token arrive". A state with `awaits` set has no outgoing
+    /// `TransitionDef` rows in `StateMachine.transitions`; compilers that
+    /// consume this field are expected to reject a state declaring both.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub awaits: Option<AwaitOutcome>,
+}
+
+/// The call-out + switch move: a state waits for a typed outcome (from a
+/// verb call-out, or from another slot's own sibling instance(s) reaching a
+/// terminal state) and switches to `AwaitCase.to` based on which named
+/// outcome resolved.
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
+pub struct AwaitOutcome {
+    pub source: AwaitSource,
+
+    /// Ordered outcome -> destination-state arms. Order is significant for
+    /// `AggregateReduce::WorstOf` (rank = position in this list).
+    pub cases: Vec<AwaitCase>,
+
+    /// Rarely needed per-arm precondition text, parity with
+    /// `TransitionDef.precondition`. Keyed by `AwaitCase.outcome`.
+    #[serde(default)]
+    pub arm_preconditions: BTreeMap<String, String>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
+#[serde(deny_unknown_fields)]
+pub struct AwaitCase {
+    pub outcome: String,
+    pub to: String,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case", tag = "kind")]
+pub enum AwaitSource {
+    /// This state issues a verb call-out itself and switches on its typed
+    /// return.
+    VerbSwitch { verb: String },
+
+    /// Wait on ONE sibling instance of another slot reaching its own
+    /// terminal state (1:1 — e.g. a single row entity).
+    SlotTerminalState {
+        /// Defaults to the same workspace, mirroring `ParentSlot::workspace`.
+        #[serde(default)]
+        workspace: Option<String>,
+        slot: String,
+    },
+
+    /// Wait on ALL sibling instances of another slot (scoped like
+    /// `PredicateBinding`'s "attached_to this X"), reduce their terminal
+    /// states to one outcome.
+    SlotTerminalStateAggregate {
+        /// Defaults to the same workspace, mirroring `ParentSlot::workspace`.
+        #[serde(default)]
+        workspace: Option<String>,
+        slot: String,
+        scope: String,
+        #[serde(default)]
+        parent_key: Option<String>,
+        #[serde(default)]
+        child_key: Option<String>,
+        reduce: AggregateReduce,
+    },
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum AggregateReduce {
+    /// Once ALL instances are terminal, pick the worst-ranked outcome
+    /// present (rank = position in `AwaitOutcome.cases`).
+    WorstOf,
+    /// Once ALL instances are terminal, they must all agree on the same
+    /// outcome — disagreement is a runtime error, not a silent pick.
+    AllAgree,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize, PartialEq, Eq)]
