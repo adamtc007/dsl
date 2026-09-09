@@ -6,6 +6,21 @@ The workspace follows Semantic Versioning subject to the pre-1.0 rules in
 
 ## [Unreleased]
 
+### Added
+
+- Relocate the unified DSL atom grammar crates `dsl-diagnostics`,
+  `dsl-parser`, `dsl-atoms` and `dsl-ast` into this workspace as publishable
+  crates (EOP-PLAN-CA-REUSE-001 DSL-T1). The atom kind catalogue is now data:
+  `dsl_atoms::KindCatalogue` is built by registration, parsed from DSL
+  source, or seeded from the built-in set, and an unregistered kind is a
+  typed `UnknownKind` error naming the catalogue. The closed
+  `StructuralKind`/`DeclarativeKind` enums and `classify` are removed;
+  `AtomBag::from_source_file` takes a catalogue and returns a `Result`.
+  Keyword slots outside `flow` remain the only slot form and are preserved
+  verbatim.
+- Record `cargo public-api` baselines for the four crates and gate them with
+  `scripts/check-public-api-baselines.sh`.
+
 ## [0.2.2] - 2026-08-05
 
 ### Changed

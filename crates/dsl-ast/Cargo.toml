@@ -1,0 +1,21 @@
+[package]
+name = "dsl-ast"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+readme = "README.md"
+description = "Catalogue-classified atom bag for the unified DSL atom grammar"
+
+[dependencies]
+dsl-atoms.workspace = true
+dsl-diagnostics.workspace = true
+dsl-parser.workspace = true
+serde = { version = "1", features = ["derive"] }
+
+[dev-dependencies]
+serde_json = "1"
+
+[lints]
+workspace = true

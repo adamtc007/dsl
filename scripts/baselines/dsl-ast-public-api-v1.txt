@@ -1,0 +1,89 @@
+pub mod dsl_ast
+pub struct dsl_ast::AtomBag
+impl dsl_ast::AtomBag
+pub fn dsl_ast::AtomBag::atoms(&self) -> impl core::iter::traits::iterator::Iterator<Item = &dsl_ast::TypedAtom>
+pub fn dsl_ast::AtomBag::atoms_of_declarative_kind(&self, &str) -> alloc::vec::Vec<&dsl_ast::TypedAtom>
+pub fn dsl_ast::AtomBag::atoms_of_kind(&self, &str) -> alloc::vec::Vec<&dsl_ast::TypedAtom>
+pub fn dsl_ast::AtomBag::atoms_of_role(&self, dsl_atoms::catalogue::KindRole) -> impl core::iter::traits::iterator::Iterator<Item = &dsl_ast::TypedAtom>
+pub fn dsl_ast::AtomBag::atoms_of_structural_kind(&self, &str) -> alloc::vec::Vec<&dsl_ast::TypedAtom>
+pub fn dsl_ast::AtomBag::declarative_atoms(&self) -> impl core::iter::traits::iterator::Iterator<Item = &dsl_ast::TypedAtom>
+pub fn dsl_ast::AtomBag::find(&self, &str) -> core::option::Option<dsl_ast::AtomIndex>
+pub fn dsl_ast::AtomBag::from_source_file(dsl_parser::raw_ast::SourceFile, &dsl_atoms::catalogue::KindCatalogue, &mut dsl_diagnostics::diagnostic::DiagnosticBag) -> core::result::Result<Self, dsl_atoms::catalogue::UnknownKind>
+pub fn dsl_ast::AtomBag::get(&self, dsl_ast::AtomIndex) -> &dsl_ast::TypedAtom
+pub fn dsl_ast::AtomBag::is_empty(&self) -> bool
+pub fn dsl_ast::AtomBag::len(&self) -> usize
+pub fn dsl_ast::AtomBag::structural_atoms(&self) -> impl core::iter::traits::iterator::Iterator<Item = &dsl_ast::TypedAtom>
+impl core::default::Default for dsl_ast::AtomBag
+pub fn dsl_ast::AtomBag::default() -> dsl_ast::AtomBag
+impl core::fmt::Debug for dsl_ast::AtomBag
+pub fn dsl_ast::AtomBag::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for dsl_ast::AtomBag
+pub fn dsl_ast::AtomBag::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_ast::AtomBag
+pub fn dsl_ast::AtomBag::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_ast::AtomBag
+impl core::marker::Send for dsl_ast::AtomBag
+impl core::marker::Sync for dsl_ast::AtomBag
+impl core::marker::Unpin for dsl_ast::AtomBag
+impl core::marker::UnsafeUnpin for dsl_ast::AtomBag
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_ast::AtomBag
+impl core::panic::unwind_safe::UnwindSafe for dsl_ast::AtomBag
+pub struct dsl_ast::AtomIndex(pub usize)
+impl core::clone::Clone for dsl_ast::AtomIndex
+pub fn dsl_ast::AtomIndex::clone(&self) -> dsl_ast::AtomIndex
+impl core::cmp::Eq for dsl_ast::AtomIndex
+impl core::cmp::PartialEq for dsl_ast::AtomIndex
+pub fn dsl_ast::AtomIndex::eq(&self, &dsl_ast::AtomIndex) -> bool
+impl core::fmt::Debug for dsl_ast::AtomIndex
+pub fn dsl_ast::AtomIndex::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for dsl_ast::AtomIndex
+pub fn dsl_ast::AtomIndex::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for dsl_ast::AtomIndex
+impl core::marker::StructuralPartialEq for dsl_ast::AtomIndex
+impl serde_core::ser::Serialize for dsl_ast::AtomIndex
+pub fn dsl_ast::AtomIndex::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_ast::AtomIndex
+pub fn dsl_ast::AtomIndex::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_ast::AtomIndex
+impl core::marker::Send for dsl_ast::AtomIndex
+impl core::marker::Sync for dsl_ast::AtomIndex
+impl core::marker::Unpin for dsl_ast::AtomIndex
+impl core::marker::UnsafeUnpin for dsl_ast::AtomIndex
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_ast::AtomIndex
+impl core::panic::unwind_safe::UnwindSafe for dsl_ast::AtomIndex
+pub struct dsl_ast::AtomParser
+impl dsl_ast::AtomParser
+pub fn dsl_ast::AtomParser::builtin() -> Self
+pub fn dsl_ast::AtomParser::catalogue(&self) -> &dsl_atoms::catalogue::KindCatalogue
+pub fn dsl_ast::AtomParser::new(dsl_atoms::catalogue::KindCatalogue) -> Self
+pub fn dsl_ast::AtomParser::parse(&self, &str, &mut dsl_diagnostics::diagnostic::DiagnosticBag) -> core::result::Result<dsl_ast::AtomBag, dsl_atoms::catalogue::UnknownKind>
+impl core::clone::Clone for dsl_ast::AtomParser
+pub fn dsl_ast::AtomParser::clone(&self) -> dsl_ast::AtomParser
+impl core::fmt::Debug for dsl_ast::AtomParser
+pub fn dsl_ast::AtomParser::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Freeze for dsl_ast::AtomParser
+impl core::marker::Send for dsl_ast::AtomParser
+impl core::marker::Sync for dsl_ast::AtomParser
+impl core::marker::Unpin for dsl_ast::AtomParser
+impl core::marker::UnsafeUnpin for dsl_ast::AtomParser
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_ast::AtomParser
+impl core::panic::unwind_safe::UnwindSafe for dsl_ast::AtomParser
+pub struct dsl_ast::TypedAtom
+pub dsl_ast::TypedAtom::kind_class: dsl_atoms::catalogue::AtomKindClass
+pub dsl_ast::TypedAtom::name: core::option::Option<alloc::string::String>
+pub dsl_ast::TypedAtom::raw: dsl_parser::raw_ast::RawAtom
+impl core::clone::Clone for dsl_ast::TypedAtom
+pub fn dsl_ast::TypedAtom::clone(&self) -> dsl_ast::TypedAtom
+impl core::fmt::Debug for dsl_ast::TypedAtom
+pub fn dsl_ast::TypedAtom::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for dsl_ast::TypedAtom
+pub fn dsl_ast::TypedAtom::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_ast::TypedAtom
+pub fn dsl_ast::TypedAtom::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_ast::TypedAtom
+impl core::marker::Send for dsl_ast::TypedAtom
+impl core::marker::Sync for dsl_ast::TypedAtom
+impl core::marker::Unpin for dsl_ast::TypedAtom
+impl core::marker::UnsafeUnpin for dsl_ast::TypedAtom
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_ast::TypedAtom
+impl core::panic::unwind_safe::UnwindSafe for dsl_ast::TypedAtom

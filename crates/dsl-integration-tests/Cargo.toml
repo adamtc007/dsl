@@ -12,6 +12,10 @@ publish = false
 
 [dev-dependencies]
 dsl-core.workspace = true
+dsl-ast.workspace = true
+dsl-atoms.workspace = true
+dsl-diagnostics.workspace = true
+dsl-parser.workspace = true
 sem_os_core.workspace = true
 sem_os_ontology.workspace = true
 sem_os_policy.workspace = true

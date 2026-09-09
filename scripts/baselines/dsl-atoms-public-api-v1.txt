@@ -1,0 +1,265 @@
+pub mod dsl_atoms
+pub mod dsl_atoms::builtin
+pub const dsl_atoms::builtin::BOUNDARY_ATTACHMENT: &str
+pub const dsl_atoms::builtin::CATALOGUE_NAME: &str
+pub const dsl_atoms::builtin::CONSTELLATION_ROOT: &str
+pub const dsl_atoms::builtin::DATA_TYPE: &str
+pub const dsl_atoms::builtin::DECISION: &str
+pub const dsl_atoms::builtin::DECISION_PACK: &str
+pub const dsl_atoms::builtin::DECLARATIVE: &[&str]
+pub const dsl_atoms::builtin::ENTITY: &str
+pub const dsl_atoms::builtin::ERROR_DEFINITION: &str
+pub const dsl_atoms::builtin::FLOW: &str
+pub const dsl_atoms::builtin::GATEWAY: &str
+pub const dsl_atoms::builtin::GOVERNANCE_STATUS: &str
+pub const dsl_atoms::builtin::GRAPH_PACK: &str
+pub const dsl_atoms::builtin::INVOKE: &str
+pub const dsl_atoms::builtin::JURISDICTION_TAG: &str
+pub const dsl_atoms::builtin::MESSAGE_DEFINITION: &str
+pub const dsl_atoms::builtin::NODE: &str
+pub const dsl_atoms::builtin::PARALLEL_JOIN: &str
+pub const dsl_atoms::builtin::PREDICATE: &str
+pub const dsl_atoms::builtin::PROVENANCE: &str
+pub const dsl_atoms::builtin::RELATIONSHIP: &str
+pub const dsl_atoms::builtin::REVIEW_ANNOTATION: &str
+pub const dsl_atoms::builtin::STRUCTURAL: &[&str]
+pub const dsl_atoms::builtin::TIMER_DEFINITION: &str
+pub const dsl_atoms::builtin::UTTERANCE_BINDING: &str
+pub const dsl_atoms::builtin::VERB: &str
+pub const dsl_atoms::builtin::WORKSPACE_CONSTRAINT: &str
+pub enum dsl_atoms::AtomKindClass
+pub dsl_atoms::AtomKindClass::Declarative(dsl_atoms::KindName)
+pub dsl_atoms::AtomKindClass::Structural(dsl_atoms::KindName)
+impl dsl_atoms::AtomKindClass
+pub fn dsl_atoms::AtomKindClass::is(&self, dsl_atoms::KindRole, &str) -> bool
+pub fn dsl_atoms::AtomKindClass::name(&self) -> &dsl_atoms::KindName
+pub fn dsl_atoms::AtomKindClass::role(&self) -> dsl_atoms::KindRole
+impl core::clone::Clone for dsl_atoms::AtomKindClass
+pub fn dsl_atoms::AtomKindClass::clone(&self) -> dsl_atoms::AtomKindClass
+impl core::cmp::Eq for dsl_atoms::AtomKindClass
+impl core::cmp::PartialEq for dsl_atoms::AtomKindClass
+pub fn dsl_atoms::AtomKindClass::eq(&self, &dsl_atoms::AtomKindClass) -> bool
+impl core::fmt::Debug for dsl_atoms::AtomKindClass
+pub fn dsl_atoms::AtomKindClass::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for dsl_atoms::AtomKindClass
+pub fn dsl_atoms::AtomKindClass::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::StructuralPartialEq for dsl_atoms::AtomKindClass
+impl serde_core::ser::Serialize for dsl_atoms::AtomKindClass
+pub fn dsl_atoms::AtomKindClass::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_atoms::AtomKindClass
+pub fn dsl_atoms::AtomKindClass::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_atoms::AtomKindClass
+impl core::marker::Send for dsl_atoms::AtomKindClass
+impl core::marker::Sync for dsl_atoms::AtomKindClass
+impl core::marker::Unpin for dsl_atoms::AtomKindClass
+impl core::marker::UnsafeUnpin for dsl_atoms::AtomKindClass
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_atoms::AtomKindClass
+impl core::panic::unwind_safe::UnwindSafe for dsl_atoms::AtomKindClass
+pub enum dsl_atoms::CatalogueError
+pub dsl_atoms::CatalogueError::Duplicate
+pub dsl_atoms::CatalogueError::Duplicate::catalogue: alloc::string::String
+pub dsl_atoms::CatalogueError::Duplicate::existing: dsl_atoms::KindRole
+pub dsl_atoms::CatalogueError::Duplicate::kind: alloc::string::String
+pub dsl_atoms::CatalogueError::InvalidCatalogueName
+pub dsl_atoms::CatalogueError::InvalidCatalogueName::reason: &'static str
+pub dsl_atoms::CatalogueError::InvalidCatalogueName::value: alloc::string::String
+pub dsl_atoms::CatalogueError::InvalidKindName
+pub dsl_atoms::CatalogueError::InvalidKindName::reason: &'static str
+pub dsl_atoms::CatalogueError::InvalidKindName::value: alloc::string::String
+pub dsl_atoms::CatalogueError::Source
+pub dsl_atoms::CatalogueError::Source::message: alloc::string::String
+pub dsl_atoms::CatalogueError::UnexpectedAtom
+pub dsl_atoms::CatalogueError::UnexpectedAtom::kind: alloc::string::String
+pub dsl_atoms::CatalogueError::UnknownBase
+pub dsl_atoms::CatalogueError::UnknownBase::name: alloc::string::String
+impl core::clone::Clone for dsl_atoms::CatalogueError
+pub fn dsl_atoms::CatalogueError::clone(&self) -> dsl_atoms::CatalogueError
+impl core::cmp::Eq for dsl_atoms::CatalogueError
+impl core::cmp::PartialEq for dsl_atoms::CatalogueError
+pub fn dsl_atoms::CatalogueError::eq(&self, &dsl_atoms::CatalogueError) -> bool
+impl core::error::Error for dsl_atoms::CatalogueError
+impl core::fmt::Debug for dsl_atoms::CatalogueError
+pub fn dsl_atoms::CatalogueError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for dsl_atoms::CatalogueError
+pub fn dsl_atoms::CatalogueError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for dsl_atoms::CatalogueError
+impl core::marker::Freeze for dsl_atoms::CatalogueError
+impl core::marker::Send for dsl_atoms::CatalogueError
+impl core::marker::Sync for dsl_atoms::CatalogueError
+impl core::marker::Unpin for dsl_atoms::CatalogueError
+impl core::marker::UnsafeUnpin for dsl_atoms::CatalogueError
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_atoms::CatalogueError
+impl core::panic::unwind_safe::UnwindSafe for dsl_atoms::CatalogueError
+pub enum dsl_atoms::KindRole
+pub dsl_atoms::KindRole::Declarative
+pub dsl_atoms::KindRole::Structural
+impl dsl_atoms::KindRole
+pub fn dsl_atoms::KindRole::as_str(self) -> &'static str
+pub fn dsl_atoms::KindRole::parse(&str) -> core::option::Option<Self>
+impl core::clone::Clone for dsl_atoms::KindRole
+pub fn dsl_atoms::KindRole::clone(&self) -> dsl_atoms::KindRole
+impl core::cmp::Eq for dsl_atoms::KindRole
+impl core::cmp::Ord for dsl_atoms::KindRole
+pub fn dsl_atoms::KindRole::cmp(&self, &dsl_atoms::KindRole) -> core::cmp::Ordering
+impl core::cmp::PartialEq for dsl_atoms::KindRole
+pub fn dsl_atoms::KindRole::eq(&self, &dsl_atoms::KindRole) -> bool
+impl core::cmp::PartialOrd for dsl_atoms::KindRole
+pub fn dsl_atoms::KindRole::partial_cmp(&self, &dsl_atoms::KindRole) -> core::option::Option<core::cmp::Ordering>
+impl core::fmt::Debug for dsl_atoms::KindRole
+pub fn dsl_atoms::KindRole::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for dsl_atoms::KindRole
+pub fn dsl_atoms::KindRole::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for dsl_atoms::KindRole
+pub fn dsl_atoms::KindRole::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for dsl_atoms::KindRole
+impl core::marker::StructuralPartialEq for dsl_atoms::KindRole
+impl serde_core::ser::Serialize for dsl_atoms::KindRole
+pub fn dsl_atoms::KindRole::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_atoms::KindRole
+pub fn dsl_atoms::KindRole::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_atoms::KindRole
+impl core::marker::Send for dsl_atoms::KindRole
+impl core::marker::Sync for dsl_atoms::KindRole
+impl core::marker::Unpin for dsl_atoms::KindRole
+impl core::marker::UnsafeUnpin for dsl_atoms::KindRole
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_atoms::KindRole
+impl core::panic::unwind_safe::UnwindSafe for dsl_atoms::KindRole
+pub enum dsl_atoms::ParamType
+pub dsl_atoms::ParamType::Boolean
+pub dsl_atoms::ParamType::ConditionExpr
+pub dsl_atoms::ParamType::DecisionRef
+pub dsl_atoms::ParamType::Integer
+pub dsl_atoms::ParamType::ListOfConditionExpr
+pub dsl_atoms::ParamType::ListOfMap
+pub dsl_atoms::ParamType::ListOfNodeRef
+pub dsl_atoms::ParamType::ListOfPredicateRef
+pub dsl_atoms::ParamType::NodeRef
+pub dsl_atoms::ParamType::PathMap
+pub dsl_atoms::ParamType::PredicateRef
+pub dsl_atoms::ParamType::String_
+pub dsl_atoms::ParamType::Symbol
+impl core::clone::Clone for dsl_atoms::ParamType
+pub fn dsl_atoms::ParamType::clone(&self) -> dsl_atoms::ParamType
+impl core::cmp::Eq for dsl_atoms::ParamType
+impl core::cmp::PartialEq for dsl_atoms::ParamType
+pub fn dsl_atoms::ParamType::eq(&self, &dsl_atoms::ParamType) -> bool
+impl core::fmt::Debug for dsl_atoms::ParamType
+pub fn dsl_atoms::ParamType::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for dsl_atoms::ParamType
+pub fn dsl_atoms::ParamType::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::StructuralPartialEq for dsl_atoms::ParamType
+impl serde_core::ser::Serialize for dsl_atoms::ParamType
+pub fn dsl_atoms::ParamType::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_atoms::ParamType
+pub fn dsl_atoms::ParamType::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_atoms::ParamType
+impl core::marker::Send for dsl_atoms::ParamType
+impl core::marker::Sync for dsl_atoms::ParamType
+impl core::marker::Unpin for dsl_atoms::ParamType
+impl core::marker::UnsafeUnpin for dsl_atoms::ParamType
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_atoms::ParamType
+impl core::panic::unwind_safe::UnwindSafe for dsl_atoms::ParamType
+pub struct dsl_atoms::KindCatalogue
+impl dsl_atoms::KindCatalogue
+pub fn dsl_atoms::KindCatalogue::builtin() -> Self
+pub fn dsl_atoms::KindCatalogue::classify(&self, &str) -> core::result::Result<dsl_atoms::AtomKindClass, dsl_atoms::UnknownKind>
+pub fn dsl_atoms::KindCatalogue::contains(&self, &str) -> bool
+pub fn dsl_atoms::KindCatalogue::extend_from(&mut self, &dsl_atoms::KindCatalogue) -> core::result::Result<&mut Self, dsl_atoms::CatalogueError>
+pub fn dsl_atoms::KindCatalogue::from_source(&str) -> core::result::Result<Self, dsl_atoms::CatalogueError>
+pub fn dsl_atoms::KindCatalogue::is_empty(&self) -> bool
+pub fn dsl_atoms::KindCatalogue::kinds(&self) -> impl core::iter::traits::iterator::Iterator<Item = (&dsl_atoms::KindName, dsl_atoms::KindRole)>
+pub fn dsl_atoms::KindCatalogue::len(&self) -> usize
+pub fn dsl_atoms::KindCatalogue::name(&self) -> &str
+pub fn dsl_atoms::KindCatalogue::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, dsl_atoms::CatalogueError>
+pub fn dsl_atoms::KindCatalogue::register(&mut self, impl core::convert::AsRef<str>, dsl_atoms::KindRole) -> core::result::Result<&mut Self, dsl_atoms::CatalogueError>
+pub fn dsl_atoms::KindCatalogue::role_of(&self, &str) -> core::option::Option<dsl_atoms::KindRole>
+pub fn dsl_atoms::KindCatalogue::to_source(&self) -> alloc::string::String
+pub fn dsl_atoms::KindCatalogue::with(self, impl core::convert::AsRef<str>, dsl_atoms::KindRole) -> core::result::Result<Self, dsl_atoms::CatalogueError>
+impl core::clone::Clone for dsl_atoms::KindCatalogue
+pub fn dsl_atoms::KindCatalogue::clone(&self) -> dsl_atoms::KindCatalogue
+impl core::cmp::Eq for dsl_atoms::KindCatalogue
+impl core::cmp::PartialEq for dsl_atoms::KindCatalogue
+pub fn dsl_atoms::KindCatalogue::eq(&self, &dsl_atoms::KindCatalogue) -> bool
+impl core::fmt::Debug for dsl_atoms::KindCatalogue
+pub fn dsl_atoms::KindCatalogue::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for dsl_atoms::KindCatalogue
+impl serde_core::ser::Serialize for dsl_atoms::KindCatalogue
+pub fn dsl_atoms::KindCatalogue::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_atoms::KindCatalogue
+pub fn dsl_atoms::KindCatalogue::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_atoms::KindCatalogue
+impl core::marker::Send for dsl_atoms::KindCatalogue
+impl core::marker::Sync for dsl_atoms::KindCatalogue
+impl core::marker::Unpin for dsl_atoms::KindCatalogue
+impl core::marker::UnsafeUnpin for dsl_atoms::KindCatalogue
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_atoms::KindCatalogue
+impl core::panic::unwind_safe::UnwindSafe for dsl_atoms::KindCatalogue
+pub struct dsl_atoms::KindName(_)
+impl dsl_atoms::KindName
+pub fn dsl_atoms::KindName::as_str(&self) -> &str
+pub fn dsl_atoms::KindName::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, dsl_atoms::CatalogueError>
+impl core::borrow::Borrow<str> for dsl_atoms::KindName
+pub fn dsl_atoms::KindName::borrow(&self) -> &str
+impl core::clone::Clone for dsl_atoms::KindName
+pub fn dsl_atoms::KindName::clone(&self) -> dsl_atoms::KindName
+impl core::cmp::Eq for dsl_atoms::KindName
+impl core::cmp::Ord for dsl_atoms::KindName
+pub fn dsl_atoms::KindName::cmp(&self, &dsl_atoms::KindName) -> core::cmp::Ordering
+impl core::cmp::PartialEq for dsl_atoms::KindName
+pub fn dsl_atoms::KindName::eq(&self, &dsl_atoms::KindName) -> bool
+impl core::cmp::PartialEq<&str> for dsl_atoms::KindName
+pub fn dsl_atoms::KindName::eq(&self, &&str) -> bool
+impl core::cmp::PartialEq<str> for dsl_atoms::KindName
+pub fn dsl_atoms::KindName::eq(&self, &str) -> bool
+impl core::cmp::PartialOrd for dsl_atoms::KindName
+pub fn dsl_atoms::KindName::partial_cmp(&self, &dsl_atoms::KindName) -> core::option::Option<core::cmp::Ordering>
+impl core::convert::From<dsl_atoms::KindName> for alloc::string::String
+pub fn alloc::string::String::from(dsl_atoms::KindName) -> Self
+impl core::convert::TryFrom<alloc::string::String> for dsl_atoms::KindName
+pub type dsl_atoms::KindName::Error = dsl_atoms::CatalogueError
+pub fn dsl_atoms::KindName::try_from(alloc::string::String) -> core::result::Result<Self, Self::Error>
+impl core::fmt::Debug for dsl_atoms::KindName
+pub fn dsl_atoms::KindName::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for dsl_atoms::KindName
+pub fn dsl_atoms::KindName::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for dsl_atoms::KindName
+pub fn dsl_atoms::KindName::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::StructuralPartialEq for dsl_atoms::KindName
+impl core::str::traits::FromStr for dsl_atoms::KindName
+pub type dsl_atoms::KindName::Err = dsl_atoms::CatalogueError
+pub fn dsl_atoms::KindName::from_str(&str) -> core::result::Result<Self, Self::Err>
+impl serde_core::ser::Serialize for dsl_atoms::KindName
+pub fn dsl_atoms::KindName::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_atoms::KindName
+pub fn dsl_atoms::KindName::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_atoms::KindName
+impl core::marker::Send for dsl_atoms::KindName
+impl core::marker::Sync for dsl_atoms::KindName
+impl core::marker::Unpin for dsl_atoms::KindName
+impl core::marker::UnsafeUnpin for dsl_atoms::KindName
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_atoms::KindName
+impl core::panic::unwind_safe::UnwindSafe for dsl_atoms::KindName
+pub struct dsl_atoms::UnknownKind
+pub dsl_atoms::UnknownKind::catalogue: alloc::string::String
+pub dsl_atoms::UnknownKind::kind: alloc::string::String
+impl core::clone::Clone for dsl_atoms::UnknownKind
+pub fn dsl_atoms::UnknownKind::clone(&self) -> dsl_atoms::UnknownKind
+impl core::cmp::Eq for dsl_atoms::UnknownKind
+impl core::cmp::PartialEq for dsl_atoms::UnknownKind
+pub fn dsl_atoms::UnknownKind::eq(&self, &dsl_atoms::UnknownKind) -> bool
+impl core::error::Error for dsl_atoms::UnknownKind
+impl core::fmt::Debug for dsl_atoms::UnknownKind
+pub fn dsl_atoms::UnknownKind::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for dsl_atoms::UnknownKind
+pub fn dsl_atoms::UnknownKind::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for dsl_atoms::UnknownKind
+impl core::marker::Freeze for dsl_atoms::UnknownKind
+impl core::marker::Send for dsl_atoms::UnknownKind
+impl core::marker::Sync for dsl_atoms::UnknownKind
+impl core::marker::Unpin for dsl_atoms::UnknownKind
+impl core::marker::UnsafeUnpin for dsl_atoms::UnknownKind
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_atoms::UnknownKind
+impl core::panic::unwind_safe::UnwindSafe for dsl_atoms::UnknownKind
+pub const dsl_atoms::CATALOGUE_HEADER_KIND: &str
+pub const dsl_atoms::KIND_ENTRY_KIND: &str
+pub const dsl_atoms::MAX_KIND_NAME_LEN: usize

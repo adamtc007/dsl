@@ -1,0 +1,16 @@
+[package]
+name = "dsl-diagnostics"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+readme = "README.md"
+description = "Source-attributed diagnostics for the unified DSL atom grammar"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+thiserror = "1"
+
+[lints]
+workspace = true

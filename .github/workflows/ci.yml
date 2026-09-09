@@ -40,6 +40,10 @@ jobs:
       - run: cargo +1.95 check -p dsl-core --no-default-features --locked
       - run: cargo +1.95 check -p dsl-core --all-features --locked
       - run: cargo +1.95 check -p dsl_types --locked
+      - run: cargo +1.95 check -p dsl-diagnostics --locked
+      - run: cargo +1.95 check -p dsl-parser --locked
+      - run: cargo +1.95 check -p dsl-atoms --locked
+      - run: cargo +1.95 check -p dsl-ast --locked
       - run: cargo +1.95 check -p sem_os_types --locked
       - run: cargo +1.95 check -p semantic-decision-contracts --locked
       - run: cargo +1.95 check -p semantic-pack --locked
@@ -58,6 +62,7 @@ jobs:
       - run: bash scripts/check-layering.sh
       - run: bash scripts/check-dependencies.sh
       - run: bash scripts/check-domain-neutral.sh
+      - run: bash scripts/check-public-api-baselines.sh
       - run: python3 scripts/check-semantic-gameboard-contracts.py
 
   gameboard-contract-fuzz-smoke:

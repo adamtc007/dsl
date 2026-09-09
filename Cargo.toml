@@ -2,6 +2,10 @@
 members = [
     "crates/dsl_types",
     "crates/dsl-core",
+    "crates/dsl-diagnostics",
+    "crates/dsl-parser",
+    "crates/dsl-atoms",
+    "crates/dsl-ast",
     "crates/sem_os_types",
     "crates/sem_os_core",
     "crates/sem_os_ontology",
@@ -23,6 +27,10 @@ repository = "https://github.com/adamtc007/dsl"
 [workspace.dependencies]
 dsl_types       = { version = "0.4.0", path = "crates/dsl_types" }
 dsl-core        = { version = "0.4.0", path = "crates/dsl-core" }
+dsl-diagnostics = { version = "0.4.0", path = "crates/dsl-diagnostics" }
+dsl-parser      = { version = "0.4.0", path = "crates/dsl-parser" }
+dsl-atoms       = { version = "0.4.0", path = "crates/dsl-atoms" }
+dsl-ast         = { version = "0.4.0", path = "crates/dsl-ast" }
 sem_os_types    = { version = "0.4.0", path = "crates/sem_os_types" }
 sem_os_core     = { version = "0.4.0", path = "crates/sem_os_core" }
 sem_os_ontology = { version = "0.4.0", path = "crates/sem_os_ontology" }

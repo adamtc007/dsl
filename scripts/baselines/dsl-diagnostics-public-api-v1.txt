@@ -1,0 +1,114 @@
+pub mod dsl_diagnostics
+pub enum dsl_diagnostics::DiagnosticSeverity
+pub dsl_diagnostics::DiagnosticSeverity::Error
+pub dsl_diagnostics::DiagnosticSeverity::Note
+pub dsl_diagnostics::DiagnosticSeverity::Warning
+impl core::clone::Clone for dsl_diagnostics::DiagnosticSeverity
+pub fn dsl_diagnostics::DiagnosticSeverity::clone(&self) -> dsl_diagnostics::DiagnosticSeverity
+impl core::cmp::Eq for dsl_diagnostics::DiagnosticSeverity
+impl core::cmp::PartialEq for dsl_diagnostics::DiagnosticSeverity
+pub fn dsl_diagnostics::DiagnosticSeverity::eq(&self, &dsl_diagnostics::DiagnosticSeverity) -> bool
+impl core::fmt::Debug for dsl_diagnostics::DiagnosticSeverity
+pub fn dsl_diagnostics::DiagnosticSeverity::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for dsl_diagnostics::DiagnosticSeverity
+impl serde_core::ser::Serialize for dsl_diagnostics::DiagnosticSeverity
+pub fn dsl_diagnostics::DiagnosticSeverity::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_diagnostics::DiagnosticSeverity
+pub fn dsl_diagnostics::DiagnosticSeverity::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_diagnostics::DiagnosticSeverity
+impl core::marker::Send for dsl_diagnostics::DiagnosticSeverity
+impl core::marker::Sync for dsl_diagnostics::DiagnosticSeverity
+impl core::marker::Unpin for dsl_diagnostics::DiagnosticSeverity
+impl core::marker::UnsafeUnpin for dsl_diagnostics::DiagnosticSeverity
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_diagnostics::DiagnosticSeverity
+impl core::panic::unwind_safe::UnwindSafe for dsl_diagnostics::DiagnosticSeverity
+pub struct dsl_diagnostics::Diagnostic
+pub dsl_diagnostics::Diagnostic::code: core::option::Option<alloc::string::String>
+pub dsl_diagnostics::Diagnostic::message: alloc::string::String
+pub dsl_diagnostics::Diagnostic::severity: dsl_diagnostics::DiagnosticSeverity
+pub dsl_diagnostics::Diagnostic::span: core::option::Option<dsl_diagnostics::Span>
+impl dsl_diagnostics::Diagnostic
+pub fn dsl_diagnostics::Diagnostic::error(impl core::convert::Into<alloc::string::String>) -> Self
+pub fn dsl_diagnostics::Diagnostic::error_with_code(impl core::convert::Into<alloc::string::String>, impl core::convert::Into<alloc::string::String>) -> Self
+pub fn dsl_diagnostics::Diagnostic::note(impl core::convert::Into<alloc::string::String>) -> Self
+pub fn dsl_diagnostics::Diagnostic::warning(impl core::convert::Into<alloc::string::String>) -> Self
+pub fn dsl_diagnostics::Diagnostic::with_code(self, impl core::convert::Into<alloc::string::String>) -> Self
+pub fn dsl_diagnostics::Diagnostic::with_span(self, dsl_diagnostics::Span) -> Self
+impl core::clone::Clone for dsl_diagnostics::Diagnostic
+pub fn dsl_diagnostics::Diagnostic::clone(&self) -> dsl_diagnostics::Diagnostic
+impl core::fmt::Debug for dsl_diagnostics::Diagnostic
+pub fn dsl_diagnostics::Diagnostic::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for dsl_diagnostics::Diagnostic
+pub fn dsl_diagnostics::Diagnostic::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_diagnostics::Diagnostic
+pub fn dsl_diagnostics::Diagnostic::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_diagnostics::Diagnostic
+impl core::marker::Send for dsl_diagnostics::Diagnostic
+impl core::marker::Sync for dsl_diagnostics::Diagnostic
+impl core::marker::Unpin for dsl_diagnostics::Diagnostic
+impl core::marker::UnsafeUnpin for dsl_diagnostics::Diagnostic
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_diagnostics::Diagnostic
+impl core::panic::unwind_safe::UnwindSafe for dsl_diagnostics::Diagnostic
+pub struct dsl_diagnostics::DiagnosticBag
+pub dsl_diagnostics::DiagnosticBag::diagnostics: alloc::vec::Vec<dsl_diagnostics::Diagnostic>
+impl dsl_diagnostics::DiagnosticBag
+pub fn dsl_diagnostics::DiagnosticBag::errors(&self) -> impl core::iter::traits::iterator::Iterator<Item = &dsl_diagnostics::Diagnostic>
+pub fn dsl_diagnostics::DiagnosticBag::has_errors(&self) -> bool
+pub fn dsl_diagnostics::DiagnosticBag::new() -> Self
+pub fn dsl_diagnostics::DiagnosticBag::push(&mut self, dsl_diagnostics::Diagnostic)
+pub fn dsl_diagnostics::DiagnosticBag::warnings(&self) -> impl core::iter::traits::iterator::Iterator<Item = &dsl_diagnostics::Diagnostic>
+impl core::clone::Clone for dsl_diagnostics::DiagnosticBag
+pub fn dsl_diagnostics::DiagnosticBag::clone(&self) -> dsl_diagnostics::DiagnosticBag
+impl core::default::Default for dsl_diagnostics::DiagnosticBag
+pub fn dsl_diagnostics::DiagnosticBag::default() -> dsl_diagnostics::DiagnosticBag
+impl core::fmt::Debug for dsl_diagnostics::DiagnosticBag
+pub fn dsl_diagnostics::DiagnosticBag::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl serde_core::ser::Serialize for dsl_diagnostics::DiagnosticBag
+pub fn dsl_diagnostics::DiagnosticBag::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_diagnostics::DiagnosticBag
+pub fn dsl_diagnostics::DiagnosticBag::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_diagnostics::DiagnosticBag
+impl core::marker::Send for dsl_diagnostics::DiagnosticBag
+impl core::marker::Sync for dsl_diagnostics::DiagnosticBag
+impl core::marker::Unpin for dsl_diagnostics::DiagnosticBag
+impl core::marker::UnsafeUnpin for dsl_diagnostics::DiagnosticBag
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_diagnostics::DiagnosticBag
+impl core::panic::unwind_safe::UnwindSafe for dsl_diagnostics::DiagnosticBag
+pub struct dsl_diagnostics::Span
+pub dsl_diagnostics::Span::end_col: u32
+pub dsl_diagnostics::Span::end_line: u32
+pub dsl_diagnostics::Span::file: alloc::string::String
+pub dsl_diagnostics::Span::start_col: u32
+pub dsl_diagnostics::Span::start_line: u32
+impl core::clone::Clone for dsl_diagnostics::Span
+pub fn dsl_diagnostics::Span::clone(&self) -> dsl_diagnostics::Span
+impl core::cmp::Eq for dsl_diagnostics::Span
+impl core::cmp::PartialEq for dsl_diagnostics::Span
+pub fn dsl_diagnostics::Span::eq(&self, &dsl_diagnostics::Span) -> bool
+impl core::fmt::Debug for dsl_diagnostics::Span
+pub fn dsl_diagnostics::Span::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for dsl_diagnostics::Span
+impl serde_core::ser::Serialize for dsl_diagnostics::Span
+pub fn dsl_diagnostics::Span::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'de> serde_core::de::Deserialize<'de> for dsl_diagnostics::Span
+pub fn dsl_diagnostics::Span::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for dsl_diagnostics::Span
+impl core::marker::Send for dsl_diagnostics::Span
+impl core::marker::Sync for dsl_diagnostics::Span
+impl core::marker::Unpin for dsl_diagnostics::Span
+impl core::marker::UnsafeUnpin for dsl_diagnostics::Span
+impl core::panic::unwind_safe::RefUnwindSafe for dsl_diagnostics::Span
+impl core::panic::unwind_safe::UnwindSafe for dsl_diagnostics::Span
+pub const dsl_diagnostics::DEPRECATED_PACK_VERSION: &str
+pub const dsl_diagnostics::INVALID_PARAMETER_NAME: &str
+pub const dsl_diagnostics::MERGE_CONFLICT: &str
+pub const dsl_diagnostics::MISSING_REQUIRED_SLOT: &str
+pub const dsl_diagnostics::RETIRED_PACK_VERSION: &str
+pub const dsl_diagnostics::UNDECLARED_MERGE: &str
+pub const dsl_diagnostics::UNKNOWN_ATOM_KIND: &str
+pub const dsl_diagnostics::UNKNOWN_DECLARATIVE_KIND: &str
+pub const dsl_diagnostics::UNKNOWN_LOOP_VARIABLE: &str
+pub const dsl_diagnostics::UNKNOWN_PACK_REFERENCE: &str
+pub const dsl_diagnostics::UNKNOWN_TEMPLATE_PARAMETER: &str
+pub const dsl_diagnostics::UNRESOLVED_INSERTION_MARKER: &str
+pub const dsl_diagnostics::UNRESOLVED_NAME_REF: &str

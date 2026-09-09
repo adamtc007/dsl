@@ -17,6 +17,16 @@ dsl_types      sem_os_types    semantic-decision-contracts   semantic-embedder
                    \___________/_________________/
 ```
 
+The unified DSL atom grammar is a second, independent stack:
+
+```text
+dsl-diagnostics -> dsl-parser -> dsl-atoms -> dsl-ast
+```
+
+`dsl-parser` produces a raw atom tree; `dsl-atoms` supplies the data-driven
+kind catalogue; `dsl-ast` classifies atoms against a caller-supplied
+catalogue. None of these depend on `dsl-core` or any SemOS crate.
+
 `dsl-integration-tests` is a non-published external-consumer test crate. Host
 applications depend inward on these crates. Shared crates must not depend on an
 application, its database schema, or its server runtime.
