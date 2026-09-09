@@ -23,6 +23,21 @@ The workspace follows Semantic Versioning subject to the pre-1.0 rules in
 - Add `scripts/check-domain-nouns.sh`: a CI gate that fails on any domain
   noun in non-test core code, with an allowlist that must stay empty
   (EOP-PLAN-CA-REUSE-001 DSL-T2).
+- Add `sem-os-id`: pure UUID v7 (RFC 9562 dedicated counter, monotonic within
+  a millisecond, clock-regression safe) and deterministic UUID v8 helpers
+  with optional `serde`, `proptest` and `arbitrary` support
+  (EOP-PLAN-CA-REUSE-001 DSL-T3).
+- Add `sem-os-append-store`: the conditional-append store contract for
+  versioned pieces (`append`/`fold`/`current`, typed `LostRace` and
+  `VersionGap`), the `MemoryStore` reference implementation and a
+  `conformance` suite for real stores (DSL-T3).
+- `semantic-pack`: packs may declare capability segments
+  (`declarations.capability_segments`) and what each may do; validation
+  enforces segment membership and action-class permissions, and the new
+  `CapabilitySelectorSource::Segment` selector matches by declared segment.
+  `sem_os_policy` adds `segment_permits` and
+  `CapabilityAdapterRegistry::resolve_for` (DSL-T3). Packs without a segment
+  policy keep their artifact hashes.
 
 ### Changed
 

@@ -63,6 +63,15 @@ fn normalize(document: &mut PackDocument) -> Result<(), PackCompileError> {
     document.declarations.slot_kinds.dedup();
     document.declarations.focus_kinds.sort();
     document.declarations.focus_kinds.dedup();
+    if let Some(segments) = &mut document.declarations.capability_segments {
+        segments
+            .segments
+            .sort_by(|left, right| left.name.cmp(&right.name));
+        for segment in &mut segments.segments {
+            segment.may.sort();
+            segment.may.dedup();
+        }
+    }
     for capability in &mut document.capabilities {
         capability
             .arguments

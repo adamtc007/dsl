@@ -9,7 +9,7 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
 
-crates=(dsl-diagnostics dsl-parser dsl-atoms dsl-ast)
+crates=(dsl-diagnostics dsl-parser dsl-atoms dsl-ast sem-os-id sem-os-append-store)
 update=0
 if [ "${1:-}" = "--update" ]; then
   update=1
@@ -20,7 +20,7 @@ echo "== public-api baseline guard =="
 for crate in "${crates[@]}"; do
   baseline="scripts/baselines/${crate}-public-api-v1.txt"
   actual="$(mktemp)"
-  cargo public-api -p "$crate" --simplified >"$actual" 2>/dev/null
+  cargo public-api -p "$crate" --all-features --simplified >"$actual" 2>/dev/null
   if [ "$update" -eq 1 ]; then
     cp "$actual" "$baseline"
     echo "  updated $baseline"

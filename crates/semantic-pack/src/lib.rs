@@ -25,20 +25,21 @@ pub use diagnostic::{
 };
 pub use dsl_types::{CapabilityId, DomainTypeId, FocusKind, SlotKind};
 pub use identity::{
-    AdapterBindingId, CapabilityPrefix, DomainIdentity, GraphNodeId, IdentityError,
-    IdentityNamespace, PackId, PackIdentity, PackVersion, PolicyAttributeId, PolicyContextId,
-    PrivilegeId, RoleFragment, RoleId,
+    AdapterBindingId, CapabilityPrefix, CapabilitySegmentName, DomainIdentity, GraphNodeId,
+    IdentityError, IdentityNamespace, PackId, PackIdentity, PackVersion, PolicyAttributeId,
+    PolicyContextId, PrivilegeId, RoleFragment, RoleId,
 };
 pub use registry::{InMemoryPackRegistry, PackRegistry};
 pub use source::{
-    AbstentionSource, ArgumentConstraint, ArgumentSource, CapabilitySelectorSource,
-    CapabilitySource, ConfigValue, DeclarationSource, DependencySource, DeprecationSource,
-    EligibilityDefault, EligibilityPolicySource, EvidenceCueSource, EvidenceFeatureSource,
-    EvidenceGateEffect, EvidenceGateSource, EvidencePolicySource, FeedbackOptionSource,
-    GraphEdgeSource, GraphNodeSource, GraphSource, MotifFactPatternSource, MotifSource, PackBytes,
-    PackDocument, PackMetadataSource, PackPolicySource, PackRequest, PackSource,
-    PhraseAmbiguityPolicy, PrivilegeGrantSource, ProvenanceSource, RoleGrantSource,
-    RoleSelectorSource, RuleExplanationSource, TerminalDisposition,
+    AbstentionSource, ArgumentConstraint, ArgumentSource, CapabilitySegmentPolicySource,
+    CapabilitySegmentSource, CapabilitySelectorSource, CapabilitySource, ConfigValue,
+    DeclarationSource, DependencySource, DeprecationSource, EligibilityDefault,
+    EligibilityPolicySource, EvidenceCueSource, EvidenceFeatureSource, EvidenceGateEffect,
+    EvidenceGateSource, EvidencePolicySource, FeedbackOptionSource, GraphEdgeSource,
+    GraphNodeSource, GraphSource, MotifFactPatternSource, MotifSource, PackBytes, PackDocument,
+    PackMetadataSource, PackPolicySource, PackRequest, PackSource, PhraseAmbiguityPolicy,
+    PrivilegeGrantSource, ProvenanceSource, RoleGrantSource, RoleSelectorSource,
+    RuleExplanationSource, SegmentPermission, SegmentRuling, TerminalDisposition,
 };
 pub use validate::{parse_pack, validate_pack, ValidatedPack};
 

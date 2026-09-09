@@ -242,6 +242,31 @@ impl CompiledPack {
             .map(|capability| &capability.adapter_binding)
     }
 
+    /// The pack's capability segment policy, if it declares one.
+    #[must_use]
+    pub fn capability_segments(&self) -> Option<&crate::CapabilitySegmentPolicySource> {
+        self.document.declarations.capability_segments.as_ref()
+    }
+
+    /// The declared segment of a capability under the pack's segment policy.
+    #[must_use]
+    pub fn capability_segment(&self, id: &CapabilityId) -> Option<&crate::CapabilitySegmentSource> {
+        self.capability_segments()?.segment_of(id)
+    }
+
+    /// Rule on whether `id`'s segment grants `permission`.
+    #[must_use]
+    pub fn segment_ruling(
+        &self,
+        id: &CapabilityId,
+        permission: crate::SegmentPermission,
+    ) -> crate::SegmentRuling {
+        match self.capability_segments() {
+            None => crate::SegmentRuling::NoPolicy,
+            Some(policy) => policy.ruling(id, permission),
+        }
+    }
+
     /// Optional compiled graph.
     #[must_use]
     pub fn graph(&self) -> Option<&CompiledGraph> {

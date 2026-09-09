@@ -148,6 +148,7 @@ pub fn validate_pack(document: PackDocument) -> Result<ValidatedPack, PackValida
     validate_metadata(&mut validator);
     validate_declarations(&mut validator);
     validate_capabilities(&mut validator);
+    validate_capability_segments(&mut validator);
     validate_motifs(&mut validator);
     validate_policy(&mut validator);
     validate_evidence_and_governed_resources(&mut validator);
@@ -157,6 +158,127 @@ pub fn validate_pack(document: PackDocument) -> Result<ValidatedPack, PackValida
         Ok(ValidatedPack(document))
     } else {
         Err(PackValidationErrors::new(validator.diagnostics))
+    }
+}
+
+fn validate_capability_segments(validator: &mut Validator<'_>) {
+    const MAX_SEGMENTS: usize = 64;
+    let policy = validator.document.declarations.capability_segments.as_ref();
+    let selectors =
+        validator
+            .document
+            .policy
+            .eligibility
+            .iter()
+            .enumerate()
+            .flat_map(|(index, eligibility)| {
+                eligibility
+                    .allow
+                    .iter()
+                    .map(move |selector| (format!("$.policy.eligibility[{index}].allow"), selector))
+                    .chain(eligibility.deny.iter().map(move |selector| {
+                        (format!("$.policy.eligibility[{index}].deny"), selector)
+                    }))
+            })
+            .filter_map(|(path, selector)| match selector {
+                crate::CapabilitySelectorSource::Segment(name) => Some((path, name.clone())),
+                _ => None,
+            })
+            .collect::<Vec<_>>();
+
+    let Some(policy) = policy else {
+        for (path, name) in selectors {
+            validator.push(
+                DiagnosticCode::InvalidSegment,
+                path,
+                format!("segment selector `{name}` requires `declarations.capability_segments`"),
+            );
+        }
+        return;
+    };
+
+    let base = "$.declarations.capability_segments";
+    if policy.segments.is_empty() {
+        validator.push(
+            DiagnosticCode::InvalidSegment,
+            format!("{base}.segments"),
+            "segment policy must declare at least one segment",
+        );
+    }
+    if policy.segments.len() > MAX_SEGMENTS {
+        validator.push(
+            DiagnosticCode::ResourceLimit,
+            format!("{base}.segments"),
+            "segment count exceeds 64",
+        );
+    }
+    duplicates(
+        validator,
+        &format!("{base}.segments"),
+        policy
+            .segments
+            .iter()
+            .map(|segment| segment.name.to_string()),
+    );
+    for (index, segment) in policy.segments.iter().enumerate() {
+        if segment.may.is_empty() {
+            validator.push(
+                DiagnosticCode::InvalidSegment,
+                format!("{base}.segments[{index}].may"),
+                "segment must grant at least one permission",
+            );
+        }
+    }
+    let declared: BTreeSet<_> = policy
+        .segments
+        .iter()
+        .map(|segment| segment.name.clone())
+        .collect();
+    for (path, name) in selectors {
+        if !declared.contains(&name) {
+            validator.push(
+                DiagnosticCode::InvalidSegment,
+                path,
+                format!("segment selector `{name}` is not a declared capability segment"),
+            );
+        }
+    }
+
+    for (index, capability) in validator.document.capabilities.iter().enumerate() {
+        let path = format!("$.capabilities[{index}].id");
+        let required = crate::SegmentPermission::required_by(&capability.action_class);
+        match policy.ruling(&capability.id, required) {
+            crate::SegmentRuling::Permitted { .. } => {}
+            crate::SegmentRuling::NoPolicy => unreachable!("policy is declared"),
+            crate::SegmentRuling::Undeclared => {
+                let found = policy
+                    .segment_name_of(&capability.id)
+                    .map_or("<none>".to_owned(), ToOwned::to_owned);
+                validator.push(
+                    DiagnosticCode::InvalidSegment,
+                    path,
+                    format!(
+                        "capability `{}` has no declared segment at position {} (found `{found}`)",
+                        capability.id, policy.position
+                    ),
+                );
+            }
+            crate::SegmentRuling::Forbidden { segment, may } => {
+                let may = may
+                    .iter()
+                    .map(|permission| format!("{permission:?}").to_ascii_lowercase())
+                    .collect::<Vec<_>>()
+                    .join(", ");
+                validator.push(
+                    DiagnosticCode::InvalidSegment,
+                    path,
+                    format!(
+                        "capability `{}` with action class `{:?}` requires `{required:?}` but segment `{segment}` may only [{may}]",
+                        capability.id, capability.action_class
+                    ),
+                );
+            }
+        }
     }
 }
 

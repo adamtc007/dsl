@@ -18,6 +18,7 @@ pub enum DiagnosticCode {
     InvalidExtension,
     ResourceLimit,
     ExecutableMaterial,
+    InvalidSegment,
 }
 
 /// One deterministic validation diagnostic.

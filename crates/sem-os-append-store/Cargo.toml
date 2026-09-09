@@ -1,0 +1,26 @@
+[package]
+name = "sem-os-append-store"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+readme = "README.md"
+description = "Conditional-append store contract for versioned pieces, with an in-memory reference store and a conformance suite"
+
+[dependencies]
+async-trait = "0.1"
+serde = { version = "1", features = ["derive"] }
+thiserror = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "sync", "macros"], optional = true }
+
+[dev-dependencies]
+proptest = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "sync", "macros"] }
+
+[features]
+default = []
+conformance = ["dep:tokio"]
+
+[lints]
+workspace = true

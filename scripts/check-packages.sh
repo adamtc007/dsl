@@ -9,7 +9,7 @@ cd "$root"
 # packages whose workspace dependencies are already published can be verified
 # before this release exists. Higher tiers are still packaged together above
 # and are dry-run publishable after these leaves are released.
-leaf_packages=(dsl_types dsl-diagnostics sem_os_types semantic-decision-contracts)
+leaf_packages=(dsl_types dsl-diagnostics sem_os_types semantic-decision-contracts sem-os-id sem-os-append-store)
 dirty_flag=""
 if [ -n "$(git status --porcelain)" ]; then
   dirty_flag="--allow-dirty"

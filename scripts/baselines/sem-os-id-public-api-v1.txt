@@ -1,0 +1,216 @@
+pub mod sem_os_id
+pub enum sem_os_id::IdError
+pub sem_os_id::IdError::TimestampOutOfRange
+pub sem_os_id::IdError::TimestampOutOfRange::unix_ms: u64
+pub sem_os_id::IdError::WrongVersion
+pub sem_os_id::IdError::WrongVersion::expected: u8
+pub sem_os_id::IdError::WrongVersion::uuid: uuid::Uuid
+impl core::clone::Clone for sem_os_id::IdError
+pub fn sem_os_id::IdError::clone(&self) -> sem_os_id::IdError
+impl core::cmp::Eq for sem_os_id::IdError
+impl core::cmp::PartialEq for sem_os_id::IdError
+pub fn sem_os_id::IdError::eq(&self, &sem_os_id::IdError) -> bool
+impl core::error::Error for sem_os_id::IdError
+impl core::fmt::Debug for sem_os_id::IdError
+pub fn sem_os_id::IdError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_id::IdError
+pub fn sem_os_id::IdError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for sem_os_id::IdError
+impl core::marker::StructuralPartialEq for sem_os_id::IdError
+impl core::marker::Freeze for sem_os_id::IdError
+impl core::marker::Send for sem_os_id::IdError
+impl core::marker::Sync for sem_os_id::IdError
+impl core::marker::Unpin for sem_os_id::IdError
+impl core::marker::UnsafeUnpin for sem_os_id::IdError
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_id::IdError
+impl core::panic::unwind_safe::UnwindSafe for sem_os_id::IdError
+pub struct sem_os_id::DerivedId(_)
+impl sem_os_id::DerivedId
+pub const fn sem_os_id::DerivedId::as_uuid(&self) -> &uuid::Uuid
+pub const fn sem_os_id::DerivedId::into_uuid(self) -> uuid::Uuid
+pub fn sem_os_id::DerivedId::unix_ms(&self) -> sem_os_id::UnixMillis
+impl core::clone::Clone for sem_os_id::DerivedId
+pub fn sem_os_id::DerivedId::clone(&self) -> sem_os_id::DerivedId
+impl core::cmp::Eq for sem_os_id::DerivedId
+impl core::cmp::Ord for sem_os_id::DerivedId
+pub fn sem_os_id::DerivedId::cmp(&self, &sem_os_id::DerivedId) -> core::cmp::Ordering
+impl core::cmp::PartialEq for sem_os_id::DerivedId
+pub fn sem_os_id::DerivedId::eq(&self, &sem_os_id::DerivedId) -> bool
+impl core::cmp::PartialOrd for sem_os_id::DerivedId
+pub fn sem_os_id::DerivedId::partial_cmp(&self, &sem_os_id::DerivedId) -> core::option::Option<core::cmp::Ordering>
+impl core::convert::From<sem_os_id::DerivedId> for uuid::Uuid
+pub fn uuid::Uuid::from(sem_os_id::DerivedId) -> Self
+impl core::convert::TryFrom<uuid::Uuid> for sem_os_id::DerivedId
+pub type sem_os_id::DerivedId::Error = sem_os_id::IdError
+pub fn sem_os_id::DerivedId::try_from(uuid::Uuid) -> core::result::Result<Self, Self::Error>
+impl core::fmt::Debug for sem_os_id::DerivedId
+pub fn sem_os_id::DerivedId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_id::DerivedId
+pub fn sem_os_id::DerivedId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for sem_os_id::DerivedId
+pub fn sem_os_id::DerivedId::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_id::DerivedId
+impl core::marker::StructuralPartialEq for sem_os_id::DerivedId
+impl proptest::arbitrary::traits::Arbitrary for sem_os_id::DerivedId
+pub type sem_os_id::DerivedId::Parameters = ()
+pub type sem_os_id::DerivedId::Strategy = proptest::strategy::traits::BoxedStrategy<sem_os_id::DerivedId>
+pub fn sem_os_id::DerivedId::arbitrary_with(()) -> Self::Strategy
+impl serde_core::ser::Serialize for sem_os_id::DerivedId
+pub fn sem_os_id::DerivedId::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'a> arbitrary::Arbitrary<'a> for sem_os_id::DerivedId
+pub fn sem_os_id::DerivedId::arbitrary(&mut arbitrary::unstructured::Unstructured<'a>) -> arbitrary::error::Result<Self>
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_id::DerivedId
+pub fn sem_os_id::DerivedId::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_id::DerivedId
+impl core::marker::Send for sem_os_id::DerivedId
+impl core::marker::Sync for sem_os_id::DerivedId
+impl core::marker::Unpin for sem_os_id::DerivedId
+impl core::marker::UnsafeUnpin for sem_os_id::DerivedId
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_id::DerivedId
+impl core::panic::unwind_safe::UnwindSafe for sem_os_id::DerivedId
+pub struct sem_os_id::Entropy(pub [u8; 10])
+impl sem_os_id::Entropy
+pub const sem_os_id::Entropy::ZERO: Self
+impl core::clone::Clone for sem_os_id::Entropy
+pub fn sem_os_id::Entropy::clone(&self) -> sem_os_id::Entropy
+impl core::cmp::Eq for sem_os_id::Entropy
+impl core::cmp::PartialEq for sem_os_id::Entropy
+pub fn sem_os_id::Entropy::eq(&self, &sem_os_id::Entropy) -> bool
+impl core::fmt::Debug for sem_os_id::Entropy
+pub fn sem_os_id::Entropy::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for sem_os_id::Entropy
+pub fn sem_os_id::Entropy::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_id::Entropy
+impl core::marker::StructuralPartialEq for sem_os_id::Entropy
+impl proptest::arbitrary::traits::Arbitrary for sem_os_id::Entropy
+pub type sem_os_id::Entropy::Parameters = ()
+pub type sem_os_id::Entropy::Strategy = proptest::strategy::traits::BoxedStrategy<sem_os_id::Entropy>
+pub fn sem_os_id::Entropy::arbitrary_with(()) -> Self::Strategy
+impl serde_core::ser::Serialize for sem_os_id::Entropy
+pub fn sem_os_id::Entropy::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'a> arbitrary::Arbitrary<'a> for sem_os_id::Entropy
+pub fn sem_os_id::Entropy::arbitrary(&mut arbitrary::unstructured::Unstructured<'a>) -> arbitrary::error::Result<Self>
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_id::Entropy
+pub fn sem_os_id::Entropy::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_id::Entropy
+impl core::marker::Send for sem_os_id::Entropy
+impl core::marker::Sync for sem_os_id::Entropy
+impl core::marker::Unpin for sem_os_id::Entropy
+impl core::marker::UnsafeUnpin for sem_os_id::Entropy
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_id::Entropy
+impl core::panic::unwind_safe::UnwindSafe for sem_os_id::Entropy
+pub struct sem_os_id::TimeOrderedGenerator
+impl sem_os_id::TimeOrderedGenerator
+pub const fn sem_os_id::TimeOrderedGenerator::last(&self) -> core::option::Option<(u64, u64)>
+pub const fn sem_os_id::TimeOrderedGenerator::new() -> Self
+pub fn sem_os_id::TimeOrderedGenerator::next(&mut self, sem_os_id::UnixMillis, sem_os_id::Entropy) -> core::result::Result<sem_os_id::TimeOrderedId, sem_os_id::IdError>
+impl core::clone::Clone for sem_os_id::TimeOrderedGenerator
+pub fn sem_os_id::TimeOrderedGenerator::clone(&self) -> sem_os_id::TimeOrderedGenerator
+impl core::cmp::Eq for sem_os_id::TimeOrderedGenerator
+impl core::cmp::PartialEq for sem_os_id::TimeOrderedGenerator
+pub fn sem_os_id::TimeOrderedGenerator::eq(&self, &sem_os_id::TimeOrderedGenerator) -> bool
+impl core::default::Default for sem_os_id::TimeOrderedGenerator
+pub fn sem_os_id::TimeOrderedGenerator::default() -> sem_os_id::TimeOrderedGenerator
+impl core::fmt::Debug for sem_os_id::TimeOrderedGenerator
+pub fn sem_os_id::TimeOrderedGenerator::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_id::TimeOrderedGenerator
+impl core::marker::Freeze for sem_os_id::TimeOrderedGenerator
+impl core::marker::Send for sem_os_id::TimeOrderedGenerator
+impl core::marker::Sync for sem_os_id::TimeOrderedGenerator
+impl core::marker::Unpin for sem_os_id::TimeOrderedGenerator
+impl core::marker::UnsafeUnpin for sem_os_id::TimeOrderedGenerator
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_id::TimeOrderedGenerator
+impl core::panic::unwind_safe::UnwindSafe for sem_os_id::TimeOrderedGenerator
+pub struct sem_os_id::TimeOrderedId(_)
+impl sem_os_id::TimeOrderedId
+pub const fn sem_os_id::TimeOrderedId::as_uuid(&self) -> &uuid::Uuid
+pub fn sem_os_id::TimeOrderedId::counter(&self) -> u64
+pub const fn sem_os_id::TimeOrderedId::into_uuid(self) -> uuid::Uuid
+pub fn sem_os_id::TimeOrderedId::unix_ms(&self) -> sem_os_id::UnixMillis
+impl core::clone::Clone for sem_os_id::TimeOrderedId
+pub fn sem_os_id::TimeOrderedId::clone(&self) -> sem_os_id::TimeOrderedId
+impl core::cmp::Eq for sem_os_id::TimeOrderedId
+impl core::cmp::Ord for sem_os_id::TimeOrderedId
+pub fn sem_os_id::TimeOrderedId::cmp(&self, &sem_os_id::TimeOrderedId) -> core::cmp::Ordering
+impl core::cmp::PartialEq for sem_os_id::TimeOrderedId
+pub fn sem_os_id::TimeOrderedId::eq(&self, &sem_os_id::TimeOrderedId) -> bool
+impl core::cmp::PartialOrd for sem_os_id::TimeOrderedId
+pub fn sem_os_id::TimeOrderedId::partial_cmp(&self, &sem_os_id::TimeOrderedId) -> core::option::Option<core::cmp::Ordering>
+impl core::convert::From<sem_os_id::TimeOrderedId> for uuid::Uuid
+pub fn uuid::Uuid::from(sem_os_id::TimeOrderedId) -> Self
+impl core::convert::TryFrom<uuid::Uuid> for sem_os_id::TimeOrderedId
+pub type sem_os_id::TimeOrderedId::Error = sem_os_id::IdError
+pub fn sem_os_id::TimeOrderedId::try_from(uuid::Uuid) -> core::result::Result<Self, Self::Error>
+impl core::fmt::Debug for sem_os_id::TimeOrderedId
+pub fn sem_os_id::TimeOrderedId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_id::TimeOrderedId
+pub fn sem_os_id::TimeOrderedId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for sem_os_id::TimeOrderedId
+pub fn sem_os_id::TimeOrderedId::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_id::TimeOrderedId
+impl core::marker::StructuralPartialEq for sem_os_id::TimeOrderedId
+impl proptest::arbitrary::traits::Arbitrary for sem_os_id::TimeOrderedId
+pub type sem_os_id::TimeOrderedId::Parameters = ()
+pub type sem_os_id::TimeOrderedId::Strategy = proptest::strategy::traits::BoxedStrategy<sem_os_id::TimeOrderedId>
+pub fn sem_os_id::TimeOrderedId::arbitrary_with(()) -> Self::Strategy
+impl serde_core::ser::Serialize for sem_os_id::TimeOrderedId
+pub fn sem_os_id::TimeOrderedId::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'a> arbitrary::Arbitrary<'a> for sem_os_id::TimeOrderedId
+pub fn sem_os_id::TimeOrderedId::arbitrary(&mut arbitrary::unstructured::Unstructured<'a>) -> arbitrary::error::Result<Self>
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_id::TimeOrderedId
+pub fn sem_os_id::TimeOrderedId::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_id::TimeOrderedId
+impl core::marker::Send for sem_os_id::TimeOrderedId
+impl core::marker::Sync for sem_os_id::TimeOrderedId
+impl core::marker::Unpin for sem_os_id::TimeOrderedId
+impl core::marker::UnsafeUnpin for sem_os_id::TimeOrderedId
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_id::TimeOrderedId
+impl core::panic::unwind_safe::UnwindSafe for sem_os_id::TimeOrderedId
+pub struct sem_os_id::UnixMillis(_)
+impl sem_os_id::UnixMillis
+pub const sem_os_id::UnixMillis::MAX: Self
+pub const sem_os_id::UnixMillis::ZERO: Self
+pub const fn sem_os_id::UnixMillis::get(self) -> u64
+pub const fn sem_os_id::UnixMillis::new(u64) -> core::result::Result<Self, sem_os_id::IdError>
+impl core::clone::Clone for sem_os_id::UnixMillis
+pub fn sem_os_id::UnixMillis::clone(&self) -> sem_os_id::UnixMillis
+impl core::cmp::Eq for sem_os_id::UnixMillis
+impl core::cmp::Ord for sem_os_id::UnixMillis
+pub fn sem_os_id::UnixMillis::cmp(&self, &sem_os_id::UnixMillis) -> core::cmp::Ordering
+impl core::cmp::PartialEq for sem_os_id::UnixMillis
+pub fn sem_os_id::UnixMillis::eq(&self, &sem_os_id::UnixMillis) -> bool
+impl core::cmp::PartialOrd for sem_os_id::UnixMillis
+pub fn sem_os_id::UnixMillis::partial_cmp(&self, &sem_os_id::UnixMillis) -> core::option::Option<core::cmp::Ordering>
+impl core::convert::From<sem_os_id::UnixMillis> for u64
+pub fn u64::from(sem_os_id::UnixMillis) -> Self
+impl core::convert::TryFrom<u64> for sem_os_id::UnixMillis
+pub type sem_os_id::UnixMillis::Error = sem_os_id::IdError
+pub fn sem_os_id::UnixMillis::try_from(u64) -> core::result::Result<Self, Self::Error>
+impl core::fmt::Debug for sem_os_id::UnixMillis
+pub fn sem_os_id::UnixMillis::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::fmt::Display for sem_os_id::UnixMillis
+pub fn sem_os_id::UnixMillis::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::hash::Hash for sem_os_id::UnixMillis
+pub fn sem_os_id::UnixMillis::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl core::marker::Copy for sem_os_id::UnixMillis
+impl core::marker::StructuralPartialEq for sem_os_id::UnixMillis
+impl proptest::arbitrary::traits::Arbitrary for sem_os_id::UnixMillis
+pub type sem_os_id::UnixMillis::Parameters = ()
+pub type sem_os_id::UnixMillis::Strategy = proptest::strategy::traits::BoxedStrategy<sem_os_id::UnixMillis>
+pub fn sem_os_id::UnixMillis::arbitrary_with(()) -> Self::Strategy
+impl serde_core::ser::Serialize for sem_os_id::UnixMillis
+pub fn sem_os_id::UnixMillis::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'a> arbitrary::Arbitrary<'a> for sem_os_id::UnixMillis
+pub fn sem_os_id::UnixMillis::arbitrary(&mut arbitrary::unstructured::Unstructured<'a>) -> arbitrary::error::Result<Self>
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_id::UnixMillis
+pub fn sem_os_id::UnixMillis::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_id::UnixMillis
+impl core::marker::Send for sem_os_id::UnixMillis
+impl core::marker::Sync for sem_os_id::UnixMillis
+impl core::marker::Unpin for sem_os_id::UnixMillis
+impl core::marker::UnsafeUnpin for sem_os_id::UnixMillis
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_id::UnixMillis
+impl core::panic::unwind_safe::UnwindSafe for sem_os_id::UnixMillis
+pub const sem_os_id::COUNTER_BITS: u32
+pub const sem_os_id::MAX_UNIX_MILLIS: u64
+pub fn sem_os_id::derive_id<I, B>(sem_os_id::UnixMillis, &str, I) -> sem_os_id::DerivedId where I: core::iter::traits::collect::IntoIterator<Item = B>, B: core::convert::AsRef<[u8]>

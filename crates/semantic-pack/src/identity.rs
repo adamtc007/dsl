@@ -206,6 +206,65 @@ macro_rules! selector_text {
 selector_text!(CapabilityPrefix, "capability prefix", true);
 selector_text!(RoleFragment, "role fragment", false);
 
+/// Validated capability segment name: one dotted segment of a capability
+/// identifier (`assert` in `pack.assert.thing`), so it may not contain `.`.
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct CapabilitySegmentName(String);
+
+impl CapabilitySegmentName {
+    /// Construct a validated capability segment name.
+    pub fn new(value: impl Into<String>) -> Result<Self, IdentityError> {
+        let value = value.into();
+        validate_id("capability segment name", &value)?;
+        if value.contains('.') {
+            return Err(IdentityError {
+                kind: "capability segment name",
+                value,
+                reason: "must be a single dotted segment (no '.')",
+            });
+        }
+        Ok(Self(value))
+    }
+
+    /// Borrow the segment name.
+    #[must_use]
+    pub fn as_str(&self) -> &str {
+        &self.0
+    }
+}
+
+impl fmt::Display for CapabilitySegmentName {
+    fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
+        formatter.write_str(&self.0)
+    }
+}
+
+impl FromStr for CapabilitySegmentName {
+    type Err = IdentityError;
+
+    fn from_str(value: &str) -> Result<Self, Self::Err> {
+        Self::new(value)
+    }
+}
+
+impl Serialize for CapabilitySegmentName {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_str(&self.0)
+    }
+}
+
+impl<'de> Deserialize<'de> for CapabilitySegmentName {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        Self::new(String::deserialize(deserializer)?).map_err(serde::de::Error::custom)
+    }
+}
+
 /// Validated pack version. Versions are intentionally opaque but stable.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 #[serde(try_from = "String", into = "String")]

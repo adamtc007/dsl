@@ -8,9 +8,9 @@ use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
 use crate::{
-    AdapterBindingId, CapabilityId, CapabilityPrefix, DomainIdentity, DomainTypeId, FocusKind,
-    GraphNodeId, IdentityNamespace, PackId, PackSourceError, PackVersion, PolicyAttributeId,
-    PolicyContextId, PrivilegeId, RoleFragment, RoleId, SlotKind,
+    AdapterBindingId, CapabilityId, CapabilityPrefix, CapabilitySegmentName, DomainIdentity,
+    DomainTypeId, FocusKind, GraphNodeId, IdentityNamespace, PackId, PackSourceError, PackVersion,
+    PolicyAttributeId, PolicyContextId, PrivilegeId, RoleFragment, RoleId, SlotKind,
 };
 
 /// Host-supplied request for exact pack bytes.
@@ -135,6 +135,133 @@ pub struct DeclarationSource {
     pub slot_kinds: Vec<SlotKind>,
     #[serde(default)]
     pub focus_kinds: Vec<FocusKind>,
+    /// Pack-declared capability segments and what each may do. Absent means
+    /// the pack declares no segment rules (existing packs are unchanged).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub capability_segments: Option<CapabilitySegmentPolicySource>,
+}
+
+/// What a capability segment may do. A capability's [`ActionClass`] maps to
+/// exactly one required permission (see [`SegmentPermission::required_by`]).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SegmentPermission {
+    /// Observe state without changing it.
+    Read,
+    /// Append to governed state.
+    Append,
+    /// Cause an external effect.
+    Effect,
+}
+
+impl SegmentPermission {
+    /// The permission an action class needs from its segment.
+    #[must_use]
+    pub fn required_by(action_class: &ActionClass) -> Self {
+        match action_class {
+            ActionClass::List
+            | ActionClass::Read
+            | ActionClass::Search
+            | ActionClass::Describe
+            | ActionClass::Compute
+            | ActionClass::Review => Self::Read,
+            ActionClass::Create
+            | ActionClass::Update
+            | ActionClass::Delete
+            | ActionClass::Assign
+            | ActionClass::Remove
+            | ActionClass::Import
+            | ActionClass::Approve
+            | ActionClass::Reject => Self::Append,
+            ActionClass::Execute => Self::Effect,
+        }
+    }
+}
+
+/// One declared capability segment.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct CapabilitySegmentSource {
+    pub name: CapabilitySegmentName,
+    /// Permissions granted to capabilities in this segment.
+    pub may: Vec<SegmentPermission>,
+}
+
+impl CapabilitySegmentSource {
+    /// Whether this segment grants `permission`.
+    #[must_use]
+    pub fn permits(&self, permission: SegmentPermission) -> bool {
+        self.may.contains(&permission)
+    }
+}
+
+/// Pack-declared capability segment policy: which dotted segment of a
+/// capability identifier names its segment, and the declared segments.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct CapabilitySegmentPolicySource {
+    /// Zero-based index of the dotted segment carrying the segment name
+    /// (`1` for `pack.assert.thing`).
+    pub position: usize,
+    pub segments: Vec<CapabilitySegmentSource>,
+}
+
+/// Outcome of asking whether a capability's segment permits a permission.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum SegmentRuling {
+    /// The pack declares no segment policy; segment rules do not apply.
+    NoPolicy,
+    /// The capability identifier has no declared segment at the policy position.
+    Undeclared,
+    /// The capability's segment grants the permission.
+    Permitted { segment: CapabilitySegmentName },
+    /// The capability's segment does not grant the permission.
+    Forbidden {
+        segment: CapabilitySegmentName,
+        may: Vec<SegmentPermission>,
+    },
+}
+
+impl CapabilitySegmentPolicySource {
+    /// The dotted segment of `capability` at this policy's position.
+    #[must_use]
+    pub fn segment_name_of<'a>(&self, capability: &'a CapabilityId) -> Option<&'a str> {
+        capability.as_str().split('.').nth(self.position)
+    }
+
+    /// The declared segment of `capability`, if its name is declared.
+    #[must_use]
+    pub fn segment_of(&self, capability: &CapabilityId) -> Option<&CapabilitySegmentSource> {
+        let name = self.segment_name_of(capability)?;
+        self.segments
+            .iter()
+            .find(|segment| segment.name.as_str() == name)
+    }
+
+    /// Whether `capability` belongs to the declared segment `name`.
+    #[must_use]
+    pub fn is_in_segment(&self, capability: &CapabilityId, name: &CapabilitySegmentName) -> bool {
+        self.segment_name_of(capability) == Some(name.as_str())
+    }
+
+    /// Rule on `permission` for `capability`.
+    #[must_use]
+    pub fn ruling(
+        &self,
+        capability: &CapabilityId,
+        permission: SegmentPermission,
+    ) -> SegmentRuling {
+        match self.segment_of(capability) {
+            None => SegmentRuling::Undeclared,
+            Some(segment) if segment.permits(permission) => SegmentRuling::Permitted {
+                segment: segment.name.clone(),
+            },
+            Some(segment) => SegmentRuling::Forbidden {
+                segment: segment.name.clone(),
+                may: segment.may.clone(),
+            },
+        }
+    }
 }
 
 /// One application capability and its model-visible semantic projection.
@@ -481,15 +608,34 @@ pub enum EligibilityDefault {
 pub enum CapabilitySelectorSource {
     Exact(CapabilityId),
     Prefix(CapabilityPrefix),
+    /// Every capability whose declared segment (see
+    /// [`CapabilitySegmentPolicySource`]) has this name. Matches nothing when
+    /// the pack declares no segment policy.
+    Segment(CapabilitySegmentName),
 }
 
 impl CapabilitySelectorSource {
-    /// Return whether this selector matches an admitted capability identifier.
+    /// Return whether this selector matches an admitted capability identifier
+    /// without segment semantics (`Segment` selectors never match here).
     #[must_use]
     pub fn matches(&self, capability: &CapabilityId) -> bool {
+        self.matches_in(capability, None)
+    }
+
+    /// Return whether this selector matches `capability` under the pack's
+    /// segment policy.
+    #[must_use]
+    pub fn matches_in(
+        &self,
+        capability: &CapabilityId,
+        segments: Option<&CapabilitySegmentPolicySource>,
+    ) -> bool {
         match self {
             Self::Exact(expected) => expected == capability,
             Self::Prefix(prefix) => capability.as_str().starts_with(prefix.as_str()),
+            Self::Segment(name) => {
+                segments.is_some_and(|policy| policy.is_in_segment(capability, name))
+            }
         }
     }
 }

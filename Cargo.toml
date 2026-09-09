@@ -13,6 +13,8 @@ members = [
     "crates/semantic-decision-contracts",
     "crates/semantic-pack",
     "crates/semantic-embedder",
+    "crates/sem-os-id",
+    "crates/sem-os-append-store",
     "crates/dsl-integration-tests",
 ]
 resolver = "2"
@@ -38,6 +40,8 @@ sem_os_policy   = { version = "0.4.0", path = "crates/sem_os_policy" }
 semantic-decision-contracts = { version = "0.4.0", path = "crates/semantic-decision-contracts" }
 semantic-pack = { version = "0.4.0", path = "crates/semantic-pack" }
 semantic-embedder = { version = "0.4.0", path = "crates/semantic-embedder" }
+sem-os-id = { version = "0.4.0", path = "crates/sem-os-id" }
+sem-os-append-store = { version = "0.4.0", path = "crates/sem-os-append-store" }
 dsl-integration-tests = { version = "0.4.0", path = "crates/dsl-integration-tests" }
 
 [workspace.lints.rust]

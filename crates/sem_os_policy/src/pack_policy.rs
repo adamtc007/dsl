@@ -6,8 +6,9 @@ use std::{
 };
 
 use semantic_pack::{
-    AdapterBindingId, ArtifactHash, CapabilityId, CapabilitySelectorSource, EligibilityDefault,
-    PackIdentity, PolicyAttributeId, PolicyContextId, PrivilegeId, SemanticSnapshot, SourceHash,
+    AdapterBindingId, ArtifactHash, CapabilityId, CapabilitySegmentName, CapabilitySelectorSource,
+    EligibilityDefault, PackIdentity, PolicyAttributeId, PolicyContextId, PrivilegeId,
+    SegmentPermission, SegmentRuling, SemanticSnapshot, SourceHash,
 };
 use thiserror::Error;
 use uuid::Uuid;
@@ -95,6 +96,17 @@ pub enum PackPolicyError {
     DuplicateAdapterBinding(AdapterBindingId),
     #[error("adapter binding `{0}` is not registered")]
     UnregisteredAdapterBinding(AdapterBindingId),
+    #[error("capability `{0}` has no declared segment under the pack's segment policy")]
+    UndeclaredCapabilitySegment(CapabilityId),
+    #[error(
+        "capability `{capability}` may not `{permission:?}`: segment `{segment}` may only {may:?}"
+    )]
+    SegmentForbids {
+        capability: CapabilityId,
+        segment: CapabilitySegmentName,
+        permission: SegmentPermission,
+        may: Vec<SegmentPermission>,
+    },
 }
 
 /// Evaluate capability eligibility and exact role grants from one snapshot.
@@ -119,17 +131,18 @@ pub fn evaluate_capability(
         .iter()
         .find(|policy| &policy.context == context)
         .ok_or_else(|| PackPolicyError::MissingContext(context.clone()))?;
+    let segments = snapshot.pack().capability_segments();
 
     let (mut allowed, mut reason) = if let Some(selector) = policy
         .deny
         .iter()
-        .find(|selector| selector.matches(capability))
+        .find(|selector| selector.matches_in(capability, segments))
     {
         (false, PolicyReason::ExplicitDeny(selector.clone()))
     } else if let Some(selector) = policy
         .allow
         .iter()
-        .find(|selector| selector.matches(capability))
+        .find(|selector| selector.matches_in(capability, segments))
     {
         (true, PolicyReason::ExplicitAllow(selector.clone()))
     } else {
@@ -166,6 +179,29 @@ pub fn evaluate_capability(
         reason,
         evidence: evidence(snapshot),
     })
+}
+
+/// Rule on whether a capability's declared segment grants `permission`.
+///
+/// `Ok(true)` when the pack declares no segment policy (segment rules do not
+/// apply) or the segment grants the permission; `Ok(false)` when the segment
+/// exists but withholds it; `Err` when the capability has no declared segment.
+///
+/// # Examples
+///
+/// See the external `pack_policy` integration tests for a segmented pack.
+pub fn segment_permits(
+    snapshot: &SemanticSnapshot,
+    capability: &CapabilityId,
+    permission: SegmentPermission,
+) -> Result<bool, PackPolicyError> {
+    match snapshot.pack().segment_ruling(capability, permission) {
+        SegmentRuling::NoPolicy | SegmentRuling::Permitted { .. } => Ok(true),
+        SegmentRuling::Forbidden { .. } => Ok(false),
+        SegmentRuling::Undeclared => Err(PackPolicyError::UndeclaredCapabilitySegment(
+            capability.clone(),
+        )),
+    }
 }
 
 /// Test whether an exact role grant permits a declared capability.
@@ -301,5 +337,41 @@ impl CapabilityAdapterRegistry {
             .get(binding)
             .cloned()
             .ok_or_else(|| PackPolicyError::UnregisteredAdapterBinding(binding.clone()))
+    }
+
+    /// Resolve the adapter for a capability only if the capability's declared
+    /// segment grants `permission`.
+    ///
+    /// This is the segment-aware resolver: a `derive` word cannot be resolved
+    /// for an effect, an `effect` word cannot be resolved for an append, and
+    /// so on, exactly as the pack declared. Packs without a segment policy
+    /// resolve as [`CapabilityAdapterRegistry::resolve`].
+    ///
+    /// # Examples
+    ///
+    /// See the external `pack_policy` integration tests for a segmented pack.
+    pub fn resolve_for(
+        &self,
+        snapshot: &SemanticSnapshot,
+        capability: &CapabilityId,
+        permission: SegmentPermission,
+    ) -> Result<Arc<dyn CapabilityAdapter>, PackPolicyError> {
+        match snapshot.pack().segment_ruling(capability, permission) {
+            SegmentRuling::NoPolicy | SegmentRuling::Permitted { .. } => {}
+            SegmentRuling::Undeclared => {
+                return Err(PackPolicyError::UndeclaredCapabilitySegment(
+                    capability.clone(),
+                ))
+            }
+            SegmentRuling::Forbidden { segment, may } => {
+                return Err(PackPolicyError::SegmentForbids {
+                    capability: capability.clone(),
+                    segment,
+                    permission,
+                    may,
+                })
+            }
+        }
+        self.resolve(snapshot, capability)
     }
 }

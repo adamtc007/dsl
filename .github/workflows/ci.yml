@@ -50,6 +50,10 @@ jobs:
       - run: cargo +1.95 check -p semantic-embedder --no-default-features --locked
       - run: cargo +1.95 check -p semantic-embedder --features candle --locked
       - run: cargo +1.95 check -p semantic-embedder --features huggingface-download --locked
+      - run: cargo +1.95 check -p sem-os-id --locked
+      - run: cargo +1.95 check -p sem-os-id --all-features --locked
+      - run: cargo +1.95 check -p sem-os-append-store --locked
+      - run: cargo +1.95 check -p sem-os-append-store --features conformance --locked
 
   boundaries:
     runs-on: ubuntu-latest

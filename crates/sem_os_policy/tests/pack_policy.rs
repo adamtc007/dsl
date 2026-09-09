@@ -178,3 +178,168 @@ fn adapter_registry_resolves_only_pack_selected_bindings() {
         .unwrap();
     assert_eq!(resolved.binding_id(), adapter.binding_id());
 }
+
+const SEGMENTED_PACK: &str = r#"
+schema_version: 1
+pack:
+  id: example.segmented
+  version: 1.0.0
+  domain: example
+  identity_namespace: example.segmented
+  canonicalization_version: 1
+  dependencies: []
+  provenance: { source: fixtures/segmented.yaml, revision: test-v1 }
+declarations:
+  domain_types: []
+  slot_kinds: []
+  focus_kinds: []
+  capability_segments:
+    position: 1
+    segments:
+      - { name: derive, may: [read] }
+      - { name: effect, may: [effect] }
+capabilities:
+  - id: board.derive.entitlement
+    adapter_binding: example.derive
+    title: Derive entitlement
+    intent_summary: Compute an entitlement.
+    action_class: compute
+    applicability: Always.
+    effect: Pure.
+    arguments: []
+    phrases: []
+    positive_examples: []
+    negative_contrasts: []
+    risk: read_only
+  - id: board.effect.pay
+    adapter_binding: example.effect
+    title: Pay
+    intent_summary: Cause a payment.
+    action_class: execute
+    applicability: Always.
+    effect: External.
+    arguments: []
+    phrases: []
+    positive_examples: []
+    negative_contrasts: []
+    risk: reversible
+policy:
+  phrase_ambiguity: reject
+  abstention: { enabled: true, candidate_id: abstain.none_of_the_above }
+  roles: []
+  eligibility:
+    - context: mode.pure
+      default: deny
+      allow:
+        - { kind: segment, value: derive }
+    - context: mode.prefix
+      default: deny
+      allow:
+        - { kind: prefix, value: board. }
+      deny:
+        - { kind: segment, value: effect }
+extensions: {}
+"#;
+
+#[test]
+fn segment_rules_are_enforced_by_selectors_and_the_resolver() {
+    use sem_os_policy::pack_policy::segment_permits;
+    use semantic_pack::SegmentPermission;
+
+    let pack = admit_pack(PackBytes::new("segmented.yaml", SEGMENTED_PACK)).unwrap();
+    let snapshot = InMemoryPackRegistry::new().install(pack).unwrap();
+    let anyone = PrincipalContext::new(["anyone"]);
+    let derive = CapabilityId::new("board.derive.entitlement").unwrap();
+    let effect = CapabilityId::new("board.effect.pay").unwrap();
+
+    // Segment selectors: `derive` allowed in mode.pure, `effect` is not.
+    let pure = PolicyContextId::new("mode.pure").unwrap();
+    assert!(
+        evaluate_capability(&snapshot, &anyone, &pure, &derive)
+            .unwrap()
+            .allowed
+    );
+    let effect_in_pure = evaluate_capability(&snapshot, &anyone, &pure, &effect).unwrap();
+    assert!(!effect_in_pure.allowed);
+    assert_eq!(effect_in_pure.reason, PolicyReason::DefaultDeny);
+
+    // A segment deny beats a prefix allow: prefix matching is not the rule.
+    let prefix = PolicyContextId::new("mode.prefix").unwrap();
+    let effect_in_prefix = evaluate_capability(&snapshot, &anyone, &prefix, &effect).unwrap();
+    assert!(!effect_in_prefix.allowed);
+    assert!(matches!(
+        effect_in_prefix.reason,
+        PolicyReason::ExplicitDeny(semantic_pack::CapabilitySelectorSource::Segment(_))
+    ));
+    assert!(
+        evaluate_capability(&snapshot, &anyone, &prefix, &derive)
+            .unwrap()
+            .allowed
+    );
+
+    // Permissions follow the declaration.
+    assert!(segment_permits(&snapshot, &derive, SegmentPermission::Read).unwrap());
+    assert!(!segment_permits(&snapshot, &derive, SegmentPermission::Effect).unwrap());
+    assert!(segment_permits(&snapshot, &effect, SegmentPermission::Effect).unwrap());
+    assert!(matches!(
+        segment_permits(
+            &snapshot,
+            &CapabilityId::new("board.other.x").unwrap(),
+            SegmentPermission::Read
+        ),
+        Err(PackPolicyError::UndeclaredCapabilitySegment(_))
+    ));
+
+    // The resolver refuses an adapter for a permission the segment withholds.
+    struct Adapter(AdapterBindingId);
+    impl CapabilityAdapter for Adapter {
+        fn binding_id(&self) -> &AdapterBindingId {
+            &self.0
+        }
+    }
+    let mut registry = CapabilityAdapterRegistry::default();
+    registry
+        .register(Arc::new(Adapter(
+            AdapterBindingId::new("example.derive").unwrap(),
+        )))
+        .unwrap();
+    registry
+        .register(Arc::new(Adapter(
+            AdapterBindingId::new("example.effect").unwrap(),
+        )))
+        .unwrap();
+    assert!(registry
+        .resolve_for(&snapshot, &derive, SegmentPermission::Read)
+        .is_ok());
+    let refused = match registry.resolve_for(&snapshot, &derive, SegmentPermission::Effect) {
+        Err(err) => err,
+        Ok(_) => panic!("derive segment must not resolve for an effect"),
+    };
+    assert!(matches!(
+        refused,
+        PackPolicyError::SegmentForbids { ref segment, permission: SegmentPermission::Effect, .. }
+            if segment.as_str() == "derive"
+    ));
+    assert!(registry
+        .resolve_for(&snapshot, &effect, SegmentPermission::Effect)
+        .is_ok());
+    assert!(matches!(
+        registry
+            .resolve_for(&snapshot, &effect, SegmentPermission::Append)
+            .err(),
+        Some(PackPolicyError::SegmentForbids { .. })
+    ));
+
+    // Packs without a segment policy resolve exactly as before.
+    let plain = snapshot_without_segments();
+    assert!(segment_permits(
+        &plain,
+        &CapabilityId::new("change.add").unwrap(),
+        SegmentPermission::Effect
+    )
+    .unwrap());
+}
+
+fn snapshot_without_segments() -> semantic_pack::SemanticSnapshot {
+    snapshot()
+}
