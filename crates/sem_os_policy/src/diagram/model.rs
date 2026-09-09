@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 pub struct TableInput {
     /// Schema name (e.g. "ob-poc").
     pub schema: String,
-    /// Table name (e.g. "cbus").
+    /// Table name (e.g. "accounts").
     pub table_name: String,
     /// Columns in this table.
     pub columns: Vec<ColumnInput>,
@@ -117,7 +117,7 @@ pub struct DiagramAttribute {
 /// A verb that operates on a table in the diagram.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VerbSurfaceEntry {
-    /// Verb FQN (e.g. "cbu.create").
+    /// Verb FQN (e.g. "account.create").
     pub verb_fqn: String,
     /// How the verb relates to this table (e.g. "produces", "crud_read").
     pub relation: String,

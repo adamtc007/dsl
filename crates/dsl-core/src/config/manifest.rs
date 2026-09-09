@@ -19,9 +19,9 @@ use super::types::{ReturnTypeConfig, VerbBehavior, VerbsConfig};
 /// A single declared verb extracted from YAML pack files.
 #[derive(Debug, Clone)]
 pub struct VerbDeclaration {
-    /// Fully-qualified name: `domain.action` (e.g. `"cbu.create"`)
+    /// Fully-qualified name: `domain.action` (e.g. `"account.create"`)
     pub fqn: String,
-    /// Domain component (e.g. `"cbu"`)
+    /// Domain component (e.g. `"account"`)
     pub domain: String,
     /// Action component (e.g. `"create"`)
     pub action: String,
@@ -29,7 +29,7 @@ pub struct VerbDeclaration {
     pub behavior: VerbBehavior,
     /// Names of required arguments (`required: true`)
     pub required_args: Vec<String>,
-    /// Phase tags from YAML metadata (e.g. `["kyc"]`, `["trading"]`)
+    /// Phase tags from YAML metadata (e.g. `["review"]`, `["trading"]`)
     pub phase_tags: Vec<String>,
     /// Return type declared in YAML
     pub returns_type: ReturnTypeConfig,

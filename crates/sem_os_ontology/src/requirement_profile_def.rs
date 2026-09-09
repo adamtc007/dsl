@@ -1,7 +1,7 @@
 //! Requirement profile definition for the semantic registry.
 //!
 //! A requirement profile governs which proof obligations apply for a
-//! document-relevant context such as KYC onboarding, based on entity,
+//! document-relevant context such as client intake, based on entity,
 //! jurisdiction, client type, and context scope.
 
 use serde::{Deserialize, Serialize};
@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 /// Body of a `requirement_profile_def` registry snapshot.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct RequirementProfileDefBody {
-    /// Fully qualified name, e.g. `"doc.requirement_profile.kyc.individual.uk"`
+    /// Fully qualified name, e.g. `"doc.requirement_profile.review.individual.uk"`
     pub fqn: String,
     /// Human-readable name.
     pub name: String,

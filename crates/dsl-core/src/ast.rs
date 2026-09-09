@@ -253,7 +253,7 @@ pub enum AstNode {
     /// This is the "break" that validators look for
     EntityRef {
         /// Entity type from YAML lookup.entity_type
-        /// e.g., "entity", "cbu", "role", "jurisdiction"
+        /// e.g., "entity", "account", "role", "jurisdiction"
         entity_type: String,
 
         /// Column to search from YAML lookup.search_key
@@ -741,7 +741,7 @@ pub struct UnresolvedRefLocation {
     pub statement_index: usize,
     /// Argument key containing the EntityRef
     pub arg_key: String,
-    /// Entity type for search (e.g., "cbu", "entity", "product")
+    /// Entity type for search (e.g., "account", "entity", "product")
     pub entity_type: String,
     /// The search text entered by user
     pub search_text: String,
@@ -853,7 +853,7 @@ impl EntityRefStats {
         if self.total_refs == 0 {
             100
         } else {
-            ((self.resolved_count() as f64 / self.total_refs as f64) * 100.0) as u8
+            u8::try_from(self.resolved_count() * 100 / self.total_refs).unwrap_or(100)
         }
     }
 }
@@ -1164,7 +1164,7 @@ pub(crate) enum ViewType {
     /// Entity structure and relationships
     Structure,
 
-    /// Ownership chains and UBO tracing
+    /// Ownership chains and beneficial-owner tracing
     Ownership,
 
     /// Account hierarchy and balances

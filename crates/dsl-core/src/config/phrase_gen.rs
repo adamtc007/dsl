@@ -108,7 +108,7 @@ pub(crate) fn verb_synonyms() -> HashMap<&'static str, Vec<&'static str>> {
 ///
 /// # Arguments
 ///
-/// * `domain` - The verb's domain (e.g., "cbu", "deal", "billing")
+/// * `domain` - The verb's domain (e.g., "account", "deal", "billing")
 /// * `action` - The verb's action (e.g., "create", "list", "get")
 /// * `existing` - Any existing phrases to preserve
 ///

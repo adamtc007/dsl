@@ -20,6 +20,7 @@
 
 pub(crate) mod dag;
 pub(crate) mod dag_validator;
+pub(crate) mod decimal_text;
 pub(crate) mod effect_class;
 pub(crate) mod escalation;
 pub(crate) mod green_when_coverage;

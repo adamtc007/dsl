@@ -67,7 +67,7 @@ pub enum EntityRef {
     /// A named child/entity in the current instance scope.
     Named(String),
 
-    /// A named parent entity, e.g. `parent kyc_case`.
+    /// A named parent entity, e.g. `parent review_case`.
     Parent(String),
 
     /// A named entity with an explicit textual scope from the source predicate.
@@ -81,7 +81,7 @@ pub struct EntitySetRef {
     pub kind: String,
     /// Optional qualifier such as `required`.
     pub qualifier: Option<EntityQualifier>,
-    /// Optional relation scope such as `for this UBO`.
+    /// Optional relation scope such as `for this owner`.
     pub scope: Option<RelationScope>,
 }
 

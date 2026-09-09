@@ -188,11 +188,11 @@ pub struct VerbProducesSpec {
 /// Typed output declaration for forward-reference resolution in multi-workspace plans.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct VerbOutput {
-    /// Output field name (e.g. "created_cbu_id").
+    /// Output field name (e.g. "created_account_id").
     pub field_name: String,
     /// Output type — "uuid", "record", etc.
     pub output_type: String,
-    /// Entity kind this output refers to (e.g. "cbu", "entity").
+    /// Entity kind this output refers to (e.g. "account", "entity").
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub entity_kind: Option<String>,
     /// Human description.

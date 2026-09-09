@@ -23,11 +23,11 @@ use crate::types::ObjectType;
 /// use uuid::Uuid;
 ///
 /// let namespace = Uuid::new_v5(&Uuid::NAMESPACE_URL, b"example:semantic-registry");
-/// let id1 = object_id_for(namespace, ObjectType::VerbContract, "kyc.resolve_ubo");
-/// let id2 = object_id_for(namespace, ObjectType::VerbContract, "kyc.resolve_ubo");
+/// let id1 = object_id_for(namespace, ObjectType::VerbContract, "ledger.resolve_owner");
+/// let id2 = object_id_for(namespace, ObjectType::VerbContract, "ledger.resolve_owner");
 /// assert_eq!(id1, id2); // deterministic
 ///
-/// let id3 = object_id_for(namespace, ObjectType::AttributeDef, "kyc.resolve_ubo");
+/// let id3 = object_id_for(namespace, ObjectType::AttributeDef, "ledger.resolve_owner");
 /// assert_ne!(id1, id3); // different object_type → different id
 /// ```
 pub fn object_id_for(namespace: Uuid, object_type: ObjectType, fqn: &str) -> Uuid {

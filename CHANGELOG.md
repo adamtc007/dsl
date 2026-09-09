@@ -20,6 +20,29 @@ The workspace follows Semantic Versioning subject to the pre-1.0 rules in
   verbatim.
 - Record `cargo public-api` baselines for the four crates and gate them with
   `scripts/check-public-api-baselines.sh`.
+- Add `scripts/check-domain-nouns.sh`: a CI gate that fails on any domain
+  noun in non-test core code, with an allowlist that must stay empty
+  (EOP-PLAN-CA-REUSE-001 DSL-T2).
+
+### Changed
+
+- **Breaking:** `dsl_core::SourceOfTruth::KycStream` is replaced by the
+  data-carried `SourceOfTruth::Stream(String)` (YAML
+  `source_of_truth: { stream: <id> }`); the enum no longer derives `Copy`.
+- **Breaking:** threshold predicates and bounds are fixed-point decimals.
+  `EscalationPredicate::{ArgGt,ArgGte,ArgLt,ArgLte}.value` and
+  `ArgValidation::{min,max}` are `rust_decimal::Decimal`; YAML accepts
+  integer literals or quoted decimal text and rejects floating-point
+  literals. Evaluation compares decimals; no `f64` remains on the predicate
+  path.
+- `sem_os_policy::domain_pack::DomainTransition` gains optional `slot_path`
+  and `node_prefix`; state simulation derives its predicted advance target
+  from the transition instead of a built-in name.
+- `sem_os_policy::context_resolution` canonicalises entity kinds through a
+  request-supplied `EntityKindAliases` table instead of a built-in alias
+  `match`.
+- Domain examples in shared-crate documentation are rewritten with neutral
+  vocabulary.
 
 ## [0.2.2] - 2026-08-05
 

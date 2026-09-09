@@ -1,0 +1,3 @@
+# Domain-noun allowlist for scripts/check-domain-nouns.sh.
+# This file is intentionally empty. Adding an entry fails the gate; domain
+# nouns in non-test core code are defects, not reviewed debt.

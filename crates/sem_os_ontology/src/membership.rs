@@ -2,7 +2,7 @@
 //!
 //! A membership rule binds a registry object (attribute, verb, entity type)
 //! to a taxonomy node. This enables classification queries such as
-//! "which attributes belong to KYC High Risk?".
+//! "which attributes belong to the High Risk tier?".
 
 use serde::{Deserialize, Serialize};
 

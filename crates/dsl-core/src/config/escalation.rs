@@ -24,6 +24,9 @@ use crate::config::types::{
     ConsequenceDeclaration, ConsequenceTier, EscalationPredicate, EscalationRule,
 };
 use std::collections::HashMap;
+use std::str::FromStr;
+
+use rust_decimal::Decimal;
 
 /// Evaluation context — the three argument kinds referenced by the
 /// restricted DSL per v1.1 R6.
@@ -32,7 +35,7 @@ pub(crate) struct EvaluationContext {
     /// Verb argument values, keyed by argument name.
     pub args: HashMap<String, serde_json::Value>,
     /// Entity attributes, keyed by `entity_kind` → attr_name → value.
-    /// Example: `entities["cbu"]["sanctions_status"] = "listed"`.
+    /// Example: `entities["account"]["sanctions_status"] = "listed"`.
     pub entities: HashMap<String, HashMap<String, serde_json::Value>>,
     /// Named boolean context flags (session state).
     pub context_flags: HashMap<String, bool>,
@@ -81,22 +84,22 @@ pub(crate) fn evaluate_predicate(pred: &EscalationPredicate, ctx: &EvaluationCon
         EscalationPredicate::ArgGt { arg, value } => ctx
             .args
             .get(arg)
-            .and_then(as_f64)
+            .and_then(as_decimal)
             .is_some_and(|n| n > *value),
         EscalationPredicate::ArgGte { arg, value } => ctx
             .args
             .get(arg)
-            .and_then(as_f64)
+            .and_then(as_decimal)
             .is_some_and(|n| n >= *value),
         EscalationPredicate::ArgLt { arg, value } => ctx
             .args
             .get(arg)
-            .and_then(as_f64)
+            .and_then(as_decimal)
             .is_some_and(|n| n < *value),
         EscalationPredicate::ArgLte { arg, value } => ctx
             .args
             .get(arg)
-            .and_then(as_f64)
+            .and_then(as_decimal)
             .is_some_and(|n| n <= *value),
         EscalationPredicate::EntityAttrEq {
             entity_kind,
@@ -157,10 +160,20 @@ pub(crate) fn compute_effective_tier_with_trace<'a>(
     (tier, fired)
 }
 
-/// Coerce a JSON value to f64 for numeric-threshold predicates. Returns
-/// `None` for non-numeric values → predicate evaluates false (conservative).
-fn as_f64(v: &serde_json::Value) -> Option<f64> {
-    v.as_f64()
+/// Coerce a JSON value to a fixed-point decimal for threshold predicates.
+/// Numbers are converted through their exact JSON text, strings are parsed
+/// as decimal text; anything else (or unparseable text) is `None` and the
+/// predicate evaluates false (conservative). No float arithmetic or float
+/// comparison happens on this path.
+fn as_decimal(v: &serde_json::Value) -> Option<Decimal> {
+    let text = match v {
+        serde_json::Value::Number(n) => n.to_string(),
+        serde_json::Value::String(s) => s.trim().to_owned(),
+        _ => return None,
+    };
+    Decimal::from_str(&text)
+        .or_else(|_| Decimal::from_scientific(&text))
+        .ok()
 }
 
 // ---------------------------------------------------------------------------
@@ -216,7 +229,7 @@ mod tests {
                 "bulk",
                 EscalationPredicate::ArgGt {
                     arg: "count".into(),
-                    value: 100.0,
+                    value: Decimal::from(100),
                 },
                 ConsequenceTier::RequiresConfirmation,
             )],
@@ -330,7 +343,7 @@ mod tests {
                     preds: vec![
                         EscalationPredicate::ArgGt {
                             arg: "count".into(),
-                            value: 100.0,
+                            value: Decimal::from(100),
                         },
                         EscalationPredicate::Not {
                             pred: Box::new(EscalationPredicate::ContextFlag {
@@ -402,7 +415,7 @@ mod tests {
                 "over_10",
                 EscalationPredicate::ArgGte {
                     arg: "n".into(),
-                    value: 10.0,
+                    value: Decimal::from(10),
                 },
                 ConsequenceTier::Reviewable,
             )],
@@ -435,7 +448,7 @@ mod tests {
                 "gt",
                 EscalationPredicate::ArgGt {
                     arg: "x".into(),
-                    value: 0.0,
+                    value: Decimal::ZERO,
                 },
                 ConsequenceTier::Reviewable,
             )],
@@ -443,6 +456,51 @@ mod tests {
         // x is a string — numeric comparison evaluates false.
         let ctx = EvaluationContext::new().with_arg("x", json!("hello"));
         assert_eq!(compute_effective_tier(&d, &ctx), ConsequenceTier::Benign);
+    }
+
+    #[test]
+    fn decimal_thresholds_compare_exactly_without_floats() {
+        let half = Decimal::from_str("0.5").unwrap();
+        let gt = decl(
+            ConsequenceTier::Benign,
+            vec![rule(
+                "gt",
+                EscalationPredicate::ArgGt {
+                    arg: "share".into(),
+                    value: half,
+                },
+                ConsequenceTier::Reviewable,
+            )],
+        );
+        let gte = decl(
+            ConsequenceTier::Benign,
+            vec![rule(
+                "gte",
+                EscalationPredicate::ArgGte {
+                    arg: "share".into(),
+                    value: half,
+                },
+                ConsequenceTier::Reviewable,
+            )],
+        );
+        let below = EvaluationContext::new().with_arg("share", json!(0.25));
+        assert_eq!(compute_effective_tier(&gt, &below), ConsequenceTier::Benign);
+        let above = EvaluationContext::new().with_arg("share", json!("0.75"));
+        assert_eq!(
+            compute_effective_tier(&gt, &above),
+            ConsequenceTier::Reviewable
+        );
+        let boundary = EvaluationContext::new().with_arg("share", json!("0.50"));
+        assert_eq!(
+            compute_effective_tier(&gt, &boundary),
+            ConsequenceTier::Benign
+        );
+        assert_eq!(
+            compute_effective_tier(&gte, &boundary),
+            ConsequenceTier::Reviewable
+        );
+        let junk = EvaluationContext::new().with_arg("share", json!("lots"));
+        assert_eq!(compute_effective_tier(&gte, &junk), ConsequenceTier::Benign);
     }
 }
 

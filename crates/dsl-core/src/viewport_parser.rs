@@ -10,7 +10,7 @@
 //!
 //! Viewport verbs follow standard DSL syntax:
 //! ```text
-//! (viewport.focus :target "cbu:Acme Corp")
+//! (viewport.focus :target "account:Acme Corp")
 //! (viewport.enhance :level +)
 //! (viewport.navigate :direction left)
 //! (viewport.view :type ownership)
@@ -25,7 +25,7 @@
 //! ```ignore
 //! use dsl_core::{parse_program, viewport_parser::parse_viewport_verb};
 //!
-//! let program = parse_program("(viewport.focus :target \"cbu:Acme\")")?;
+//! let program = parse_program("(viewport.focus :target \"account:Acme\")")?;
 //! if let Statement::VerbCall(vc) = &program.statements[0] {
 //!     if let Some(viewport_verb) = parse_viewport_verb(vc)? {
 //!         // viewport_verb is ViewportVerb::Focus { ... }
@@ -115,7 +115,7 @@ fn parse_viewport_verb_inner(verb_call: &VerbCall) -> ViewportParseResult<Viewpo
 // Individual Verb Parsers
 // ============================================================================
 
-/// Parse: (viewport.focus :target "cbu:Acme")
+/// Parse: (viewport.focus :target "account:Acme")
 fn parse_focus_verb(verb_call: &VerbCall) -> ViewportParseResult<ViewportVerb> {
     let target = get_required_arg(verb_call, "target")?;
     let target_str = extract_string_value(&target.value, "target")?;

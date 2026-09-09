@@ -247,7 +247,7 @@ pub struct BindingFrameSchema {
 pub struct BindingSlot {
     /// Slot name — matches the `@name` / `$name` in DSL source.
     pub name: BindingSlotId,
-    /// Entity type this slot holds (e.g., "cbu", "kyc_case").
+    /// Entity type this slot holds (e.g., "account", "review_case").
     /// Populated from `VerbConfig::produces.type` where declared.
     pub entity_type: Option<String>,
 }
@@ -281,7 +281,7 @@ pub(crate) enum InstructionInput {
 pub(crate) struct RuntimeInstruction {
     /// Node identity — index into `ExecutablePlan::dag` for edge lookup.
     pub node_id: NodeId,
-    /// Fully-qualified verb name (e.g., "cbu.assign-role").
+    /// Fully-qualified verb name (e.g., "account.assign-role").
     pub verb_fqn: String,
     /// Lens binding resolved for this instruction under the active pack/lens context.
     pub lens_binding: Option<LensBinding>,

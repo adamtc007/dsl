@@ -208,7 +208,7 @@ pub enum EntryReason {
 /// Projects from VerbCandidate / GroundedActionOption.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ActionDescriptor {
-    /// Verb FQN (e.g. "kyc-case.create").
+    /// Verb FQN (e.g. "review-case.create").
     pub action_id: String,
     /// Human-readable label.
     pub label: String,

@@ -22,7 +22,7 @@
 //! ## Wiring from `produces: { resolved: false }` (T09)
 //!
 //! When a verb produces a binding that does not yet have a UUID (e.g.,
-//! `cbu.ensure` by natural key), the compiler emits a `NaturalKey`
+//! `account.ensure` by natural key), the compiler emits a `NaturalKey`
 //! dependency with `RuntimeCreate` resolution mode.
 
 use crate::execution_dag::BindingSlotId;
@@ -44,7 +44,7 @@ pub enum ResourceDependency {
     /// Typical coordination: advisory lock (`PessimisticResourceLock`) for
     /// `read_modify_write` verbs; version check for `read_snapshot` / `append_*`.
     EntityUuid {
-        /// Entity kind (e.g., "cbu", "deal", "kyc_case").
+        /// Entity kind (e.g., "account", "deal", "review_case").
         entity_type: String,
         /// UUID — present when resolution mode is `CompileResolved` or
         /// `BindingResolved` (populated at or before execution time).

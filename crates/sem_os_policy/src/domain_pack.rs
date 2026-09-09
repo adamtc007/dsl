@@ -480,6 +480,34 @@ pub struct DomainTransition {
     pub hitl_required: bool,
     #[serde(default)]
     pub evidence_refs_required: Vec<String>,
+    /// Slot path whose state this transition advances, as the pack names it
+    /// (e.g. `<entity>/<lane>`). When absent, simulation derives
+    /// `<entity_type>/<state_machine>`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub slot_path: Option<String>,
+    /// Node identifier prefix for the predicted advance (`<prefix>:<state>`).
+    /// When absent, simulation uses `entity_type`.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub node_prefix: Option<String>,
+}
+
+impl DomainTransition {
+    /// Slot path the transition advances: declared, else derived from
+    /// `entity_type` and `state_machine`.
+    #[must_use]
+    pub fn advance_slot_path(&self) -> String {
+        self.slot_path
+            .clone()
+            .unwrap_or_else(|| format!("{}/{}", self.entity_type, self.state_machine))
+    }
+
+    /// Node identifier the transition advances to for `state`: declared
+    /// prefix, else `entity_type`, joined with the lower-cased state.
+    #[must_use]
+    pub fn advance_node(&self, state: &str) -> String {
+        let prefix = self.node_prefix.as_deref().unwrap_or(&self.entity_type);
+        format!("{}:{}", prefix, state.to_lowercase())
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -1306,6 +1334,8 @@ mod tests {
                 mutation_enabled: false,
                 hitl_required: true,
                 evidence_refs_required: vec!["case_id".to_string()],
+                slot_path: None,
+                node_prefix: None,
             }],
             discovery_probes: vec![DiscoveryProbe {
                 probe_id: "kyc-case.read-state".to_string(),

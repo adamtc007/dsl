@@ -21,7 +21,7 @@ fn default_one() -> u32 {
 /// Body for an evidence requirement snapshot.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct EvidenceRequirementBody {
-    /// Fully qualified name, e.g. `"kyc.identity-evidence"`
+    /// Fully qualified name, e.g. `"review.identity-evidence"`
     pub fqn: String,
     /// Human-readable name
     pub name: String,
@@ -29,7 +29,7 @@ pub struct EvidenceRequirementBody {
     pub description: String,
     /// Entity type this requirement applies to
     pub target_entity_type: String,
-    /// Context that triggers this requirement (e.g., `onboarding`, `periodic_review`)
+    /// Context that triggers this requirement (e.g., `intake`, `periodic_review`)
     #[serde(default)]
     pub trigger_context: Option<String>,
     /// Required documents

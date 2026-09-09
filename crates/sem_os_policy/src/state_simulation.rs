@@ -172,8 +172,8 @@ pub fn simulate_transition_from_pack(
         },
         predicted_advance: SimulatedStateAdvance {
             entity_id: request.entity_id,
-            to_node: format!("kyc-case:{}", request.requested_state.to_lowercase()),
-            slot_path: "kyc-case/workstream".to_string(),
+            to_node: transition.advance_node(&request.requested_state),
+            slot_path: transition.advance_slot_path(),
             reason: format!(
                 "{} - {} -> {}",
                 transition.verb, request.current_state, request.requested_state
@@ -284,6 +284,8 @@ mod tests {
                 mutation_enabled: false,
                 hitl_required: true,
                 evidence_refs_required: vec!["case_id".to_string()],
+                slot_path: Some("kyc-case/workstream".to_string()),
+                node_prefix: Some("kyc-case".to_string()),
             }],
             discovery_probes: vec![DiscoveryProbe {
                 probe_id: "kyc-case.read-state".to_string(),
@@ -413,5 +415,41 @@ mod tests {
                 transition_ref: "kyc-case.intake-to-discovery".to_string(),
             }
         );
+    }
+
+    #[test]
+    fn undeclared_advance_target_is_derived_from_transition_data() {
+        let mut m = manifest();
+        let transition = &mut m.allowed_transitions[0];
+        transition.slot_path = None;
+        transition.node_prefix = None;
+        let result =
+            simulate_transition_from_pack(&m, &request("INTAKE", "DISCOVERY")).expect("simulated");
+        assert_eq!(result.predicted_advance.to_node, "kyc_case:discovery");
+        assert_eq!(
+            result.predicted_advance.slot_path,
+            "kyc_case/kyc_case_lifecycle"
+        );
+    }
+
+    #[test]
+    fn advance_target_fields_are_optional_on_the_wire() {
+        let yaml = r#"
+transition_ref: t
+entity_type: order
+state_machine: order_lifecycle
+verb: order.advance
+from_state: draft
+to_state: placed
+"#;
+        let transition: DomainTransition = serde_yaml::from_str(yaml).unwrap();
+        assert_eq!(transition.advance_slot_path(), "order/order_lifecycle");
+        assert_eq!(transition.advance_node("PLACED"), "order:placed");
+        let declared: DomainTransition = serde_yaml::from_str(&format!(
+            "{yaml}slot_path: orders/lane\nnode_prefix: order-node\n"
+        ))
+        .unwrap();
+        assert_eq!(declared.advance_slot_path(), "orders/lane");
+        assert_eq!(declared.advance_node("PLACED"), "order-node:placed");
     }
 }

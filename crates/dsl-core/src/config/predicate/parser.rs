@@ -1,5 +1,6 @@
 //! Parser for the v1.4 `green_when` free-text convention.
 
+use std::str::FromStr;
 use thiserror::Error;
 
 use super::ast::{
@@ -508,7 +509,7 @@ fn parse_attr_value(value: &str) -> AttrValue {
     if value == "false" {
         return AttrValue::Bool(false);
     }
-    if value.parse::<i64>().is_ok() || value.parse::<f64>().is_ok() {
+    if value.parse::<i64>().is_ok() || rust_decimal::Decimal::from_str(value).is_ok() {
         return AttrValue::Number(value.to_string());
     }
     if (value.starts_with('"') && value.ends_with('"'))

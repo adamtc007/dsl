@@ -4,6 +4,7 @@
 
 use crate::executable_plan::EffectClass;
 use dsl_types::{FocusKind, SlotKind};
+use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
 
@@ -87,7 +88,7 @@ pub struct VerbConfig {
     pub metadata: Option<VerbMetadata>,
     /// Natural language phrases that should trigger this verb.
     /// Used by the agent for intent-to-verb matching.
-    /// Example: ["add counterparty", "create counterparty", "onboard counterparty"]
+    /// Example: ["add counterparty", "create counterparty", "register counterparty"]
     #[serde(default)]
     pub invocation_phrases: Vec<String>,
     /// Execution policy for batch operations and entity locking.
@@ -320,8 +321,8 @@ pub struct ThreeAxisDeclaration {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum StateEffect {
-    /// The verb transitions some DAG node's state (e.g. `cbu.approve` moves
-    /// a CBU from `pending` to `approved`). MUST be paired with a
+    /// The verb transitions some DAG node's state (e.g. `order.approve` moves
+    /// an order from `pending` to `approved`). MUST be paired with a
     /// `transitions:` block listing the allowed edges.
     Transition,
     /// The verb preserves state. MUST have an empty or absent `transitions:`
@@ -411,14 +412,31 @@ pub enum EscalationPredicate {
         arg: String,
         values: Vec<serde_json::Value>,
     },
-    /// `arg.<name> > <n>` — numeric threshold.
-    ArgGt { arg: String, value: f64 },
+    /// `arg.<name> > <n>` — fixed-point decimal threshold (integer literal
+    /// or quoted decimal text in YAML; never a float).
+    ArgGt {
+        arg: String,
+        #[serde(with = "crate::config::decimal_text")]
+        value: Decimal,
+    },
     /// `arg.<name> >= <n>`.
-    ArgGte { arg: String, value: f64 },
+    ArgGte {
+        arg: String,
+        #[serde(with = "crate::config::decimal_text")]
+        value: Decimal,
+    },
     /// `arg.<name> < <n>`.
-    ArgLt { arg: String, value: f64 },
+    ArgLt {
+        arg: String,
+        #[serde(with = "crate::config::decimal_text")]
+        value: Decimal,
+    },
     /// `arg.<name> <= <n>`.
-    ArgLte { arg: String, value: f64 },
+    ArgLte {
+        arg: String,
+        #[serde(with = "crate::config::decimal_text")]
+        value: Decimal,
+    },
     /// `entity.<kind>.<attr> == <value>`.
     EntityAttrEq {
         entity_kind: String,
@@ -462,12 +480,12 @@ pub struct TransitionEdge {
 /// Configuration for a verb output declaration.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct VerbOutputConfig {
-    /// Output field name (e.g. "created_cbu_id").
+    /// Output field name (e.g. "created_account_id").
     pub name: String,
     /// Output type — "uuid", "record", etc.
     #[serde(rename = "type")]
     pub output_type: String,
-    /// Entity kind this output refers to (e.g. "cbu", "entity").
+    /// Entity kind this output refers to (e.g. "account", "entity").
     #[serde(default)]
     pub entity_kind: Option<String>,
     /// Human description.
@@ -552,7 +570,7 @@ pub enum LockModeConfig {
 pub struct LockTargetConfig {
     /// Argument name in verb call (e.g., "entity-id", "person-id")
     pub arg: String,
-    /// Entity type for lock key (e.g., "person", "entity", "cbu")
+    /// Entity type for lock key (e.g., "person", "entity", "account")
     pub entity_type: String,
     /// Access type: `read` or `write` (default)
     #[serde(default)]
@@ -577,7 +595,7 @@ pub enum LockAccessConfig {
 /// Sentence templates for human-readable step playback in the v2 REPL.
 ///
 /// Each field provides templates for different contexts:
-/// - `step`: Full sentence for runbook display ("Assign {product} to {cbu-name}")
+/// - `step`: Full sentence for runbook display ("Assign {product} to {account-name}")
 /// - `summary`: Short form for pack-level summaries ("assigned {product}")
 /// - `clarify`: Per-arg conversational prompts when args are missing
 /// - `completed`: Past-tense sentence after execution
@@ -597,7 +615,7 @@ pub enum LockAccessConfig {
 /// ```
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
 pub struct VerbSentences {
-    /// Step templates: "Assign {product} to {cbu-name}"
+    /// Step templates: "Assign {product} to {account-name}"
     #[serde(default)]
     pub step: Vec<String>,
     /// Summary templates: "assigned {product}"
@@ -606,7 +624,7 @@ pub struct VerbSentences {
     /// Clarification prompts per arg: {"product": "Which product?"}
     #[serde(default)]
     pub clarify: HashMap<String, String>,
-    /// Completed sentence: "{product} is now assigned to {cbu-name}"
+    /// Completed sentence: "{product} is now assigned to {account-name}"
     #[serde(default)]
     pub completed: Option<String>,
 }
@@ -681,7 +699,7 @@ pub enum ActionClass {
 pub struct VerbMetadata {
     /// Verb tier classification:
     /// - `reference`: Global catalogs, templates, taxonomies (scope: global)
-    /// - `intent`: Authoring surface for CBU business policy (scope: cbu)
+    /// - `intent`: Authoring surface for business policy (scope: the owning entity)
     /// - `projection`: Writes operational tables from matrix (internal only)
     /// - `diagnostics`: Read-only inspection of state
     /// - `composite`: Multi-table orchestration verbs
@@ -697,7 +715,7 @@ pub struct VerbMetadata {
 
     /// Scope of the verb:
     /// - `global`: Operates on global reference data
-    /// - `cbu`: Operates within CBU context
+    /// - otherwise: operates within the context of the named scoping entity
     #[serde(default)]
     pub scope: Option<VerbScope>,
 
@@ -763,12 +781,12 @@ pub struct VerbMetadata {
     // =========================================================================
     // Entity-kind applicability fields
     // =========================================================================
-    /// Entity kinds this verb applies to (e.g., ["cbu", "fund", "person"]).
+    /// Entity kinds this verb applies to (e.g., ["account", "fund", "person"]).
     /// Empty = applies to all kinds (no filtering).
     #[serde(default)]
     pub subject_kinds: Vec<String>,
 
-    /// Phase tags (e.g., ["onboarding", "review", "monitoring"]).
+    /// Phase tags (e.g., ["intake", "review", "monitoring"]).
     /// Empty = no phase restriction.
     #[serde(default)]
     pub phase_tags: Vec<String>,
@@ -788,7 +806,7 @@ pub struct VerbMetadata {
 pub enum VerbTier {
     /// Global catalogs, templates, taxonomies
     Reference,
-    /// Authoring surface for CBU business policy (matrix is source of truth)
+    /// Authoring surface for business policy (matrix is source of truth)
     Intent,
     /// Writes operational tables from matrix (internal only)
     Projection,
@@ -802,17 +820,17 @@ pub enum VerbTier {
 
 /// Source of truth for data
 ///
-/// Different domains have different canonical sources:
-/// - Trading profile verbs → matrix (JSONB document)
+/// Different verb families have different canonical sources:
+/// - Profile verbs → matrix (JSONB document)
 /// - Entity/ownership verbs → entity (entity_relationships table)
-/// - KYC/case verbs → workflow (case state machine)
-/// - KYC/UBO determination verbs → kyc_stream (durable append-only verb stream)
-/// - Research verbs → external (APIs like GLEIF, Companies House)
+/// - Case verbs → workflow (case state machine)
+/// - Verbs governed by a durable append-only stream → `stream: <id>`
+///   (the stream is canonical; folds are disposable projections)
+/// - Research verbs → external (third-party APIs)
 /// - Fund/investor verbs → register (capital structure)
 /// - Reference data verbs → catalog (seeded lookup tables)
 /// - Session/view verbs → session (ephemeral UI state)
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize, Serialize)]
-#[serde(rename_all = "snake_case")]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum SourceOfTruth {
     /// Trading matrix document is canonical (trading-profile domain)
     Matrix,
@@ -822,15 +840,15 @@ pub enum SourceOfTruth {
     Operational,
     /// Session state - ephemeral, not persisted business data
     Session,
-    /// Entity graph - entity_relationships is the source (UBO, ownership, control)
+    /// Entity graph - entity_relationships is the source (ownership, control)
     Entity,
-    /// Case workflow - KYC case state machine is canonical
+    /// Case workflow - the case state machine is canonical
     Workflow,
-    /// dsl.kyc verb stream - the durable append-only `kyc_intent_events`
-    /// table is canonical (control/economic edges, determination freezes,
-    /// obligation lifecycle); folds are disposable, replayable projections,
-    /// not the source itself (EOP-DD-KYCUBO-002 §2)
-    KycStream,
+    /// A named durable append-only verb stream is canonical; folds over it
+    /// are disposable, replayable projections, not the source itself. The
+    /// identifier is opaque to the core and names the domain's stream
+    /// (YAML: `source_of_truth: { stream: <id> }`).
+    Stream(String),
     /// External API - data sourced from GLEIF, Companies House, SEC, etc.
     External,
     /// Capital register - fund/investor holdings structure
@@ -841,6 +859,85 @@ pub enum SourceOfTruth {
     SemReg,
     /// Configuration files - YAML/TOML seed data
     Config,
+}
+
+/// Wire representation of [`SourceOfTruth`].
+///
+/// Unit sources are plain `snake_case` strings; the stream source is a
+/// single-key map, so YAML reads `source_of_truth: workflow` or
+/// `source_of_truth: { stream: <id> }` and JSON reads `"workflow"` or
+/// `{"stream": "<id>"}` under every serde YAML/JSON implementation.
+#[derive(Serialize, Deserialize)]
+#[serde(untagged)]
+enum SourceOfTruthWire {
+    Unit(SourceOfTruthUnit),
+    Stream { stream: String },
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+enum SourceOfTruthUnit {
+    Matrix,
+    Catalog,
+    Operational,
+    Session,
+    Entity,
+    Workflow,
+    External,
+    Register,
+    Document,
+    SemReg,
+    Config,
+}
+
+impl From<SourceOfTruth> for SourceOfTruthWire {
+    fn from(value: SourceOfTruth) -> Self {
+        match value {
+            SourceOfTruth::Matrix => Self::Unit(SourceOfTruthUnit::Matrix),
+            SourceOfTruth::Catalog => Self::Unit(SourceOfTruthUnit::Catalog),
+            SourceOfTruth::Operational => Self::Unit(SourceOfTruthUnit::Operational),
+            SourceOfTruth::Session => Self::Unit(SourceOfTruthUnit::Session),
+            SourceOfTruth::Entity => Self::Unit(SourceOfTruthUnit::Entity),
+            SourceOfTruth::Workflow => Self::Unit(SourceOfTruthUnit::Workflow),
+            SourceOfTruth::External => Self::Unit(SourceOfTruthUnit::External),
+            SourceOfTruth::Register => Self::Unit(SourceOfTruthUnit::Register),
+            SourceOfTruth::Document => Self::Unit(SourceOfTruthUnit::Document),
+            SourceOfTruth::SemReg => Self::Unit(SourceOfTruthUnit::SemReg),
+            SourceOfTruth::Config => Self::Unit(SourceOfTruthUnit::Config),
+            SourceOfTruth::Stream(stream) => Self::Stream { stream },
+        }
+    }
+}
+
+impl From<SourceOfTruthWire> for SourceOfTruth {
+    fn from(value: SourceOfTruthWire) -> Self {
+        match value {
+            SourceOfTruthWire::Unit(SourceOfTruthUnit::Matrix) => Self::Matrix,
+            SourceOfTruthWire::Unit(SourceOfTruthUnit::Catalog) => Self::Catalog,
+            SourceOfTruthWire::Unit(SourceOfTruthUnit::Operational) => Self::Operational,
+            SourceOfTruthWire::Unit(SourceOfTruthUnit::Session) => Self::Session,
+            SourceOfTruthWire::Unit(SourceOfTruthUnit::Entity) => Self::Entity,
+            SourceOfTruthWire::Unit(SourceOfTruthUnit::Workflow) => Self::Workflow,
+            SourceOfTruthWire::Unit(SourceOfTruthUnit::External) => Self::External,
+            SourceOfTruthWire::Unit(SourceOfTruthUnit::Register) => Self::Register,
+            SourceOfTruthWire::Unit(SourceOfTruthUnit::Document) => Self::Document,
+            SourceOfTruthWire::Unit(SourceOfTruthUnit::SemReg) => Self::SemReg,
+            SourceOfTruthWire::Unit(SourceOfTruthUnit::Config) => Self::Config,
+            SourceOfTruthWire::Stream { stream } => Self::Stream(stream),
+        }
+    }
+}
+
+impl Serialize for SourceOfTruth {
+    fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error> {
+        SourceOfTruthWire::from(self.clone()).serialize(serializer)
+    }
+}
+
+impl<'de> Deserialize<'de> for SourceOfTruth {
+    fn deserialize<D: serde::Deserializer<'de>>(deserializer: D) -> Result<Self, D::Error> {
+        SourceOfTruthWire::deserialize(deserializer).map(Self::from)
+    }
 }
 
 /// Pack-declared scope kind for a verb.
@@ -868,7 +965,7 @@ pub enum VerbStatus {
 /// Dataflow: what a verb produces when executed with :as @binding
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct VerbProduces {
-    /// The type of entity produced: "cbu", "entity", "case", "resource_instance", etc.
+    /// The type of entity produced: "account", "entity", "case", "resource_instance", etc.
     #[serde(rename = "type")]
     pub produced_type: String,
     /// Static subtype for entities: "proper_person", "limited_company", "fund_umbrella", etc.
@@ -889,9 +986,9 @@ pub struct VerbProduces {
 /// Dataflow: what a verb consumes (dependencies)
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct VerbConsumes {
-    /// Which argument carries the reference (e.g., "cbu-id", "entity-id")
+    /// Which argument carries the reference (e.g., "account-id", "entity-id")
     pub arg: String,
-    /// Expected type of the binding (e.g., "cbu", "entity", "case")
+    /// Expected type of the binding (e.g., "account", "entity", "case")
     #[serde(rename = "type")]
     pub consumed_type: String,
     /// Whether this dependency is required (default: true)
@@ -927,13 +1024,13 @@ pub struct VerbLifecycle {
     pub precondition_checks: Vec<String>,
 
     /// Tables this verb writes to (for DAG ordering).
-    /// Format: "schema.table" (e.g., "custody.cbu_ssi", "ob-poc.cbus")
+    /// Format: "schema.table" (e.g., "custody.account_ssi", "app.accounts")
     /// Used by topo_sort to ensure write-before-read ordering.
     #[serde(default)]
     pub writes_tables: Vec<String>,
 
     /// Tables this verb reads from (for DAG ordering).
-    /// Format: "schema.table" (e.g., "custody.cbu_ssi", "ob-poc.cbus")
+    /// Format: "schema.table" (e.g., "custody.account_ssi", "app.accounts")
     /// Used by topo_sort to order this verb after any verb that writes to these tables.
     #[serde(default)]
     pub reads_tables: Vec<String>,
@@ -1039,7 +1136,7 @@ pub enum CrudOperation {
 pub struct GraphQueryConfig {
     /// The type of graph query operation
     pub operation: GraphQueryOperation,
-    /// Root entity type for the query (e.g., "cbu", "entity")
+    /// Root entity type for the query (e.g., "account", "entity")
     #[serde(default)]
     pub root_type: Option<String>,
     /// Edge types to include in traversal
@@ -1090,11 +1187,11 @@ pub enum GraphQueryOperation {
 ///
 /// Example YAML:
 /// ```yaml
-/// kyc-case.create:
+/// review-case.create:
 ///   behavior: durable
 ///   durable:
 ///     runtime: bpmn-lite
-///     process_key: kyc-open-case
+///     process_key: review-open-case
 ///     correlation_field: case_id
 ///     timeout: P14D
 ///     task_bindings:
@@ -1105,7 +1202,7 @@ pub enum GraphQueryOperation {
 pub struct DurableConfig {
     /// Which workflow runtime to use.
     pub runtime: DurableRuntime,
-    /// The process definition key in the workflow engine (e.g., "kyc-open-case").
+    /// The process definition key in the workflow engine (e.g., "review-open-case").
     pub process_key: String,
     /// The verb argument whose value becomes the correlation key for signal routing.
     pub correlation_field: String,
@@ -1158,8 +1255,8 @@ pub struct ArgConfig {
     /// - `ClientGroupRef`: Resolves to client_group, sets session scope
     /// - `EntityRef`: Resolves to single entity within scope
     /// - `EntitySetRef`: Resolves to multiple entities within scope
-    /// - `CbuRef`: Resolves to single CBU within scope
-    /// - `CbuSetRef`: Resolves to multiple CBUs within scope
+    /// - `AccountRef`-style kinds: resolve to a single owning entity within scope
+    /// - `AccountSetRef`-style kinds: resolve to multiple owning entities within scope
     ///
     /// Example YAML:
     /// ```yaml
@@ -1194,7 +1291,7 @@ pub type SlotType = SlotKind;
 /// Configuration for fuzzy match checking on upsert args
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct FuzzyCheckConfig {
-    /// Entity type to search (e.g., "cbu", "entity")
+    /// Entity type to search (e.g., "account", "entity")
     pub entity_type: String,
     /// Field to search by (defaults to arg name if not specified)
     #[serde(default)]
@@ -1214,12 +1311,12 @@ pub struct ArgValidation {
     /// Valid enum values
     #[serde(default)]
     pub r#enum: Option<Vec<String>>,
-    /// Minimum value (for numbers)
-    #[serde(default)]
-    pub min: Option<f64>,
-    /// Maximum value (for numbers)
-    #[serde(default)]
-    pub max: Option<f64>,
+    /// Minimum value (for numbers; fixed-point decimal)
+    #[serde(default, with = "crate::config::decimal_text::option")]
+    pub min: Option<Decimal>,
+    /// Maximum value (for numbers; fixed-point decimal)
+    #[serde(default, with = "crate::config::decimal_text::option")]
+    pub max: Option<Decimal>,
     /// Regex pattern (for strings)
     #[serde(default)]
     pub pattern: Option<String>,
@@ -1290,7 +1387,7 @@ pub struct LookupConfig {
     /// Resolution mode: how the LSP/UI should resolve this reference.
     ///
     /// - `reference`: Small static lookup tables (< 100 items) - use autocomplete dropdown
-    /// - `entity`: Large/growing tables (people, CBUs, cases) - use search modal
+    /// - `entity`: Large/growing tables (people, accounts, cases) - use search modal
     ///
     /// Defaults to "reference" if not specified (backwards compatible).
     #[serde(default)]
@@ -1789,8 +1886,8 @@ pub enum ResolutionTier {
     /// Confidence: 0.95
     Composite,
 
-    /// Context-scoped search - name within CBU/case scope
-    /// Requires: name + context (cbu_id, case_id)
+    /// Context-scoped search - name within the parent entity's scope
+    /// Requires: name + context (account_id, case_id)
     /// Confidence: 0.85
     Contextual,
 
@@ -1808,7 +1905,7 @@ pub enum ResolutionMode {
     /// UI: Autocomplete dropdown with all values
     #[default]
     Reference,
-    /// Large/growing entity tables (people, CBUs, funds, cases)
+    /// Large/growing entity tables (people, accounts, funds, cases)
     /// UI: Search modal with refinement
     Entity,
 }
@@ -1947,10 +2044,10 @@ pub(crate) struct RuleCondition {
     pub value: Option<String>,
     #[serde(default)]
     pub missing_arg: Option<String>,
-    #[serde(default)]
-    pub greater_than: Option<f64>,
-    #[serde(default)]
-    pub less_than: Option<f64>,
+    #[serde(default, with = "crate::config::decimal_text::option")]
+    pub greater_than: Option<Decimal>,
+    #[serde(default, with = "crate::config::decimal_text::option")]
+    pub less_than: Option<Decimal>,
 }
 
 #[derive(Debug, Clone, Default, Deserialize, Serialize)]
@@ -2524,7 +2621,7 @@ transitions:
         match &decl.consequence.escalation[0].when {
             EscalationPredicate::ArgGt { arg, value } => {
                 assert_eq!(arg, "count");
-                assert!((value - 1000.0).abs() < f64::EPSILON);
+                assert_eq!(*value, Decimal::from(1000));
             }
             _ => panic!("expected ArgGt"),
         }

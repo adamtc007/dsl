@@ -1010,6 +1010,7 @@ impl CoreService for CoreServiceImpl {
                 top_view,
                 entity_kind: req.entity_kind.as_deref(),
                 entity_confidence: req.entity_confidence,
+                entity_kind_aliases: &req.entity_kind_aliases,
                 memberships: &memberships,
                 relationships: &relationships,
             },
@@ -2196,6 +2197,7 @@ slots:
             point_in_time: None,
             entity_kind: Some("fund".into()),
             entity_confidence: Some(0.9),
+            entity_kind_aliases: Default::default(),
             discovery: DiscoveryContext::default(),
         };
 
@@ -2298,6 +2300,7 @@ slots:
             point_in_time: None,
             entity_kind: Some("contract".into()),
             entity_confidence: Some(0.9),
+            entity_kind_aliases: Default::default(),
             discovery: DiscoveryContext::default(),
         };
 

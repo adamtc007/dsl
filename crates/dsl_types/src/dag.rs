@@ -150,7 +150,7 @@ pub struct Phase {
     pub derivation: Option<Derivation>,
     /// Verbs that can drive progression out of this phase. Tolerant to
     /// list form (canonical) OR free-text string (documentation escape
-    /// used in some workspaces, e.g. KYC "remediation" phase).
+    /// used in some workspaces, e.g. a "remediation" phase).
     #[serde(default)]
     pub progression_verbs: ProgressionVerbs,
     #[serde(default)]
@@ -311,7 +311,7 @@ pub struct Slot {
     pub suspended_state_exempt: bool,
 
     /// Additional free-form metadata retained for forward compatibility
-    /// (e.g. `product_gates:`, `cross_workspace_gate:` used by KYC DAG).
+    /// (e.g. `product_gates:`, `cross_workspace_gate:` used by some DAGs).
     #[serde(flatten)]
     pub extra: BTreeMap<String, YamlValue>,
 }
@@ -359,7 +359,7 @@ pub struct StateMachine {
     #[serde(default)]
     pub expected_lifetime: Option<ExpectedLifetime>,
 
-    /// Ownership label for the lifecycle — governance/KYC artefact per
+    /// Ownership label for the lifecycle — governance artefact per
     /// OQ-3 resolution (2026-04-24). Runtime does NOT enforce.
     #[serde(default)]
     pub owner: Option<String>,
@@ -399,7 +399,7 @@ pub struct PredicateBinding {
     #[serde(default)]
     pub id_column: Option<String>,
 
-    /// Human-readable scope label, e.g. `attached_to this UBO`.
+    /// Human-readable scope label, e.g. `attached_to this owner`.
     #[serde(default)]
     pub scope: Option<String>,
 
@@ -821,7 +821,7 @@ pub struct EvidenceType {
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct CategoryGated {
     pub category_column: String,
-    pub category_source: String, // table name, e.g. "cbus"
+    pub category_source: String, // table name, e.g. "accounts"
     #[serde(default)]
     pub activated_by: Vec<String>,
     #[serde(default)]

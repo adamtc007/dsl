@@ -281,13 +281,13 @@ fn table_name_from_key(key: &str) -> &str {
     key.split(':').nth(1).unwrap_or(key)
 }
 
-/// Extract domain prefix from a table name (e.g., "cbus" → "cbu", "kyc_cases" → "kyc").
+/// Extract domain prefix from a table name (e.g., "accounts" → "account", "review_cases" → "review").
 fn extract_domain(table_name: &str) -> String {
     // Try underscore split first, then use full name
     if let Some(pos) = table_name.find('_') {
         table_name[..pos].to_string()
     } else {
-        // Strip trailing 's' for plurals (cbus → cbu)
+        // Strip trailing 's' for plurals (accounts → account)
         if table_name.ends_with('s') && table_name.len() > 1 {
             table_name[..table_name.len() - 1].to_string()
         } else {

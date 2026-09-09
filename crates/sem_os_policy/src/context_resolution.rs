@@ -134,6 +134,11 @@ pub struct ContextResolutionRequest {
     /// Low-confidence signals widen the candidate verb set instead of filtering.
     #[serde(default)]
     pub entity_confidence: Option<f64>,
+    /// Host-supplied entity-kind alias table used to canonicalise
+    /// `entity_kind` and verb `subject_kinds` before comparison. The core
+    /// has no built-in aliases; an empty table means trim + lower-case only.
+    #[serde(default)]
+    pub entity_kind_aliases: EntityKindAliases,
     /// Explicit discovery navigation hints captured during Sage bootstrap.
     #[serde(default)]
     pub discovery: DiscoveryContext,
@@ -301,7 +306,7 @@ pub struct VerbCandidate {
     pub verb_snapshot_id: Uuid,
     /// Object ID of the VerbContract.
     pub verb_id: Uuid,
-    /// Fully qualified name (e.g. "kyc-case.create").
+    /// Fully qualified name (e.g. "review-case.create").
     pub fqn: String,
     /// Human-readable description.
     pub description: String,
@@ -644,9 +649,9 @@ pub struct ResolvedSubject {
 /// A loaded taxonomy membership record from `v_active_memberships_by_subject`.
 #[derive(Debug, Clone)]
 pub struct TaxonomyMembership {
-    /// The taxonomy this membership belongs to (e.g., "domain.kyc-tier")
+    /// The taxonomy this membership belongs to (e.g., "domain.risk-tier")
     pub taxonomy_fqn: String,
-    /// The specific taxonomy node (e.g., "domain.kyc-tier.high")
+    /// The specific taxonomy node (e.g., "domain.risk-tier.high")
     pub node_fqn: String,
     /// What type of registry object is classified
     pub target_type: String,
@@ -738,6 +743,8 @@ pub struct VerbFilterContext<'a> {
     pub entity_kind: Option<&'a str>,
     /// Confidence for the dominant entity-kind signal.
     pub entity_confidence: Option<f64>,
+    /// Entity-kind alias table (see [`EntityKindAliases`]).
+    pub entity_kind_aliases: &'a EntityKindAliases,
     /// Taxonomy memberships attached to the subject.
     pub memberships: &'a SubjectMemberships,
     /// Relationship metadata attached to the subject.
@@ -845,10 +852,10 @@ pub fn filter_and_rank_verbs(
                     .get("subject_kinds")
                     .and_then(|v| serde_json::from_value(v.clone()).ok())
                     .unwrap_or_default();
-                let canonical_kind = canonicalize_entity_kind(kind);
+                let canonical_kind = ctx.entity_kind_aliases.canonicalize(kind);
                 let canonical_subject_kinds: Vec<String> = subject_kinds
                     .iter()
-                    .map(|sk| canonicalize_entity_kind(sk))
+                    .map(|sk| ctx.entity_kind_aliases.canonicalize(sk))
                     .collect();
                 if !canonical_subject_kinds.is_empty()
                     && !canonical_subject_kinds
@@ -887,10 +894,10 @@ pub fn filter_and_rank_verbs(
                     .get("subject_kinds")
                     .and_then(|v| serde_json::from_value(v.clone()).ok())
                     .unwrap_or_default();
-                let canonical_kind = canonicalize_entity_kind(kind);
+                let canonical_kind = ctx.entity_kind_aliases.canonicalize(kind);
                 if subject_kinds
                     .iter()
-                    .map(|sk| canonicalize_entity_kind(sk))
+                    .map(|sk| ctx.entity_kind_aliases.canonicalize(sk))
                     .any(|sk| sk == canonical_kind)
                 {
                     rank_score += 0.15;
@@ -950,22 +957,50 @@ pub fn filter_and_rank_verbs(
     (candidates, entity_kind_pruned)
 }
 
-fn canonicalize_entity_kind(kind: &str) -> String {
-    let normalized = kind.trim().to_ascii_lowercase();
-    match normalized.as_str() {
-        "kyc_case" | "case" => "kyc-case".to_string(),
-        "client_group" => "client-group".to_string(),
-        "legal-entity" | "legal_entity" | "organization" | "org" => "company".to_string(),
-        "individual" | "natural_person" => "person".to_string(),
-        "client-book" | "client_book" => "client-group".to_string(),
-        "investor-register" | "investor_register" => "investor".to_string(),
-        "investment-fund" | "umbrella" | "sub-fund" | "compartment" => "fund".to_string(),
-        "doc" | "evidence-document" => "document".to_string(),
-        "legal-contract" | "agreement" | "msa" => "contract".to_string(),
-        "mandate" | "trading-mandate" => "trading-profile".to_string(),
-        "deal-record" | "sales-deal" => "deal".to_string(),
-        "client-business-unit" | "structure" | "trading-unit" => "cbu".to_string(),
-        other => other.to_string(),
+/// Host-supplied entity-kind alias table.
+///
+/// Maps alternative spellings of an entity kind to its canonical kind. The
+/// core ships no aliases: canonicalisation is trim + ASCII lower-case, then
+/// a lookup in this table (keys are compared after the same normalisation).
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(transparent)]
+pub struct EntityKindAliases {
+    aliases: std::collections::BTreeMap<String, String>,
+}
+
+impl EntityKindAliases {
+    /// Build a table from `(alias, canonical)` pairs.
+    pub fn new(pairs: impl IntoIterator<Item = (impl Into<String>, impl Into<String>)>) -> Self {
+        Self {
+            aliases: pairs
+                .into_iter()
+                .map(|(alias, canonical)| {
+                    (
+                        alias.into().trim().to_ascii_lowercase(),
+                        canonical.into().trim().to_ascii_lowercase(),
+                    )
+                })
+                .collect(),
+        }
+    }
+
+    /// Canonical form of `kind`: normalised, then aliased if the table names it.
+    #[must_use]
+    pub fn canonicalize(&self, kind: &str) -> String {
+        let normalized = kind.trim().to_ascii_lowercase();
+        self.aliases.get(&normalized).cloned().unwrap_or(normalized)
+    }
+
+    /// Number of aliases in the table.
+    #[must_use]
+    pub fn len(&self) -> usize {
+        self.aliases.len()
+    }
+
+    /// Whether the table has no aliases.
+    #[must_use]
+    pub fn is_empty(&self) -> bool {
+        self.aliases.is_empty()
     }
 }
 
@@ -1513,6 +1548,7 @@ mod tests {
             point_in_time: None,
             entity_kind: None,
             entity_confidence: None,
+            entity_kind_aliases: Default::default(),
             discovery: DiscoveryContext::default(),
         }
     }

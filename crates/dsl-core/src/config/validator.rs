@@ -1222,7 +1222,7 @@ mod tests {
                             EscalationPredicate::Not {
                                 pred: Box::new(EscalationPredicate::ArgGt {
                                     arg: "phantom".into(), // unknown
-                                    value: 0.0,
+                                    value: rust_decimal::Decimal::ZERO,
                                 }),
                             },
                         ],

@@ -59,10 +59,10 @@ impl ConstellationModel {
     /// constellation: demo
     /// jurisdiction: LU
     /// slots:
-    ///   cbu:
-    ///     type: cbu
-    ///     table: cbus
-    ///     pk: cbu_id
+    ///   account:
+    ///     type: account
+    ///     table: accounts
+    ///     pk: account_id
     ///     cardinality: root
     /// "#,
     /// )
@@ -100,13 +100,13 @@ impl ConstellationModel {
 /// constellation: demo
 /// jurisdiction: LU
 /// slots:
-///   cbu:
-///     type: cbu
-///     table: cbus
-///     pk: cbu_id
+///   account:
+///     type: account
+///     table: accounts
+///     pk: account_id
 ///     cardinality: root
 ///     verbs:
-///       show: cbu.read
+///       show: account.read
 ///   case:
 ///     type: case
 ///     table: cases
@@ -114,7 +114,7 @@ impl ConstellationModel {
 ///     cardinality: optional
 ///     state_machine: case_machine
 ///     depends_on:
-///       - slot: cbu
+///       - slot: account
 ///         min_state: filled
 ///     verbs:
 ///       open:
@@ -125,7 +125,7 @@ impl ConstellationModel {
 /// .unwrap();
 ///
 /// let mut states = HashMap::new();
-/// states.insert("cbu".to_string(), "filled".to_string());
+/// states.insert("account".to_string(), "filled".to_string());
 /// states.insert("case".to_string(), "intake".to_string());
 ///
 /// let mut machines = HashMap::new();

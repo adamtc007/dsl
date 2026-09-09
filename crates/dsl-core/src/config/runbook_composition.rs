@@ -48,13 +48,13 @@ pub(crate) struct RunbookStep {
     /// External-effects set — used by Component B patterns that count
     /// effect occurrences.
     pub external_effects: Vec<ExternalEffect>,
-    /// Workspace the step operates in (e.g. "instrument_matrix", "cbu").
+    /// Workspace the step operates in (e.g. "instrument_matrix", "account").
     /// Used by Component C for multi-workspace detection.
     pub workspace: String,
     /// DAG the step transitions (if any). `None` for state-preserving
     /// steps. Used by Component C for multi-DAG detection.
     pub dag: Option<String>,
-    /// Entity kind the step touches (e.g. "cbu", "deal", "kyc_case").
+    /// Entity kind the step touches (e.g. "account", "deal", "review_case").
     /// Used by Component C for cross-entity-kind detection.
     pub entity_kind: Option<String>,
 }

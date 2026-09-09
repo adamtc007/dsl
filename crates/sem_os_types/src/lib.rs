@@ -296,7 +296,7 @@ impl SnapshotRow {
 
 // ── Fully-qualified name ──────────────────────────────────────
 
-/// Fully-qualified name (e.g., "cbu.jurisdiction_code").
+/// Fully-qualified name (e.g., "account.jurisdiction_code").
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Fqn(pub String);
 
@@ -415,7 +415,7 @@ pub struct AuditEntry {
 pub struct EvidenceInstance {
     /// The entity this observation is about.
     pub subject_ref: uuid::Uuid,
-    /// Fully-qualified attribute name (e.g. `"kyc.ubo_ownership_pct"`).
+    /// Fully-qualified attribute name (e.g. `"ledger.owner_share_pct"`).
     pub attribute_fqn: String,
     /// Confidence score 0.0–1.0.
     #[serde(default = "default_confidence")]

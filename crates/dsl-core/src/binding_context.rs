@@ -20,7 +20,7 @@ use crate::config::types::VerbProduces;
 pub struct BindingInfo {
     /// The binding name (without @): "fund", "john"
     pub name: String,
-    /// The type of entity: "cbu", "entity", "case", "workstream"
+    /// The type of entity: "account", "entity", "case", "workstream"
     pub produced_type: String,
     /// Optional subtype: "proper_person", "limited_company"
     pub subtype: Option<String>,
@@ -34,7 +34,7 @@ impl BindingInfo {
     /// Check if this binding matches an expected type
     ///
     /// Supports:
-    /// - Exact match: "cbu" matches "cbu"
+    /// - Exact match: "account" matches "account"
     /// - Base type match: "entity" matches "entity.proper_person"
     /// - Full type match: "entity.proper_person" matches "entity.proper_person"
     pub fn matches_type(&self, expected: &str) -> bool {
@@ -75,7 +75,7 @@ impl BindingInfo {
         }
     }
 
-    /// Format for display: "@fund (cbu)" or "@john (entity/proper_person)"
+    /// Format for display: "@fund (account)" or "@john (entity/proper_person)"
     pub fn display(&self) -> String {
         let type_str = match &self.subtype {
             Some(sub) => format!("{}/{}", self.produced_type, sub),
