@@ -49,6 +49,12 @@ pub enum Token {
     #[token("->")]
     Arrow,
 
+    /// `/` — separates the two symbols of a qualified name `pack/atom`. Only
+    /// this exact character forms a qualified name; any other unrecognised
+    /// character next to a symbol is a lex error, not a separator.
+    #[token("/")]
+    Slash,
+
     // -----------------------------------------------------------------------
     // Template / insertion forms  (must come before Symbol to win priority)
     // -----------------------------------------------------------------------

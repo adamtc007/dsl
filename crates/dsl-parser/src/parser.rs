@@ -277,7 +277,12 @@ impl<'src> Parser<'src> {
                             }
                         }
                         None => {
-                            // parse_value already emitted a diagnostic; skip
+                            // As in `parse_list`: force progress by consuming
+                            // the token `parse_value` left behind, unless it
+                            // is this atom's own terminator or EOF (L23/P1).
+                            if !matches!(self.stream.peek(), None | Some(Ok(Token::CloseParen))) {
+                                self.stream.next();
+                            }
                         }
                     }
                 }
@@ -360,14 +365,17 @@ impl<'src> Parser<'src> {
                     self.stream.next();
                     break;
                 }
-                _ => {
-                    match self.parse_value() {
-                        Some(v) => body.push(v),
-                        None => {
-                            // parse_value emitted a diagnostic; try to continue
+                _ => match self.parse_value() {
+                    Some(v) => body.push(v),
+                    None => {
+                        // As in `parse_list`: force progress by consuming the
+                        // token `parse_value` left behind, unless it is our
+                        // own terminator or EOF (L23/P1).
+                        if !matches!(self.stream.peek(), None | Some(Ok(Token::CloseParen))) {
+                            self.stream.next();
                         }
                     }
-                }
+                },
             }
         }
 
@@ -467,32 +475,13 @@ impl<'src> Parser<'src> {
                     }
                 }
                 Token::Symbol(_) => {
-                    // Could be a plain symbol or a qualified name `pack/atom`
+                    // Could be a plain symbol or a qualified name `pack/atom`.
+                    // Only an explicit `Slash` token forms a qualified name;
+                    // any other unrecognised character is left in the stream
+                    // for whatever comes next to diagnose (L24).
                     if let Some(Ok(Token::Symbol(s))) = self.stream.next() {
-                        // Check for `/` in the symbol (qualified name formed by
-                        // the surface syntax `pack-name/atom-name` — logos will
-                        // tokenize this as a single symbol since `/` is part of
-                        // the capture group if embedded, but actually logos won't
-                        // match `/` in our Symbol regex. So qualified names
-                        // `pack/atom` arrive as two Symbols with a `/` Error token
-                        // between them). We handle the split-token form here by
-                        // peeking for an error token that is `/` followed by another Symbol.
-                        // In practice, since `/` is not in the Symbol regex, the lexer
-                        // will emit an error token for `/`. We peek to handle that.
-                        //
-                        // Simpler approach: peek for Error token that came from `/`
-                        // by checking the raw source. Since we don't have position
-                        // info in the token itself, we use a different strategy:
-                        // peek the next two tokens. If next is Error and after that
-                        // is Symbol, we treat it as a qualified name.
-                        //
-                        // Note: `logos::skip` is not used for `/` so it produces Err(()).
-                        // We handle it specially here.
-                        if matches!(self.stream.peek(), Some(Err(()))) {
-                            // Speculatively: peek two ahead to see if it's Symbol
-                            // This requires consuming the error token and peeking
-                            // at what follows. We consume the Err here and check.
-                            self.stream.next(); // consume the Err (which is `/`)
+                        if matches!(self.stream.peek(), Some(Ok(Token::Slash))) {
+                            self.stream.next(); // consume '/'
                             if let Some(value) = self.stream.expect_ok(|tok| {
                                 if let Token::Symbol(atom) = tok {
                                     Some(atom.clone())
@@ -505,9 +494,9 @@ impl<'src> Parser<'src> {
                                     atom: value,
                                 })
                             } else {
-                                // Was an error but not a qualified name — just return
-                                // the original symbol (the error and possible token
-                                // are already consumed)
+                                self.diagnostics.push(Diagnostic::error(format!(
+                                    "Expected symbol after '/' in qualified name '{s}/'"
+                                )));
                                 Some(RawValue::Symbol(s))
                             }
                         } else {
@@ -523,6 +512,7 @@ impl<'src> Parser<'src> {
                 | Token::CloseBrace
                 | Token::Keyword(_)
                 | Token::Arrow
+                | Token::Slash
                 | Token::Comment
                 | Token::Whitespace => {
                     // Don't consume — let the caller handle the unexpected token
@@ -546,23 +536,21 @@ impl<'src> Parser<'src> {
                     self.stream.next();
                     break;
                 }
-                _ => {
-                    match self.parse_value() {
-                        Some(v) => items.push(v),
-                        None => {
-                            // Skip to close bracket
-                            loop {
-                                match self.stream.peek() {
-                                    None | Some(Ok(Token::CloseBracket)) => break,
-                                    _ => {
-                                        self.stream.next();
-                                    }
-                                }
-                            }
-                            break;
+                _ => match self.parse_value() {
+                    Some(v) => items.push(v),
+                    None => {
+                        // `parse_value` may leave behind a token it could not
+                        // turn into a value (e.g. a stray ':key', ')' or an
+                        // unrecognised character) without consuming it. Force
+                        // progress by consuming that token, unless it is our
+                        // own terminator or EOF — either of those is handled
+                        // by the top of this loop on the next iteration. This
+                        // guarantees `parse_list` always terminates (L23/P1).
+                        if !matches!(self.stream.peek(), None | Some(Ok(Token::CloseBracket))) {
+                            self.stream.next();
                         }
                     }
-                }
+                },
             }
         }
         Some(RawValue::List(items))
@@ -594,7 +582,12 @@ impl<'src> Parser<'src> {
                                 "Expected value for map key ':{}' ",
                                 key
                             )));
-                            break;
+                            // As in `parse_list`: force progress by consuming
+                            // the token `parse_value` left behind, unless it
+                            // is our own terminator or EOF (L23/P1).
+                            if !matches!(self.stream.peek(), None | Some(Ok(Token::CloseBrace))) {
+                                self.stream.next();
+                            }
                         }
                     }
                 }

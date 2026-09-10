@@ -51,6 +51,7 @@ pub dsl_parser::Token::Keyword(alloc::string::String)
 pub dsl_parser::Token::OpenBrace
 pub dsl_parser::Token::OpenBracket
 pub dsl_parser::Token::OpenParen
+pub dsl_parser::Token::Slash
 pub dsl_parser::Token::StringLit(alloc::string::String)
 pub dsl_parser::Token::Symbol(alloc::string::String)
 pub dsl_parser::Token::TemplateSplice(alloc::string::String)

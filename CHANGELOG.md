@@ -59,6 +59,21 @@ The workspace follows Semantic Versioning subject to the pre-1.0 rules in
 - Domain examples in shared-crate documentation are rewritten with neutral
   vocabulary.
 
+### Fixed
+
+- `dsl-parser`: error recovery in `parse_list`, `parse_map`,
+  `parse_for_each_body` and `parse_atom_body`'s positional-value loop could
+  fail to consume a token it could not turn into a value, looping forever on
+  an unlexable character inside a bracketed list (e.g. `(x :a [<])`). Every
+  such recovery path now always consumes a token or reaches its own
+  terminator (EOP-PLAN-CA-REUSE-001 DSL-T5).
+- **Breaking:** `dsl-parser` treated *any* lex error immediately following a
+  `Symbol` as the `pack/atom` qualified-name separator, so `foo=bar` silently
+  parsed as `QualifiedName { pack: "foo", atom: "bar" }` with no diagnostic.
+  The lexer gains an explicit `Token::Slash`; only `/` forms a qualified
+  name, and any other unrecognised character is left to be diagnosed where
+  it is next examined (DSL-T5).
+
 ## [0.2.2] - 2026-08-05
 
 ### Changed
