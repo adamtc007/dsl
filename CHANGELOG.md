@@ -73,6 +73,27 @@ The workspace follows Semantic Versioning subject to the pre-1.0 rules in
   The lexer gains an explicit `Token::Slash`; only `/` forms a qualified
   name, and any other unrecognised character is left to be diagnosed where
   it is next examined (DSL-T5).
+- **Breaking:** `sem-os-append-store`'s contract was written against
+  `String` identifiers throughout (`ScopeId`, `PieceId`, and every type built
+  from them), so a store using a different identity type (e.g. `Uuid`) could
+  not implement the trait. Every type is now generic over the store's own
+  identity type `Id: StoreId` (`StoreId` is blanket-implemented, so `String`
+  and, with the new `uuid` feature, `uuid::Uuid` both qualify with no extra
+  code); `ScopeId::<String>::validated`/`PieceId::<String>::validated`
+  preserve the previous string validation. The conformance suite is
+  parameterised the same way via a new `conformance::IdFactory<Id>` (with
+  `StringIds` and, under `uuid`, `UuidIds`), so it makes no assumption about
+  the shape of `Id` (EOP-PLAN-CA-REUSE-001 DSL-T6, ledger L30).
+- **Breaking:** `sem-os-append-store`'s `Seq` was documented and enforced as
+  contiguous per scope; the actual precedence law only needs a total order.
+  `Seq` is now defined as strictly increasing per scope, with gaps
+  explicitly legal; `AppendStore` gains an opt-in `const CONTIGUOUS: bool`
+  (`MemoryStore` sets it `true`). The conformance suite's contiguous-sequence
+  check is split into a base check that only requires strict ordering and a
+  separate check (only run when `CONTIGUOUS` is declared) that additionally
+  requires no gaps, and gains a new check that two writers may append to
+  different pieces in one scope without being serialised against each other
+  (DSL-T6, ledger L31).
 
 ## [0.2.2] - 2026-08-05
 

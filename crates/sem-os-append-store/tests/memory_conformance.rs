@@ -1,8 +1,12 @@
 #![cfg(feature = "conformance")]
-//! The reference store passes its own conformance suite, and the contract's
-//! invariants hold under random write sequences.
+//! The reference store passes its own conformance suite for two different
+//! identity types — bpmn-lite-style `String` ids and CA-style `uuid::Uuid`
+//! ids — proving the contract and its suite impose no string-shaped
+//! requirement on a store (ledger L30). The contract's invariants also hold
+//! under random write sequences.
 
 use proptest::prelude::*;
+use sem_os_append_store::conformance::StringIds;
 use sem_os_append_store::{
     replay, AppendBatch, AppendError, AppendStore, MemoryStore, PieceId, PieceWrite, ScopeId, Seq,
     VersionNo,
@@ -10,20 +14,29 @@ use sem_os_append_store::{
 use std::collections::BTreeMap;
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
-async fn memory_store_passes_the_conformance_suite() {
-    sem_os_append_store::conformance::run_all(MemoryStore::new).await;
+async fn memory_store_passes_the_conformance_suite_with_string_ids() {
+    sem_os_append_store::conformance::run_all(MemoryStore::<String>::new, &StringIds).await;
+}
+
+#[cfg(feature = "uuid")]
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn memory_store_passes_the_conformance_suite_with_uuid_ids() {
+    use sem_os_append_store::conformance::UuidIds;
+    use uuid::Uuid;
+
+    sem_os_append_store::conformance::run_all(MemoryStore::<Uuid>::new, &UuidIds).await;
 }
 
 #[tokio::test]
 async fn replay_folds_in_sequence_order() {
-    let store = MemoryStore::new();
-    let scope = ScopeId::new("s").unwrap();
+    let store = MemoryStore::<String>::new();
+    let scope = ScopeId::new("s".to_owned());
     for (version, payload) in [(1, "a"), (2, "b"), (3, "c")] {
         store
             .append(AppendBatch::single(
                 scope.clone(),
                 PieceWrite::new(
-                    PieceId::new("p").unwrap(),
+                    PieceId::new("p".to_owned()),
                     VersionNo::new(version).unwrap(),
                     payload.as_bytes(),
                 ),
@@ -37,6 +50,15 @@ async fn replay_folds_in_sequence_order() {
     .await
     .unwrap();
     assert_eq!(joined, "ab");
+}
+
+#[test]
+fn validated_string_ids_reject_empty_and_whitespace() {
+    assert!(ScopeId::<String>::validated("").is_err());
+    assert!(ScopeId::<String>::validated("has space").is_err());
+    assert!(ScopeId::<String>::validated("ok-id").is_ok());
+    assert!(PieceId::<String>::validated("").is_err());
+    assert!(PieceId::<String>::validated("ok-id").is_ok());
 }
 
 #[derive(Debug, Clone)]
@@ -60,15 +82,15 @@ proptest! {
     fn random_write_sequences_keep_the_contract(steps in steps()) {
         let runtime = tokio::runtime::Builder::new_current_thread().build().unwrap();
         runtime.block_on(async move {
-            let store = MemoryStore::new();
-            let scope = ScopeId::new("prop").unwrap();
+            let store = MemoryStore::<String>::new();
+            let scope = ScopeId::new("prop".to_owned());
             let mut model: BTreeMap<u8, u64> = BTreeMap::new();
             let mut admitted = 0u64;
             for step in steps {
                 let current = model.get(&step.piece).copied();
                 let expected = current.map_or(1, |v| v + 1);
                 let attempted = (expected as i64 + step.offset as i64).max(1) as u64;
-                let piece = PieceId::new(format!("piece-{}", step.piece)).unwrap();
+                let piece = PieceId::new(format!("piece-{}", step.piece));
                 let write = PieceWrite::new(
                     piece.clone(),
                     VersionNo::new(attempted).unwrap(),

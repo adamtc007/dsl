@@ -1,96 +1,138 @@
 pub mod sem_os_append_store
 pub mod sem_os_append_store::conformance
-pub async fn sem_os_append_store::conformance::append_assigns_contiguous_sequence<S: sem_os_append_store::AppendStore + ?core::marker::Sized>(&S)
-pub async fn sem_os_append_store::conformance::batch_is_atomic<S: sem_os_append_store::AppendStore + ?core::marker::Sized>(&S)
-pub async fn sem_os_append_store::conformance::current_is_the_latest_version<S: sem_os_append_store::AppendStore + ?core::marker::Sized>(&S)
-pub async fn sem_os_append_store::conformance::empty_and_duplicate_batches_are_rejected<S: sem_os_append_store::AppendStore + ?core::marker::Sized>(&S)
-pub async fn sem_os_append_store::conformance::fold_up_to_is_a_prefix<S: sem_os_append_store::AppendStore + ?core::marker::Sized>(&S)
-pub async fn sem_os_append_store::conformance::run_all<S, F>(F) where S: sem_os_append_store::AppendStore + 'static, F: core::ops::function::Fn() -> S
-pub async fn sem_os_append_store::conformance::scopes_are_independent<S: sem_os_append_store::AppendStore + ?core::marker::Sized>(&S)
-pub async fn sem_os_append_store::conformance::stale_version_loses_race<S: sem_os_append_store::AppendStore + ?core::marker::Sized>(&S)
-pub async fn sem_os_append_store::conformance::two_writers_one_piece_exactly_one_wins<S: sem_os_append_store::AppendStore + 'static>(alloc::sync::Arc<S>)
-pub async fn sem_os_append_store::conformance::version_gap_is_rejected<S: sem_os_append_store::AppendStore + ?core::marker::Sized>(&S)
-pub enum sem_os_append_store::AppendError
+pub struct sem_os_append_store::conformance::StringIds
+impl core::clone::Clone for sem_os_append_store::conformance::StringIds
+pub fn sem_os_append_store::conformance::StringIds::clone(&self) -> sem_os_append_store::conformance::StringIds
+impl core::default::Default for sem_os_append_store::conformance::StringIds
+pub fn sem_os_append_store::conformance::StringIds::default() -> sem_os_append_store::conformance::StringIds
+impl core::fmt::Debug for sem_os_append_store::conformance::StringIds
+pub fn sem_os_append_store::conformance::StringIds::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for sem_os_append_store::conformance::StringIds
+impl sem_os_append_store::conformance::IdFactory<alloc::string::String> for sem_os_append_store::conformance::StringIds
+pub fn sem_os_append_store::conformance::StringIds::id(&self, &str) -> alloc::string::String
+impl core::marker::Freeze for sem_os_append_store::conformance::StringIds
+impl core::marker::Send for sem_os_append_store::conformance::StringIds
+impl core::marker::Sync for sem_os_append_store::conformance::StringIds
+impl core::marker::Unpin for sem_os_append_store::conformance::StringIds
+impl core::marker::UnsafeUnpin for sem_os_append_store::conformance::StringIds
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::conformance::StringIds
+impl core::panic::unwind_safe::UnwindSafe for sem_os_append_store::conformance::StringIds
+pub struct sem_os_append_store::conformance::UuidIds
+impl core::clone::Clone for sem_os_append_store::conformance::UuidIds
+pub fn sem_os_append_store::conformance::UuidIds::clone(&self) -> sem_os_append_store::conformance::UuidIds
+impl core::default::Default for sem_os_append_store::conformance::UuidIds
+pub fn sem_os_append_store::conformance::UuidIds::default() -> sem_os_append_store::conformance::UuidIds
+impl core::fmt::Debug for sem_os_append_store::conformance::UuidIds
+pub fn sem_os_append_store::conformance::UuidIds::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for sem_os_append_store::conformance::UuidIds
+impl sem_os_append_store::conformance::IdFactory<uuid::Uuid> for sem_os_append_store::conformance::UuidIds
+pub fn sem_os_append_store::conformance::UuidIds::id(&self, &str) -> uuid::Uuid
+impl core::marker::Freeze for sem_os_append_store::conformance::UuidIds
+impl core::marker::Send for sem_os_append_store::conformance::UuidIds
+impl core::marker::Sync for sem_os_append_store::conformance::UuidIds
+impl core::marker::Unpin for sem_os_append_store::conformance::UuidIds
+impl core::marker::UnsafeUnpin for sem_os_append_store::conformance::UuidIds
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::conformance::UuidIds
+impl core::panic::unwind_safe::UnwindSafe for sem_os_append_store::conformance::UuidIds
+pub trait sem_os_append_store::conformance::IdFactory<Id>: core::marker::Send + core::marker::Sync
+pub fn sem_os_append_store::conformance::IdFactory::id(&self, &str) -> Id
+impl sem_os_append_store::conformance::IdFactory<alloc::string::String> for sem_os_append_store::conformance::StringIds
+pub fn sem_os_append_store::conformance::StringIds::id(&self, &str) -> alloc::string::String
+impl sem_os_append_store::conformance::IdFactory<uuid::Uuid> for sem_os_append_store::conformance::UuidIds
+pub fn sem_os_append_store::conformance::UuidIds::id(&self, &str) -> uuid::Uuid
+pub async fn sem_os_append_store::conformance::append_assigns_strictly_increasing_sequence<S, Id, G>(&S, &G) where S: sem_os_append_store::AppendStore<Id> + ?core::marker::Sized, Id: sem_os_append_store::StoreId, G: sem_os_append_store::conformance::IdFactory<Id> + ?core::marker::Sized
+pub async fn sem_os_append_store::conformance::batch_is_atomic<S, Id, G>(&S, &G) where S: sem_os_append_store::AppendStore<Id> + ?core::marker::Sized, Id: sem_os_append_store::StoreId, G: sem_os_append_store::conformance::IdFactory<Id> + ?core::marker::Sized
+pub async fn sem_os_append_store::conformance::contiguous_store_has_no_gaps<S, Id, G>(&S, &G) where S: sem_os_append_store::AppendStore<Id> + ?core::marker::Sized, Id: sem_os_append_store::StoreId, G: sem_os_append_store::conformance::IdFactory<Id> + ?core::marker::Sized
+pub async fn sem_os_append_store::conformance::current_is_the_latest_version<S, Id, G>(&S, &G) where S: sem_os_append_store::AppendStore<Id> + ?core::marker::Sized, Id: sem_os_append_store::StoreId, G: sem_os_append_store::conformance::IdFactory<Id> + ?core::marker::Sized
+pub async fn sem_os_append_store::conformance::empty_and_duplicate_batches_are_rejected<S, Id, G>(&S, &G) where S: sem_os_append_store::AppendStore<Id> + ?core::marker::Sized, Id: sem_os_append_store::StoreId, G: sem_os_append_store::conformance::IdFactory<Id> + ?core::marker::Sized
+pub async fn sem_os_append_store::conformance::fold_up_to_is_a_prefix<S, Id, G>(&S, &G) where S: sem_os_append_store::AppendStore<Id> + ?core::marker::Sized, Id: sem_os_append_store::StoreId, G: sem_os_append_store::conformance::IdFactory<Id> + ?core::marker::Sized
+pub async fn sem_os_append_store::conformance::run_all<S, F, Id, G>(F, &G) where S: sem_os_append_store::AppendStore<Id> + 'static, F: core::ops::function::Fn() -> S, Id: sem_os_append_store::StoreId, G: sem_os_append_store::conformance::IdFactory<Id>
+pub async fn sem_os_append_store::conformance::scopes_are_independent<S, Id, G>(&S, &G) where S: sem_os_append_store::AppendStore<Id> + ?core::marker::Sized, Id: sem_os_append_store::StoreId, G: sem_os_append_store::conformance::IdFactory<Id> + ?core::marker::Sized
+pub async fn sem_os_append_store::conformance::stale_version_loses_race<S, Id, G>(&S, &G) where S: sem_os_append_store::AppendStore<Id> + ?core::marker::Sized, Id: sem_os_append_store::StoreId, G: sem_os_append_store::conformance::IdFactory<Id> + ?core::marker::Sized
+pub async fn sem_os_append_store::conformance::two_writers_one_piece_exactly_one_wins<S, Id, G>(alloc::sync::Arc<S>, &G) where S: sem_os_append_store::AppendStore<Id> + 'static, Id: sem_os_append_store::StoreId, G: sem_os_append_store::conformance::IdFactory<Id> + ?core::marker::Sized
+pub async fn sem_os_append_store::conformance::two_writers_one_scope_may_race_without_serialising<S, Id, G>(alloc::sync::Arc<S>, &G) where S: sem_os_append_store::AppendStore<Id> + 'static, Id: sem_os_append_store::StoreId, G: sem_os_append_store::conformance::IdFactory<Id> + ?core::marker::Sized
+pub async fn sem_os_append_store::conformance::version_gap_is_rejected<S, Id, G>(&S, &G) where S: sem_os_append_store::AppendStore<Id> + ?core::marker::Sized, Id: sem_os_append_store::StoreId, G: sem_os_append_store::conformance::IdFactory<Id> + ?core::marker::Sized
+pub enum sem_os_append_store::AppendError<Id: sem_os_append_store::StoreId>
 pub sem_os_append_store::AppendError::Backend(alloc::string::String)
 pub sem_os_append_store::AppendError::DuplicatePieceInBatch
-pub sem_os_append_store::AppendError::DuplicatePieceInBatch::piece_id: sem_os_append_store::PieceId
+pub sem_os_append_store::AppendError::DuplicatePieceInBatch::piece_id: sem_os_append_store::PieceId<Id>
 pub sem_os_append_store::AppendError::EmptyBatch
 pub sem_os_append_store::AppendError::LostRace
 pub sem_os_append_store::AppendError::LostRace::attempted: sem_os_append_store::VersionNo
 pub sem_os_append_store::AppendError::LostRace::current: core::option::Option<sem_os_append_store::VersionNo>
-pub sem_os_append_store::AppendError::LostRace::piece_id: sem_os_append_store::PieceId
+pub sem_os_append_store::AppendError::LostRace::piece_id: sem_os_append_store::PieceId<Id>
 pub sem_os_append_store::AppendError::VersionGap
 pub sem_os_append_store::AppendError::VersionGap::attempted: sem_os_append_store::VersionNo
 pub sem_os_append_store::AppendError::VersionGap::expected: sem_os_append_store::VersionNo
-pub sem_os_append_store::AppendError::VersionGap::piece_id: sem_os_append_store::PieceId
-impl core::clone::Clone for sem_os_append_store::AppendError
-pub fn sem_os_append_store::AppendError::clone(&self) -> sem_os_append_store::AppendError
-impl core::cmp::Eq for sem_os_append_store::AppendError
-impl core::cmp::PartialEq for sem_os_append_store::AppendError
-pub fn sem_os_append_store::AppendError::eq(&self, &sem_os_append_store::AppendError) -> bool
-impl core::error::Error for sem_os_append_store::AppendError
-impl core::fmt::Debug for sem_os_append_store::AppendError
-pub fn sem_os_append_store::AppendError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::fmt::Display for sem_os_append_store::AppendError
-pub fn sem_os_append_store::AppendError::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::marker::StructuralPartialEq for sem_os_append_store::AppendError
-impl core::marker::Freeze for sem_os_append_store::AppendError
-impl core::marker::Send for sem_os_append_store::AppendError
-impl core::marker::Sync for sem_os_append_store::AppendError
-impl core::marker::Unpin for sem_os_append_store::AppendError
-impl core::marker::UnsafeUnpin for sem_os_append_store::AppendError
-impl core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::AppendError
-impl core::panic::unwind_safe::UnwindSafe for sem_os_append_store::AppendError
-pub struct sem_os_append_store::AppendBatch
-impl sem_os_append_store::AppendBatch
-pub fn sem_os_append_store::AppendBatch::into_parts(self) -> (sem_os_append_store::ScopeId, alloc::vec::Vec<sem_os_append_store::PieceWrite>)
-pub fn sem_os_append_store::AppendBatch::new(sem_os_append_store::ScopeId, alloc::vec::Vec<sem_os_append_store::PieceWrite>) -> core::result::Result<Self, sem_os_append_store::AppendError>
-pub fn sem_os_append_store::AppendBatch::scope(&self) -> &sem_os_append_store::ScopeId
-pub fn sem_os_append_store::AppendBatch::single(sem_os_append_store::ScopeId, sem_os_append_store::PieceWrite) -> Self
-pub fn sem_os_append_store::AppendBatch::writes(&self) -> &[sem_os_append_store::PieceWrite]
-impl core::clone::Clone for sem_os_append_store::AppendBatch
-pub fn sem_os_append_store::AppendBatch::clone(&self) -> sem_os_append_store::AppendBatch
-impl core::cmp::Eq for sem_os_append_store::AppendBatch
-impl core::cmp::PartialEq for sem_os_append_store::AppendBatch
-pub fn sem_os_append_store::AppendBatch::eq(&self, &sem_os_append_store::AppendBatch) -> bool
-impl core::fmt::Debug for sem_os_append_store::AppendBatch
-pub fn sem_os_append_store::AppendBatch::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::marker::StructuralPartialEq for sem_os_append_store::AppendBatch
-impl serde_core::ser::Serialize for sem_os_append_store::AppendBatch
-pub fn sem_os_append_store::AppendBatch::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
-impl<'de> serde_core::de::Deserialize<'de> for sem_os_append_store::AppendBatch
-pub fn sem_os_append_store::AppendBatch::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
-impl core::marker::Freeze for sem_os_append_store::AppendBatch
-impl core::marker::Send for sem_os_append_store::AppendBatch
-impl core::marker::Sync for sem_os_append_store::AppendBatch
-impl core::marker::Unpin for sem_os_append_store::AppendBatch
-impl core::marker::UnsafeUnpin for sem_os_append_store::AppendBatch
-impl core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::AppendBatch
-impl core::panic::unwind_safe::UnwindSafe for sem_os_append_store::AppendBatch
-pub struct sem_os_append_store::AppendReceipt
+pub sem_os_append_store::AppendError::VersionGap::piece_id: sem_os_append_store::PieceId<Id>
+impl<Id: core::clone::Clone + sem_os_append_store::StoreId> core::clone::Clone for sem_os_append_store::AppendError<Id>
+pub fn sem_os_append_store::AppendError<Id>::clone(&self) -> sem_os_append_store::AppendError<Id>
+impl<Id: core::cmp::Eq + sem_os_append_store::StoreId> core::cmp::Eq for sem_os_append_store::AppendError<Id>
+impl<Id: core::cmp::PartialEq + sem_os_append_store::StoreId> core::cmp::PartialEq for sem_os_append_store::AppendError<Id>
+pub fn sem_os_append_store::AppendError<Id>::eq(&self, &sem_os_append_store::AppendError<Id>) -> bool
+impl<Id: core::cmp::PartialEq + sem_os_append_store::StoreId> core::marker::StructuralPartialEq for sem_os_append_store::AppendError<Id>
+impl<Id: core::fmt::Debug + sem_os_append_store::StoreId> core::fmt::Debug for sem_os_append_store::AppendError<Id>
+pub fn sem_os_append_store::AppendError<Id>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl<Id: sem_os_append_store::StoreId> core::error::Error for sem_os_append_store::AppendError<Id> where Self: core::fmt::Debug + core::fmt::Display
+impl<Id: sem_os_append_store::StoreId> core::fmt::Display for sem_os_append_store::AppendError<Id> where sem_os_append_store::PieceId<Id>: core::fmt::Display
+pub fn sem_os_append_store::AppendError<Id>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl<Id> core::marker::Freeze for sem_os_append_store::AppendError<Id> where sem_os_append_store::PieceId<Id>: core::marker::Freeze + core::marker::Freeze + core::marker::Freeze
+impl<Id> core::marker::Send for sem_os_append_store::AppendError<Id> where sem_os_append_store::PieceId<Id>: core::marker::Send + core::marker::Send + core::marker::Send
+impl<Id> core::marker::Sync for sem_os_append_store::AppendError<Id> where sem_os_append_store::PieceId<Id>: core::marker::Sync + core::marker::Sync + core::marker::Sync
+impl<Id> core::marker::Unpin for sem_os_append_store::AppendError<Id> where sem_os_append_store::PieceId<Id>: core::marker::Unpin + core::marker::Unpin + core::marker::Unpin
+impl<Id> core::marker::UnsafeUnpin for sem_os_append_store::AppendError<Id> where sem_os_append_store::PieceId<Id>: core::marker::UnsafeUnpin + core::marker::UnsafeUnpin + core::marker::UnsafeUnpin
+impl<Id> core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::AppendError<Id> where sem_os_append_store::PieceId<Id>: core::panic::unwind_safe::RefUnwindSafe + core::panic::unwind_safe::RefUnwindSafe + core::panic::unwind_safe::RefUnwindSafe
+impl<Id> core::panic::unwind_safe::UnwindSafe for sem_os_append_store::AppendError<Id> where sem_os_append_store::PieceId<Id>: core::panic::unwind_safe::UnwindSafe + core::panic::unwind_safe::UnwindSafe + core::panic::unwind_safe::UnwindSafe
+pub struct sem_os_append_store::AppendBatch<Id>
+impl<Id: sem_os_append_store::StoreId> sem_os_append_store::AppendBatch<Id>
+pub fn sem_os_append_store::AppendBatch<Id>::into_parts(self) -> (sem_os_append_store::ScopeId<Id>, alloc::vec::Vec<sem_os_append_store::PieceWrite<Id>>)
+pub fn sem_os_append_store::AppendBatch<Id>::new(sem_os_append_store::ScopeId<Id>, alloc::vec::Vec<sem_os_append_store::PieceWrite<Id>>) -> core::result::Result<Self, sem_os_append_store::AppendError<Id>>
+pub fn sem_os_append_store::AppendBatch<Id>::scope(&self) -> &sem_os_append_store::ScopeId<Id>
+pub fn sem_os_append_store::AppendBatch<Id>::single(sem_os_append_store::ScopeId<Id>, sem_os_append_store::PieceWrite<Id>) -> Self
+pub fn sem_os_append_store::AppendBatch<Id>::writes(&self) -> &[sem_os_append_store::PieceWrite<Id>]
+impl<'de, Id> serde_core::de::Deserialize<'de> for sem_os_append_store::AppendBatch<Id> where Id: serde_core::de::Deserialize<'de>
+pub fn sem_os_append_store::AppendBatch<Id>::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl<Id: core::clone::Clone> core::clone::Clone for sem_os_append_store::AppendBatch<Id>
+pub fn sem_os_append_store::AppendBatch<Id>::clone(&self) -> sem_os_append_store::AppendBatch<Id>
+impl<Id: core::cmp::Eq> core::cmp::Eq for sem_os_append_store::AppendBatch<Id>
+impl<Id: core::cmp::PartialEq> core::cmp::PartialEq for sem_os_append_store::AppendBatch<Id>
+pub fn sem_os_append_store::AppendBatch<Id>::eq(&self, &sem_os_append_store::AppendBatch<Id>) -> bool
+impl<Id: core::cmp::PartialEq> core::marker::StructuralPartialEq for sem_os_append_store::AppendBatch<Id>
+impl<Id: core::fmt::Debug> core::fmt::Debug for sem_os_append_store::AppendBatch<Id>
+pub fn sem_os_append_store::AppendBatch<Id>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl<Id> serde_core::ser::Serialize for sem_os_append_store::AppendBatch<Id> where Id: serde_core::ser::Serialize
+pub fn sem_os_append_store::AppendBatch<Id>::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<Id> core::marker::Freeze for sem_os_append_store::AppendBatch<Id> where sem_os_append_store::ScopeId<Id>: core::marker::Freeze, alloc::vec::Vec<sem_os_append_store::PieceWrite<Id>>: core::marker::Freeze
+impl<Id> core::marker::Send for sem_os_append_store::AppendBatch<Id> where sem_os_append_store::ScopeId<Id>: core::marker::Send, alloc::vec::Vec<sem_os_append_store::PieceWrite<Id>>: core::marker::Send
+impl<Id> core::marker::Sync for sem_os_append_store::AppendBatch<Id> where sem_os_append_store::ScopeId<Id>: core::marker::Sync, alloc::vec::Vec<sem_os_append_store::PieceWrite<Id>>: core::marker::Sync
+impl<Id> core::marker::Unpin for sem_os_append_store::AppendBatch<Id> where sem_os_append_store::ScopeId<Id>: core::marker::Unpin, alloc::vec::Vec<sem_os_append_store::PieceWrite<Id>>: core::marker::Unpin
+impl<Id> core::marker::UnsafeUnpin for sem_os_append_store::AppendBatch<Id> where sem_os_append_store::ScopeId<Id>: core::marker::UnsafeUnpin, alloc::vec::Vec<sem_os_append_store::PieceWrite<Id>>: core::marker::UnsafeUnpin
+impl<Id> core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::AppendBatch<Id> where sem_os_append_store::ScopeId<Id>: core::panic::unwind_safe::RefUnwindSafe, alloc::vec::Vec<sem_os_append_store::PieceWrite<Id>>: core::panic::unwind_safe::RefUnwindSafe
+impl<Id> core::panic::unwind_safe::UnwindSafe for sem_os_append_store::AppendBatch<Id> where sem_os_append_store::ScopeId<Id>: core::panic::unwind_safe::UnwindSafe, alloc::vec::Vec<sem_os_append_store::PieceWrite<Id>>: core::panic::unwind_safe::UnwindSafe
+pub struct sem_os_append_store::AppendReceipt<Id>
 pub sem_os_append_store::AppendReceipt::first_seq: sem_os_append_store::Seq
 pub sem_os_append_store::AppendReceipt::last_seq: sem_os_append_store::Seq
-pub sem_os_append_store::AppendReceipt::scope: sem_os_append_store::ScopeId
-pub sem_os_append_store::AppendReceipt::written: alloc::vec::Vec<sem_os_append_store::WrittenPiece>
-impl core::clone::Clone for sem_os_append_store::AppendReceipt
-pub fn sem_os_append_store::AppendReceipt::clone(&self) -> sem_os_append_store::AppendReceipt
-impl core::cmp::Eq for sem_os_append_store::AppendReceipt
-impl core::cmp::PartialEq for sem_os_append_store::AppendReceipt
-pub fn sem_os_append_store::AppendReceipt::eq(&self, &sem_os_append_store::AppendReceipt) -> bool
-impl core::fmt::Debug for sem_os_append_store::AppendReceipt
-pub fn sem_os_append_store::AppendReceipt::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::marker::StructuralPartialEq for sem_os_append_store::AppendReceipt
-impl serde_core::ser::Serialize for sem_os_append_store::AppendReceipt
-pub fn sem_os_append_store::AppendReceipt::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
-impl<'de> serde_core::de::Deserialize<'de> for sem_os_append_store::AppendReceipt
-pub fn sem_os_append_store::AppendReceipt::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
-impl core::marker::Freeze for sem_os_append_store::AppendReceipt
-impl core::marker::Send for sem_os_append_store::AppendReceipt
-impl core::marker::Sync for sem_os_append_store::AppendReceipt
-impl core::marker::Unpin for sem_os_append_store::AppendReceipt
-impl core::marker::UnsafeUnpin for sem_os_append_store::AppendReceipt
-impl core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::AppendReceipt
-impl core::panic::unwind_safe::UnwindSafe for sem_os_append_store::AppendReceipt
+pub sem_os_append_store::AppendReceipt::scope: sem_os_append_store::ScopeId<Id>
+pub sem_os_append_store::AppendReceipt::written: alloc::vec::Vec<sem_os_append_store::WrittenPiece<Id>>
+impl<'de, Id> serde_core::de::Deserialize<'de> for sem_os_append_store::AppendReceipt<Id> where Id: serde_core::de::Deserialize<'de>
+pub fn sem_os_append_store::AppendReceipt<Id>::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl<Id: core::clone::Clone> core::clone::Clone for sem_os_append_store::AppendReceipt<Id>
+pub fn sem_os_append_store::AppendReceipt<Id>::clone(&self) -> sem_os_append_store::AppendReceipt<Id>
+impl<Id: core::cmp::Eq> core::cmp::Eq for sem_os_append_store::AppendReceipt<Id>
+impl<Id: core::cmp::PartialEq> core::cmp::PartialEq for sem_os_append_store::AppendReceipt<Id>
+pub fn sem_os_append_store::AppendReceipt<Id>::eq(&self, &sem_os_append_store::AppendReceipt<Id>) -> bool
+impl<Id: core::cmp::PartialEq> core::marker::StructuralPartialEq for sem_os_append_store::AppendReceipt<Id>
+impl<Id: core::fmt::Debug> core::fmt::Debug for sem_os_append_store::AppendReceipt<Id>
+pub fn sem_os_append_store::AppendReceipt<Id>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl<Id> serde_core::ser::Serialize for sem_os_append_store::AppendReceipt<Id> where Id: serde_core::ser::Serialize
+pub fn sem_os_append_store::AppendReceipt<Id>::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<Id> core::marker::Freeze for sem_os_append_store::AppendReceipt<Id> where sem_os_append_store::ScopeId<Id>: core::marker::Freeze, alloc::vec::Vec<sem_os_append_store::WrittenPiece<Id>>: core::marker::Freeze
+impl<Id> core::marker::Send for sem_os_append_store::AppendReceipt<Id> where sem_os_append_store::ScopeId<Id>: core::marker::Send, alloc::vec::Vec<sem_os_append_store::WrittenPiece<Id>>: core::marker::Send
+impl<Id> core::marker::Sync for sem_os_append_store::AppendReceipt<Id> where sem_os_append_store::ScopeId<Id>: core::marker::Sync, alloc::vec::Vec<sem_os_append_store::WrittenPiece<Id>>: core::marker::Sync
+impl<Id> core::marker::Unpin for sem_os_append_store::AppendReceipt<Id> where sem_os_append_store::ScopeId<Id>: core::marker::Unpin, alloc::vec::Vec<sem_os_append_store::WrittenPiece<Id>>: core::marker::Unpin
+impl<Id> core::marker::UnsafeUnpin for sem_os_append_store::AppendReceipt<Id> where sem_os_append_store::ScopeId<Id>: core::marker::UnsafeUnpin, alloc::vec::Vec<sem_os_append_store::WrittenPiece<Id>>: core::marker::UnsafeUnpin
+impl<Id> core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::AppendReceipt<Id> where sem_os_append_store::ScopeId<Id>: core::panic::unwind_safe::RefUnwindSafe, alloc::vec::Vec<sem_os_append_store::WrittenPiece<Id>>: core::panic::unwind_safe::RefUnwindSafe
+impl<Id> core::panic::unwind_safe::UnwindSafe for sem_os_append_store::AppendReceipt<Id> where sem_os_append_store::ScopeId<Id>: core::panic::unwind_safe::UnwindSafe, alloc::vec::Vec<sem_os_append_store::WrittenPiece<Id>>: core::panic::unwind_safe::UnwindSafe
 pub struct sem_os_append_store::IdError
 pub sem_os_append_store::IdError::kind: &'static str
 pub sem_os_append_store::IdError::reason: &'static str
@@ -113,146 +155,145 @@ impl core::marker::Unpin for sem_os_append_store::IdError
 impl core::marker::UnsafeUnpin for sem_os_append_store::IdError
 impl core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::IdError
 impl core::panic::unwind_safe::UnwindSafe for sem_os_append_store::IdError
-pub struct sem_os_append_store::MemoryStore
-impl sem_os_append_store::MemoryStore
-pub fn sem_os_append_store::MemoryStore::new() -> Self
-impl core::default::Default for sem_os_append_store::MemoryStore
-pub fn sem_os_append_store::MemoryStore::default() -> sem_os_append_store::MemoryStore
-impl core::fmt::Debug for sem_os_append_store::MemoryStore
-pub fn sem_os_append_store::MemoryStore::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl sem_os_append_store::AppendStore for sem_os_append_store::MemoryStore
-pub fn sem_os_append_store::MemoryStore::append<'life0, 'async_trait>(&'life0 self, sem_os_append_store::AppendBatch) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<sem_os_append_store::AppendReceipt, sem_os_append_store::AppendError>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait
-pub fn sem_os_append_store::MemoryStore::current<'life0, 'life1, 'life2, 'async_trait>(&'life0 self, &'life1 sem_os_append_store::ScopeId, &'life2 sem_os_append_store::PieceId) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<core::option::Option<sem_os_append_store::PieceRecord>, sem_os_append_store::AppendError>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait, 'life1: 'async_trait, 'life2: 'async_trait
-pub fn sem_os_append_store::MemoryStore::fold<'life0, 'life1, 'async_trait>(&'life0 self, &'life1 sem_os_append_store::ScopeId, core::option::Option<sem_os_append_store::Seq>) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<alloc::vec::Vec<sem_os_append_store::PieceRecord>, sem_os_append_store::AppendError>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait, 'life1: 'async_trait
-impl !core::marker::Freeze for sem_os_append_store::MemoryStore
-impl core::marker::Send for sem_os_append_store::MemoryStore
-impl core::marker::Sync for sem_os_append_store::MemoryStore
-impl core::marker::Unpin for sem_os_append_store::MemoryStore
-impl core::marker::UnsafeUnpin for sem_os_append_store::MemoryStore
-impl core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::MemoryStore
-impl core::panic::unwind_safe::UnwindSafe for sem_os_append_store::MemoryStore
-pub struct sem_os_append_store::PieceId(_)
-impl sem_os_append_store::PieceId
-pub fn sem_os_append_store::PieceId::as_str(&self) -> &str
-pub fn sem_os_append_store::PieceId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, sem_os_append_store::IdError>
-impl core::clone::Clone for sem_os_append_store::PieceId
-pub fn sem_os_append_store::PieceId::clone(&self) -> sem_os_append_store::PieceId
-impl core::cmp::Eq for sem_os_append_store::PieceId
-impl core::cmp::Ord for sem_os_append_store::PieceId
-pub fn sem_os_append_store::PieceId::cmp(&self, &sem_os_append_store::PieceId) -> core::cmp::Ordering
-impl core::cmp::PartialEq for sem_os_append_store::PieceId
-pub fn sem_os_append_store::PieceId::eq(&self, &sem_os_append_store::PieceId) -> bool
-impl core::cmp::PartialOrd for sem_os_append_store::PieceId
-pub fn sem_os_append_store::PieceId::partial_cmp(&self, &sem_os_append_store::PieceId) -> core::option::Option<core::cmp::Ordering>
-impl core::convert::From<sem_os_append_store::PieceId> for alloc::string::String
-pub fn alloc::string::String::from(sem_os_append_store::PieceId) -> Self
-impl core::convert::TryFrom<alloc::string::String> for sem_os_append_store::PieceId
-pub type sem_os_append_store::PieceId::Error = sem_os_append_store::IdError
-pub fn sem_os_append_store::PieceId::try_from(alloc::string::String) -> core::result::Result<Self, Self::Error>
-impl core::fmt::Debug for sem_os_append_store::PieceId
-pub fn sem_os_append_store::PieceId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::fmt::Display for sem_os_append_store::PieceId
-pub fn sem_os_append_store::PieceId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::hash::Hash for sem_os_append_store::PieceId
-pub fn sem_os_append_store::PieceId::hash<__H: core::hash::Hasher>(&self, &mut __H)
-impl core::marker::StructuralPartialEq for sem_os_append_store::PieceId
-impl serde_core::ser::Serialize for sem_os_append_store::PieceId
-pub fn sem_os_append_store::PieceId::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
-impl<'de> serde_core::de::Deserialize<'de> for sem_os_append_store::PieceId
-pub fn sem_os_append_store::PieceId::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
-impl core::marker::Freeze for sem_os_append_store::PieceId
-impl core::marker::Send for sem_os_append_store::PieceId
-impl core::marker::Sync for sem_os_append_store::PieceId
-impl core::marker::Unpin for sem_os_append_store::PieceId
-impl core::marker::UnsafeUnpin for sem_os_append_store::PieceId
-impl core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::PieceId
-impl core::panic::unwind_safe::UnwindSafe for sem_os_append_store::PieceId
-pub struct sem_os_append_store::PieceRecord
+pub struct sem_os_append_store::MemoryStore<Id: sem_os_append_store::StoreId>
+impl<Id: sem_os_append_store::StoreId> sem_os_append_store::MemoryStore<Id>
+pub fn sem_os_append_store::MemoryStore<Id>::new() -> Self
+impl<Id: core::fmt::Debug + sem_os_append_store::StoreId> core::fmt::Debug for sem_os_append_store::MemoryStore<Id>
+pub fn sem_os_append_store::MemoryStore<Id>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl<Id: sem_os_append_store::StoreId> core::default::Default for sem_os_append_store::MemoryStore<Id>
+pub fn sem_os_append_store::MemoryStore<Id>::default() -> Self
+impl<Id: sem_os_append_store::StoreId> sem_os_append_store::AppendStore<Id> for sem_os_append_store::MemoryStore<Id>
+pub const sem_os_append_store::MemoryStore<Id>::CONTIGUOUS: bool
+pub fn sem_os_append_store::MemoryStore<Id>::append<'life0, 'async_trait>(&'life0 self, sem_os_append_store::AppendBatch<Id>) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<sem_os_append_store::AppendReceipt<Id>, sem_os_append_store::AppendError<Id>>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait
+pub fn sem_os_append_store::MemoryStore<Id>::current<'life0, 'life1, 'life2, 'async_trait>(&'life0 self, &'life1 sem_os_append_store::ScopeId<Id>, &'life2 sem_os_append_store::PieceId<Id>) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<core::option::Option<sem_os_append_store::PieceRecord<Id>>, sem_os_append_store::AppendError<Id>>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait, 'life1: 'async_trait, 'life2: 'async_trait
+pub fn sem_os_append_store::MemoryStore<Id>::fold<'life0, 'life1, 'async_trait>(&'life0 self, &'life1 sem_os_append_store::ScopeId<Id>, core::option::Option<sem_os_append_store::Seq>) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<alloc::vec::Vec<sem_os_append_store::PieceRecord<Id>>, sem_os_append_store::AppendError<Id>>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait, 'life1: 'async_trait
+impl<Id> !core::marker::Freeze for sem_os_append_store::MemoryStore<Id>
+impl<Id> core::marker::Send for sem_os_append_store::MemoryStore<Id> where std::sync::poison::mutex::Mutex<alloc::collections::btree::map::BTreeMap<sem_os_append_store::ScopeId<Id>, ScopeLog<Id>>>: core::marker::Send
+impl<Id> core::marker::Sync for sem_os_append_store::MemoryStore<Id> where std::sync::poison::mutex::Mutex<alloc::collections::btree::map::BTreeMap<sem_os_append_store::ScopeId<Id>, ScopeLog<Id>>>: core::marker::Sync
+impl<Id> core::marker::Unpin for sem_os_append_store::MemoryStore<Id> where std::sync::poison::mutex::Mutex<alloc::collections::btree::map::BTreeMap<sem_os_append_store::ScopeId<Id>, ScopeLog<Id>>>: core::marker::Unpin
+impl<Id> core::marker::UnsafeUnpin for sem_os_append_store::MemoryStore<Id> where std::sync::poison::mutex::Mutex<alloc::collections::btree::map::BTreeMap<sem_os_append_store::ScopeId<Id>, ScopeLog<Id>>>: core::marker::UnsafeUnpin
+impl<Id> core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::MemoryStore<Id> where std::sync::poison::mutex::Mutex<alloc::collections::btree::map::BTreeMap<sem_os_append_store::ScopeId<Id>, ScopeLog<Id>>>: core::panic::unwind_safe::RefUnwindSafe
+impl<Id> core::panic::unwind_safe::UnwindSafe for sem_os_append_store::MemoryStore<Id> where std::sync::poison::mutex::Mutex<alloc::collections::btree::map::BTreeMap<sem_os_append_store::ScopeId<Id>, ScopeLog<Id>>>: core::panic::unwind_safe::UnwindSafe
+pub struct sem_os_append_store::PieceId<Id>(_)
+impl sem_os_append_store::PieceId<alloc::string::String>
+pub fn sem_os_append_store::PieceId<alloc::string::String>::as_str(&self) -> &str
+pub fn sem_os_append_store::PieceId<alloc::string::String>::validated(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, sem_os_append_store::IdError>
+impl<Id> sem_os_append_store::PieceId<Id>
+pub fn sem_os_append_store::PieceId<Id>::get(&self) -> &Id
+pub fn sem_os_append_store::PieceId<Id>::into_inner(self) -> Id
+pub fn sem_os_append_store::PieceId<Id>::new(Id) -> Self
+impl<'de, Id> serde_core::de::Deserialize<'de> for sem_os_append_store::PieceId<Id> where Id: serde_core::de::Deserialize<'de>
+pub fn sem_os_append_store::PieceId<Id>::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl<Id: core::clone::Clone> core::clone::Clone for sem_os_append_store::PieceId<Id>
+pub fn sem_os_append_store::PieceId<Id>::clone(&self) -> sem_os_append_store::PieceId<Id>
+impl<Id: core::cmp::Eq> core::cmp::Eq for sem_os_append_store::PieceId<Id>
+impl<Id: core::cmp::Ord> core::cmp::Ord for sem_os_append_store::PieceId<Id>
+pub fn sem_os_append_store::PieceId<Id>::cmp(&self, &sem_os_append_store::PieceId<Id>) -> core::cmp::Ordering
+impl<Id: core::cmp::PartialEq> core::cmp::PartialEq for sem_os_append_store::PieceId<Id>
+pub fn sem_os_append_store::PieceId<Id>::eq(&self, &sem_os_append_store::PieceId<Id>) -> bool
+impl<Id: core::cmp::PartialEq> core::marker::StructuralPartialEq for sem_os_append_store::PieceId<Id>
+impl<Id: core::cmp::PartialOrd> core::cmp::PartialOrd for sem_os_append_store::PieceId<Id>
+pub fn sem_os_append_store::PieceId<Id>::partial_cmp(&self, &sem_os_append_store::PieceId<Id>) -> core::option::Option<core::cmp::Ordering>
+impl<Id: core::fmt::Debug> core::fmt::Debug for sem_os_append_store::PieceId<Id>
+pub fn sem_os_append_store::PieceId<Id>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl<Id: core::fmt::Display> core::fmt::Display for sem_os_append_store::PieceId<Id>
+pub fn sem_os_append_store::PieceId<Id>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl<Id: core::hash::Hash> core::hash::Hash for sem_os_append_store::PieceId<Id>
+pub fn sem_os_append_store::PieceId<Id>::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl<Id> serde_core::ser::Serialize for sem_os_append_store::PieceId<Id> where Id: serde_core::ser::Serialize
+pub fn sem_os_append_store::PieceId<Id>::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<Id> core::marker::Freeze for sem_os_append_store::PieceId<Id> where Id: core::marker::Freeze
+impl<Id> core::marker::Send for sem_os_append_store::PieceId<Id> where Id: core::marker::Send
+impl<Id> core::marker::Sync for sem_os_append_store::PieceId<Id> where Id: core::marker::Sync
+impl<Id> core::marker::Unpin for sem_os_append_store::PieceId<Id> where Id: core::marker::Unpin
+impl<Id> core::marker::UnsafeUnpin for sem_os_append_store::PieceId<Id> where Id: core::marker::UnsafeUnpin
+impl<Id> core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::PieceId<Id> where Id: core::panic::unwind_safe::RefUnwindSafe
+impl<Id> core::panic::unwind_safe::UnwindSafe for sem_os_append_store::PieceId<Id> where Id: core::panic::unwind_safe::UnwindSafe
+pub struct sem_os_append_store::PieceRecord<Id>
 pub sem_os_append_store::PieceRecord::payload: alloc::vec::Vec<u8>
-pub sem_os_append_store::PieceRecord::piece_id: sem_os_append_store::PieceId
-pub sem_os_append_store::PieceRecord::scope: sem_os_append_store::ScopeId
+pub sem_os_append_store::PieceRecord::piece_id: sem_os_append_store::PieceId<Id>
+pub sem_os_append_store::PieceRecord::scope: sem_os_append_store::ScopeId<Id>
 pub sem_os_append_store::PieceRecord::seq: sem_os_append_store::Seq
 pub sem_os_append_store::PieceRecord::version_no: sem_os_append_store::VersionNo
-impl core::clone::Clone for sem_os_append_store::PieceRecord
-pub fn sem_os_append_store::PieceRecord::clone(&self) -> sem_os_append_store::PieceRecord
-impl core::cmp::Eq for sem_os_append_store::PieceRecord
-impl core::cmp::PartialEq for sem_os_append_store::PieceRecord
-pub fn sem_os_append_store::PieceRecord::eq(&self, &sem_os_append_store::PieceRecord) -> bool
-impl core::fmt::Debug for sem_os_append_store::PieceRecord
-pub fn sem_os_append_store::PieceRecord::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::marker::StructuralPartialEq for sem_os_append_store::PieceRecord
-impl serde_core::ser::Serialize for sem_os_append_store::PieceRecord
-pub fn sem_os_append_store::PieceRecord::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
-impl<'de> serde_core::de::Deserialize<'de> for sem_os_append_store::PieceRecord
-pub fn sem_os_append_store::PieceRecord::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
-impl core::marker::Freeze for sem_os_append_store::PieceRecord
-impl core::marker::Send for sem_os_append_store::PieceRecord
-impl core::marker::Sync for sem_os_append_store::PieceRecord
-impl core::marker::Unpin for sem_os_append_store::PieceRecord
-impl core::marker::UnsafeUnpin for sem_os_append_store::PieceRecord
-impl core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::PieceRecord
-impl core::panic::unwind_safe::UnwindSafe for sem_os_append_store::PieceRecord
-pub struct sem_os_append_store::PieceWrite
+impl<'de, Id> serde_core::de::Deserialize<'de> for sem_os_append_store::PieceRecord<Id> where Id: serde_core::de::Deserialize<'de>
+pub fn sem_os_append_store::PieceRecord<Id>::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl<Id: core::clone::Clone> core::clone::Clone for sem_os_append_store::PieceRecord<Id>
+pub fn sem_os_append_store::PieceRecord<Id>::clone(&self) -> sem_os_append_store::PieceRecord<Id>
+impl<Id: core::cmp::Eq> core::cmp::Eq for sem_os_append_store::PieceRecord<Id>
+impl<Id: core::cmp::PartialEq> core::cmp::PartialEq for sem_os_append_store::PieceRecord<Id>
+pub fn sem_os_append_store::PieceRecord<Id>::eq(&self, &sem_os_append_store::PieceRecord<Id>) -> bool
+impl<Id: core::cmp::PartialEq> core::marker::StructuralPartialEq for sem_os_append_store::PieceRecord<Id>
+impl<Id: core::fmt::Debug> core::fmt::Debug for sem_os_append_store::PieceRecord<Id>
+pub fn sem_os_append_store::PieceRecord<Id>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl<Id> serde_core::ser::Serialize for sem_os_append_store::PieceRecord<Id> where Id: serde_core::ser::Serialize
+pub fn sem_os_append_store::PieceRecord<Id>::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<Id> core::marker::Freeze for sem_os_append_store::PieceRecord<Id> where sem_os_append_store::ScopeId<Id>: core::marker::Freeze, sem_os_append_store::PieceId<Id>: core::marker::Freeze
+impl<Id> core::marker::Send for sem_os_append_store::PieceRecord<Id> where sem_os_append_store::ScopeId<Id>: core::marker::Send, sem_os_append_store::PieceId<Id>: core::marker::Send
+impl<Id> core::marker::Sync for sem_os_append_store::PieceRecord<Id> where sem_os_append_store::ScopeId<Id>: core::marker::Sync, sem_os_append_store::PieceId<Id>: core::marker::Sync
+impl<Id> core::marker::Unpin for sem_os_append_store::PieceRecord<Id> where sem_os_append_store::ScopeId<Id>: core::marker::Unpin, sem_os_append_store::PieceId<Id>: core::marker::Unpin
+impl<Id> core::marker::UnsafeUnpin for sem_os_append_store::PieceRecord<Id> where sem_os_append_store::ScopeId<Id>: core::marker::UnsafeUnpin, sem_os_append_store::PieceId<Id>: core::marker::UnsafeUnpin
+impl<Id> core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::PieceRecord<Id> where sem_os_append_store::ScopeId<Id>: core::panic::unwind_safe::RefUnwindSafe, sem_os_append_store::PieceId<Id>: core::panic::unwind_safe::RefUnwindSafe
+impl<Id> core::panic::unwind_safe::UnwindSafe for sem_os_append_store::PieceRecord<Id> where sem_os_append_store::ScopeId<Id>: core::panic::unwind_safe::UnwindSafe, sem_os_append_store::PieceId<Id>: core::panic::unwind_safe::UnwindSafe
+pub struct sem_os_append_store::PieceWrite<Id>
 pub sem_os_append_store::PieceWrite::payload: alloc::vec::Vec<u8>
-pub sem_os_append_store::PieceWrite::piece_id: sem_os_append_store::PieceId
+pub sem_os_append_store::PieceWrite::piece_id: sem_os_append_store::PieceId<Id>
 pub sem_os_append_store::PieceWrite::version_no: sem_os_append_store::VersionNo
-impl sem_os_append_store::PieceWrite
-pub fn sem_os_append_store::PieceWrite::new(sem_os_append_store::PieceId, sem_os_append_store::VersionNo, impl core::convert::Into<alloc::vec::Vec<u8>>) -> Self
-impl core::clone::Clone for sem_os_append_store::PieceWrite
-pub fn sem_os_append_store::PieceWrite::clone(&self) -> sem_os_append_store::PieceWrite
-impl core::cmp::Eq for sem_os_append_store::PieceWrite
-impl core::cmp::PartialEq for sem_os_append_store::PieceWrite
-pub fn sem_os_append_store::PieceWrite::eq(&self, &sem_os_append_store::PieceWrite) -> bool
-impl core::fmt::Debug for sem_os_append_store::PieceWrite
-pub fn sem_os_append_store::PieceWrite::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::marker::StructuralPartialEq for sem_os_append_store::PieceWrite
-impl serde_core::ser::Serialize for sem_os_append_store::PieceWrite
-pub fn sem_os_append_store::PieceWrite::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
-impl<'de> serde_core::de::Deserialize<'de> for sem_os_append_store::PieceWrite
-pub fn sem_os_append_store::PieceWrite::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
-impl core::marker::Freeze for sem_os_append_store::PieceWrite
-impl core::marker::Send for sem_os_append_store::PieceWrite
-impl core::marker::Sync for sem_os_append_store::PieceWrite
-impl core::marker::Unpin for sem_os_append_store::PieceWrite
-impl core::marker::UnsafeUnpin for sem_os_append_store::PieceWrite
-impl core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::PieceWrite
-impl core::panic::unwind_safe::UnwindSafe for sem_os_append_store::PieceWrite
-pub struct sem_os_append_store::ScopeId(_)
-impl sem_os_append_store::ScopeId
-pub fn sem_os_append_store::ScopeId::as_str(&self) -> &str
-pub fn sem_os_append_store::ScopeId::new(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, sem_os_append_store::IdError>
-impl core::clone::Clone for sem_os_append_store::ScopeId
-pub fn sem_os_append_store::ScopeId::clone(&self) -> sem_os_append_store::ScopeId
-impl core::cmp::Eq for sem_os_append_store::ScopeId
-impl core::cmp::Ord for sem_os_append_store::ScopeId
-pub fn sem_os_append_store::ScopeId::cmp(&self, &sem_os_append_store::ScopeId) -> core::cmp::Ordering
-impl core::cmp::PartialEq for sem_os_append_store::ScopeId
-pub fn sem_os_append_store::ScopeId::eq(&self, &sem_os_append_store::ScopeId) -> bool
-impl core::cmp::PartialOrd for sem_os_append_store::ScopeId
-pub fn sem_os_append_store::ScopeId::partial_cmp(&self, &sem_os_append_store::ScopeId) -> core::option::Option<core::cmp::Ordering>
-impl core::convert::From<sem_os_append_store::ScopeId> for alloc::string::String
-pub fn alloc::string::String::from(sem_os_append_store::ScopeId) -> Self
-impl core::convert::TryFrom<alloc::string::String> for sem_os_append_store::ScopeId
-pub type sem_os_append_store::ScopeId::Error = sem_os_append_store::IdError
-pub fn sem_os_append_store::ScopeId::try_from(alloc::string::String) -> core::result::Result<Self, Self::Error>
-impl core::fmt::Debug for sem_os_append_store::ScopeId
-pub fn sem_os_append_store::ScopeId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::fmt::Display for sem_os_append_store::ScopeId
-pub fn sem_os_append_store::ScopeId::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::hash::Hash for sem_os_append_store::ScopeId
-pub fn sem_os_append_store::ScopeId::hash<__H: core::hash::Hasher>(&self, &mut __H)
-impl core::marker::StructuralPartialEq for sem_os_append_store::ScopeId
-impl serde_core::ser::Serialize for sem_os_append_store::ScopeId
-pub fn sem_os_append_store::ScopeId::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
-impl<'de> serde_core::de::Deserialize<'de> for sem_os_append_store::ScopeId
-pub fn sem_os_append_store::ScopeId::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
-impl core::marker::Freeze for sem_os_append_store::ScopeId
-impl core::marker::Send for sem_os_append_store::ScopeId
-impl core::marker::Sync for sem_os_append_store::ScopeId
-impl core::marker::Unpin for sem_os_append_store::ScopeId
-impl core::marker::UnsafeUnpin for sem_os_append_store::ScopeId
-impl core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::ScopeId
-impl core::panic::unwind_safe::UnwindSafe for sem_os_append_store::ScopeId
+impl<Id> sem_os_append_store::PieceWrite<Id>
+pub fn sem_os_append_store::PieceWrite<Id>::new(sem_os_append_store::PieceId<Id>, sem_os_append_store::VersionNo, impl core::convert::Into<alloc::vec::Vec<u8>>) -> Self
+impl<'de, Id> serde_core::de::Deserialize<'de> for sem_os_append_store::PieceWrite<Id> where Id: serde_core::de::Deserialize<'de>
+pub fn sem_os_append_store::PieceWrite<Id>::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl<Id: core::clone::Clone> core::clone::Clone for sem_os_append_store::PieceWrite<Id>
+pub fn sem_os_append_store::PieceWrite<Id>::clone(&self) -> sem_os_append_store::PieceWrite<Id>
+impl<Id: core::cmp::Eq> core::cmp::Eq for sem_os_append_store::PieceWrite<Id>
+impl<Id: core::cmp::PartialEq> core::cmp::PartialEq for sem_os_append_store::PieceWrite<Id>
+pub fn sem_os_append_store::PieceWrite<Id>::eq(&self, &sem_os_append_store::PieceWrite<Id>) -> bool
+impl<Id: core::cmp::PartialEq> core::marker::StructuralPartialEq for sem_os_append_store::PieceWrite<Id>
+impl<Id: core::fmt::Debug> core::fmt::Debug for sem_os_append_store::PieceWrite<Id>
+pub fn sem_os_append_store::PieceWrite<Id>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl<Id> serde_core::ser::Serialize for sem_os_append_store::PieceWrite<Id> where Id: serde_core::ser::Serialize
+pub fn sem_os_append_store::PieceWrite<Id>::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<Id> core::marker::Freeze for sem_os_append_store::PieceWrite<Id> where sem_os_append_store::PieceId<Id>: core::marker::Freeze
+impl<Id> core::marker::Send for sem_os_append_store::PieceWrite<Id> where sem_os_append_store::PieceId<Id>: core::marker::Send
+impl<Id> core::marker::Sync for sem_os_append_store::PieceWrite<Id> where sem_os_append_store::PieceId<Id>: core::marker::Sync
+impl<Id> core::marker::Unpin for sem_os_append_store::PieceWrite<Id> where sem_os_append_store::PieceId<Id>: core::marker::Unpin
+impl<Id> core::marker::UnsafeUnpin for sem_os_append_store::PieceWrite<Id> where sem_os_append_store::PieceId<Id>: core::marker::UnsafeUnpin
+impl<Id> core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::PieceWrite<Id> where sem_os_append_store::PieceId<Id>: core::panic::unwind_safe::RefUnwindSafe
+impl<Id> core::panic::unwind_safe::UnwindSafe for sem_os_append_store::PieceWrite<Id> where sem_os_append_store::PieceId<Id>: core::panic::unwind_safe::UnwindSafe
+pub struct sem_os_append_store::ScopeId<Id>(_)
+impl sem_os_append_store::ScopeId<alloc::string::String>
+pub fn sem_os_append_store::ScopeId<alloc::string::String>::as_str(&self) -> &str
+pub fn sem_os_append_store::ScopeId<alloc::string::String>::validated(impl core::convert::Into<alloc::string::String>) -> core::result::Result<Self, sem_os_append_store::IdError>
+impl<Id> sem_os_append_store::ScopeId<Id>
+pub fn sem_os_append_store::ScopeId<Id>::get(&self) -> &Id
+pub fn sem_os_append_store::ScopeId<Id>::into_inner(self) -> Id
+pub fn sem_os_append_store::ScopeId<Id>::new(Id) -> Self
+impl<'de, Id> serde_core::de::Deserialize<'de> for sem_os_append_store::ScopeId<Id> where Id: serde_core::de::Deserialize<'de>
+pub fn sem_os_append_store::ScopeId<Id>::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl<Id: core::clone::Clone> core::clone::Clone for sem_os_append_store::ScopeId<Id>
+pub fn sem_os_append_store::ScopeId<Id>::clone(&self) -> sem_os_append_store::ScopeId<Id>
+impl<Id: core::cmp::Eq> core::cmp::Eq for sem_os_append_store::ScopeId<Id>
+impl<Id: core::cmp::Ord> core::cmp::Ord for sem_os_append_store::ScopeId<Id>
+pub fn sem_os_append_store::ScopeId<Id>::cmp(&self, &sem_os_append_store::ScopeId<Id>) -> core::cmp::Ordering
+impl<Id: core::cmp::PartialEq> core::cmp::PartialEq for sem_os_append_store::ScopeId<Id>
+pub fn sem_os_append_store::ScopeId<Id>::eq(&self, &sem_os_append_store::ScopeId<Id>) -> bool
+impl<Id: core::cmp::PartialEq> core::marker::StructuralPartialEq for sem_os_append_store::ScopeId<Id>
+impl<Id: core::cmp::PartialOrd> core::cmp::PartialOrd for sem_os_append_store::ScopeId<Id>
+pub fn sem_os_append_store::ScopeId<Id>::partial_cmp(&self, &sem_os_append_store::ScopeId<Id>) -> core::option::Option<core::cmp::Ordering>
+impl<Id: core::fmt::Debug> core::fmt::Debug for sem_os_append_store::ScopeId<Id>
+pub fn sem_os_append_store::ScopeId<Id>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl<Id: core::fmt::Display> core::fmt::Display for sem_os_append_store::ScopeId<Id>
+pub fn sem_os_append_store::ScopeId<Id>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl<Id: core::hash::Hash> core::hash::Hash for sem_os_append_store::ScopeId<Id>
+pub fn sem_os_append_store::ScopeId<Id>::hash<__H: core::hash::Hasher>(&self, &mut __H)
+impl<Id> serde_core::ser::Serialize for sem_os_append_store::ScopeId<Id> where Id: serde_core::ser::Serialize
+pub fn sem_os_append_store::ScopeId<Id>::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<Id> core::marker::Freeze for sem_os_append_store::ScopeId<Id> where Id: core::marker::Freeze
+impl<Id> core::marker::Send for sem_os_append_store::ScopeId<Id> where Id: core::marker::Send
+impl<Id> core::marker::Sync for sem_os_append_store::ScopeId<Id> where Id: core::marker::Sync
+impl<Id> core::marker::Unpin for sem_os_append_store::ScopeId<Id> where Id: core::marker::Unpin
+impl<Id> core::marker::UnsafeUnpin for sem_os_append_store::ScopeId<Id> where Id: core::marker::UnsafeUnpin
+impl<Id> core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::ScopeId<Id> where Id: core::panic::unwind_safe::RefUnwindSafe
+impl<Id> core::panic::unwind_safe::UnwindSafe for sem_os_append_store::ScopeId<Id> where Id: core::panic::unwind_safe::UnwindSafe
 pub struct sem_os_append_store::Seq(_)
 impl sem_os_append_store::Seq
 pub const sem_os_append_store::Seq::FIRST: Self
@@ -321,36 +362,40 @@ impl core::marker::Unpin for sem_os_append_store::VersionNo
 impl core::marker::UnsafeUnpin for sem_os_append_store::VersionNo
 impl core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::VersionNo
 impl core::panic::unwind_safe::UnwindSafe for sem_os_append_store::VersionNo
-pub struct sem_os_append_store::WrittenPiece
-pub sem_os_append_store::WrittenPiece::piece_id: sem_os_append_store::PieceId
+pub struct sem_os_append_store::WrittenPiece<Id>
+pub sem_os_append_store::WrittenPiece::piece_id: sem_os_append_store::PieceId<Id>
 pub sem_os_append_store::WrittenPiece::seq: sem_os_append_store::Seq
 pub sem_os_append_store::WrittenPiece::version_no: sem_os_append_store::VersionNo
-impl core::clone::Clone for sem_os_append_store::WrittenPiece
-pub fn sem_os_append_store::WrittenPiece::clone(&self) -> sem_os_append_store::WrittenPiece
-impl core::cmp::Eq for sem_os_append_store::WrittenPiece
-impl core::cmp::PartialEq for sem_os_append_store::WrittenPiece
-pub fn sem_os_append_store::WrittenPiece::eq(&self, &sem_os_append_store::WrittenPiece) -> bool
-impl core::fmt::Debug for sem_os_append_store::WrittenPiece
-pub fn sem_os_append_store::WrittenPiece::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
-impl core::marker::StructuralPartialEq for sem_os_append_store::WrittenPiece
-impl serde_core::ser::Serialize for sem_os_append_store::WrittenPiece
-pub fn sem_os_append_store::WrittenPiece::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
-impl<'de> serde_core::de::Deserialize<'de> for sem_os_append_store::WrittenPiece
-pub fn sem_os_append_store::WrittenPiece::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
-impl core::marker::Freeze for sem_os_append_store::WrittenPiece
-impl core::marker::Send for sem_os_append_store::WrittenPiece
-impl core::marker::Sync for sem_os_append_store::WrittenPiece
-impl core::marker::Unpin for sem_os_append_store::WrittenPiece
-impl core::marker::UnsafeUnpin for sem_os_append_store::WrittenPiece
-impl core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::WrittenPiece
-impl core::panic::unwind_safe::UnwindSafe for sem_os_append_store::WrittenPiece
+impl<'de, Id> serde_core::de::Deserialize<'de> for sem_os_append_store::WrittenPiece<Id> where Id: serde_core::de::Deserialize<'de>
+pub fn sem_os_append_store::WrittenPiece<Id>::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl<Id: core::clone::Clone> core::clone::Clone for sem_os_append_store::WrittenPiece<Id>
+pub fn sem_os_append_store::WrittenPiece<Id>::clone(&self) -> sem_os_append_store::WrittenPiece<Id>
+impl<Id: core::cmp::Eq> core::cmp::Eq for sem_os_append_store::WrittenPiece<Id>
+impl<Id: core::cmp::PartialEq> core::cmp::PartialEq for sem_os_append_store::WrittenPiece<Id>
+pub fn sem_os_append_store::WrittenPiece<Id>::eq(&self, &sem_os_append_store::WrittenPiece<Id>) -> bool
+impl<Id: core::cmp::PartialEq> core::marker::StructuralPartialEq for sem_os_append_store::WrittenPiece<Id>
+impl<Id: core::fmt::Debug> core::fmt::Debug for sem_os_append_store::WrittenPiece<Id>
+pub fn sem_os_append_store::WrittenPiece<Id>::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl<Id> serde_core::ser::Serialize for sem_os_append_store::WrittenPiece<Id> where Id: serde_core::ser::Serialize
+pub fn sem_os_append_store::WrittenPiece<Id>::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<Id> core::marker::Freeze for sem_os_append_store::WrittenPiece<Id> where sem_os_append_store::PieceId<Id>: core::marker::Freeze
+impl<Id> core::marker::Send for sem_os_append_store::WrittenPiece<Id> where sem_os_append_store::PieceId<Id>: core::marker::Send
+impl<Id> core::marker::Sync for sem_os_append_store::WrittenPiece<Id> where sem_os_append_store::PieceId<Id>: core::marker::Sync
+impl<Id> core::marker::Unpin for sem_os_append_store::WrittenPiece<Id> where sem_os_append_store::PieceId<Id>: core::marker::Unpin
+impl<Id> core::marker::UnsafeUnpin for sem_os_append_store::WrittenPiece<Id> where sem_os_append_store::PieceId<Id>: core::marker::UnsafeUnpin
+impl<Id> core::panic::unwind_safe::RefUnwindSafe for sem_os_append_store::WrittenPiece<Id> where sem_os_append_store::PieceId<Id>: core::panic::unwind_safe::RefUnwindSafe
+impl<Id> core::panic::unwind_safe::UnwindSafe for sem_os_append_store::WrittenPiece<Id> where sem_os_append_store::PieceId<Id>: core::panic::unwind_safe::UnwindSafe
 pub const sem_os_append_store::MAX_ID_LEN: usize
-pub trait sem_os_append_store::AppendStore: core::marker::Send + core::marker::Sync
-pub fn sem_os_append_store::AppendStore::append<'life0, 'async_trait>(&'life0 self, sem_os_append_store::AppendBatch) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<sem_os_append_store::AppendReceipt, sem_os_append_store::AppendError>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait
-pub fn sem_os_append_store::AppendStore::current<'life0, 'life1, 'life2, 'async_trait>(&'life0 self, &'life1 sem_os_append_store::ScopeId, &'life2 sem_os_append_store::PieceId) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<core::option::Option<sem_os_append_store::PieceRecord>, sem_os_append_store::AppendError>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait, 'life1: 'async_trait, 'life2: 'async_trait
-pub fn sem_os_append_store::AppendStore::fold<'life0, 'life1, 'async_trait>(&'life0 self, &'life1 sem_os_append_store::ScopeId, core::option::Option<sem_os_append_store::Seq>) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<alloc::vec::Vec<sem_os_append_store::PieceRecord>, sem_os_append_store::AppendError>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait, 'life1: 'async_trait
-impl sem_os_append_store::AppendStore for sem_os_append_store::MemoryStore
-pub fn sem_os_append_store::MemoryStore::append<'life0, 'async_trait>(&'life0 self, sem_os_append_store::AppendBatch) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<sem_os_append_store::AppendReceipt, sem_os_append_store::AppendError>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait
-pub fn sem_os_append_store::MemoryStore::current<'life0, 'life1, 'life2, 'async_trait>(&'life0 self, &'life1 sem_os_append_store::ScopeId, &'life2 sem_os_append_store::PieceId) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<core::option::Option<sem_os_append_store::PieceRecord>, sem_os_append_store::AppendError>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait, 'life1: 'async_trait, 'life2: 'async_trait
-pub fn sem_os_append_store::MemoryStore::fold<'life0, 'life1, 'async_trait>(&'life0 self, &'life1 sem_os_append_store::ScopeId, core::option::Option<sem_os_append_store::Seq>) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<alloc::vec::Vec<sem_os_append_store::PieceRecord>, sem_os_append_store::AppendError>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait, 'life1: 'async_trait
-pub async fn sem_os_append_store::replay<S, T, F>(&S, &sem_os_append_store::ScopeId, core::option::Option<sem_os_append_store::Seq>, T, F) -> core::result::Result<T, sem_os_append_store::AppendError> where S: sem_os_append_store::AppendStore + ?core::marker::Sized, F: core::ops::function::FnMut(T, &sem_os_append_store::PieceRecord) -> T
+pub trait sem_os_append_store::AppendStore<Id: sem_os_append_store::StoreId>: core::marker::Send + core::marker::Sync
+pub const sem_os_append_store::AppendStore::CONTIGUOUS: bool
+pub fn sem_os_append_store::AppendStore::append<'life0, 'async_trait>(&'life0 self, sem_os_append_store::AppendBatch<Id>) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<sem_os_append_store::AppendReceipt<Id>, sem_os_append_store::AppendError<Id>>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait
+pub fn sem_os_append_store::AppendStore::current<'life0, 'life1, 'life2, 'async_trait>(&'life0 self, &'life1 sem_os_append_store::ScopeId<Id>, &'life2 sem_os_append_store::PieceId<Id>) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<core::option::Option<sem_os_append_store::PieceRecord<Id>>, sem_os_append_store::AppendError<Id>>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait, 'life1: 'async_trait, 'life2: 'async_trait
+pub fn sem_os_append_store::AppendStore::fold<'life0, 'life1, 'async_trait>(&'life0 self, &'life1 sem_os_append_store::ScopeId<Id>, core::option::Option<sem_os_append_store::Seq>) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<alloc::vec::Vec<sem_os_append_store::PieceRecord<Id>>, sem_os_append_store::AppendError<Id>>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait, 'life1: 'async_trait
+impl<Id: sem_os_append_store::StoreId> sem_os_append_store::AppendStore<Id> for sem_os_append_store::MemoryStore<Id>
+pub const sem_os_append_store::MemoryStore<Id>::CONTIGUOUS: bool
+pub fn sem_os_append_store::MemoryStore<Id>::append<'life0, 'async_trait>(&'life0 self, sem_os_append_store::AppendBatch<Id>) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<sem_os_append_store::AppendReceipt<Id>, sem_os_append_store::AppendError<Id>>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait
+pub fn sem_os_append_store::MemoryStore<Id>::current<'life0, 'life1, 'life2, 'async_trait>(&'life0 self, &'life1 sem_os_append_store::ScopeId<Id>, &'life2 sem_os_append_store::PieceId<Id>) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<core::option::Option<sem_os_append_store::PieceRecord<Id>>, sem_os_append_store::AppendError<Id>>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait, 'life1: 'async_trait, 'life2: 'async_trait
+pub fn sem_os_append_store::MemoryStore<Id>::fold<'life0, 'life1, 'async_trait>(&'life0 self, &'life1 sem_os_append_store::ScopeId<Id>, core::option::Option<sem_os_append_store::Seq>) -> core::pin::Pin<alloc::boxed::Box<(dyn core::future::future::Future<Output = core::result::Result<alloc::vec::Vec<sem_os_append_store::PieceRecord<Id>>, sem_os_append_store::AppendError<Id>>> + core::marker::Send + 'async_trait)>> where Self: 'async_trait, 'life0: 'async_trait, 'life1: 'async_trait
+pub trait sem_os_append_store::StoreId: core::clone::Clone + core::cmp::Eq + core::cmp::Ord + core::hash::Hash + core::fmt::Debug + core::fmt::Display + core::marker::Send + core::marker::Sync + 'static
+impl<T> sem_os_append_store::StoreId for T where T: core::clone::Clone + core::cmp::Eq + core::cmp::Ord + core::hash::Hash + core::fmt::Debug + core::fmt::Display + core::marker::Send + core::marker::Sync + 'static
+pub async fn sem_os_append_store::replay<S, Id, T, F>(&S, &sem_os_append_store::ScopeId<Id>, core::option::Option<sem_os_append_store::Seq>, T, F) -> core::result::Result<T, sem_os_append_store::AppendError<Id>> where S: sem_os_append_store::AppendStore<Id> + ?core::marker::Sized, Id: sem_os_append_store::StoreId, F: core::ops::function::FnMut(T, &sem_os_append_store::PieceRecord<Id>) -> T

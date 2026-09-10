@@ -13,14 +13,17 @@ async-trait = "0.1"
 serde = { version = "1", features = ["derive"] }
 thiserror = "1"
 tokio = { version = "1", features = ["rt-multi-thread", "sync", "macros"], optional = true }
+uuid = { version = "1", default-features = false, features = ["v5"], optional = true }
 
 [dev-dependencies]
 proptest = "1"
 tokio = { version = "1", features = ["rt-multi-thread", "sync", "macros"] }
+uuid = { version = "1", default-features = false, features = ["v5"] }
 
 [features]
 default = []
 conformance = ["dep:tokio"]
+uuid = ["dep:uuid"]
 
 [lints]
 workspace = true

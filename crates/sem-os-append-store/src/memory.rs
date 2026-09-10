@@ -7,25 +7,44 @@ use async_trait::async_trait;
 
 use crate::{
     AppendBatch, AppendError, AppendReceipt, AppendStore, PieceId, PieceRecord, ScopeId, Seq,
-    VersionNo, WrittenPiece,
+    StoreId, VersionNo, WrittenPiece,
 };
 
-#[derive(Debug, Default)]
-struct ScopeLog {
-    records: Vec<PieceRecord>,
+#[derive(Debug)]
+struct ScopeLog<Id: StoreId> {
+    records: Vec<PieceRecord<Id>>,
     /// Index into `records` of each piece's current version.
-    current: BTreeMap<PieceId, usize>,
+    current: BTreeMap<PieceId<Id>, usize>,
 }
 
-/// Thread-safe in-memory store. Every append takes the store lock, so the
-/// contract's race semantics hold by construction; the conformance suite
-/// verifies them all the same.
-#[derive(Debug, Default)]
-pub struct MemoryStore {
-    scopes: Mutex<BTreeMap<ScopeId, ScopeLog>>,
+impl<Id: StoreId> Default for ScopeLog<Id> {
+    fn default() -> Self {
+        Self {
+            records: Vec::new(),
+            current: BTreeMap::new(),
+        }
+    }
 }
 
-impl MemoryStore {
+/// Thread-safe in-memory store, generic over the identity type `Id`. Every
+/// append takes the store lock, so the contract's race semantics hold by
+/// construction and sequence numbers happen to be contiguous
+/// ([`AppendStore::CONTIGUOUS`] is `true`); the conformance suite verifies
+/// both properties all the same.
+#[derive(Debug)]
+pub struct MemoryStore<Id: StoreId> {
+    scopes: Mutex<BTreeMap<ScopeId<Id>, ScopeLog<Id>>>,
+}
+
+impl<Id: StoreId> Default for MemoryStore<Id> {
+    fn default() -> Self {
+        Self {
+            scopes: Mutex::new(BTreeMap::new()),
+        }
+    }
+}
+
+impl<Id: StoreId> MemoryStore<Id> {
     /// An empty store.
     #[must_use]
     pub fn new() -> Self {
@@ -34,8 +53,10 @@ impl MemoryStore {
 }
 
 #[async_trait]
-impl AppendStore for MemoryStore {
-    async fn append(&self, batch: AppendBatch) -> Result<AppendReceipt, AppendError> {
+impl<Id: StoreId> AppendStore<Id> for MemoryStore<Id> {
+    const CONTIGUOUS: bool = true;
+
+    async fn append(&self, batch: AppendBatch<Id>) -> Result<AppendReceipt<Id>, AppendError<Id>> {
         let (scope, writes) = batch.into_parts();
         let mut scopes = self
             .scopes
@@ -98,9 +119,9 @@ impl AppendStore for MemoryStore {
 
     async fn fold(
         &self,
-        scope: &ScopeId,
+        scope: &ScopeId<Id>,
         up_to: Option<Seq>,
-    ) -> Result<Vec<PieceRecord>, AppendError> {
+    ) -> Result<Vec<PieceRecord<Id>>, AppendError<Id>> {
         let scopes = self
             .scopes
             .lock()
@@ -119,9 +140,9 @@ impl AppendStore for MemoryStore {
 
     async fn current(
         &self,
-        scope: &ScopeId,
-        piece_id: &PieceId,
-    ) -> Result<Option<PieceRecord>, AppendError> {
+        scope: &ScopeId<Id>,
+        piece_id: &PieceId<Id>,
+    ) -> Result<Option<PieceRecord<Id>>, AppendError<Id>> {
         let scopes = self
             .scopes
             .lock()
