@@ -1,0 +1,23 @@
+[package]
+name = "sem-os-walk"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+readme = "README.md"
+description = "Board-walk contract for a callout-pattern DSL: a generic edge/guard/precondition dialect, board expansion, and the guard+role legal-move walk over it — domain-free, no field of any one domain's own piece."
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+arbitrary = { version = "1.4", features = ["derive"], optional = true }
+
+[dev-dependencies]
+arbitrary = { version = "1.4", features = ["derive"] }
+
+[features]
+default = []
+arbitrary = ["dep:arbitrary"]
+
+[lints]
+workspace = true
