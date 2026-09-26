@@ -18,5 +18,5 @@ pub use dialect::{BindValue, Cmp, Coord, Edge, From, Guard, Pred, Se, To};
 pub use expand::{resolve_coord, Expanded, GuardKind, XEdge, INCIDENT};
 pub use walk::{
     available, available_entry, blocked_on, enabled_moves, legal_entry_moves, legal_moves, Blocked,
-    BlockedOn, ClockOrder, Step,
+    BlockedOn, ClockOrder, PreAnswer, PreEvaluator, Step,
 };

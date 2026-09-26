@@ -37,9 +37,16 @@ impl ClockOrder {
         self.before.contains(&(a.to_owned(), b.to_owned()))
     }
     /// Every down-closed (monotone) reached-set over `shape`: a coordinate is in the set only if every
-    /// coordinate before it is too.
+    /// coordinate before it is too. Enumerates subsets, so `shape` has at most 31 coordinates.
+    ///
+    /// # Panics
+    /// A `shape` of more than 31 coordinates.
     pub fn reached_sets(&self, shape: &[String]) -> Vec<BTreeSet<String>> {
         let n = shape.len();
+        assert!(
+            n < 32,
+            "reached_sets enumerates subsets: {n} coordinates is too many"
+        );
         let mut out = Vec::new();
         for mask in 0..(1u32 << n) {
             let set: BTreeSet<String> = (0..n)
@@ -156,101 +163,186 @@ pub fn legal_entry_moves(x: &Expanded, reached: &BTreeSet<String>, role: &str) -
         .collect()
 }
 
+/// A domain's answer to one precondition (`:pre`) of an edge, from its own facts: it holds, it fails,
+/// or the domain cannot say yet (a fact it has not read, a self-referential `reached`). This crate never
+/// reads a fact itself.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum PreAnswer {
+    Holds,
+    Fails,
+    Unresolved,
+}
+
+/// The domain's precondition evaluator: an edge, one of its preconditions, and the reached-set the walk
+/// is reading under. Must be pure — the walk may ask the same question more than once.
+pub type PreEvaluator<'a> = dyn Fn(&XEdge, &Pred, &BTreeSet<String>) -> PreAnswer + 'a;
+
 /// Why an edge out of a piece's node is on the board but not enabled for the caller now — what the
 /// piece is blocked on. The walk's answer, domain-free: a coordinate is a name, a party is a role, a
-/// precondition is the dialect's own [`Pred`], evaluated by the domain's callback.
+/// precondition is the dialect's own [`Pred`], answered by the domain's [`PreEvaluator`].
+///
+/// A consumer deciding who is on move reads [`Blocked::is_dead`] first (an edge with any permanent
+/// reason never enables, whatever else it waits on), then [`BlockedOn::clock_coord`] (a coordinate the
+/// clock will reach) and [`BlockedOn::Party`] (another party's move). When an edge waits on both a
+/// party and the clock, the move is the party's; the coordinate says when it can next be made.
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[non_exhaustive]
 pub enum BlockedOn {
-    /// `reached c`, and `c` is not reached yet — clock-shaped: the edge waits on the clock.
+    /// `reached c`, `c` in the board's clock-shape and not reached yet — clock-shaped: the edge waits
+    /// on the clock.
     Awaits(String),
-    /// `before c`, and `c` is reached — too late; no later reached-set enables it again.
+    /// `before c`, and `c` is reached — too late; the reached-set only grows, so it never clears.
     Passed(String),
-    /// `has c`, and `c` is not in the board's clock-shape.
+    /// `has c` or `reached c` with `c` not in the board's clock-shape — no reached-set the board admits
+    /// ever satisfies it.
     NotInShape(String),
     /// the guard names a binding the board does not resolve.
     Unbound(String),
-    /// the edge is another party's move: its roles, none of them the caller's — party-shaped.
+    /// the edge is another party's move: its roles, none of them the caller's — party-shaped. Empty:
+    /// no one may make the move (permanent).
     Party(Vec<String>),
-    /// a precondition the domain's evaluator says does not hold.
+    /// a precondition the domain's evaluator says fails.
     Pre(Pred),
+    /// a precondition the domain's evaluator cannot answer yet.
+    PreUnresolved(Pred),
 }
 
-/// One edge out of the node that is not enabled for the caller, with every reason, in the order the
-/// guard, the roles and the preconditions are declared.
+impl BlockedOn {
+    /// A reason no later reached-set or fact clears: a coordinate passed or outside the shape, an
+    /// unresolved binding, a move no role may make.
+    #[must_use]
+    pub fn is_permanent(&self) -> bool {
+        match self {
+            BlockedOn::Passed(_) | BlockedOn::NotInShape(_) | BlockedOn::Unbound(_) => true,
+            BlockedOn::Party(roles) => roles.is_empty(),
+            BlockedOn::Awaits(_) | BlockedOn::Pre(_) | BlockedOn::PreUnresolved(_) => false,
+        }
+    }
+
+    /// The coordinate this reason waits on the clock for, if it is clock-shaped: a guard's `reached c`,
+    /// or a precondition `reached c` that fails or is unanswered.
+    #[must_use]
+    pub fn clock_coord(&self) -> Option<&str> {
+        match self {
+            BlockedOn::Awaits(c)
+            | BlockedOn::Pre(Pred::Reached(c))
+            | BlockedOn::PreUnresolved(Pred::Reached(c)) => Some(c),
+            BlockedOn::Passed(_)
+            | BlockedOn::NotInShape(_)
+            | BlockedOn::Unbound(_)
+            | BlockedOn::Party(_)
+            | BlockedOn::Pre(_)
+            | BlockedOn::PreUnresolved(_) => None,
+        }
+    }
+}
+
+/// One edge out of the node that is not enabled for the caller, with every reason once, in the order
+/// the guard, the roles and the preconditions are declared.
 #[derive(Debug, Clone, PartialEq, Eq)]
+#[non_exhaustive]
 pub struct Blocked {
     pub step: Step,
     pub on: Vec<BlockedOn>,
 }
 
-/// Every reason `e` is not enabled for `role` under `reached`; empty when it is enabled. `holds`
-/// answers a precondition of the edge (the domain reads its own facts; this crate never does).
+impl Blocked {
+    /// Whether any reason is permanent: the edge never enables, whatever else it waits on.
+    #[must_use]
+    pub fn is_dead(&self) -> bool {
+        self.on.iter().any(BlockedOn::is_permanent)
+    }
+}
+
+/// Every reason `e` is not enabled for `role` under `reached`, each once; empty when it is enabled.
 fn reasons(
     x: &Expanded,
     e: &XEdge,
     reached: &BTreeSet<String>,
     role: &str,
-    holds: &dyn Fn(&XEdge, &Pred) -> bool,
+    pre: &PreEvaluator<'_>,
 ) -> Vec<BlockedOn> {
-    let mut on: Vec<BlockedOn> = e
-        .guard
-        .iter()
-        .filter(|(k, c)| !ClockOrder::guard_satisfied(x, &[(*k, c.clone())], reached))
-        .map(|(k, c)| match (k, c) {
+    let mut on: Vec<BlockedOn> = Vec::new();
+    let mut push = |r: BlockedOn| {
+        if !on.contains(&r) {
+            on.push(r);
+        }
+    };
+    for (k, c) in &e.guard {
+        if ClockOrder::guard_satisfied(x, &[(*k, c.clone())], reached) {
+            continue;
+        }
+        push(match (k, c) {
             (_, Err(b)) => BlockedOn::Unbound(b.clone()),
-            (GuardKind::Reached, Ok(c)) => BlockedOn::Awaits(c.clone()),
+            (GuardKind::Reached, Ok(c)) if x.clock_shape.contains(c) => {
+                BlockedOn::Awaits(c.clone())
+            }
+            (GuardKind::Reached | GuardKind::Has, Ok(c)) => BlockedOn::NotInShape(c.clone()),
             (GuardKind::Before, Ok(c)) => BlockedOn::Passed(c.clone()),
-            (GuardKind::Has, Ok(c)) => BlockedOn::NotInShape(c.clone()),
-        })
-        .collect();
-    if !e.edge.roles.iter().any(|r| r == role) {
-        on.push(BlockedOn::Party(e.edge.roles.clone()));
+        });
     }
-    on.extend(
-        e.edge
-            .pre
-            .iter()
-            .filter(|p| !holds(e, p))
-            .cloned()
-            .map(BlockedOn::Pre),
-    );
+    if !e.edge.roles.iter().any(|r| r == role) {
+        push(BlockedOn::Party(e.edge.roles.clone()));
+    }
+    for p in &e.edge.pre {
+        match pre(e, p, reached) {
+            PreAnswer::Holds => {}
+            PreAnswer::Fails => push(BlockedOn::Pre(p.clone())),
+            PreAnswer::Unresolved => push(BlockedOn::PreUnresolved(p.clone())),
+        }
+    }
     on
 }
 
+/// Each edge out of `node`, in board order, with its reasons — the one classification both
+/// [`enabled_moves`] and [`blocked_on`] are projections of.
+pub(crate) fn classify<'a>(
+    x: &'a Expanded,
+    node: &'a str,
+    reached: &BTreeSet<String>,
+    role: &str,
+    pre: &PreEvaluator<'_>,
+) -> Vec<(&'a XEdge, Vec<BlockedOn>)> {
+    x.out_edges(node)
+        .map(|e| (e, reasons(x, e, reached, role, pre)))
+        .collect()
+}
+
 /// The steps out of `node` enabled for `role` under `reached`: guard satisfied, role listed, and every
-/// precondition holding by `holds`. With a `holds` that always answers `true` this is [`legal_moves`].
+/// precondition holding by `pre`. With an evaluator that always answers [`PreAnswer::Holds`] this is
+/// [`legal_moves`].
 pub fn enabled_moves(
     x: &Expanded,
     node: &str,
     reached: &BTreeSet<String>,
     role: &str,
-    holds: &dyn Fn(&XEdge, &Pred) -> bool,
+    pre: &PreEvaluator<'_>,
 ) -> Vec<Step> {
-    x.out_edges(node)
-        .filter(|e| reasons(x, e, reached, role, holds).is_empty())
-        .map(Step::from)
+    classify(x, node, reached, role, pre)
+        .into_iter()
+        .filter(|(_, on)| on.is_empty())
+        .map(|(e, _)| Step::from(e))
         .collect()
 }
 
 /// `blocked_on(predicate)`: every edge out of `node` that is on the board but not enabled for `role`
-/// under `reached`, each with what it is blocked on — the clock (`Awaits`), another party (`Party`), a
-/// precondition (`Pre`), or a guard that can no longer hold. Every edge out of `node` is in exactly one
-/// of [`enabled_moves`] and this list (the conformance suite's partition property). Ordered as the
-/// board declares its edges.
+/// under `reached`, each with what it is blocked on — the clock ([`BlockedOn::Awaits`]), another party
+/// ([`BlockedOn::Party`]), a precondition ([`BlockedOn::Pre`], [`BlockedOn::PreUnresolved`]), or a
+/// permanent reason ([`BlockedOn::is_permanent`]). Every edge out of `node` is in exactly one of
+/// [`enabled_moves`] and this list. Ordered as the board declares its edges.
 pub fn blocked_on(
     x: &Expanded,
     node: &str,
     reached: &BTreeSet<String>,
     role: &str,
-    holds: &dyn Fn(&XEdge, &Pred) -> bool,
+    pre: &PreEvaluator<'_>,
 ) -> Vec<Blocked> {
-    x.out_edges(node)
-        .filter_map(|e| {
-            let on = reasons(x, e, reached, role, holds);
-            (!on.is_empty()).then(|| Blocked {
-                step: Step::from(e),
-                on,
-            })
+    classify(x, node, reached, role, pre)
+        .into_iter()
+        .filter(|(_, on)| !on.is_empty())
+        .map(|(e, on)| Blocked {
+            step: Step::from(e),
+            on,
         })
         .collect()
 }

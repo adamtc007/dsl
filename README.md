@@ -27,9 +27,11 @@ dsl-diagnostics -> dsl-parser -> dsl-atoms -> dsl-ast
 kind catalogue; `dsl-ast` classifies atoms against a caller-supplied
 catalogue. None of these depend on `dsl-core` or any SemOS crate.
 
-Two further leaf crates carry mechanisms domains share: `sem-os-id` (pure
-UUID v7/v8 identity helpers) and `sem-os-append-store` (the conditional
-append contract, an in-memory reference store and its conformance suite).
+Three further leaf crates carry mechanisms domains share: `sem-os-id` (pure
+UUID v7/v8 identity helpers), `sem-os-append-store` (the conditional
+append contract, an in-memory reference store and its conformance suite) and
+`sem-os-walk` (the board-walk contract: the legal-move walk, what a piece is
+blocked on, and its conformance suite).
 
 `dsl-integration-tests` is a non-published external-consumer test crate. Host
 applications depend inward on these crates. Shared crates must not depend on an

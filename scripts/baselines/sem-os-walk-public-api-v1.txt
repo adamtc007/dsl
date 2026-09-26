@@ -1,9 +1,9 @@
 pub mod sem_os_walk
 pub mod sem_os_walk::conformance
-pub fn sem_os_walk::conformance::assert_blocked_deterministic(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &dyn core::ops::function::Fn(&sem_os_walk::expand::XEdge, &sem_os_walk::dialect::Pred) -> bool)
+pub fn sem_os_walk::conformance::assert_blocked_deterministic(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &sem_os_walk::walk::PreEvaluator<'_>)
 pub fn sem_os_walk::conformance::assert_deterministic(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str)
 pub fn sem_os_walk::conformance::assert_entry_deterministic(&sem_os_walk::expand::Expanded, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str)
-pub fn sem_os_walk::conformance::assert_partition(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &dyn core::ops::function::Fn(&sem_os_walk::expand::XEdge, &sem_os_walk::dialect::Pred) -> bool)
+pub fn sem_os_walk::conformance::assert_partition(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &sem_os_walk::walk::PreEvaluator<'_>, &[sem_os_walk::walk::Step], &[sem_os_walk::walk::Blocked])
 pub mod sem_os_walk::dialect
 pub enum sem_os_walk::dialect::BindValue
 pub sem_os_walk::dialect::BindValue::Map(alloc::collections::btree::map::BTreeMap<alloc::string::String, sem_os_walk::dialect::BindValue>)
@@ -288,13 +288,17 @@ impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::expand::XEdge
 pub const sem_os_walk::expand::INCIDENT: &str
 pub fn sem_os_walk::expand::resolve_coord(&alloc::collections::btree::map::BTreeMap<alloc::string::String, sem_os_walk::dialect::BindValue>, &sem_os_walk::dialect::Coord) -> core::result::Result<alloc::string::String, alloc::string::String>
 pub mod sem_os_walk::walk
-pub enum sem_os_walk::walk::BlockedOn
+#[non_exhaustive] pub enum sem_os_walk::walk::BlockedOn
 pub sem_os_walk::walk::BlockedOn::Awaits(alloc::string::String)
 pub sem_os_walk::walk::BlockedOn::NotInShape(alloc::string::String)
 pub sem_os_walk::walk::BlockedOn::Party(alloc::vec::Vec<alloc::string::String>)
 pub sem_os_walk::walk::BlockedOn::Passed(alloc::string::String)
 pub sem_os_walk::walk::BlockedOn::Pre(sem_os_walk::dialect::Pred)
+pub sem_os_walk::walk::BlockedOn::PreUnresolved(sem_os_walk::dialect::Pred)
 pub sem_os_walk::walk::BlockedOn::Unbound(alloc::string::String)
+impl sem_os_walk::walk::BlockedOn
+pub fn sem_os_walk::walk::BlockedOn::clock_coord(&self) -> core::option::Option<&str>
+pub fn sem_os_walk::walk::BlockedOn::is_permanent(&self) -> bool
 impl core::clone::Clone for sem_os_walk::walk::BlockedOn
 pub fn sem_os_walk::walk::BlockedOn::clone(&self) -> Self
 impl core::cmp::Eq for sem_os_walk::walk::BlockedOn
@@ -310,9 +314,31 @@ impl core::marker::Unpin for sem_os_walk::walk::BlockedOn
 impl core::marker::UnsafeUnpin for sem_os_walk::walk::BlockedOn
 impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::walk::BlockedOn
 impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::walk::BlockedOn
-pub struct sem_os_walk::walk::Blocked
+pub enum sem_os_walk::walk::PreAnswer
+pub sem_os_walk::walk::PreAnswer::Fails
+pub sem_os_walk::walk::PreAnswer::Holds
+pub sem_os_walk::walk::PreAnswer::Unresolved
+impl core::clone::Clone for sem_os_walk::walk::PreAnswer
+pub fn sem_os_walk::walk::PreAnswer::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::walk::PreAnswer
+impl core::cmp::PartialEq for sem_os_walk::walk::PreAnswer
+pub fn sem_os_walk::walk::PreAnswer::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::walk::PreAnswer
+pub fn sem_os_walk::walk::PreAnswer::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for sem_os_walk::walk::PreAnswer
+impl core::marker::StructuralPartialEq for sem_os_walk::walk::PreAnswer
+impl core::marker::Freeze for sem_os_walk::walk::PreAnswer
+impl core::marker::Send for sem_os_walk::walk::PreAnswer
+impl core::marker::Sync for sem_os_walk::walk::PreAnswer
+impl core::marker::Unpin for sem_os_walk::walk::PreAnswer
+impl core::marker::UnsafeUnpin for sem_os_walk::walk::PreAnswer
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::walk::PreAnswer
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::walk::PreAnswer
+#[non_exhaustive] pub struct sem_os_walk::walk::Blocked
 pub sem_os_walk::walk::Blocked::on: alloc::vec::Vec<sem_os_walk::walk::BlockedOn>
 pub sem_os_walk::walk::Blocked::step: sem_os_walk::walk::Step
+impl sem_os_walk::walk::Blocked
+pub fn sem_os_walk::walk::Blocked::is_dead(&self) -> bool
 impl core::clone::Clone for sem_os_walk::walk::Blocked
 pub fn sem_os_walk::walk::Blocked::clone(&self) -> Self
 impl core::cmp::Eq for sem_os_walk::walk::Blocked
@@ -378,10 +404,11 @@ impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::walk::Step
 impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::walk::Step
 pub fn sem_os_walk::walk::available<'a>(&'a sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str) -> alloc::vec::Vec<&'a sem_os_walk::expand::XEdge>
 pub fn sem_os_walk::walk::available_entry<'a>(&'a sem_os_walk::expand::Expanded, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str) -> alloc::vec::Vec<&'a sem_os_walk::expand::XEdge>
-pub fn sem_os_walk::walk::blocked_on(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &dyn core::ops::function::Fn(&sem_os_walk::expand::XEdge, &sem_os_walk::dialect::Pred) -> bool) -> alloc::vec::Vec<sem_os_walk::walk::Blocked>
-pub fn sem_os_walk::walk::enabled_moves(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &dyn core::ops::function::Fn(&sem_os_walk::expand::XEdge, &sem_os_walk::dialect::Pred) -> bool) -> alloc::vec::Vec<sem_os_walk::walk::Step>
+pub fn sem_os_walk::walk::blocked_on(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &sem_os_walk::walk::PreEvaluator<'_>) -> alloc::vec::Vec<sem_os_walk::walk::Blocked>
+pub fn sem_os_walk::walk::enabled_moves(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &sem_os_walk::walk::PreEvaluator<'_>) -> alloc::vec::Vec<sem_os_walk::walk::Step>
 pub fn sem_os_walk::walk::legal_entry_moves(&sem_os_walk::expand::Expanded, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str) -> alloc::vec::Vec<sem_os_walk::walk::Step>
 pub fn sem_os_walk::walk::legal_moves(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str) -> alloc::vec::Vec<sem_os_walk::walk::Step>
+pub type sem_os_walk::walk::PreEvaluator<'a> = (dyn core::ops::function::Fn(&sem_os_walk::expand::XEdge, &sem_os_walk::dialect::Pred, &alloc::collections::btree::set::BTreeSet<alloc::string::String>) -> sem_os_walk::walk::PreAnswer + 'a)
 pub enum sem_os_walk::BindValue
 pub sem_os_walk::BindValue::Map(alloc::collections::btree::map::BTreeMap<alloc::string::String, sem_os_walk::dialect::BindValue>)
 pub sem_os_walk::BindValue::Nil
@@ -402,13 +429,17 @@ impl core::marker::Unpin for sem_os_walk::dialect::BindValue
 impl core::marker::UnsafeUnpin for sem_os_walk::dialect::BindValue
 impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::BindValue
 impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::BindValue
-pub enum sem_os_walk::BlockedOn
+#[non_exhaustive] pub enum sem_os_walk::BlockedOn
 pub sem_os_walk::BlockedOn::Awaits(alloc::string::String)
 pub sem_os_walk::BlockedOn::NotInShape(alloc::string::String)
 pub sem_os_walk::BlockedOn::Party(alloc::vec::Vec<alloc::string::String>)
 pub sem_os_walk::BlockedOn::Passed(alloc::string::String)
 pub sem_os_walk::BlockedOn::Pre(sem_os_walk::dialect::Pred)
+pub sem_os_walk::BlockedOn::PreUnresolved(sem_os_walk::dialect::Pred)
 pub sem_os_walk::BlockedOn::Unbound(alloc::string::String)
+impl sem_os_walk::walk::BlockedOn
+pub fn sem_os_walk::walk::BlockedOn::clock_coord(&self) -> core::option::Option<&str>
+pub fn sem_os_walk::walk::BlockedOn::is_permanent(&self) -> bool
 impl core::clone::Clone for sem_os_walk::walk::BlockedOn
 pub fn sem_os_walk::walk::BlockedOn::clone(&self) -> Self
 impl core::cmp::Eq for sem_os_walk::walk::BlockedOn
@@ -520,6 +551,26 @@ impl core::marker::Unpin for sem_os_walk::expand::GuardKind
 impl core::marker::UnsafeUnpin for sem_os_walk::expand::GuardKind
 impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::expand::GuardKind
 impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::expand::GuardKind
+pub enum sem_os_walk::PreAnswer
+pub sem_os_walk::PreAnswer::Fails
+pub sem_os_walk::PreAnswer::Holds
+pub sem_os_walk::PreAnswer::Unresolved
+impl core::clone::Clone for sem_os_walk::walk::PreAnswer
+pub fn sem_os_walk::walk::PreAnswer::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::walk::PreAnswer
+impl core::cmp::PartialEq for sem_os_walk::walk::PreAnswer
+pub fn sem_os_walk::walk::PreAnswer::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::walk::PreAnswer
+pub fn sem_os_walk::walk::PreAnswer::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for sem_os_walk::walk::PreAnswer
+impl core::marker::StructuralPartialEq for sem_os_walk::walk::PreAnswer
+impl core::marker::Freeze for sem_os_walk::walk::PreAnswer
+impl core::marker::Send for sem_os_walk::walk::PreAnswer
+impl core::marker::Sync for sem_os_walk::walk::PreAnswer
+impl core::marker::Unpin for sem_os_walk::walk::PreAnswer
+impl core::marker::UnsafeUnpin for sem_os_walk::walk::PreAnswer
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::walk::PreAnswer
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::walk::PreAnswer
 pub enum sem_os_walk::Pred
 pub sem_os_walk::Pred::Count
 pub sem_os_walk::Pred::Count::is: i64
@@ -602,9 +653,11 @@ impl core::marker::Unpin for sem_os_walk::dialect::To
 impl core::marker::UnsafeUnpin for sem_os_walk::dialect::To
 impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::To
 impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::To
-pub struct sem_os_walk::Blocked
+#[non_exhaustive] pub struct sem_os_walk::Blocked
 pub sem_os_walk::Blocked::on: alloc::vec::Vec<sem_os_walk::walk::BlockedOn>
 pub sem_os_walk::Blocked::step: sem_os_walk::walk::Step
+impl sem_os_walk::walk::Blocked
+pub fn sem_os_walk::walk::Blocked::is_dead(&self) -> bool
 impl core::clone::Clone for sem_os_walk::walk::Blocked
 pub fn sem_os_walk::walk::Blocked::clone(&self) -> Self
 impl core::cmp::Eq for sem_os_walk::walk::Blocked
@@ -752,8 +805,9 @@ impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::expand::XEdge
 pub const sem_os_walk::INCIDENT: &str
 pub fn sem_os_walk::available<'a>(&'a sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str) -> alloc::vec::Vec<&'a sem_os_walk::expand::XEdge>
 pub fn sem_os_walk::available_entry<'a>(&'a sem_os_walk::expand::Expanded, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str) -> alloc::vec::Vec<&'a sem_os_walk::expand::XEdge>
-pub fn sem_os_walk::blocked_on(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &dyn core::ops::function::Fn(&sem_os_walk::expand::XEdge, &sem_os_walk::dialect::Pred) -> bool) -> alloc::vec::Vec<sem_os_walk::walk::Blocked>
-pub fn sem_os_walk::enabled_moves(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &dyn core::ops::function::Fn(&sem_os_walk::expand::XEdge, &sem_os_walk::dialect::Pred) -> bool) -> alloc::vec::Vec<sem_os_walk::walk::Step>
+pub fn sem_os_walk::blocked_on(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &sem_os_walk::walk::PreEvaluator<'_>) -> alloc::vec::Vec<sem_os_walk::walk::Blocked>
+pub fn sem_os_walk::enabled_moves(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &sem_os_walk::walk::PreEvaluator<'_>) -> alloc::vec::Vec<sem_os_walk::walk::Step>
 pub fn sem_os_walk::legal_entry_moves(&sem_os_walk::expand::Expanded, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str) -> alloc::vec::Vec<sem_os_walk::walk::Step>
 pub fn sem_os_walk::legal_moves(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str) -> alloc::vec::Vec<sem_os_walk::walk::Step>
 pub fn sem_os_walk::resolve_coord(&alloc::collections::btree::map::BTreeMap<alloc::string::String, sem_os_walk::dialect::BindValue>, &sem_os_walk::dialect::Coord) -> core::result::Result<alloc::string::String, alloc::string::String>
+pub type sem_os_walk::PreEvaluator<'a> = (dyn core::ops::function::Fn(&sem_os_walk::expand::XEdge, &sem_os_walk::dialect::Pred, &alloc::collections::btree::set::BTreeSet<alloc::string::String>) -> sem_os_walk::walk::PreAnswer + 'a)

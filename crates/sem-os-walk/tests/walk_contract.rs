@@ -7,7 +7,9 @@ use std::collections::{BTreeMap, BTreeSet};
 use sem_os_walk::conformance;
 use sem_os_walk::dialect::{BindValue, Cmp, Coord, Edge, From, Pred, To};
 use sem_os_walk::expand::{resolve_coord, Expanded, GuardKind, XEdge};
-use sem_os_walk::{blocked_on, enabled_moves, legal_moves, BlockedOn, ClockOrder};
+use sem_os_walk::{
+    blocked_on, enabled_moves, legal_moves, BlockedOn, ClockOrder, PreAnswer, PreEvaluator,
+};
 
 fn set(v: &[&str]) -> BTreeSet<String> {
     v.iter().map(|s| (*s).to_owned()).collect()
@@ -177,10 +179,19 @@ fn fact(name: &str) -> Pred {
     }
 }
 
+fn holds() -> Box<PreEvaluator<'static>> {
+    Box::new(|_: &XEdge, _: &Pred, _: &BTreeSet<String>| PreAnswer::Holds)
+}
+
+fn answer(a: PreAnswer) -> Box<PreEvaluator<'static>> {
+    Box::new(move |_: &XEdge, _: &Pred, _: &BTreeSet<String>| a)
+}
+
 #[test]
-fn blocked_on_names_every_reason_in_declared_order() {
+fn blocked_on_names_every_reason_once_in_declared_order() {
     let x = board(
         vec![
+            (GuardKind::Reached, Ok("record".to_owned())),
             (GuardKind::Reached, Ok("record".to_owned())),
             (GuardKind::Before, Ok("ex".to_owned())),
             (GuardKind::Has, Ok("pay".to_owned())),
@@ -193,11 +204,15 @@ fn blocked_on_names_every_reason_in_declared_order() {
                 name: "attempts".to_owned(),
                 cmp: Some((Cmp::Below, "budget".to_owned())),
             },
+            fact("custody-view"),
         ],
     );
-    let only_attempts =
-        |_: &XEdge, p: &Pred| matches!(p, Pred::Fact { name, .. } if name == "attempts");
-    let b = blocked_on(&x, "Open", &set(&["ex"]), "engine", &only_attempts);
+    let pre = |_: &XEdge, p: &Pred, _: &BTreeSet<String>| match p {
+        Pred::Fact { name, .. } if name == "attempts" => PreAnswer::Holds,
+        Pred::Fact { name, .. } if name == "custody-view" => PreAnswer::Unresolved,
+        _ => PreAnswer::Fails,
+    };
+    let b = blocked_on(&x, "Open", &set(&["ex"]), "engine", &pre);
     assert_eq!(b.len(), 1);
     assert_eq!(b[0].step.edge, "E1");
     assert_eq!(
@@ -209,9 +224,148 @@ fn blocked_on_names_every_reason_in_declared_order() {
             BlockedOn::Unbound("bound".to_owned()),
             BlockedOn::Party(vec!["inbound".to_owned()]),
             BlockedOn::Pre(fact("acknowledgement")),
-        ]
+            BlockedOn::PreUnresolved(fact("custody-view")),
+        ],
+        "the repeated `reached record` is named once"
     );
-    assert!(enabled_moves(&x, "Open", &set(&["ex"]), "engine", &only_attempts).is_empty());
+    assert!(
+        b[0].is_dead(),
+        "a coordinate passed: never enabled, whatever else it waits on"
+    );
+    assert!(enabled_moves(&x, "Open", &set(&["ex"]), "engine", &pre).is_empty());
+}
+
+#[test]
+fn a_reached_guard_outside_the_shape_is_permanent_not_a_wait() {
+    let x = board(
+        vec![(GuardKind::Reached, Ok("pay".to_owned()))],
+        &["engine"],
+        Vec::new(),
+    );
+    let b = blocked_on(&x, "Open", &set(&["ex", "record"]), "engine", &*holds());
+    assert_eq!(b[0].on, vec![BlockedOn::NotInShape("pay".to_owned())]);
+    assert!(b[0].is_dead());
+    assert_eq!(
+        b[0].on[0].clock_coord(),
+        None,
+        "no mark for a coordinate the board never reaches"
+    );
+}
+
+#[test]
+fn a_before_guard_outside_the_shape_is_always_satisfied() {
+    let x = board(
+        vec![(GuardKind::Before, Ok("pay".to_owned()))],
+        &["engine"],
+        Vec::new(),
+    );
+    assert!(blocked_on(&x, "Open", &set(&["ex", "record"]), "engine", &*holds()).is_empty());
+}
+
+#[test]
+fn an_unresolved_has_guard_is_unbound() {
+    let x = board(
+        vec![(GuardKind::Has, Err("bound".to_owned()))],
+        &["engine"],
+        Vec::new(),
+    );
+    let b = blocked_on(&x, "Open", &set(&[]), "engine", &*holds());
+    assert_eq!(b[0].on, vec![BlockedOn::Unbound("bound".to_owned())]);
+    assert!(b[0].is_dead());
+}
+
+#[test]
+fn a_reached_precondition_is_clock_shaped_and_its_negation_is_not() {
+    let x = board(
+        Vec::new(),
+        &["engine"],
+        vec![
+            Pred::Reached("record".to_owned()),
+            Pred::Not(Box::new(Pred::Reached("ex".to_owned()))),
+        ],
+    );
+    for a in [PreAnswer::Fails, PreAnswer::Unresolved] {
+        let b = blocked_on(&x, "Open", &set(&[]), "engine", &*answer(a));
+        assert_eq!(b[0].on.len(), 2, "{a:?}");
+        assert_eq!(b[0].on[0].clock_coord(), Some("record"), "{a:?}");
+        assert_eq!(b[0].on[1].clock_coord(), None, "{a:?}");
+        assert!(
+            !b[0].is_dead(),
+            "a precondition is never permanent to the walk"
+        );
+    }
+}
+
+#[test]
+fn a_move_no_role_may_make_is_permanent() {
+    let x = board(Vec::new(), &[], Vec::new());
+    let b = blocked_on(&x, "Open", &set(&[]), "engine", &*holds());
+    assert_eq!(b[0].on, vec![BlockedOn::Party(Vec::new())]);
+    assert!(b[0].is_dead());
+}
+
+#[test]
+fn edges_that_render_as_one_step_partition_by_position() {
+    // three edges out of Open: E1 awaits `ex`; T is custody's; a second E1 (same id, word, target and
+    // roles — the same step) with no guard. The contract classifies each by position.
+    let mut x = board(
+        vec![(GuardKind::Reached, Ok("ex".to_owned()))],
+        &["engine"],
+        Vec::new(),
+    );
+    let mut t = x.edges[0].clone();
+    t.id = "T".to_owned();
+    t.edge.id = "T".to_owned();
+    t.to = "Other".to_owned();
+    t.edge.roles = vec!["inbound".to_owned()];
+    t.guard.clear();
+    let mut twin = x.edges[0].clone();
+    twin.guard.clear();
+    x.edges.push(t);
+    x.edges.push(twin);
+    let reached = set(&[]);
+    let pre = holds();
+    let enabled = enabled_moves(&x, "Open", &reached, "engine", &*pre);
+    let blocked = blocked_on(&x, "Open", &reached, "engine", &*pre);
+    assert_eq!(enabled.len(), 1);
+    assert_eq!(blocked.len(), 2);
+    conformance::assert_partition(&x, "Open", &reached, "engine", &*pre, &enabled, &blocked);
+}
+
+#[test]
+#[should_panic(expected = "blocked edges out of Open out of board order")]
+fn the_partition_check_rejects_an_engine_that_swaps_its_blocked_edges() {
+    let mut x = board(
+        vec![(GuardKind::Reached, Ok("record".to_owned()))],
+        &["engine"],
+        Vec::new(),
+    );
+    let mut t = x.edges[0].clone();
+    t.id = "T".to_owned();
+    t.edge.id = "T".to_owned();
+    t.edge.roles = vec!["inbound".to_owned()];
+    t.guard.clear();
+    x.edges.push(t);
+    let reached = set(&[]);
+    let pre = holds();
+    let enabled = enabled_moves(&x, "Open", &reached, "engine", &*pre);
+    let mut blocked = blocked_on(&x, "Open", &reached, "engine", &*pre);
+    blocked.reverse();
+    conformance::assert_partition(&x, "Open", &reached, "engine", &*pre, &enabled, &blocked);
+}
+
+#[test]
+#[should_panic(expected = "are not the contract's")]
+fn the_partition_check_rejects_an_engine_that_enables_a_blocked_edge() {
+    let x = board(
+        vec![(GuardKind::Reached, Ok("record".to_owned()))],
+        &["engine"],
+        Vec::new(),
+    );
+    let reached = set(&[]);
+    let pre = holds();
+    let enabled = legal_moves(&x, "Open", &set(&["ex", "record"]), "engine");
+    conformance::assert_partition(&x, "Open", &reached, "engine", &*pre, &enabled, &[]);
 }
 
 #[test]
@@ -221,14 +375,14 @@ fn a_clock_shaped_block_clears_when_its_coordinate_is_reached() {
         &["engine"],
         Vec::new(),
     );
-    let yes = |_: &XEdge, _: &Pred| true;
+    let yes = holds();
+    let b = blocked_on(&x, "Open", &set(&["ex"]), "engine", &*yes);
+    assert_eq!(b[0].on, vec![BlockedOn::Awaits("record".to_owned())]);
+    assert_eq!(b[0].on[0].clock_coord(), Some("record"));
+    assert!(!b[0].is_dead());
+    assert!(blocked_on(&x, "Open", &set(&["ex", "record"]), "engine", &*yes).is_empty());
     assert_eq!(
-        blocked_on(&x, "Open", &set(&["ex"]), "engine", &yes)[0].on,
-        vec![BlockedOn::Awaits("record".to_owned())]
-    );
-    assert!(blocked_on(&x, "Open", &set(&["ex", "record"]), "engine", &yes).is_empty());
-    assert_eq!(
-        enabled_moves(&x, "Open", &set(&["ex", "record"]), "engine", &yes),
+        enabled_moves(&x, "Open", &set(&["ex", "record"]), "engine", &*yes),
         legal_moves(&x, "Open", &set(&["ex", "record"]), "engine")
     );
 }
@@ -236,11 +390,11 @@ fn a_clock_shaped_block_clears_when_its_coordinate_is_reached() {
 #[test]
 fn a_party_shaped_block_is_another_roles_move() {
     let x = board(Vec::new(), &["inbound"], Vec::new());
-    let yes = |_: &XEdge, _: &Pred| true;
-    let b = blocked_on(&x, "Open", &set(&[]), "engine", &yes);
+    let b = blocked_on(&x, "Open", &set(&[]), "engine", &*holds());
     assert_eq!(b[0].on, vec![BlockedOn::Party(vec!["inbound".to_owned()])]);
+    assert!(!b[0].is_dead());
     assert!(
-        blocked_on(&x, "Open", &set(&[]), "inbound", &yes).is_empty(),
+        blocked_on(&x, "Open", &set(&[]), "inbound", &*holds()).is_empty(),
         "custody's own view"
     );
 }
@@ -248,9 +402,8 @@ fn a_party_shaped_block_is_another_roles_move() {
 #[test]
 fn a_node_with_no_edges_out_is_blocked_on_nothing() {
     let x = board(Vec::new(), &["engine"], Vec::new());
-    let yes = |_: &XEdge, _: &Pred| true;
-    assert!(blocked_on(&x, "Closed", &set(&[]), "engine", &yes).is_empty());
-    assert!(enabled_moves(&x, "Closed", &set(&[]), "engine", &yes).is_empty());
+    assert!(blocked_on(&x, "Closed", &set(&[]), "engine", &*holds()).is_empty());
+    assert!(enabled_moves(&x, "Closed", &set(&[]), "engine", &*holds()).is_empty());
 }
 
 #[test]
@@ -271,11 +424,22 @@ fn the_conformance_suite_holds_over_every_reached_set_role_and_answer() {
     let shape = x.clock_shape.clone();
     for reached in ClockOrder::new(&[("ex".to_owned(), "record".to_owned())]).reached_sets(&shape) {
         for role in ["engine", "inbound", "ops"] {
-            for answer in [true, false] {
-                let holds = move |_: &XEdge, _: &Pred| answer;
-                conformance::assert_partition(&x, "Open", &reached, role, &holds);
-                conformance::assert_blocked_deterministic(&x, "Open", &reached, role, &holds);
+            for a in [PreAnswer::Holds, PreAnswer::Fails, PreAnswer::Unresolved] {
+                let pre = answer(a);
+                let enabled = enabled_moves(&x, "Open", &reached, role, &*pre);
+                let blocked = blocked_on(&x, "Open", &reached, role, &*pre);
+                conformance::assert_partition(
+                    &x, "Open", &reached, role, &*pre, &enabled, &blocked,
+                );
+                conformance::assert_blocked_deterministic(&x, "Open", &reached, role, &*pre);
             }
         }
     }
+}
+
+#[test]
+#[should_panic(expected = "too many")]
+fn reached_sets_refuses_a_shape_it_cannot_enumerate() {
+    let shape: Vec<String> = (0..32).map(|i| format!("c{i}")).collect();
+    let _ = order().reached_sets(&shape);
 }

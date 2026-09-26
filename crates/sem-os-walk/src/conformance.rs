@@ -7,9 +7,11 @@
 
 use std::collections::BTreeSet;
 
-use crate::dialect::Pred;
-use crate::expand::{Expanded, XEdge};
-use crate::walk::{blocked_on, enabled_moves, legal_entry_moves, legal_moves, Step};
+use crate::expand::Expanded;
+use crate::walk::{
+    blocked_on, classify, enabled_moves, legal_entry_moves, legal_moves, Blocked, BlockedOn,
+    PreAnswer, PreEvaluator, Step,
+};
 
 /// Calls the walk twice over identical inputs and asserts the result is exactly equal — panics on
 /// violation, meant to be called from the implementer's own test.
@@ -43,10 +45,10 @@ pub fn assert_blocked_deterministic(
     node: &str,
     reached: &BTreeSet<String>,
     role: &str,
-    holds: &dyn Fn(&XEdge, &Pred) -> bool,
+    pre: &PreEvaluator<'_>,
 ) {
-    let a = blocked_on(x, node, reached, role, holds);
-    let b = blocked_on(x, node, reached, role, holds);
+    let a = blocked_on(x, node, reached, role, pre);
+    let b = blocked_on(x, node, reached, role, pre);
     assert_eq!(
         a,
         b,
@@ -55,46 +57,66 @@ pub fn assert_blocked_deterministic(
     );
 }
 
-/// The partition every walk engine over this contract must keep: every edge out of `node` is in
-/// exactly one of [`enabled_moves`] and [`blocked_on`], each blocked edge names at least one reason, and
-/// both lists keep the board's own edge order. With every precondition holding, the enabled set is
-/// [`legal_moves`] — the walk's legality and its blocked view never disagree.
+/// The partition a walk engine's own view of a node must keep: given the `enabled` steps and `blocked`
+/// edges the engine produced for (`node`, `reached`, `role`, `pre`), every edge out of `node` is in
+/// exactly one of them, in board order, and each is where this contract classifies it — decided per
+/// edge by position, so edges that render as equal steps are never confused. Each blocked edge names
+/// at least one reason. With every precondition holding, the contract's enabled set is
+/// [`legal_moves`]. `pre` must be pure.
 pub fn assert_partition(
     x: &Expanded,
     node: &str,
     reached: &BTreeSet<String>,
     role: &str,
-    holds: &dyn Fn(&XEdge, &Pred) -> bool,
+    pre: &PreEvaluator<'_>,
+    enabled: &[Step],
+    blocked: &[Blocked],
 ) {
-    let enabled = enabled_moves(x, node, reached, role, holds);
-    let blocked = blocked_on(x, node, reached, role, holds);
-    let out: Vec<Step> = x.out_edges(node).map(Step::from).collect();
-    assert!(
-        blocked.iter().all(|b| !b.on.is_empty()),
-        "a blocked edge names no reason on board {}, node {node}",
-        x.label()
-    );
-    let mut merged: Vec<&Step> = Vec::with_capacity(out.len());
-    let (mut i, mut j) = (0, 0);
-    for step in &out {
-        if enabled.get(i) == Some(step) {
-            merged.push(&enabled[i]);
-            i += 1;
-        } else if blocked.get(j).map(|b| &b.step) == Some(step) {
-            merged.push(&blocked[j].step);
-            j += 1;
-        }
-    }
-    assert!(
-        i == enabled.len() && j == blocked.len() && merged.len() == out.len(),
-        "enabled ({}) and blocked ({}) do not partition the {} edges out of {node} on board {}",
-        enabled.len(),
-        blocked.len(),
-        out.len(),
+    let classified = classify(x, node, reached, role, pre);
+    let want_enabled: Vec<Step> = classified
+        .iter()
+        .filter(|(_, on)| on.is_empty())
+        .map(|(e, _)| Step::from(*e))
+        .collect();
+    let want_blocked: Vec<(Step, &Vec<BlockedOn>)> = classified
+        .iter()
+        .filter(|(_, on)| !on.is_empty())
+        .map(|(e, on)| (Step::from(*e), on))
+        .collect();
+    assert_eq!(
+        enabled,
+        want_enabled.as_slice(),
+        "the enabled steps out of {node} on board {} are not the contract's",
         x.label()
     );
     assert_eq!(
-        enabled_moves(x, node, reached, role, &|_, _| true),
+        blocked.len(),
+        want_blocked.len(),
+        "{} blocked edges out of {node} on board {}, the contract has {}",
+        blocked.len(),
+        x.label(),
+        want_blocked.len()
+    );
+    for (b, (step, on)) in blocked.iter().zip(&want_blocked) {
+        assert!(
+            !b.on.is_empty(),
+            "a blocked edge names no reason on board {}, node {node}",
+            x.label()
+        );
+        assert_eq!(
+            &b.step, step,
+            "blocked edges out of {node} out of board order"
+        );
+        assert_eq!(&b.on, *on, "edge {} blocked on other reasons", step.edge);
+    }
+    assert_eq!(
+        enabled.len() + blocked.len(),
+        classified.len(),
+        "enabled and blocked do not cover the edges out of {node} on board {}",
+        x.label()
+    );
+    assert_eq!(
+        enabled_moves(x, node, reached, role, &|_, _, _| PreAnswer::Holds),
         legal_moves(x, node, reached, role),
         "with every precondition holding, the enabled set is not the legal set on board {}, node \
          {node}, role {role}",

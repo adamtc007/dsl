@@ -12,10 +12,18 @@ The workspace follows Semantic Versioning subject to the pre-1.0 rules in
   enabled for the caller, with what it is blocked on (`BlockedOn`: a coordinate
   not yet reached, a `before` coordinate passed, a coordinate not in the shape,
   an unresolved binding, another party's roles, or a precondition the domain's
-  own evaluator says fails) — and `enabled_moves`, its complement. The
-  conformance suite gains `assert_blocked_deterministic` and
-  `assert_partition` (every edge out of a node is enabled or blocked, never
-  both; with every precondition holding, enabled equals `legal_moves`). Tests
+  own evaluator says fails or cannot answer) — and `enabled_moves`, its
+  complement. Preconditions are answered by the caller's pure
+  `PreEvaluator` (`PreAnswer::Holds`/`Fails`/`Unresolved`, given the
+  reached-set). `BlockedOn::is_permanent`, `Blocked::is_dead` and
+  `BlockedOn::clock_coord` tell a consumer a dead edge from a wait on the
+  clock or on another party; `BlockedOn` and `Blocked` are
+  `#[non_exhaustive]`. The conformance suite gains
+  `assert_blocked_deterministic` and `assert_partition`, which checks an
+  engine's own enabled and blocked lists against the contract edge by edge,
+  by position (with every precondition holding, enabled equals
+  `legal_moves`). `ClockOrder::reached_sets` refuses a shape of more than
+  31 coordinates. Tests
   now cover `ClockOrder`, `reached_sets`, `guard_satisfied` and
   `resolve_coord`; the mislabelled "unresolved guard" test is renamed and a
   real unresolved case added. `sem-os-walk` joins the layering, dependency,

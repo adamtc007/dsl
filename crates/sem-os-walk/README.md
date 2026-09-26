@@ -6,5 +6,11 @@ it ([`walk`]). Domain-free — no field of any one domain's own piece appears he
 own [`expand::Expanded`] from its own board/region model and maps [`walk::Step`] into its own richer
 move type at the boundary.
 
+What a piece is blocked on: [`walk::blocked_on`] names, for every edge out of its node not enabled for
+the caller, why — a coordinate the clock has not reached, another party's move, a precondition the
+domain's own evaluator says fails or cannot answer, or a permanent reason ([`walk::BlockedOn`]);
+[`walk::enabled_moves`] is its complement. [`conformance::assert_partition`] checks an engine's own
+view of a node against the contract, edge by edge.
+
 First consumer: `corporate-actions-engine`'s `ca-fact` crate (extracted from `crates/ca-fact/src/{model,expand,walk}.rs`,
 C0.3, 2026-09-18) — see that repo's `docs/eop/receipts/C0.3.md` for the extraction's own record.
