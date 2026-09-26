@@ -4,6 +4,7 @@
 
 use std::collections::BTreeSet;
 
+use crate::dialect::Pred;
 use crate::expand::{Expanded, GuardKind, XEdge};
 
 /// The clock partial order, transitively closed: `(earlier, later)`.
@@ -152,5 +153,104 @@ pub fn legal_entry_moves(x: &Expanded, reached: &BTreeSet<String>, role: &str) -
     available_entry(x, reached, role)
         .into_iter()
         .map(Step::from)
+        .collect()
+}
+
+/// Why an edge out of a piece's node is on the board but not enabled for the caller now — what the
+/// piece is blocked on. The walk's answer, domain-free: a coordinate is a name, a party is a role, a
+/// precondition is the dialect's own [`Pred`], evaluated by the domain's callback.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum BlockedOn {
+    /// `reached c`, and `c` is not reached yet — clock-shaped: the edge waits on the clock.
+    Awaits(String),
+    /// `before c`, and `c` is reached — too late; no later reached-set enables it again.
+    Passed(String),
+    /// `has c`, and `c` is not in the board's clock-shape.
+    NotInShape(String),
+    /// the guard names a binding the board does not resolve.
+    Unbound(String),
+    /// the edge is another party's move: its roles, none of them the caller's — party-shaped.
+    Party(Vec<String>),
+    /// a precondition the domain's evaluator says does not hold.
+    Pre(Pred),
+}
+
+/// One edge out of the node that is not enabled for the caller, with every reason, in the order the
+/// guard, the roles and the preconditions are declared.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Blocked {
+    pub step: Step,
+    pub on: Vec<BlockedOn>,
+}
+
+/// Every reason `e` is not enabled for `role` under `reached`; empty when it is enabled. `holds`
+/// answers a precondition of the edge (the domain reads its own facts; this crate never does).
+fn reasons(
+    x: &Expanded,
+    e: &XEdge,
+    reached: &BTreeSet<String>,
+    role: &str,
+    holds: &dyn Fn(&XEdge, &Pred) -> bool,
+) -> Vec<BlockedOn> {
+    let mut on: Vec<BlockedOn> = e
+        .guard
+        .iter()
+        .filter(|(k, c)| !ClockOrder::guard_satisfied(x, &[(*k, c.clone())], reached))
+        .map(|(k, c)| match (k, c) {
+            (_, Err(b)) => BlockedOn::Unbound(b.clone()),
+            (GuardKind::Reached, Ok(c)) => BlockedOn::Awaits(c.clone()),
+            (GuardKind::Before, Ok(c)) => BlockedOn::Passed(c.clone()),
+            (GuardKind::Has, Ok(c)) => BlockedOn::NotInShape(c.clone()),
+        })
+        .collect();
+    if !e.edge.roles.iter().any(|r| r == role) {
+        on.push(BlockedOn::Party(e.edge.roles.clone()));
+    }
+    on.extend(
+        e.edge
+            .pre
+            .iter()
+            .filter(|p| !holds(e, p))
+            .cloned()
+            .map(BlockedOn::Pre),
+    );
+    on
+}
+
+/// The steps out of `node` enabled for `role` under `reached`: guard satisfied, role listed, and every
+/// precondition holding by `holds`. With a `holds` that always answers `true` this is [`legal_moves`].
+pub fn enabled_moves(
+    x: &Expanded,
+    node: &str,
+    reached: &BTreeSet<String>,
+    role: &str,
+    holds: &dyn Fn(&XEdge, &Pred) -> bool,
+) -> Vec<Step> {
+    x.out_edges(node)
+        .filter(|e| reasons(x, e, reached, role, holds).is_empty())
+        .map(Step::from)
+        .collect()
+}
+
+/// `blocked_on(predicate)`: every edge out of `node` that is on the board but not enabled for `role`
+/// under `reached`, each with what it is blocked on — the clock (`Awaits`), another party (`Party`), a
+/// precondition (`Pre`), or a guard that can no longer hold. Every edge out of `node` is in exactly one
+/// of [`enabled_moves`] and this list (the conformance suite's partition property). Ordered as the
+/// board declares its edges.
+pub fn blocked_on(
+    x: &Expanded,
+    node: &str,
+    reached: &BTreeSet<String>,
+    role: &str,
+    holds: &dyn Fn(&XEdge, &Pred) -> bool,
+) -> Vec<Blocked> {
+    x.out_edges(node)
+        .filter_map(|e| {
+            let on = reasons(x, e, reached, role, holds);
+            (!on.is_empty()).then(|| Blocked {
+                step: Step::from(e),
+                on,
+            })
+        })
         .collect()
 }

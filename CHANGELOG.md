@@ -8,6 +8,19 @@ The workspace follows Semantic Versioning subject to the pre-1.0 rules in
 
 ### Added
 
+- `sem-os-walk`: `blocked_on` — every edge out of a piece's node that is not
+  enabled for the caller, with what it is blocked on (`BlockedOn`: a coordinate
+  not yet reached, a `before` coordinate passed, a coordinate not in the shape,
+  an unresolved binding, another party's roles, or a precondition the domain's
+  own evaluator says fails) — and `enabled_moves`, its complement. The
+  conformance suite gains `assert_blocked_deterministic` and
+  `assert_partition` (every edge out of a node is enabled or blocked, never
+  both; with every precondition holding, enabled equals `legal_moves`). Tests
+  now cover `ClockOrder`, `reached_sets`, `guard_satisfied` and
+  `resolve_coord`; the mislabelled "unresolved guard" test is renamed and a
+  real unresolved case added. `sem-os-walk` joins the layering, dependency,
+  package and public-api gates and the 1.95 CI checks (EOP-PLAN-CA-GAME-001
+  C4.8.5, CA C4.8b.2 (1); CA ledger L242).
 - Relocate the unified DSL atom grammar crates `dsl-diagnostics`,
   `dsl-parser`, `dsl-atoms` and `dsl-ast` into this workspace as publishable
   crates (EOP-PLAN-CA-REUSE-001 DSL-T1). The atom kind catalogue is now data:

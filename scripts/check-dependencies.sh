@@ -65,6 +65,7 @@ assert_allowed_workspace_dependencies semantic-pack dsl_types semantic-decision-
 assert_allowed_workspace_dependencies semantic-embedder
 assert_allowed_workspace_dependencies sem-os-id
 assert_allowed_workspace_dependencies sem-os-append-store
+assert_allowed_workspace_dependencies sem-os-walk
 assert_allowed_workspace_dependencies dsl-core dsl_types
 assert_allowed_workspace_dependencies dsl-diagnostics
 assert_allowed_workspace_dependencies dsl-parser dsl-diagnostics

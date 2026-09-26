@@ -55,8 +55,10 @@ fn a_role_permitted_edge_with_no_guard_is_available() {
     assert_eq!(steps[0].to, "Closed");
 }
 
+/// The fixture's guard is `reached never`: a resolved coordinate that is simply not reached (L242: this
+/// test was named for an unresolved guard; the unresolved case is the next one).
 #[test]
-fn an_unresolved_guard_is_never_satisfied() {
+fn an_unreached_guard_is_not_satisfied() {
     let x = fixture();
     let reached: BTreeSet<String> = BTreeSet::new();
     assert!(available(&x, "Open", &reached, "ops").is_empty());
@@ -85,4 +87,14 @@ fn the_walk_is_deterministic() {
     let reached: BTreeSet<String> = BTreeSet::new();
     conformance::assert_deterministic(&x, "Open", &reached, "ops");
     conformance::assert_entry_deterministic(&x, &reached, "ops");
+}
+
+#[test]
+fn an_unresolved_guard_is_never_satisfied() {
+    let mut x = fixture();
+    x.edges[0].guard = vec![(GuardKind::Reached, Err("coord-binding".to_owned()))];
+    let reached: BTreeSet<String> = ["coord-binding".to_owned()].into_iter().collect();
+    assert!(available(&x, "Open", &reached, "ops").is_empty());
+    x.edges[0].guard = vec![(GuardKind::Before, Err("coord-binding".to_owned()))];
+    assert!(available(&x, "Open", &BTreeSet::new(), "ops").is_empty());
 }

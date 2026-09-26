@@ -9,7 +9,7 @@ set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
 
-crates=(dsl-diagnostics dsl-parser dsl-atoms dsl-ast sem-os-id sem-os-append-store)
+crates=(dsl-diagnostics dsl-parser dsl-atoms dsl-ast sem-os-id sem-os-append-store sem-os-walk)
 update=0
 if [ "${1:-}" = "--update" ]; then
   update=1

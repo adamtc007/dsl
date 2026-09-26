@@ -54,6 +54,8 @@ jobs:
       - run: cargo +1.95 check -p sem-os-id --all-features --locked
       - run: cargo +1.95 check -p sem-os-append-store --locked
       - run: cargo +1.95 check -p sem-os-append-store --features conformance --locked
+      - run: cargo +1.95 check -p sem-os-walk --locked
+      - run: cargo +1.95 check -p sem-os-walk --all-features --locked
 
   boundaries:
     runs-on: ubuntu-latest

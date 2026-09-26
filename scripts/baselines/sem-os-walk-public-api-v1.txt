@@ -1,0 +1,759 @@
+pub mod sem_os_walk
+pub mod sem_os_walk::conformance
+pub fn sem_os_walk::conformance::assert_blocked_deterministic(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &dyn core::ops::function::Fn(&sem_os_walk::expand::XEdge, &sem_os_walk::dialect::Pred) -> bool)
+pub fn sem_os_walk::conformance::assert_deterministic(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str)
+pub fn sem_os_walk::conformance::assert_entry_deterministic(&sem_os_walk::expand::Expanded, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str)
+pub fn sem_os_walk::conformance::assert_partition(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &dyn core::ops::function::Fn(&sem_os_walk::expand::XEdge, &sem_os_walk::dialect::Pred) -> bool)
+pub mod sem_os_walk::dialect
+pub enum sem_os_walk::dialect::BindValue
+pub sem_os_walk::dialect::BindValue::Map(alloc::collections::btree::map::BTreeMap<alloc::string::String, sem_os_walk::dialect::BindValue>)
+pub sem_os_walk::dialect::BindValue::Nil
+pub sem_os_walk::dialect::BindValue::Se(sem_os_walk::dialect::Se)
+pub sem_os_walk::dialect::BindValue::Symbol(alloc::string::String)
+impl core::clone::Clone for sem_os_walk::dialect::BindValue
+pub fn sem_os_walk::dialect::BindValue::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::BindValue
+impl core::cmp::PartialEq for sem_os_walk::dialect::BindValue
+pub fn sem_os_walk::dialect::BindValue::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::BindValue
+pub fn sem_os_walk::dialect::BindValue::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::BindValue
+impl core::marker::Freeze for sem_os_walk::dialect::BindValue
+impl core::marker::Send for sem_os_walk::dialect::BindValue
+impl core::marker::Sync for sem_os_walk::dialect::BindValue
+impl core::marker::Unpin for sem_os_walk::dialect::BindValue
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::BindValue
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::BindValue
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::BindValue
+pub enum sem_os_walk::dialect::Cmp
+pub sem_os_walk::dialect::Cmp::Above
+pub sem_os_walk::dialect::Cmp::Below
+pub sem_os_walk::dialect::Cmp::Is
+impl core::clone::Clone for sem_os_walk::dialect::Cmp
+pub fn sem_os_walk::dialect::Cmp::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::Cmp
+impl core::cmp::PartialEq for sem_os_walk::dialect::Cmp
+pub fn sem_os_walk::dialect::Cmp::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::Cmp
+pub fn sem_os_walk::dialect::Cmp::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::Cmp
+impl core::marker::Freeze for sem_os_walk::dialect::Cmp
+impl core::marker::Send for sem_os_walk::dialect::Cmp
+impl core::marker::Sync for sem_os_walk::dialect::Cmp
+impl core::marker::Unpin for sem_os_walk::dialect::Cmp
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::Cmp
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::Cmp
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::Cmp
+pub enum sem_os_walk::dialect::Coord
+pub sem_os_walk::dialect::Coord::Bound(alloc::string::String)
+pub sem_os_walk::dialect::Coord::Named(alloc::string::String)
+impl core::clone::Clone for sem_os_walk::dialect::Coord
+pub fn sem_os_walk::dialect::Coord::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::Coord
+impl core::cmp::PartialEq for sem_os_walk::dialect::Coord
+pub fn sem_os_walk::dialect::Coord::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::Coord
+pub fn sem_os_walk::dialect::Coord::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::Coord
+impl core::marker::Freeze for sem_os_walk::dialect::Coord
+impl core::marker::Send for sem_os_walk::dialect::Coord
+impl core::marker::Sync for sem_os_walk::dialect::Coord
+impl core::marker::Unpin for sem_os_walk::dialect::Coord
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::Coord
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::Coord
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::Coord
+pub enum sem_os_walk::dialect::From
+pub sem_os_walk::dialect::From::Any
+pub sem_os_walk::dialect::From::Entry
+pub sem_os_walk::dialect::From::Incident
+pub sem_os_walk::dialect::From::Nodes(alloc::vec::Vec<alloc::string::String>)
+impl core::clone::Clone for sem_os_walk::dialect::From
+pub fn sem_os_walk::dialect::From::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::From
+impl core::cmp::PartialEq for sem_os_walk::dialect::From
+pub fn sem_os_walk::dialect::From::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::From
+pub fn sem_os_walk::dialect::From::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::From
+impl core::marker::Freeze for sem_os_walk::dialect::From
+impl core::marker::Send for sem_os_walk::dialect::From
+impl core::marker::Sync for sem_os_walk::dialect::From
+impl core::marker::Unpin for sem_os_walk::dialect::From
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::From
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::From
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::From
+pub enum sem_os_walk::dialect::Guard
+pub sem_os_walk::dialect::Guard::Before(sem_os_walk::dialect::Coord)
+pub sem_os_walk::dialect::Guard::Has(sem_os_walk::dialect::Coord)
+pub sem_os_walk::dialect::Guard::Reached(sem_os_walk::dialect::Coord)
+impl core::clone::Clone for sem_os_walk::dialect::Guard
+pub fn sem_os_walk::dialect::Guard::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::Guard
+impl core::cmp::PartialEq for sem_os_walk::dialect::Guard
+pub fn sem_os_walk::dialect::Guard::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::Guard
+pub fn sem_os_walk::dialect::Guard::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::Guard
+impl core::marker::Freeze for sem_os_walk::dialect::Guard
+impl core::marker::Send for sem_os_walk::dialect::Guard
+impl core::marker::Sync for sem_os_walk::dialect::Guard
+impl core::marker::Unpin for sem_os_walk::dialect::Guard
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::Guard
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::Guard
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::Guard
+pub enum sem_os_walk::dialect::Pred
+pub sem_os_walk::dialect::Pred::Count
+pub sem_os_walk::dialect::Pred::Count::is: i64
+pub sem_os_walk::dialect::Pred::Count::kind: alloc::string::String
+pub sem_os_walk::dialect::Pred::Count::not_in: alloc::vec::Vec<alloc::string::String>
+pub sem_os_walk::dialect::Pred::Declared(alloc::string::String)
+pub sem_os_walk::dialect::Pred::Fact
+pub sem_os_walk::dialect::Pred::Fact::cmp: core::option::Option<(sem_os_walk::dialect::Cmp, alloc::string::String)>
+pub sem_os_walk::dialect::Pred::Fact::name: alloc::string::String
+pub sem_os_walk::dialect::Pred::Fold(alloc::string::String)
+pub sem_os_walk::dialect::Pred::Not(alloc::boxed::Box<sem_os_walk::dialect::Pred>)
+pub sem_os_walk::dialect::Pred::ParentNode(alloc::vec::Vec<alloc::string::String>)
+pub sem_os_walk::dialect::Pred::Reached(alloc::string::String)
+impl sem_os_walk::dialect::Pred
+pub fn sem_os_walk::dialect::Pred::count_kinds(&self, &mut alloc::vec::Vec<alloc::string::String>)
+pub fn sem_os_walk::dialect::Pred::folds(&self, &mut alloc::vec::Vec<alloc::string::String>)
+impl core::clone::Clone for sem_os_walk::dialect::Pred
+pub fn sem_os_walk::dialect::Pred::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::Pred
+impl core::cmp::PartialEq for sem_os_walk::dialect::Pred
+pub fn sem_os_walk::dialect::Pred::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::Pred
+pub fn sem_os_walk::dialect::Pred::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::Pred
+impl core::marker::Freeze for sem_os_walk::dialect::Pred
+impl core::marker::Send for sem_os_walk::dialect::Pred
+impl core::marker::Sync for sem_os_walk::dialect::Pred
+impl core::marker::Unpin for sem_os_walk::dialect::Pred
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::Pred
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::Pred
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::Pred
+pub enum sem_os_walk::dialect::Se
+pub sem_os_walk::dialect::Se::Bind(alloc::string::String)
+pub sem_os_walk::dialect::Se::Each
+pub sem_os_walk::dialect::Se::Each::kind: alloc::string::String
+pub sem_os_walk::dialect::Se::Each::word: alloc::boxed::Box<sem_os_walk::dialect::Se>
+pub sem_os_walk::dialect::Se::EachFold
+pub sem_os_walk::dialect::Se::EachFold::fold: alloc::string::String
+pub sem_os_walk::dialect::Se::EachFold::word: alloc::boxed::Box<sem_os_walk::dialect::Se>
+pub sem_os_walk::dialect::Se::Par(alloc::vec::Vec<sem_os_walk::dialect::Se>)
+pub sem_os_walk::dialect::Se::Seq(alloc::vec::Vec<sem_os_walk::dialect::Se>)
+pub sem_os_walk::dialect::Se::Word(alloc::string::String)
+impl sem_os_walk::dialect::Se
+pub fn sem_os_walk::dialect::Se::binds(&self, &mut alloc::vec::Vec<alloc::string::String>)
+pub fn sem_os_walk::dialect::Se::each_folds(&self, &mut alloc::vec::Vec<alloc::string::String>)
+pub fn sem_os_walk::dialect::Se::each_kinds(&self, &mut alloc::vec::Vec<alloc::string::String>)
+pub fn sem_os_walk::dialect::Se::words(&self, &mut alloc::vec::Vec<alloc::string::String>)
+impl core::clone::Clone for sem_os_walk::dialect::Se
+pub fn sem_os_walk::dialect::Se::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::Se
+impl core::cmp::PartialEq for sem_os_walk::dialect::Se
+pub fn sem_os_walk::dialect::Se::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::Se
+pub fn sem_os_walk::dialect::Se::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::Se
+impl core::marker::Freeze for sem_os_walk::dialect::Se
+impl core::marker::Send for sem_os_walk::dialect::Se
+impl core::marker::Sync for sem_os_walk::dialect::Se
+impl core::marker::Unpin for sem_os_walk::dialect::Se
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::Se
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::Se
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::Se
+pub enum sem_os_walk::dialect::To
+pub sem_os_walk::dialect::To::Incident
+pub sem_os_walk::dialect::To::Node(alloc::string::String)
+pub sem_os_walk::dialect::To::Prior
+pub sem_os_walk::dialect::To::Same
+impl core::clone::Clone for sem_os_walk::dialect::To
+pub fn sem_os_walk::dialect::To::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::To
+impl core::cmp::PartialEq for sem_os_walk::dialect::To
+pub fn sem_os_walk::dialect::To::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::To
+pub fn sem_os_walk::dialect::To::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::To
+impl core::marker::Freeze for sem_os_walk::dialect::To
+impl core::marker::Send for sem_os_walk::dialect::To
+impl core::marker::Sync for sem_os_walk::dialect::To
+impl core::marker::Unpin for sem_os_walk::dialect::To
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::To
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::To
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::To
+pub struct sem_os_walk::dialect::Edge
+pub sem_os_walk::dialect::Edge::coord: core::option::Option<sem_os_walk::dialect::Coord>
+pub sem_os_walk::dialect::Edge::from: sem_os_walk::dialect::From
+pub sem_os_walk::dialect::Edge::guard: alloc::vec::Vec<sem_os_walk::dialect::Guard>
+pub sem_os_walk::dialect::Edge::id: alloc::string::String
+pub sem_os_walk::dialect::Edge::pre: alloc::vec::Vec<sem_os_walk::dialect::Pred>
+pub sem_os_walk::dialect::Edge::region: core::option::Option<alloc::string::String>
+pub sem_os_walk::dialect::Edge::roles: alloc::vec::Vec<alloc::string::String>
+pub sem_os_walk::dialect::Edge::se: core::option::Option<sem_os_walk::dialect::Se>
+pub sem_os_walk::dialect::Edge::to: sem_os_walk::dialect::To
+pub sem_os_walk::dialect::Edge::tx: alloc::vec::Vec<alloc::string::String>
+pub sem_os_walk::dialect::Edge::word: alloc::string::String
+impl core::clone::Clone for sem_os_walk::dialect::Edge
+pub fn sem_os_walk::dialect::Edge::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::Edge
+impl core::cmp::PartialEq for sem_os_walk::dialect::Edge
+pub fn sem_os_walk::dialect::Edge::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::Edge
+pub fn sem_os_walk::dialect::Edge::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::Edge
+impl core::marker::Freeze for sem_os_walk::dialect::Edge
+impl core::marker::Send for sem_os_walk::dialect::Edge
+impl core::marker::Sync for sem_os_walk::dialect::Edge
+impl core::marker::Unpin for sem_os_walk::dialect::Edge
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::Edge
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::Edge
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::Edge
+pub mod sem_os_walk::expand
+pub enum sem_os_walk::expand::GuardKind
+pub sem_os_walk::expand::GuardKind::Before
+pub sem_os_walk::expand::GuardKind::Has
+pub sem_os_walk::expand::GuardKind::Reached
+impl core::clone::Clone for sem_os_walk::expand::GuardKind
+pub fn sem_os_walk::expand::GuardKind::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::expand::GuardKind
+impl core::cmp::PartialEq for sem_os_walk::expand::GuardKind
+pub fn sem_os_walk::expand::GuardKind::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::expand::GuardKind
+pub fn sem_os_walk::expand::GuardKind::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for sem_os_walk::expand::GuardKind
+impl core::marker::StructuralPartialEq for sem_os_walk::expand::GuardKind
+impl core::marker::Freeze for sem_os_walk::expand::GuardKind
+impl core::marker::Send for sem_os_walk::expand::GuardKind
+impl core::marker::Sync for sem_os_walk::expand::GuardKind
+impl core::marker::Unpin for sem_os_walk::expand::GuardKind
+impl core::marker::UnsafeUnpin for sem_os_walk::expand::GuardKind
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::expand::GuardKind
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::expand::GuardKind
+pub struct sem_os_walk::expand::Expanded
+pub sem_os_walk::expand::Expanded::bind: alloc::collections::btree::map::BTreeMap<alloc::string::String, sem_os_walk::dialect::BindValue>
+pub sem_os_walk::expand::Expanded::clock_shape: alloc::vec::Vec<alloc::string::String>
+pub sem_os_walk::expand::Expanded::edges: alloc::vec::Vec<sem_os_walk::expand::XEdge>
+pub sem_os_walk::expand::Expanded::id: alloc::string::String
+pub sem_os_walk::expand::Expanded::kind: alloc::string::String
+pub sem_os_walk::expand::Expanded::nodes: alloc::vec::Vec<alloc::string::String>
+pub sem_os_walk::expand::Expanded::outcome: alloc::vec::Vec<alloc::string::String>
+pub sem_os_walk::expand::Expanded::parent: alloc::string::String
+pub sem_os_walk::expand::Expanded::terminal: alloc::vec::Vec<alloc::string::String>
+impl sem_os_walk::expand::Expanded
+pub fn sem_os_walk::expand::Expanded::entry_edges(&self) -> impl core::iter::traits::iterator::Iterator<Item = &sem_os_walk::expand::XEdge>
+pub fn sem_os_walk::expand::Expanded::is_outcome(&self, &str) -> bool
+pub fn sem_os_walk::expand::Expanded::is_terminal(&self, &str) -> bool
+pub fn sem_os_walk::expand::Expanded::label(&self) -> alloc::string::String
+pub fn sem_os_walk::expand::Expanded::out_edges<'a>(&'a self, &'a str) -> impl core::iter::traits::iterator::Iterator<Item = &'a sem_os_walk::expand::XEdge> + 'a
+impl core::clone::Clone for sem_os_walk::expand::Expanded
+pub fn sem_os_walk::expand::Expanded::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::expand::Expanded
+impl core::cmp::PartialEq for sem_os_walk::expand::Expanded
+pub fn sem_os_walk::expand::Expanded::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::expand::Expanded
+pub fn sem_os_walk::expand::Expanded::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::expand::Expanded
+impl core::marker::Freeze for sem_os_walk::expand::Expanded
+impl core::marker::Send for sem_os_walk::expand::Expanded
+impl core::marker::Sync for sem_os_walk::expand::Expanded
+impl core::marker::Unpin for sem_os_walk::expand::Expanded
+impl core::marker::UnsafeUnpin for sem_os_walk::expand::Expanded
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::expand::Expanded
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::expand::Expanded
+pub struct sem_os_walk::expand::XEdge
+pub sem_os_walk::expand::XEdge::edge: sem_os_walk::dialect::Edge
+pub sem_os_walk::expand::XEdge::from: core::option::Option<alloc::string::String>
+pub sem_os_walk::expand::XEdge::guard: alloc::vec::Vec<(sem_os_walk::expand::GuardKind, core::result::Result<alloc::string::String, alloc::string::String>)>
+pub sem_os_walk::expand::XEdge::id: alloc::string::String
+pub sem_os_walk::expand::XEdge::to: alloc::string::String
+impl core::clone::Clone for sem_os_walk::expand::XEdge
+pub fn sem_os_walk::expand::XEdge::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::expand::XEdge
+impl core::cmp::PartialEq for sem_os_walk::expand::XEdge
+pub fn sem_os_walk::expand::XEdge::eq(&self, &Self) -> bool
+impl core::convert::From<&sem_os_walk::expand::XEdge> for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::from(&sem_os_walk::expand::XEdge) -> Self
+impl core::fmt::Debug for sem_os_walk::expand::XEdge
+pub fn sem_os_walk::expand::XEdge::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::expand::XEdge
+impl core::marker::Freeze for sem_os_walk::expand::XEdge
+impl core::marker::Send for sem_os_walk::expand::XEdge
+impl core::marker::Sync for sem_os_walk::expand::XEdge
+impl core::marker::Unpin for sem_os_walk::expand::XEdge
+impl core::marker::UnsafeUnpin for sem_os_walk::expand::XEdge
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::expand::XEdge
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::expand::XEdge
+pub const sem_os_walk::expand::INCIDENT: &str
+pub fn sem_os_walk::expand::resolve_coord(&alloc::collections::btree::map::BTreeMap<alloc::string::String, sem_os_walk::dialect::BindValue>, &sem_os_walk::dialect::Coord) -> core::result::Result<alloc::string::String, alloc::string::String>
+pub mod sem_os_walk::walk
+pub enum sem_os_walk::walk::BlockedOn
+pub sem_os_walk::walk::BlockedOn::Awaits(alloc::string::String)
+pub sem_os_walk::walk::BlockedOn::NotInShape(alloc::string::String)
+pub sem_os_walk::walk::BlockedOn::Party(alloc::vec::Vec<alloc::string::String>)
+pub sem_os_walk::walk::BlockedOn::Passed(alloc::string::String)
+pub sem_os_walk::walk::BlockedOn::Pre(sem_os_walk::dialect::Pred)
+pub sem_os_walk::walk::BlockedOn::Unbound(alloc::string::String)
+impl core::clone::Clone for sem_os_walk::walk::BlockedOn
+pub fn sem_os_walk::walk::BlockedOn::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::walk::BlockedOn
+impl core::cmp::PartialEq for sem_os_walk::walk::BlockedOn
+pub fn sem_os_walk::walk::BlockedOn::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::walk::BlockedOn
+pub fn sem_os_walk::walk::BlockedOn::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::walk::BlockedOn
+impl core::marker::Freeze for sem_os_walk::walk::BlockedOn
+impl core::marker::Send for sem_os_walk::walk::BlockedOn
+impl core::marker::Sync for sem_os_walk::walk::BlockedOn
+impl core::marker::Unpin for sem_os_walk::walk::BlockedOn
+impl core::marker::UnsafeUnpin for sem_os_walk::walk::BlockedOn
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::walk::BlockedOn
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::walk::BlockedOn
+pub struct sem_os_walk::walk::Blocked
+pub sem_os_walk::walk::Blocked::on: alloc::vec::Vec<sem_os_walk::walk::BlockedOn>
+pub sem_os_walk::walk::Blocked::step: sem_os_walk::walk::Step
+impl core::clone::Clone for sem_os_walk::walk::Blocked
+pub fn sem_os_walk::walk::Blocked::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::walk::Blocked
+impl core::cmp::PartialEq for sem_os_walk::walk::Blocked
+pub fn sem_os_walk::walk::Blocked::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::walk::Blocked
+pub fn sem_os_walk::walk::Blocked::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::walk::Blocked
+impl core::marker::Freeze for sem_os_walk::walk::Blocked
+impl core::marker::Send for sem_os_walk::walk::Blocked
+impl core::marker::Sync for sem_os_walk::walk::Blocked
+impl core::marker::Unpin for sem_os_walk::walk::Blocked
+impl core::marker::UnsafeUnpin for sem_os_walk::walk::Blocked
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::walk::Blocked
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::walk::Blocked
+pub struct sem_os_walk::walk::ClockOrder
+impl sem_os_walk::walk::ClockOrder
+pub fn sem_os_walk::walk::ClockOrder::guard_satisfied(&sem_os_walk::expand::Expanded, &[(sem_os_walk::expand::GuardKind, core::result::Result<alloc::string::String, alloc::string::String>)], &alloc::collections::btree::set::BTreeSet<alloc::string::String>) -> bool
+pub fn sem_os_walk::walk::ClockOrder::is_before(&self, &str, &str) -> bool
+pub fn sem_os_walk::walk::ClockOrder::new(&[(alloc::string::String, alloc::string::String)]) -> Self
+pub fn sem_os_walk::walk::ClockOrder::reached_sets(&self, &[alloc::string::String]) -> alloc::vec::Vec<alloc::collections::btree::set::BTreeSet<alloc::string::String>>
+impl core::marker::Freeze for sem_os_walk::walk::ClockOrder
+impl core::marker::Send for sem_os_walk::walk::ClockOrder
+impl core::marker::Sync for sem_os_walk::walk::ClockOrder
+impl core::marker::Unpin for sem_os_walk::walk::ClockOrder
+impl core::marker::UnsafeUnpin for sem_os_walk::walk::ClockOrder
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::walk::ClockOrder
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::walk::ClockOrder
+pub struct sem_os_walk::walk::Step
+pub sem_os_walk::walk::Step::edge: alloc::string::String
+pub sem_os_walk::walk::Step::roles: alloc::vec::Vec<alloc::string::String>
+pub sem_os_walk::walk::Step::to: alloc::string::String
+pub sem_os_walk::walk::Step::word: alloc::string::String
+impl core::clone::Clone for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::walk::Step
+impl core::cmp::Ord for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::cmp(&self, &Self) -> core::cmp::Ordering
+impl core::cmp::PartialEq for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::eq(&self, &Self) -> bool
+impl core::cmp::PartialOrd for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::partial_cmp(&self, &Self) -> core::option::Option<core::cmp::Ordering>
+impl core::convert::From<&sem_os_walk::expand::XEdge> for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::from(&sem_os_walk::expand::XEdge) -> Self
+impl core::fmt::Debug for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::walk::Step
+impl serde_core::ser::Serialize for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::arbitrary(&mut arbitrary::unstructured::Unstructured<'arbitrary>) -> arbitrary::error::Result<Self>
+pub fn sem_os_walk::walk::Step::arbitrary_take_rest(arbitrary::unstructured::Unstructured<'arbitrary>) -> arbitrary::error::Result<Self>
+pub fn sem_os_walk::walk::Step::size_hint(usize) -> (usize, core::option::Option<usize>)
+pub fn sem_os_walk::walk::Step::try_size_hint(usize) -> core::result::Result<(usize, core::option::Option<usize>), arbitrary::MaxRecursionReached>
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_walk::walk::Step
+impl core::marker::Send for sem_os_walk::walk::Step
+impl core::marker::Sync for sem_os_walk::walk::Step
+impl core::marker::Unpin for sem_os_walk::walk::Step
+impl core::marker::UnsafeUnpin for sem_os_walk::walk::Step
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::walk::Step
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::available<'a>(&'a sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str) -> alloc::vec::Vec<&'a sem_os_walk::expand::XEdge>
+pub fn sem_os_walk::walk::available_entry<'a>(&'a sem_os_walk::expand::Expanded, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str) -> alloc::vec::Vec<&'a sem_os_walk::expand::XEdge>
+pub fn sem_os_walk::walk::blocked_on(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &dyn core::ops::function::Fn(&sem_os_walk::expand::XEdge, &sem_os_walk::dialect::Pred) -> bool) -> alloc::vec::Vec<sem_os_walk::walk::Blocked>
+pub fn sem_os_walk::walk::enabled_moves(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &dyn core::ops::function::Fn(&sem_os_walk::expand::XEdge, &sem_os_walk::dialect::Pred) -> bool) -> alloc::vec::Vec<sem_os_walk::walk::Step>
+pub fn sem_os_walk::walk::legal_entry_moves(&sem_os_walk::expand::Expanded, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str) -> alloc::vec::Vec<sem_os_walk::walk::Step>
+pub fn sem_os_walk::walk::legal_moves(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str) -> alloc::vec::Vec<sem_os_walk::walk::Step>
+pub enum sem_os_walk::BindValue
+pub sem_os_walk::BindValue::Map(alloc::collections::btree::map::BTreeMap<alloc::string::String, sem_os_walk::dialect::BindValue>)
+pub sem_os_walk::BindValue::Nil
+pub sem_os_walk::BindValue::Se(sem_os_walk::dialect::Se)
+pub sem_os_walk::BindValue::Symbol(alloc::string::String)
+impl core::clone::Clone for sem_os_walk::dialect::BindValue
+pub fn sem_os_walk::dialect::BindValue::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::BindValue
+impl core::cmp::PartialEq for sem_os_walk::dialect::BindValue
+pub fn sem_os_walk::dialect::BindValue::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::BindValue
+pub fn sem_os_walk::dialect::BindValue::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::BindValue
+impl core::marker::Freeze for sem_os_walk::dialect::BindValue
+impl core::marker::Send for sem_os_walk::dialect::BindValue
+impl core::marker::Sync for sem_os_walk::dialect::BindValue
+impl core::marker::Unpin for sem_os_walk::dialect::BindValue
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::BindValue
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::BindValue
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::BindValue
+pub enum sem_os_walk::BlockedOn
+pub sem_os_walk::BlockedOn::Awaits(alloc::string::String)
+pub sem_os_walk::BlockedOn::NotInShape(alloc::string::String)
+pub sem_os_walk::BlockedOn::Party(alloc::vec::Vec<alloc::string::String>)
+pub sem_os_walk::BlockedOn::Passed(alloc::string::String)
+pub sem_os_walk::BlockedOn::Pre(sem_os_walk::dialect::Pred)
+pub sem_os_walk::BlockedOn::Unbound(alloc::string::String)
+impl core::clone::Clone for sem_os_walk::walk::BlockedOn
+pub fn sem_os_walk::walk::BlockedOn::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::walk::BlockedOn
+impl core::cmp::PartialEq for sem_os_walk::walk::BlockedOn
+pub fn sem_os_walk::walk::BlockedOn::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::walk::BlockedOn
+pub fn sem_os_walk::walk::BlockedOn::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::walk::BlockedOn
+impl core::marker::Freeze for sem_os_walk::walk::BlockedOn
+impl core::marker::Send for sem_os_walk::walk::BlockedOn
+impl core::marker::Sync for sem_os_walk::walk::BlockedOn
+impl core::marker::Unpin for sem_os_walk::walk::BlockedOn
+impl core::marker::UnsafeUnpin for sem_os_walk::walk::BlockedOn
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::walk::BlockedOn
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::walk::BlockedOn
+pub enum sem_os_walk::Cmp
+pub sem_os_walk::Cmp::Above
+pub sem_os_walk::Cmp::Below
+pub sem_os_walk::Cmp::Is
+impl core::clone::Clone for sem_os_walk::dialect::Cmp
+pub fn sem_os_walk::dialect::Cmp::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::Cmp
+impl core::cmp::PartialEq for sem_os_walk::dialect::Cmp
+pub fn sem_os_walk::dialect::Cmp::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::Cmp
+pub fn sem_os_walk::dialect::Cmp::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::Cmp
+impl core::marker::Freeze for sem_os_walk::dialect::Cmp
+impl core::marker::Send for sem_os_walk::dialect::Cmp
+impl core::marker::Sync for sem_os_walk::dialect::Cmp
+impl core::marker::Unpin for sem_os_walk::dialect::Cmp
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::Cmp
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::Cmp
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::Cmp
+pub enum sem_os_walk::Coord
+pub sem_os_walk::Coord::Bound(alloc::string::String)
+pub sem_os_walk::Coord::Named(alloc::string::String)
+impl core::clone::Clone for sem_os_walk::dialect::Coord
+pub fn sem_os_walk::dialect::Coord::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::Coord
+impl core::cmp::PartialEq for sem_os_walk::dialect::Coord
+pub fn sem_os_walk::dialect::Coord::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::Coord
+pub fn sem_os_walk::dialect::Coord::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::Coord
+impl core::marker::Freeze for sem_os_walk::dialect::Coord
+impl core::marker::Send for sem_os_walk::dialect::Coord
+impl core::marker::Sync for sem_os_walk::dialect::Coord
+impl core::marker::Unpin for sem_os_walk::dialect::Coord
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::Coord
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::Coord
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::Coord
+pub enum sem_os_walk::From
+pub sem_os_walk::From::Any
+pub sem_os_walk::From::Entry
+pub sem_os_walk::From::Incident
+pub sem_os_walk::From::Nodes(alloc::vec::Vec<alloc::string::String>)
+impl core::clone::Clone for sem_os_walk::dialect::From
+pub fn sem_os_walk::dialect::From::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::From
+impl core::cmp::PartialEq for sem_os_walk::dialect::From
+pub fn sem_os_walk::dialect::From::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::From
+pub fn sem_os_walk::dialect::From::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::From
+impl core::marker::Freeze for sem_os_walk::dialect::From
+impl core::marker::Send for sem_os_walk::dialect::From
+impl core::marker::Sync for sem_os_walk::dialect::From
+impl core::marker::Unpin for sem_os_walk::dialect::From
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::From
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::From
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::From
+pub enum sem_os_walk::Guard
+pub sem_os_walk::Guard::Before(sem_os_walk::dialect::Coord)
+pub sem_os_walk::Guard::Has(sem_os_walk::dialect::Coord)
+pub sem_os_walk::Guard::Reached(sem_os_walk::dialect::Coord)
+impl core::clone::Clone for sem_os_walk::dialect::Guard
+pub fn sem_os_walk::dialect::Guard::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::Guard
+impl core::cmp::PartialEq for sem_os_walk::dialect::Guard
+pub fn sem_os_walk::dialect::Guard::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::Guard
+pub fn sem_os_walk::dialect::Guard::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::Guard
+impl core::marker::Freeze for sem_os_walk::dialect::Guard
+impl core::marker::Send for sem_os_walk::dialect::Guard
+impl core::marker::Sync for sem_os_walk::dialect::Guard
+impl core::marker::Unpin for sem_os_walk::dialect::Guard
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::Guard
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::Guard
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::Guard
+pub enum sem_os_walk::GuardKind
+pub sem_os_walk::GuardKind::Before
+pub sem_os_walk::GuardKind::Has
+pub sem_os_walk::GuardKind::Reached
+impl core::clone::Clone for sem_os_walk::expand::GuardKind
+pub fn sem_os_walk::expand::GuardKind::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::expand::GuardKind
+impl core::cmp::PartialEq for sem_os_walk::expand::GuardKind
+pub fn sem_os_walk::expand::GuardKind::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::expand::GuardKind
+pub fn sem_os_walk::expand::GuardKind::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::Copy for sem_os_walk::expand::GuardKind
+impl core::marker::StructuralPartialEq for sem_os_walk::expand::GuardKind
+impl core::marker::Freeze for sem_os_walk::expand::GuardKind
+impl core::marker::Send for sem_os_walk::expand::GuardKind
+impl core::marker::Sync for sem_os_walk::expand::GuardKind
+impl core::marker::Unpin for sem_os_walk::expand::GuardKind
+impl core::marker::UnsafeUnpin for sem_os_walk::expand::GuardKind
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::expand::GuardKind
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::expand::GuardKind
+pub enum sem_os_walk::Pred
+pub sem_os_walk::Pred::Count
+pub sem_os_walk::Pred::Count::is: i64
+pub sem_os_walk::Pred::Count::kind: alloc::string::String
+pub sem_os_walk::Pred::Count::not_in: alloc::vec::Vec<alloc::string::String>
+pub sem_os_walk::Pred::Declared(alloc::string::String)
+pub sem_os_walk::Pred::Fact
+pub sem_os_walk::Pred::Fact::cmp: core::option::Option<(sem_os_walk::dialect::Cmp, alloc::string::String)>
+pub sem_os_walk::Pred::Fact::name: alloc::string::String
+pub sem_os_walk::Pred::Fold(alloc::string::String)
+pub sem_os_walk::Pred::Not(alloc::boxed::Box<sem_os_walk::dialect::Pred>)
+pub sem_os_walk::Pred::ParentNode(alloc::vec::Vec<alloc::string::String>)
+pub sem_os_walk::Pred::Reached(alloc::string::String)
+impl sem_os_walk::dialect::Pred
+pub fn sem_os_walk::dialect::Pred::count_kinds(&self, &mut alloc::vec::Vec<alloc::string::String>)
+pub fn sem_os_walk::dialect::Pred::folds(&self, &mut alloc::vec::Vec<alloc::string::String>)
+impl core::clone::Clone for sem_os_walk::dialect::Pred
+pub fn sem_os_walk::dialect::Pred::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::Pred
+impl core::cmp::PartialEq for sem_os_walk::dialect::Pred
+pub fn sem_os_walk::dialect::Pred::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::Pred
+pub fn sem_os_walk::dialect::Pred::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::Pred
+impl core::marker::Freeze for sem_os_walk::dialect::Pred
+impl core::marker::Send for sem_os_walk::dialect::Pred
+impl core::marker::Sync for sem_os_walk::dialect::Pred
+impl core::marker::Unpin for sem_os_walk::dialect::Pred
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::Pred
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::Pred
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::Pred
+pub enum sem_os_walk::Se
+pub sem_os_walk::Se::Bind(alloc::string::String)
+pub sem_os_walk::Se::Each
+pub sem_os_walk::Se::Each::kind: alloc::string::String
+pub sem_os_walk::Se::Each::word: alloc::boxed::Box<sem_os_walk::dialect::Se>
+pub sem_os_walk::Se::EachFold
+pub sem_os_walk::Se::EachFold::fold: alloc::string::String
+pub sem_os_walk::Se::EachFold::word: alloc::boxed::Box<sem_os_walk::dialect::Se>
+pub sem_os_walk::Se::Par(alloc::vec::Vec<sem_os_walk::dialect::Se>)
+pub sem_os_walk::Se::Seq(alloc::vec::Vec<sem_os_walk::dialect::Se>)
+pub sem_os_walk::Se::Word(alloc::string::String)
+impl sem_os_walk::dialect::Se
+pub fn sem_os_walk::dialect::Se::binds(&self, &mut alloc::vec::Vec<alloc::string::String>)
+pub fn sem_os_walk::dialect::Se::each_folds(&self, &mut alloc::vec::Vec<alloc::string::String>)
+pub fn sem_os_walk::dialect::Se::each_kinds(&self, &mut alloc::vec::Vec<alloc::string::String>)
+pub fn sem_os_walk::dialect::Se::words(&self, &mut alloc::vec::Vec<alloc::string::String>)
+impl core::clone::Clone for sem_os_walk::dialect::Se
+pub fn sem_os_walk::dialect::Se::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::Se
+impl core::cmp::PartialEq for sem_os_walk::dialect::Se
+pub fn sem_os_walk::dialect::Se::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::Se
+pub fn sem_os_walk::dialect::Se::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::Se
+impl core::marker::Freeze for sem_os_walk::dialect::Se
+impl core::marker::Send for sem_os_walk::dialect::Se
+impl core::marker::Sync for sem_os_walk::dialect::Se
+impl core::marker::Unpin for sem_os_walk::dialect::Se
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::Se
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::Se
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::Se
+pub enum sem_os_walk::To
+pub sem_os_walk::To::Incident
+pub sem_os_walk::To::Node(alloc::string::String)
+pub sem_os_walk::To::Prior
+pub sem_os_walk::To::Same
+impl core::clone::Clone for sem_os_walk::dialect::To
+pub fn sem_os_walk::dialect::To::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::To
+impl core::cmp::PartialEq for sem_os_walk::dialect::To
+pub fn sem_os_walk::dialect::To::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::To
+pub fn sem_os_walk::dialect::To::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::To
+impl core::marker::Freeze for sem_os_walk::dialect::To
+impl core::marker::Send for sem_os_walk::dialect::To
+impl core::marker::Sync for sem_os_walk::dialect::To
+impl core::marker::Unpin for sem_os_walk::dialect::To
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::To
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::To
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::To
+pub struct sem_os_walk::Blocked
+pub sem_os_walk::Blocked::on: alloc::vec::Vec<sem_os_walk::walk::BlockedOn>
+pub sem_os_walk::Blocked::step: sem_os_walk::walk::Step
+impl core::clone::Clone for sem_os_walk::walk::Blocked
+pub fn sem_os_walk::walk::Blocked::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::walk::Blocked
+impl core::cmp::PartialEq for sem_os_walk::walk::Blocked
+pub fn sem_os_walk::walk::Blocked::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::walk::Blocked
+pub fn sem_os_walk::walk::Blocked::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::walk::Blocked
+impl core::marker::Freeze for sem_os_walk::walk::Blocked
+impl core::marker::Send for sem_os_walk::walk::Blocked
+impl core::marker::Sync for sem_os_walk::walk::Blocked
+impl core::marker::Unpin for sem_os_walk::walk::Blocked
+impl core::marker::UnsafeUnpin for sem_os_walk::walk::Blocked
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::walk::Blocked
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::walk::Blocked
+pub struct sem_os_walk::ClockOrder
+impl sem_os_walk::walk::ClockOrder
+pub fn sem_os_walk::walk::ClockOrder::guard_satisfied(&sem_os_walk::expand::Expanded, &[(sem_os_walk::expand::GuardKind, core::result::Result<alloc::string::String, alloc::string::String>)], &alloc::collections::btree::set::BTreeSet<alloc::string::String>) -> bool
+pub fn sem_os_walk::walk::ClockOrder::is_before(&self, &str, &str) -> bool
+pub fn sem_os_walk::walk::ClockOrder::new(&[(alloc::string::String, alloc::string::String)]) -> Self
+pub fn sem_os_walk::walk::ClockOrder::reached_sets(&self, &[alloc::string::String]) -> alloc::vec::Vec<alloc::collections::btree::set::BTreeSet<alloc::string::String>>
+impl core::marker::Freeze for sem_os_walk::walk::ClockOrder
+impl core::marker::Send for sem_os_walk::walk::ClockOrder
+impl core::marker::Sync for sem_os_walk::walk::ClockOrder
+impl core::marker::Unpin for sem_os_walk::walk::ClockOrder
+impl core::marker::UnsafeUnpin for sem_os_walk::walk::ClockOrder
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::walk::ClockOrder
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::walk::ClockOrder
+pub struct sem_os_walk::Edge
+pub sem_os_walk::Edge::coord: core::option::Option<sem_os_walk::dialect::Coord>
+pub sem_os_walk::Edge::from: sem_os_walk::dialect::From
+pub sem_os_walk::Edge::guard: alloc::vec::Vec<sem_os_walk::dialect::Guard>
+pub sem_os_walk::Edge::id: alloc::string::String
+pub sem_os_walk::Edge::pre: alloc::vec::Vec<sem_os_walk::dialect::Pred>
+pub sem_os_walk::Edge::region: core::option::Option<alloc::string::String>
+pub sem_os_walk::Edge::roles: alloc::vec::Vec<alloc::string::String>
+pub sem_os_walk::Edge::se: core::option::Option<sem_os_walk::dialect::Se>
+pub sem_os_walk::Edge::to: sem_os_walk::dialect::To
+pub sem_os_walk::Edge::tx: alloc::vec::Vec<alloc::string::String>
+pub sem_os_walk::Edge::word: alloc::string::String
+impl core::clone::Clone for sem_os_walk::dialect::Edge
+pub fn sem_os_walk::dialect::Edge::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::dialect::Edge
+impl core::cmp::PartialEq for sem_os_walk::dialect::Edge
+pub fn sem_os_walk::dialect::Edge::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::dialect::Edge
+pub fn sem_os_walk::dialect::Edge::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::dialect::Edge
+impl core::marker::Freeze for sem_os_walk::dialect::Edge
+impl core::marker::Send for sem_os_walk::dialect::Edge
+impl core::marker::Sync for sem_os_walk::dialect::Edge
+impl core::marker::Unpin for sem_os_walk::dialect::Edge
+impl core::marker::UnsafeUnpin for sem_os_walk::dialect::Edge
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::Edge
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::Edge
+pub struct sem_os_walk::Expanded
+pub sem_os_walk::Expanded::bind: alloc::collections::btree::map::BTreeMap<alloc::string::String, sem_os_walk::dialect::BindValue>
+pub sem_os_walk::Expanded::clock_shape: alloc::vec::Vec<alloc::string::String>
+pub sem_os_walk::Expanded::edges: alloc::vec::Vec<sem_os_walk::expand::XEdge>
+pub sem_os_walk::Expanded::id: alloc::string::String
+pub sem_os_walk::Expanded::kind: alloc::string::String
+pub sem_os_walk::Expanded::nodes: alloc::vec::Vec<alloc::string::String>
+pub sem_os_walk::Expanded::outcome: alloc::vec::Vec<alloc::string::String>
+pub sem_os_walk::Expanded::parent: alloc::string::String
+pub sem_os_walk::Expanded::terminal: alloc::vec::Vec<alloc::string::String>
+impl sem_os_walk::expand::Expanded
+pub fn sem_os_walk::expand::Expanded::entry_edges(&self) -> impl core::iter::traits::iterator::Iterator<Item = &sem_os_walk::expand::XEdge>
+pub fn sem_os_walk::expand::Expanded::is_outcome(&self, &str) -> bool
+pub fn sem_os_walk::expand::Expanded::is_terminal(&self, &str) -> bool
+pub fn sem_os_walk::expand::Expanded::label(&self) -> alloc::string::String
+pub fn sem_os_walk::expand::Expanded::out_edges<'a>(&'a self, &'a str) -> impl core::iter::traits::iterator::Iterator<Item = &'a sem_os_walk::expand::XEdge> + 'a
+impl core::clone::Clone for sem_os_walk::expand::Expanded
+pub fn sem_os_walk::expand::Expanded::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::expand::Expanded
+impl core::cmp::PartialEq for sem_os_walk::expand::Expanded
+pub fn sem_os_walk::expand::Expanded::eq(&self, &Self) -> bool
+impl core::fmt::Debug for sem_os_walk::expand::Expanded
+pub fn sem_os_walk::expand::Expanded::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::expand::Expanded
+impl core::marker::Freeze for sem_os_walk::expand::Expanded
+impl core::marker::Send for sem_os_walk::expand::Expanded
+impl core::marker::Sync for sem_os_walk::expand::Expanded
+impl core::marker::Unpin for sem_os_walk::expand::Expanded
+impl core::marker::UnsafeUnpin for sem_os_walk::expand::Expanded
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::expand::Expanded
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::expand::Expanded
+pub struct sem_os_walk::Step
+pub sem_os_walk::Step::edge: alloc::string::String
+pub sem_os_walk::Step::roles: alloc::vec::Vec<alloc::string::String>
+pub sem_os_walk::Step::to: alloc::string::String
+pub sem_os_walk::Step::word: alloc::string::String
+impl core::clone::Clone for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::walk::Step
+impl core::cmp::Ord for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::cmp(&self, &Self) -> core::cmp::Ordering
+impl core::cmp::PartialEq for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::eq(&self, &Self) -> bool
+impl core::cmp::PartialOrd for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::partial_cmp(&self, &Self) -> core::option::Option<core::cmp::Ordering>
+impl core::convert::From<&sem_os_walk::expand::XEdge> for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::from(&sem_os_walk::expand::XEdge) -> Self
+impl core::fmt::Debug for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::walk::Step
+impl serde_core::ser::Serialize for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::serialize<__S>(&self, __S) -> core::result::Result<<__S as serde_core::ser::Serializer>::Ok, <__S as serde_core::ser::Serializer>::Error> where __S: serde_core::ser::Serializer
+impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::arbitrary(&mut arbitrary::unstructured::Unstructured<'arbitrary>) -> arbitrary::error::Result<Self>
+pub fn sem_os_walk::walk::Step::arbitrary_take_rest(arbitrary::unstructured::Unstructured<'arbitrary>) -> arbitrary::error::Result<Self>
+pub fn sem_os_walk::walk::Step::size_hint(usize) -> (usize, core::option::Option<usize>)
+pub fn sem_os_walk::walk::Step::try_size_hint(usize) -> core::result::Result<(usize, core::option::Option<usize>), arbitrary::MaxRecursionReached>
+impl<'de> serde_core::de::Deserialize<'de> for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::deserialize<__D>(__D) -> core::result::Result<Self, <__D as serde_core::de::Deserializer>::Error> where __D: serde_core::de::Deserializer<'de>
+impl core::marker::Freeze for sem_os_walk::walk::Step
+impl core::marker::Send for sem_os_walk::walk::Step
+impl core::marker::Sync for sem_os_walk::walk::Step
+impl core::marker::Unpin for sem_os_walk::walk::Step
+impl core::marker::UnsafeUnpin for sem_os_walk::walk::Step
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::walk::Step
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::walk::Step
+pub struct sem_os_walk::XEdge
+pub sem_os_walk::XEdge::edge: sem_os_walk::dialect::Edge
+pub sem_os_walk::XEdge::from: core::option::Option<alloc::string::String>
+pub sem_os_walk::XEdge::guard: alloc::vec::Vec<(sem_os_walk::expand::GuardKind, core::result::Result<alloc::string::String, alloc::string::String>)>
+pub sem_os_walk::XEdge::id: alloc::string::String
+pub sem_os_walk::XEdge::to: alloc::string::String
+impl core::clone::Clone for sem_os_walk::expand::XEdge
+pub fn sem_os_walk::expand::XEdge::clone(&self) -> Self
+impl core::cmp::Eq for sem_os_walk::expand::XEdge
+impl core::cmp::PartialEq for sem_os_walk::expand::XEdge
+pub fn sem_os_walk::expand::XEdge::eq(&self, &Self) -> bool
+impl core::convert::From<&sem_os_walk::expand::XEdge> for sem_os_walk::walk::Step
+pub fn sem_os_walk::walk::Step::from(&sem_os_walk::expand::XEdge) -> Self
+impl core::fmt::Debug for sem_os_walk::expand::XEdge
+pub fn sem_os_walk::expand::XEdge::fmt(&self, &mut core::fmt::Formatter<'_>) -> core::fmt::Result
+impl core::marker::StructuralPartialEq for sem_os_walk::expand::XEdge
+impl core::marker::Freeze for sem_os_walk::expand::XEdge
+impl core::marker::Send for sem_os_walk::expand::XEdge
+impl core::marker::Sync for sem_os_walk::expand::XEdge
+impl core::marker::Unpin for sem_os_walk::expand::XEdge
+impl core::marker::UnsafeUnpin for sem_os_walk::expand::XEdge
+impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::expand::XEdge
+impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::expand::XEdge
+pub const sem_os_walk::INCIDENT: &str
+pub fn sem_os_walk::available<'a>(&'a sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str) -> alloc::vec::Vec<&'a sem_os_walk::expand::XEdge>
+pub fn sem_os_walk::available_entry<'a>(&'a sem_os_walk::expand::Expanded, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str) -> alloc::vec::Vec<&'a sem_os_walk::expand::XEdge>
+pub fn sem_os_walk::blocked_on(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &dyn core::ops::function::Fn(&sem_os_walk::expand::XEdge, &sem_os_walk::dialect::Pred) -> bool) -> alloc::vec::Vec<sem_os_walk::walk::Blocked>
+pub fn sem_os_walk::enabled_moves(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &dyn core::ops::function::Fn(&sem_os_walk::expand::XEdge, &sem_os_walk::dialect::Pred) -> bool) -> alloc::vec::Vec<sem_os_walk::walk::Step>
+pub fn sem_os_walk::legal_entry_moves(&sem_os_walk::expand::Expanded, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str) -> alloc::vec::Vec<sem_os_walk::walk::Step>
+pub fn sem_os_walk::legal_moves(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str) -> alloc::vec::Vec<sem_os_walk::walk::Step>
+pub fn sem_os_walk::resolve_coord(&alloc::collections::btree::map::BTreeMap<alloc::string::String, sem_os_walk::dialect::BindValue>, &sem_os_walk::dialect::Coord) -> core::result::Result<alloc::string::String, alloc::string::String>
