@@ -581,3 +581,26 @@ fn a_step_without_a_flag_serializes_as_before() {
         serde_json::from_str(old).expect("a step written before :by reads");
     assert_eq!(&read, plain);
 }
+
+#[test]
+fn a_flag_round_trips_resolved_or_not() {
+    for by in [Ok("record"), Err("cutoff")] {
+        let step = legal_moves(&flagged(by, &["ops"]), "Open", &set(&[]), "ops").remove(0);
+        let json = serde_json::to_string(&step).expect("serializes");
+        let read: sem_os_walk::Step = serde_json::from_str(&json).expect("reads back");
+        assert_eq!(read, step, "{json}");
+    }
+}
+
+#[test]
+fn a_by_bound_to_a_non_coordinate_is_unresolved() {
+    let mut x = board(Vec::new(), &["ops"], Vec::new());
+    x.bind
+        .insert("cutoff".to_owned(), BindValue::Map(BTreeMap::new()));
+    x.edges[0].edge.by = Some(Coord::Bound("cutoff".to_owned()));
+    x.edges[0].by = Some(Err("cutoff".to_owned()));
+    assert!(
+        std::panic::catch_unwind(|| conformance::assert_by_in_shape(&x)).is_err(),
+        "a :by bound to a map passes conformance"
+    );
+}

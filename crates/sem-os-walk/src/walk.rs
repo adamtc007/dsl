@@ -140,6 +140,8 @@ pub struct Step {
     /// `Some(Err(b))`: a flag whose binding `b` the board does not resolve (never guessed, never
     /// dropped). The walk states the flag and nothing more: a move whose `:by` has been reached is
     /// still offered as it would be without one — what a deadline passed means is the domain's.
+    /// Serialized only when present, as serde's `Result`: `{"Ok":"<coordinate>"}` or
+    /// `{"Err":"<binding>"}`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub by: Option<Result<String, String>>,
 }
