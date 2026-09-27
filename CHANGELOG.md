@@ -8,6 +8,15 @@ The workspace follows Semantic Versioning subject to the pre-1.0 rules in
 
 ### Added
 
+- `sem-os-walk`: `:by` — an edge's time-criticality, the A.12 marker after
+  `:terminal` and `:outcome`. `Edge::by` (the declared coordinate),
+  `XEdge::by` (resolved through the board's bindings as a guard's coordinate
+  is; `Err` when unresolved) and `Step::by` (the resolved coordinate, carried by
+  every answer the walk gives about the edge — `legal_moves`, `enabled_moves`,
+  `blocked_on`). An unresolved `:by` is never guessed (`None`).
+  `conformance::assert_by_in_shape`: every flagged edge's coordinate resolves
+  and is in the board's clock-shape. Adding the fields is a breaking change for
+  struct literals of `Edge`, `XEdge` and `Step`.
 - `sem-os-walk`: `blocked_on` — every edge out of a piece's node that is not
   enabled for the caller, with what it is blocked on (`BlockedOn`: a coordinate
   not yet reached, a `before` coordinate passed, a coordinate not in the shape,

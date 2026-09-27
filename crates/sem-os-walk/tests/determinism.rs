@@ -19,6 +19,7 @@ fn edge(id: &str, word: &str, roles: &[&str]) -> Edge {
         se: None,
         tx: Vec::new(),
         region: None,
+        by: None,
     }
 }
 
@@ -39,6 +40,7 @@ fn fixture() -> Expanded {
             to: "Closed".to_owned(),
             edge: e,
             guard: vec![(GuardKind::Reached, Ok("never".to_owned()))],
+            by: None,
         }],
     }
 }

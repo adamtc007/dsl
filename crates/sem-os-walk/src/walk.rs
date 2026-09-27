@@ -134,6 +134,11 @@ pub struct Step {
     pub word: String,
     pub to: String,
     pub roles: Vec<String>,
+    /// the coordinate the move must be played before (`:by`, resolved), surfaced with every answer the
+    /// walk gives about the edge — legal, enabled or blocked. `None`: no flag, or a `:by` whose binding
+    /// the board does not resolve (a domain's build rejects that; the walk does not guess).
+    #[serde(default)]
+    pub by: Option<String>,
 }
 
 impl From<&XEdge> for Step {
@@ -143,6 +148,7 @@ impl From<&XEdge> for Step {
             word: e.edge.word.clone(),
             to: e.to.clone(),
             roles: e.edge.roles.clone(),
+            by: e.by.as_ref().and_then(|r| r.as_ref().ok().cloned()),
         }
     }
 }

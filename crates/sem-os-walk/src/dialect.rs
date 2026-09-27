@@ -31,6 +31,10 @@ pub struct Edge {
     pub tx: Vec<String>,
     /// the region this edge came from, if any
     pub region: Option<String>,
+    /// `:by <coordinate>` — the move must be played before that coordinate: its time-criticality, the
+    /// only source of it (the A.12 marker after `:terminal` and `:outcome`). `None`: no flag — the move
+    /// carries no deadline of its own.
+    pub by: Option<Coord>,
 }
 
 /// An edge's declared source: no node (`Entry`), any node, the incident return, or a named set.

@@ -21,6 +21,9 @@ pub struct XEdge {
     pub edge: Edge,
     /// guards with bound coordinates resolved through the effective bindings; `Err(abstract)` when unresolved
     pub guard: Vec<(GuardKind, Result<String, String>)>,
+    /// the edge's `:by` coordinate, resolved through the effective bindings as a guard's is;
+    /// `Err(abstract)` when unresolved, `None` when the edge carries no flag
+    pub by: Option<Result<String, String>>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]

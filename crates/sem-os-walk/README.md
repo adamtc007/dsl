@@ -12,5 +12,10 @@ domain's own evaluator says fails or cannot answer, or a permanent reason ([`wal
 [`walk::enabled_moves`] is its complement. [`conformance::assert_partition`] checks an engine's own
 view of a node against the contract, edge by edge.
 
+By when: an edge flagged `:by <coordinate>` must be played before that coordinate — its
+time-criticality, and the only source of it. Every answer the walk gives about the edge carries the
+resolved coordinate ([`walk::Step::by`]); [`conformance::assert_by_in_shape`] checks every flag
+resolves to a coordinate in the board's clock-shape.
+
 First consumer: `corporate-actions-engine`'s `ca-fact` crate (extracted from `crates/ca-fact/src/{model,expand,walk}.rs`,
 C0.3, 2026-09-18) — see that repo's `docs/eop/receipts/C0.3.md` for the extraction's own record.

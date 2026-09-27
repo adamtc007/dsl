@@ -123,3 +123,44 @@ pub fn assert_partition(
         x.label()
     );
 }
+
+/// `:by` (A.12, Q26) names a real deadline: every flagged edge's coordinate resolves through the
+/// board's bindings and is in the board's clock-shape — a flag on a coordinate the board never reaches
+/// could never fall. Every answer the walk gives about the edge carries it (`Step::by`).
+///
+/// # Panics
+/// An edge whose `:by` is unresolved or outside the clock-shape, or whose step does not carry it.
+pub fn assert_by_in_shape(x: &Expanded) {
+    for e in &x.edges {
+        let Some(by) = &e.by else {
+            assert_eq!(
+                Step::from(e).by,
+                None,
+                "edge {} carries a flag it does not declare on board {}",
+                e.id,
+                x.label()
+            );
+            continue;
+        };
+        let c = by.as_ref().unwrap_or_else(|abs| {
+            panic!(
+                "edge {}'s :by names {abs}, which board {} does not bind",
+                e.id,
+                x.label()
+            )
+        });
+        assert!(
+            x.clock_shape.contains(c),
+            "edge {}'s :by {c} is not in board {}'s clock-shape",
+            e.id,
+            x.label()
+        );
+        assert_eq!(
+            Step::from(e).by.as_deref(),
+            Some(c.as_str()),
+            "edge {}'s step does not carry its :by on board {}",
+            e.id,
+            x.label()
+        );
+    }
+}

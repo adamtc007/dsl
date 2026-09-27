@@ -1,6 +1,7 @@
 pub mod sem_os_walk
 pub mod sem_os_walk::conformance
 pub fn sem_os_walk::conformance::assert_blocked_deterministic(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &sem_os_walk::walk::PreEvaluator<'_>)
+pub fn sem_os_walk::conformance::assert_by_in_shape(&sem_os_walk::expand::Expanded)
 pub fn sem_os_walk::conformance::assert_deterministic(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str)
 pub fn sem_os_walk::conformance::assert_entry_deterministic(&sem_os_walk::expand::Expanded, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str)
 pub fn sem_os_walk::conformance::assert_partition(&sem_os_walk::expand::Expanded, &str, &alloc::collections::btree::set::BTreeSet<alloc::string::String>, &str, &sem_os_walk::walk::PreEvaluator<'_>, &[sem_os_walk::walk::Step], &[sem_os_walk::walk::Blocked])
@@ -184,6 +185,7 @@ impl core::marker::UnsafeUnpin for sem_os_walk::dialect::To
 impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::dialect::To
 impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::dialect::To
 pub struct sem_os_walk::dialect::Edge
+pub sem_os_walk::dialect::Edge::by: core::option::Option<sem_os_walk::dialect::Coord>
 pub sem_os_walk::dialect::Edge::coord: core::option::Option<sem_os_walk::dialect::Coord>
 pub sem_os_walk::dialect::Edge::from: sem_os_walk::dialect::From
 pub sem_os_walk::dialect::Edge::guard: alloc::vec::Vec<sem_os_walk::dialect::Guard>
@@ -263,6 +265,7 @@ impl core::marker::UnsafeUnpin for sem_os_walk::expand::Expanded
 impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::expand::Expanded
 impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::expand::Expanded
 pub struct sem_os_walk::expand::XEdge
+pub sem_os_walk::expand::XEdge::by: core::option::Option<core::result::Result<alloc::string::String, alloc::string::String>>
 pub sem_os_walk::expand::XEdge::edge: sem_os_walk::dialect::Edge
 pub sem_os_walk::expand::XEdge::from: core::option::Option<alloc::string::String>
 pub sem_os_walk::expand::XEdge::guard: alloc::vec::Vec<(sem_os_walk::expand::GuardKind, core::result::Result<alloc::string::String, alloc::string::String>)>
@@ -368,6 +371,7 @@ impl core::marker::UnsafeUnpin for sem_os_walk::walk::ClockOrder
 impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::walk::ClockOrder
 impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::walk::ClockOrder
 pub struct sem_os_walk::walk::Step
+pub sem_os_walk::walk::Step::by: core::option::Option<alloc::string::String>
 pub sem_os_walk::walk::Step::edge: alloc::string::String
 pub sem_os_walk::walk::Step::roles: alloc::vec::Vec<alloc::string::String>
 pub sem_os_walk::walk::Step::to: alloc::string::String
@@ -687,6 +691,7 @@ impl core::marker::UnsafeUnpin for sem_os_walk::walk::ClockOrder
 impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::walk::ClockOrder
 impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::walk::ClockOrder
 pub struct sem_os_walk::Edge
+pub sem_os_walk::Edge::by: core::option::Option<sem_os_walk::dialect::Coord>
 pub sem_os_walk::Edge::coord: core::option::Option<sem_os_walk::dialect::Coord>
 pub sem_os_walk::Edge::from: sem_os_walk::dialect::From
 pub sem_os_walk::Edge::guard: alloc::vec::Vec<sem_os_walk::dialect::Guard>
@@ -745,6 +750,7 @@ impl core::marker::UnsafeUnpin for sem_os_walk::expand::Expanded
 impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::expand::Expanded
 impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::expand::Expanded
 pub struct sem_os_walk::Step
+pub sem_os_walk::Step::by: core::option::Option<alloc::string::String>
 pub sem_os_walk::Step::edge: alloc::string::String
 pub sem_os_walk::Step::roles: alloc::vec::Vec<alloc::string::String>
 pub sem_os_walk::Step::to: alloc::string::String
@@ -780,6 +786,7 @@ impl core::marker::UnsafeUnpin for sem_os_walk::walk::Step
 impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::walk::Step
 impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::walk::Step
 pub struct sem_os_walk::XEdge
+pub sem_os_walk::XEdge::by: core::option::Option<core::result::Result<alloc::string::String, alloc::string::String>>
 pub sem_os_walk::XEdge::edge: sem_os_walk::dialect::Edge
 pub sem_os_walk::XEdge::from: core::option::Option<alloc::string::String>
 pub sem_os_walk::XEdge::guard: alloc::vec::Vec<(sem_os_walk::expand::GuardKind, core::result::Result<alloc::string::String, alloc::string::String>)>
