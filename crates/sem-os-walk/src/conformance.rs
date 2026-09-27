@@ -7,7 +7,7 @@
 
 use std::collections::BTreeSet;
 
-use crate::expand::Expanded;
+use crate::expand::{resolve_coord, Expanded};
 use crate::walk::{
     blocked_on, classify, enabled_moves, legal_entry_moves, legal_moves, Blocked, BlockedOn,
     PreAnswer, PreEvaluator, Step,
@@ -124,22 +124,24 @@ pub fn assert_partition(
     );
 }
 
-/// `:by` (A.12, Q26) names a real deadline: every flagged edge's coordinate resolves through the
-/// board's bindings and is in the board's clock-shape — a flag on a coordinate the board never reaches
-/// could never fall. Every answer the walk gives about the edge carries it (`Step::by`).
+/// `:by` names a real deadline: every edge's resolved flag is its declared one resolved through the
+/// board's bindings (a flag declared and never resolved, resolved and never declared, or resolved
+/// through the wrong binding fails), and every flag resolves to a coordinate in the board's
+/// clock-shape — a flag on a coordinate the board never reaches could never fall.
 ///
 /// # Panics
-/// An edge whose `:by` is unresolved or outside the clock-shape, or whose step does not carry it.
+/// An edge whose resolved `:by` is not its declared one resolved, or whose `:by` is unresolved or
+/// outside the clock-shape.
 pub fn assert_by_in_shape(x: &Expanded) {
     for e in &x.edges {
+        assert_eq!(
+            e.by,
+            e.edge.by.as_ref().map(|c| resolve_coord(&x.bind, c)),
+            "edge {}'s resolved :by is not its declared :by resolved on board {}",
+            e.id,
+            x.label()
+        );
         let Some(by) = &e.by else {
-            assert_eq!(
-                Step::from(e).by,
-                None,
-                "edge {} carries a flag it does not declare on board {}",
-                e.id,
-                x.label()
-            );
             continue;
         };
         let c = by.as_ref().unwrap_or_else(|abs| {
@@ -152,13 +154,6 @@ pub fn assert_by_in_shape(x: &Expanded) {
         assert!(
             x.clock_shape.contains(c),
             "edge {}'s :by {c} is not in board {}'s clock-shape",
-            e.id,
-            x.label()
-        );
-        assert_eq!(
-            Step::from(e).by.as_deref(),
-            Some(c.as_str()),
-            "edge {}'s step does not carry its :by on board {}",
             e.id,
             x.label()
         );

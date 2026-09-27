@@ -129,16 +129,19 @@ fn filtered<'a>(
 /// design-tool's).
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, serde::Serialize, serde::Deserialize)]
 #[cfg_attr(feature = "arbitrary", derive(arbitrary::Arbitrary))]
+#[non_exhaustive]
 pub struct Step {
     pub edge: String,
     pub word: String,
     pub to: String,
     pub roles: Vec<String>,
-    /// the coordinate the move must be played before (`:by`, resolved), surfaced with every answer the
-    /// walk gives about the edge — legal, enabled or blocked. `None`: no flag, or a `:by` whose binding
-    /// the board does not resolve (a domain's build rejects that; the walk does not guess).
-    #[serde(default)]
-    pub by: Option<String>,
+    /// the coordinate the move must be played before (`:by`), as [`XEdge::by`] resolved it, surfaced
+    /// with every answer the walk gives about the edge — legal, enabled or blocked. `None`: no flag;
+    /// `Some(Err(b))`: a flag whose binding `b` the board does not resolve (never guessed, never
+    /// dropped). The walk states the flag and nothing more: a move whose `:by` has been reached is
+    /// still offered as it would be without one — what a deadline passed means is the domain's.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub by: Option<Result<String, String>>,
 }
 
 impl From<&XEdge> for Step {
@@ -148,7 +151,7 @@ impl From<&XEdge> for Step {
             word: e.edge.word.clone(),
             to: e.to.clone(),
             roles: e.edge.roles.clone(),
-            by: e.by.as_ref().and_then(|r| r.as_ref().ok().cloned()),
+            by: e.by.clone(),
         }
     }
 }

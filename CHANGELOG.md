@@ -6,17 +6,25 @@ The workspace follows Semantic Versioning subject to the pre-1.0 rules in
 
 ## [Unreleased]
 
+### Changed
+
+- **Breaking** `sem-os-walk`: `:by` — an edge's time-criticality, the A.12
+  marker after `:terminal` and `:outcome`. `Edge::by` (the declared coordinate),
+  `XEdge::by` (resolved through the board's bindings as a guard's coordinate
+  is; `Err` naming the binding when unresolved) and `Step::by` (the flag as
+  `XEdge::by` resolved it, carried by every answer the walk gives about the edge
+  — `legal_moves`, `legal_entry_moves`, `enabled_moves`, `blocked_on`; an
+  unresolved flag is surfaced as `Err`, never dropped). The walk states the flag
+  and does not enforce it: a move whose `:by` is reached is still offered.
+  `Step` serializes with no `by` field when unflagged, and a step written before
+  `:by` reads. `conformance::assert_by_in_shape`: every edge's resolved flag is
+  its declared one resolved, and every flag resolves to a coordinate in the
+  board's clock-shape. Breaking for struct literals of `Edge` and `XEdge`;
+  `Step` is now `#[non_exhaustive]` (build it with `Step::from(&XEdge)`), and its
+  derived `Ord` breaks ties on `by` after `roles`.
+
 ### Added
 
-- `sem-os-walk`: `:by` — an edge's time-criticality, the A.12 marker after
-  `:terminal` and `:outcome`. `Edge::by` (the declared coordinate),
-  `XEdge::by` (resolved through the board's bindings as a guard's coordinate
-  is; `Err` when unresolved) and `Step::by` (the resolved coordinate, carried by
-  every answer the walk gives about the edge — `legal_moves`, `enabled_moves`,
-  `blocked_on`). An unresolved `:by` is never guessed (`None`).
-  `conformance::assert_by_in_shape`: every flagged edge's coordinate resolves
-  and is in the board's clock-shape. Adding the fields is a breaking change for
-  struct literals of `Edge`, `XEdge` and `Step`.
 - `sem-os-walk`: `blocked_on` — every edge out of a piece's node that is not
   enabled for the caller, with what it is blocked on (`BlockedOn`: a coordinate
   not yet reached, a `before` coordinate passed, a coordinate not in the shape,

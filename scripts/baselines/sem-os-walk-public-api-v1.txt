@@ -370,8 +370,8 @@ impl core::marker::Unpin for sem_os_walk::walk::ClockOrder
 impl core::marker::UnsafeUnpin for sem_os_walk::walk::ClockOrder
 impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::walk::ClockOrder
 impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::walk::ClockOrder
-pub struct sem_os_walk::walk::Step
-pub sem_os_walk::walk::Step::by: core::option::Option<alloc::string::String>
+#[non_exhaustive] pub struct sem_os_walk::walk::Step
+pub sem_os_walk::walk::Step::by: core::option::Option<core::result::Result<alloc::string::String, alloc::string::String>>
 pub sem_os_walk::walk::Step::edge: alloc::string::String
 pub sem_os_walk::walk::Step::roles: alloc::vec::Vec<alloc::string::String>
 pub sem_os_walk::walk::Step::to: alloc::string::String
@@ -749,8 +749,8 @@ impl core::marker::Unpin for sem_os_walk::expand::Expanded
 impl core::marker::UnsafeUnpin for sem_os_walk::expand::Expanded
 impl core::panic::unwind_safe::RefUnwindSafe for sem_os_walk::expand::Expanded
 impl core::panic::unwind_safe::UnwindSafe for sem_os_walk::expand::Expanded
-pub struct sem_os_walk::Step
-pub sem_os_walk::Step::by: core::option::Option<alloc::string::String>
+#[non_exhaustive] pub struct sem_os_walk::Step
+pub sem_os_walk::Step::by: core::option::Option<core::result::Result<alloc::string::String, alloc::string::String>>
 pub sem_os_walk::Step::edge: alloc::string::String
 pub sem_os_walk::Step::roles: alloc::vec::Vec<alloc::string::String>
 pub sem_os_walk::Step::to: alloc::string::String

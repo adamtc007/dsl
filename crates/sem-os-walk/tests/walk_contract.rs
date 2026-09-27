@@ -8,7 +8,8 @@ use sem_os_walk::conformance;
 use sem_os_walk::dialect::{BindValue, Cmp, Coord, Edge, From, Pred, To};
 use sem_os_walk::expand::{resolve_coord, Expanded, GuardKind, XEdge};
 use sem_os_walk::{
-    blocked_on, enabled_moves, legal_moves, BlockedOn, ClockOrder, PreAnswer, PreEvaluator,
+    blocked_on, enabled_moves, legal_entry_moves, legal_moves, BlockedOn, ClockOrder, PreAnswer,
+    PreEvaluator,
 };
 
 fn set(v: &[&str]) -> BTreeSet<String> {
@@ -446,15 +447,20 @@ fn reached_sets_refuses_a_shape_it_cannot_enumerate() {
     let _ = order().reached_sets(&shape);
 }
 
-/// `board`, its one edge flagged `:by` (resolved or not).
+/// `board`, its one edge flagged `:by` — declared `Named` when it resolves, `Bound` to an absent
+/// binding when it does not.
 fn flagged(by: Result<&str, &str>, roles: &[&str]) -> Expanded {
     let mut x = board(Vec::new(), roles, Vec::new());
     x.edges[0].by = Some(by.map(str::to_owned).map_err(str::to_owned));
     x.edges[0].edge.by = Some(match by {
-        Ok(c) => sem_os_walk::dialect::Coord::Named(c.to_owned()),
-        Err(b) => sem_os_walk::dialect::Coord::Bound(b.to_owned()),
+        Ok(c) => Coord::Named(c.to_owned()),
+        Err(b) => Coord::Bound(b.to_owned()),
     });
     x
+}
+
+fn ok(c: &str) -> Option<Result<String, String>> {
+    Some(Ok(c.to_owned()))
 }
 
 #[test]
@@ -464,13 +470,18 @@ fn every_answer_about_a_flagged_edge_carries_its_by() {
     let holds = |_: &XEdge, _: &Pred, _: &BTreeSet<String>| PreAnswer::Holds;
     let legal = legal_moves(&x, "Open", &none, "ops");
     assert_eq!(legal.len(), 1);
-    assert_eq!(legal[0].by.as_deref(), Some("record"));
+    assert_eq!(legal[0].by, ok("record"));
     let enabled = enabled_moves(&x, "Open", &none, "ops", &holds);
-    assert_eq!(enabled[0].by.as_deref(), Some("record"));
+    assert_eq!(enabled.len(), 1);
+    assert_eq!(enabled[0].by, ok("record"));
     // another party's move: blocked, and still flagged — whose move it is and by when
     let blocked = blocked_on(&x, "Open", &none, "engine", &holds);
     assert_eq!(blocked.len(), 1);
-    assert_eq!(blocked[0].step.by.as_deref(), Some("record"));
+    assert_eq!(blocked[0].step.by, ok("record"));
+    // the walk states the flag and nothing more: with its coordinate reached the move is offered
+    let late = legal_moves(&x, "Open", &set(&["ex", "record"]), "ops");
+    assert_eq!(late.len(), 1);
+    assert_eq!(late[0].by, ok("record"));
     conformance::assert_by_in_shape(&x);
     // an unflagged edge carries none
     let plain = board(Vec::new(), &["ops"], Vec::new());
@@ -479,9 +490,43 @@ fn every_answer_about_a_flagged_edge_carries_its_by() {
 }
 
 #[test]
+fn an_entry_edge_carries_its_by() {
+    let mut x = flagged(Ok("ex"), &["ops"]);
+    x.edges[0].from = None;
+    x.edges[0].edge.from = From::Entry;
+    let entry = legal_entry_moves(&x, &set(&[]), "ops");
+    assert_eq!(entry.len(), 1);
+    assert_eq!(entry[0].by, ok("ex"));
+    conformance::assert_by_in_shape(&x);
+}
+
+#[test]
+fn a_by_bound_through_the_boards_bindings_resolves() {
+    let mut x = board(Vec::new(), &["ops"], Vec::new());
+    x.bind
+        .insert("cutoff".to_owned(), BindValue::Symbol("record".to_owned()));
+    x.edges[0].edge.by = Some(Coord::Bound("cutoff".to_owned()));
+    x.edges[0].by = x.edges[0]
+        .edge
+        .by
+        .as_ref()
+        .map(|c| resolve_coord(&x.bind, c));
+    assert_eq!(x.edges[0].by, ok("record"));
+    assert_eq!(
+        legal_moves(&x, "Open", &set(&[]), "ops")[0].by,
+        ok("record")
+    );
+    conformance::assert_by_in_shape(&x);
+}
+
+#[test]
 fn an_unresolved_by_is_never_guessed() {
     let x = flagged(Err("cutoff"), &["ops"]);
-    assert_eq!(legal_moves(&x, "Open", &set(&[]), "ops")[0].by, None);
+    // surfaced as unresolved, never dropped to "no flag"
+    assert_eq!(
+        legal_moves(&x, "Open", &set(&[]), "ops")[0].by,
+        Some(Err("cutoff".to_owned()))
+    );
     let unresolved = std::panic::catch_unwind(|| conformance::assert_by_in_shape(&x));
     assert!(unresolved.is_err(), "an unresolved :by passes conformance");
 }
@@ -490,5 +535,49 @@ fn an_unresolved_by_is_never_guessed() {
 fn a_by_outside_the_clock_shape_fails_conformance() {
     let x = flagged(Ok("pay"), &["ops"]);
     let outside = std::panic::catch_unwind(|| conformance::assert_by_in_shape(&x));
-    assert!(outside.is_err(), "a :by the board never reaches passes conformance");
+    assert!(
+        outside.is_err(),
+        "a :by the board never reaches passes conformance"
+    );
+}
+
+#[test]
+fn a_declared_by_left_unresolved_fails_conformance() {
+    // declared and never resolved: the flag would vanish from every answer
+    let mut dropped = flagged(Ok("record"), &["ops"]);
+    dropped.edges[0].by = None;
+    assert!(
+        std::panic::catch_unwind(|| conformance::assert_by_in_shape(&dropped)).is_err(),
+        "a declared :by missing from the expansion passes conformance"
+    );
+    // resolved and never declared
+    let mut invented = board(Vec::new(), &["ops"], Vec::new());
+    invented.edges[0].by = ok("record");
+    assert!(
+        std::panic::catch_unwind(|| conformance::assert_by_in_shape(&invented)).is_err(),
+        "an undeclared :by passes conformance"
+    );
+    // resolved to another coordinate than its declaration names
+    let mut wrong = flagged(Ok("record"), &["ops"]);
+    wrong.edges[0].by = ok("ex");
+    assert!(
+        std::panic::catch_unwind(|| conformance::assert_by_in_shape(&wrong)).is_err(),
+        "a :by resolved to another coordinate passes conformance"
+    );
+}
+
+#[test]
+fn a_step_without_a_flag_serializes_as_before() {
+    let plain = &legal_moves(
+        &board(Vec::new(), &["ops"], Vec::new()),
+        "Open",
+        &set(&[]),
+        "ops",
+    )[0];
+    let json = serde_json::to_string(plain).expect("serializes");
+    assert!(!json.contains("\"by\""), "no flag, no field: {json}");
+    let old = r#"{"edge":"E1","word":"move-it","to":"Closed","roles":["ops"]}"#;
+    let read: sem_os_walk::Step =
+        serde_json::from_str(old).expect("a step written before :by reads");
+    assert_eq!(&read, plain);
 }

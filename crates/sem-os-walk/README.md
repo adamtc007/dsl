@@ -14,8 +14,10 @@ view of a node against the contract, edge by edge.
 
 By when: an edge flagged `:by <coordinate>` must be played before that coordinate — its
 time-criticality, and the only source of it. Every answer the walk gives about the edge carries the
-resolved coordinate ([`walk::Step::by`]); [`conformance::assert_by_in_shape`] checks every flag
-resolves to a coordinate in the board's clock-shape.
+flag ([`walk::Step::by`]; an unresolved one as `Err`, never dropped). The walk states the flag and
+does not enforce it — a move whose coordinate is reached is still offered; what a passed deadline
+means is the domain's. [`conformance::assert_by_in_shape`] checks every edge's resolved flag is its
+declared one resolved, and that every flag resolves to a coordinate in the board's clock-shape.
 
 First consumer: `corporate-actions-engine`'s `ca-fact` crate (extracted from `crates/ca-fact/src/{model,expand,walk}.rs`,
 C0.3, 2026-09-18) — see that repo's `docs/eop/receipts/C0.3.md` for the extraction's own record.
